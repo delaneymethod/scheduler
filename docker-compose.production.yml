@@ -1,0 +1,16 @@
+version: "2"
+services:
+    node:
+        image: ${DOCKER_USER}/${DOCKER_IMAGE_NODE}:latest
+        networks:
+            - network
+    nginx:
+        image: ${DOCKER_USER}/${DOCKER_IMAGE_PROJECT}:latest
+        ports:
+            - "${APP_PORT}:${APP_PORT}"
+        networks:
+            - network
+        restart: unless-stopped
+networks:
+    network:
+        driver: "bridge"

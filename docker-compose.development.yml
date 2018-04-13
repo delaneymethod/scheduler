@@ -1,0 +1,16 @@
+version: "2"
+services:
+    node:
+        extends: 
+            file: docker-compose.base.yml
+            service: node
+    nginx:
+        extends: 
+            file: docker-compose.base.yml
+            service: nginx
+        ports:
+            - "${APP_PORT}:${APP_PORT}"
+networks:
+    network:
+        driver: "bridge"
+        

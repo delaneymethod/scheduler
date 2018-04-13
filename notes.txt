@@ -1,0 +1,7 @@
+DOCKER REGISTRY
+---------------
+
+URL: https://hub.docker.com/r/giggrafter/scheduler/
+Email: hello+gig@delaneymethod.com
+Username: giggrafter
+Password: $bQ7]_Fka-<<w9&e

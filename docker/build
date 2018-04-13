@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+# Set Docker environment variables
+DOCKER_USER=giggrafter
+DOCKER_PASSWORD=$bQ7]_Fka-<<w9&e
+DOCKER_IMAGE_NAME=scheduler
+
+###### DO NOT EDIT BELOW THIS LINE ######
+
+# Bail out on first error
+set -e
+
+# Get the directory of the build script
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Get the current git commit sha
+HASH=$(git rev-parse HEAD)
+
+# Package the app
+cd $DIR/../
+
+# Archive gives us useful tools - we can use .gitattributes to `export-ignore` extraneous files
+git archive --format=tar --worktree-attributes $HASH | tar -xf - -C $DIR/nginx/packaged
+
+# Production Build Steps
+## (Decision between export-ignore'ing docker/develop command or not)
+
+cd $DIR/nginx/packaged
+
+# Install Node modules
+./development npm install
+
+# Build assets
+./development npm run prod
+
+# Build the Docker image with latest code
+cd $DIR/nginx
+
+# Login to Docker Hub registry. Free account with 1 repo. Please note that this can be updated to use a paid private account, an AWS S3 account, Gitlab's own container registry etc etc, 
+docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+
+# Build our Production images - note we are building two images.
+## Tagging one image based on the Git commit hash and one called latest.
+## We tag one based on the Git commit hash so we can match against Gitlab's commit history. Also allows us to see what code changes that image had included incase we ever need to role back to a specific commit.
+docker build -t $DOCKER_USER/$DOCKER_IMAGE_NAME:$HASH .
+docker build -t $DOCKER_USER/$DOCKER_IMAGE_NAME:latest .
+
+# Push our Production images
+docker push $DOCKER_USER/$DOCKER_IMAGE_NAME:$HASH
+docker push $DOCKER_USER/$DOCKER_IMAGE_NAME:latest
+
+# Push our Production images from local filesystem again to keep things a bit cleaner.
+docker rmi -f $DOCKER_USER/$DOCKER_IMAGE_NAME:$HASH
+docker rmi -f $DOCKER_USER/$DOCKER_IMAGE_NAME:latest
+
+# Clean up packaged directory
+cd $DIR/nginx/packaged
+
+PWD=$(pwd)
+ 
+if [ "$PWD" == "$DIR/nginx/packaged" ]; then
+	# The "vendor" directory (any built assets!) will be owned as user "root" on the Linux file system so we'll use Docker to delete them with a one-off container
+	docker run --rm -w /opt -v $(pwd):/opt ubuntu:16.04 bash -c "rm -rf ./* && rm -rf ./.git* && rm -rf ./.dockerignore && rm -rf ./.npmignore"
+	
+	touch .gitkeep
+fi
+
+# Clean up the workspace directory
+#cd $DIR/../
+
+#PWD=$(pwd)
+
+#if [ "$PWD" == "/var/lib/jenkins/workspace/$DOCKER_IMAGE" ]; then
+#	docker run --rm -w /opt -v $(pwd):/opt ubuntu:16.04 bash -c "rm -rf ./node_modules"
+#	docker run --rm -w /opt -v $(pwd):/opt ubuntu:16.04 bash -c "rm -rf ./* && rm -rf ./.git* && rm -rf ./.dockerignore && rm -rf ./.npmignore"
+#fi
