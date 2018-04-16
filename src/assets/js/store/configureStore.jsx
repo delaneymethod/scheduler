@@ -1,9 +1,9 @@
 /**
- * @link	  https://www.giggrafter.com
+ * @link https://www.giggrafter.com
  * @copyright Copyright (c) Gig Grafter
- * @license	  https://www.giggrafter.com/license
+ * @license https://www.giggrafter.com/license
  */
- 
+
 import { createStore, applyMiddleware, compose } from 'redux';
 
 /* Used to handle async actions in the store */

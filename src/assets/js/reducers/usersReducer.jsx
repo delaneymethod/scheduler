@@ -1,0 +1,38 @@
+/**
+ * @link https://www.giggrafter.com
+ * @copyright Copyright (c) Gig Grafter
+ * @license https://www.giggrafter.com/license
+ */
+
+import * as types from '../actions/actionTypes';
+import initialState from '../store/initialState';
+
+const usersReducer = (state = initialState.users, action) => {
+	switch (action.type) {
+		case types.GET_USERS_SUCCESS:
+			return action.users;
+
+		case types.GET_USER_SUCCESS:
+		case types.UPDATE_USER_SUCCESS:
+			return [
+				...state.filter(user => user.id !== action.user.id),
+				Object.assign({}, action.user),
+			];
+
+		case types.CREATE_USER_SUCCESS:
+			return [
+				...state,
+				Object.assign({}, action.user),
+			];
+
+		case types.DELETE_USER_SUCCESS:
+			return [
+				...state.filter(user => user.id !== action.user.id),
+			];
+
+		default:
+			return state;
+	}
+};
+
+export default usersReducer;

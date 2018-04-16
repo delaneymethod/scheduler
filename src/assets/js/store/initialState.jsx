@@ -1,11 +1,18 @@
 /**
- * @link	  https://www.giggrafter.com
+ * @link https://www.giggrafter.com
  * @copyright Copyright (c) Gig Grafter
- * @license	  https://www.giggrafter.com/license
+ * @license https://www.giggrafter.com/license
  */
- 
+
 export default {
-	cakes: [],
+	users: [],
+	userTypes: [],
+	userRoles: [],
+	companies: [],
+	shifts: [],
+	rotas: [],
+	rotaTypes: [],
+	placements: [],
+	formStatus: null,
 	ajaxLoading: false,
-	formStatus: null
-}
+};

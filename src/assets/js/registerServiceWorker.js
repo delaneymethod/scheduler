@@ -1,7 +1,7 @@
 /**
- * @link	  https://www.giggrafter.com
+ * @link https://www.giggrafter.com
  * @copyright Copyright (c) Gig Grafter
- * @license	  https://www.giggrafter.com/license
+ * @license https://www.giggrafter.com/license
  */
 
 /**
@@ -66,7 +66,7 @@ function checkValidServiceWorker(swUrl) {
 				registerValidSW(swUrl);
 			}
 		})
-		.catch(error => console.error('No internet connection found. App is running in offline mode. ', error));
+		.catch(error => console.error('No internet connection found. Scheduler is running in offline mode. ', error));
 }
 
 const unregister = () => {

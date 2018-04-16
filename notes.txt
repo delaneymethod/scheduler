@@ -5,3 +5,16 @@ URL: https://hub.docker.com/r/giggrafter/scheduler/
 Email: hello+gig@delaneymethod.com
 Username: giggrafter
 Password: $bQ7]_Fka-<<w9&e
+
+/* 
+import Image from './elements/Image';
+
+import largeImage from '../../img/large.jpg';
+
+<Image src="/assets/img/large.jpg" alt="" className="" />
+
+<Image src={largeImage} alt="" className="" />
+*/
+
+http://airbnb.io/enzyme/
+https://github.com/kentcdodds/react-testing-library

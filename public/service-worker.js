@@ -1,9 +1,9 @@
 /**
- * @link	  https://www.giggrafter.com
+ * @link https://www.giggrafter.com
  * @copyright Copyright (c) Gig Grafter
- * @license	  https://www.giggrafter.com/license
+ * @license https://www.giggrafter.com/license
  */
- 
+
 /* https://developers.google.com/web/ilt/pwa/caching-files-with-service-worker */
 
 (() => {
@@ -16,7 +16,7 @@
 		'scripts.bundle.js',
 		'service-worker.js',
 	];
-	
+
 	/* Will use cache, falling back to network. */
 	const staticCaches = 'scheduler-app-cache';
 
@@ -31,7 +31,7 @@
 				.catch(error => console.error('Service worker failed to install and cache static assets: ', error))
 			);
 	});
-	
+
 	/* Activating new service worker */
 	self.addEventListener('activate', event => {
 		const cacheWhitelist = [
@@ -62,21 +62,21 @@
 						/* Found event.request.url in cache */
 						return response;
 					}
-	
+
 					/* Not in cache... Making network request for event.request.url */
 					return fetch(event.request)
 						.then(response => {
 							if (response.status === 404) {
 								return caches.match('404.html');
 							}
-							
+
 							return response;
 						})
 						.catch(error => console.error('Service worker failed to fetch: ', event.request.url, error));
 				})
 				.catch(error => {
 					console.error('Service worker failed to match caches: ', error);
-					
+
 					return caches.match('404.html');
 				})
 			);

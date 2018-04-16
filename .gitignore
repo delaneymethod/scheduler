@@ -13,6 +13,7 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 todo.txt
+notes.txt
 mix-manifest.json
 docker/node/packaged/*
 !docker/node/packaged/.gitkeep
