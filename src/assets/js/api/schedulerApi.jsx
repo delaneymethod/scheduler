@@ -107,13 +107,13 @@ class SchedulerApi {
 		return axiosRequest('GET', `${process.env.API_HOST}/users/${user.id}`);
 	}
 
-	static getUserByType(userType) {
+	static getUsersByType(userType) {
 		const axiosRequest = this.axiosRequest();
 
 		return axiosRequest('GET', `${process.env.API_HOST}/users/type/${userType.id}`);
 	}
 
-	static getUserByRole(userRole) {
+	static getUsersByRole(userRole) {
 		const axiosRequest = this.axiosRequest();
 
 		return axiosRequest('GET', `${process.env.API_HOST}/users/role/${userRole.id}`);
@@ -294,7 +294,7 @@ class SchedulerApi {
 		return axiosRequest('GET', `${process.env.API_HOST}/rotas/${rota.id}`);
 	}
 
-	static getRotaByType(rotaType) {
+	static getRotasByType(rotaType) {
 		const axiosRequest = this.axiosRequest();
 
 		return axiosRequest('GET', `${process.env.API_HOST}/rotas/type/${rotaType.id}`);
