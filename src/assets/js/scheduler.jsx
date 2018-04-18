@@ -4,6 +4,7 @@
  * @license https://www.giggrafter.com/license
  */
 
+import 'bootstrap';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import fastclick from 'fastclick';
@@ -21,7 +22,11 @@ import registerServiceWorker from './registerServiceWorker';
 const store = configureStore();
 
 /* Loads the shifts list from the API */
-store.dispatch(getShifts());
+/**
+ * FIXME - Comment back in once the API is available
+ *
+ * store.dispatch(getShifts());
+ */
 
 ReactDOM.render(
 	<Provider store={store}>
