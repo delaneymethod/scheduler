@@ -67,7 +67,6 @@
 		"optimize-css-assets-webpack-plugin": "^4.0.0",
 		"postcss-loader": "^2.1.4",
 		"precss": "^3.1.2",
-		"prop-types": "^15.6.1",
 		"react-test-renderer": "^16.3.2",
 		"sass-loader": "^6.0.7",
 		"style-loader": "^0.20.3",
