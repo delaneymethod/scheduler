@@ -12,6 +12,7 @@ import Home from './Home';
 import Login from './Login';
 import Shifts from './shifts';
 import Employees from './employees';
+import Overview from './overview';
 
 const App = () => (
 	<Switch>
@@ -19,6 +20,7 @@ const App = () => (
 		<Route exact path='/login' component={Login} />
 		<Route exact path='/shifts' component={Shifts} />
 		<Route exact path='/employees' component={Employees} />
+		<Route exact path='/overview' component={Overview} />
 	</Switch>
 );
 
