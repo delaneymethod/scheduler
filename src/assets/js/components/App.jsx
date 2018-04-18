@@ -6,11 +6,14 @@
 
 import React from 'react';
 import { hot } from 'react-hot-loader';
+import { Switch, Route } from 'react-router-dom';
+
+import Login from './login';
 
 const App = () => (
-	<div>
-		App
-	</div>
+	<Switch>
+		<Route exact path='/login' component={Login} />
+	</Switch>
 );
 
 export default hot(module)(App);
