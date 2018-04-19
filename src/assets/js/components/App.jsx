@@ -13,6 +13,7 @@ import Login from './Login';
 import Shifts from './shifts';
 import Employees from './employees';
 import Overview from './overview';
+import Register from './Register';
 
 const App = () => (
 	<Switch>
@@ -21,6 +22,7 @@ const App = () => (
 		<Route exact path='/shifts' component={Shifts} />
 		<Route exact path='/employees' component={Employees} />
 		<Route exact path='/overview' component={Overview} />
+		<Route exact path='/register' component={Register} />
 	</Switch>
 );
 
