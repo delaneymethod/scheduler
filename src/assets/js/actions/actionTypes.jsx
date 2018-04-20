@@ -4,11 +4,9 @@
  * @license https://www.giggrafter.com/license
  */
 
-export const FORM_STATUS = 'FORM_STATUS';
 export const AJAX_LOADING = 'AJAX_LOADING';
 
-export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
+export const AUTHENTICATED = 'AUTHENTICATED';
 
 export const GET_USERS_SUCCESS = 'GET_USERS_SUCCESS';
 export const GET_USER_SUCCESS = 'GET_USER_SUCCESS';

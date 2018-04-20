@@ -7,11 +7,6 @@
 import * as types from './actionTypes';
 import schedulerApi from '../api/schedulerApi';
 
-export const formStatus = status => ({
-	type: types.FORM_STATUS,
-	status,
-});
-
 export const ajaxLoading = status => ({
 	type: types.AJAX_LOADING,
 	status,

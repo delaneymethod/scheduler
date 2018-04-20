@@ -13,6 +13,6 @@ export default {
 	rotas: [],
 	rotaTypes: [],
 	placements: [],
-	formStatus: null,
 	ajaxLoading: false,
+	authenticated: false,
 };

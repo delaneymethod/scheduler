@@ -15,11 +15,10 @@
  * This link also includes instructions on opting out of this behavior.
  */
 
-/* eslint-disable no-console */
-
 /* [::1] is the IPv6 localhost address. 127.0.0.1/8 is considered localhost for IPv4. */
 const isLocalhost = Boolean(window.location.hostname === 'localhost' || window.location.hostname === '[::1]' || window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/));
 
+/* eslint-disable no-console */
 function registerValidSW(swUrl) {
 	navigator.serviceWorker
 		.register(swUrl)
@@ -94,5 +93,4 @@ const register = () => {
 };
 
 export default register;
-
 /* eslint-enable no-console */

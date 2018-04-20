@@ -5,31 +5,29 @@
  */
 
 import { combineReducers } from 'redux';
-import { reducer as formReducer } from 'redux-form';
 
 import users from './usersReducer';
+import rotas from './rotasReducer';
+import shifts from './shiftsReducer';
 import userTypes from './userTypesReducer';
 import userRoles from './userRolesReducer';
 import companies from './companiesReducer';
-import shifts from './shiftsReducer';
-import rotas from './rotasReducer';
 import rotaTypes from './rotaTypesReducer';
 import placements from './placementsReducer';
-import formStatus from './formStatusReducer';
 import ajaxLoading from './ajaxLoadingReducer';
+import authenticated from './authenticatedReducer';
 
 const reducers = combineReducers({
 	users,
+	rotas,
+	shifts,
 	userTypes,
 	userRoles,
 	companies,
-	shifts,
-	rotas,
 	rotaTypes,
 	placements,
-	formStatus,
 	ajaxLoading,
-	form: formReducer,
+	authenticated,
 });
 
 export default reducers;

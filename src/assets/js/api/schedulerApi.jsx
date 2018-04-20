@@ -8,43 +8,37 @@ import axios from 'axios';
 
 const { CancelToken } = axios;
 
-class SchedulerApi {
-	constructor() {
-		this.axiosCall = null;
-	}
+let axiosCall = null;
 
+class SchedulerApi {
 	static requestHeaders() {
 		return {
+			'Cache-Control': 'no-cache',
 			'Content-Type': 'application/json',
 		};
 	}
 
-	/* TODO: Trigger a popup dialog or model window */
-	/* eslint-disable no-console */
-	static reportError(error) {
-		if (error && error.message !== undefined) {
-			/* Something happened in setting up the request that triggered an Error */
-			console.error(error.message);
-		} else if (error && error.response) {
+	static parseError(error) {
+		if (error.response) {
 			/* The request was made and the server responded with a status code that falls out of the range of 2xx */
-			console.error(error.response.data);
-			console.error(error.response.status);
-			console.error(error.response.headers);
-		} else if (error && error.request) {
+			return error.response;
+		} else if (error.request) {
 			/* The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser */
-			console.error(error.request);
+			return error.request;
 		}
+
+		/* Something else happened in setting up the request that triggered an Error */
+		return error.message;
 	}
-	/* eslint-enable no-console */
 
 	/* Cancellable request */
 	static axiosRequest() {
 		return (method, url, expectedStatus = 200, data = null) => {
-			if (this.axiosCall) {
-				this.axiosCall.cancel();
+			if (axiosCall) {
+				axiosCall.cancel();
 			}
 
-			this.axiosCall = CancelToken.source();
+			axiosCall = CancelToken.source();
 
 			const headers = this.requestHeaders();
 
@@ -57,8 +51,13 @@ class SchedulerApi {
 			};
 
 			const cancelable = {
-				cancelToken: this.axiosCall.token,
+				cancelToken: axiosCall.token,
 			};
+
+			// FIXME: This value needs to come from the authenticated users account info, ideally saved in the store
+			axios.defaults.headers.common['X-Account-Id'] = 123;
+
+			axios.defaults.headers.common.Authorization = 'Bearer 456';
 
 			return axios.request(config, cancelable)
 				.then(response => response.data)
@@ -68,11 +67,10 @@ class SchedulerApi {
 						return null;
 					}
 
-					/* Prints the error in the console */
-					this.reportError(thrown);
+					const error = this.parseError(thrown);
 
 					/* Bubble the error back up the rabbit hole */
-					return Promise.reject(thrown);
+					return Promise.reject(error);
 				});
 		};
 	}
@@ -81,17 +79,7 @@ class SchedulerApi {
 	static login(credentials) {
 		const axiosRequest = this.axiosRequest();
 
-		const data = JSON.stringify(credentials);
-
-		return axiosRequest('POST', `${process.env.API_HOST}/authenticate`, 200, data);
-	}
-
-	static refresh(token) {
-		const axiosRequest = this.axiosRequest();
-
-		const data = JSON.stringify(token);
-
-		return axiosRequest('POST', `${process.env.API_HOST}/authenticate/refresh`, 200, data);
+		return axiosRequest('POST', `${process.env.API_HOST}/login`, 200, credentials);
 	}
 
 	/* USERS */
@@ -122,17 +110,13 @@ class SchedulerApi {
 	static createUser(user) {
 		const axiosRequest = this.axiosRequest();
 
-		const data = JSON.stringify(user);
-
-		return axiosRequest('POST', `${process.env.API_HOST}/users`, 201, data);
+		return axiosRequest('POST', `${process.env.API_HOST}/users`, 201, user);
 	}
 
 	static updateUser(user) {
 		const axiosRequest = this.axiosRequest();
 
-		const data = JSON.stringify(user);
-
-		return axiosRequest('PUT', `${process.env.API_HOST}/users/${user.id}`, 204, data);
+		return axiosRequest('PUT', `${process.env.API_HOST}/users/${user.id}`, 204, user);
 	}
 
 	static deleteUser(user) {
@@ -157,17 +141,13 @@ class SchedulerApi {
 	static createUserType(userType) {
 		const axiosRequest = this.axiosRequest();
 
-		const data = JSON.stringify(userType);
-
-		return axiosRequest('POST', `${process.env.API_HOST}/user-types`, 201, data);
+		return axiosRequest('POST', `${process.env.API_HOST}/user-types`, 201, userType);
 	}
 
 	static updateUserType(userType) {
 		const axiosRequest = this.axiosRequest();
 
-		const data = JSON.stringify(userType);
-
-		return axiosRequest('PUT', `${process.env.API_HOST}/user-types/${userType.id}`, 204, data);
+		return axiosRequest('PUT', `${process.env.API_HOST}/user-types/${userType.id}`, 204, userType);
 	}
 
 	static deleteUserType(userType) {
@@ -192,17 +172,13 @@ class SchedulerApi {
 	static createUserRole(userRole) {
 		const axiosRequest = this.axiosRequest();
 
-		const data = JSON.stringify(userRole);
-
-		return axiosRequest('POST', `${process.env.API_HOST}/user-roles`, 201, data);
+		return axiosRequest('POST', `${process.env.API_HOST}/user-roles`, 201, userRole);
 	}
 
 	static updateUserRole(userRole) {
 		const axiosRequest = this.axiosRequest();
 
-		const data = JSON.stringify(userRole);
-
-		return axiosRequest('PUT', `${process.env.API_HOST}/user-roles/${userRole.id}`, 204, data);
+		return axiosRequest('PUT', `${process.env.API_HOST}/user-roles/${userRole.id}`, 204, userRole);
 	}
 
 	static deleteUserRole(userRole) {
@@ -227,17 +203,13 @@ class SchedulerApi {
 	static createCompany(company) {
 		const axiosRequest = this.axiosRequest();
 
-		const data = JSON.stringify(company);
-
-		return axiosRequest('POST', `${process.env.API_HOST}/companies`, 201, data);
+		return axiosRequest('POST', `${process.env.API_HOST}/companies`, 201, company);
 	}
 
 	static updateCompany(company) {
 		const axiosRequest = this.axiosRequest();
 
-		const data = JSON.stringify(company);
-
-		return axiosRequest('PUT', `${process.env.API_HOST}/companies/${company.id}`, 204, data);
+		return axiosRequest('PUT', `${process.env.API_HOST}/companies/${company.id}`, 204, company);
 	}
 
 	static deleteCompany(company) {
@@ -262,17 +234,13 @@ class SchedulerApi {
 	static createShift(shift) {
 		const axiosRequest = this.axiosRequest();
 
-		const data = JSON.stringify(shift);
-
-		return axiosRequest('POST', `${process.env.API_HOST}/shifts`, 201, data);
+		return axiosRequest('POST', `${process.env.API_HOST}/shifts`, 201, shift);
 	}
 
 	static updateShift(shift) {
 		const axiosRequest = this.axiosRequest();
 
-		const data = JSON.stringify(shift);
-
-		return axiosRequest('PUT', `${process.env.API_HOST}/shifts/${shift.id}`, 204, data);
+		return axiosRequest('PUT', `${process.env.API_HOST}/shifts/${shift.id}`, 204, shift);
 	}
 
 	static deleteShift(shift) {
@@ -303,17 +271,13 @@ class SchedulerApi {
 	static createRota(rota) {
 		const axiosRequest = this.axiosRequest();
 
-		const data = JSON.stringify(rota);
-
-		return axiosRequest('POST', `${process.env.API_HOST}/rotas`, 201, data);
+		return axiosRequest('POST', `${process.env.API_HOST}/rotas`, 201, rota);
 	}
 
 	static updateRota(rota) {
 		const axiosRequest = this.axiosRequest();
 
-		const data = JSON.stringify(rota);
-
-		return axiosRequest('PUT', `${process.env.API_HOST}/rotas/${rota.id}`, 204, data);
+		return axiosRequest('PUT', `${process.env.API_HOST}/rotas/${rota.id}`, 204, rota);
 	}
 
 	static deleteRota(rota) {
@@ -338,17 +302,13 @@ class SchedulerApi {
 	static createRotaType(rotaType) {
 		const axiosRequest = this.axiosRequest();
 
-		const data = JSON.stringify(rotaType);
-
-		return axiosRequest('POST', `${process.env.API_HOST}/rota-types`, 201, data);
+		return axiosRequest('POST', `${process.env.API_HOST}/rota-types`, 201, rotaType);
 	}
 
 	static updateRotaType(rotaType) {
 		const axiosRequest = this.axiosRequest();
 
-		const data = JSON.stringify(rotaType);
-
-		return axiosRequest('PUT', `${process.env.API_HOST}/rota-types/${rotaType.id}`, 204, data);
+		return axiosRequest('PUT', `${process.env.API_HOST}/rota-types/${rotaType.id}`, 204, rotaType);
 	}
 
 	static deleteRotaType(rotaType) {
@@ -373,17 +333,13 @@ class SchedulerApi {
 	static createPlacement(placement) {
 		const axiosRequest = this.axiosRequest();
 
-		const data = JSON.stringify(placement);
-
-		return axiosRequest('POST', `${process.env.API_HOST}/placements`, 201, data);
+		return axiosRequest('POST', `${process.env.API_HOST}/placements`, 201, placement);
 	}
 
 	static updatePlacement(placement) {
 		const axiosRequest = this.axiosRequest();
 
-		const data = JSON.stringify(placement);
-
-		return axiosRequest('PUT', `${process.env.API_HOST}/placements/${placement.id}`, 204, data);
+		return axiosRequest('PUT', `${process.env.API_HOST}/placements/${placement.id}`, 204, placement);
 	}
 
 	static deletePlacement(placement) {
