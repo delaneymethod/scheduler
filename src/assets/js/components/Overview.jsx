@@ -8,7 +8,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { hot } from 'react-hot-loader';
 
-const Overview = () => <h1>Overview page</h1>;
+const Overview = () => <h1>Overview</h1>;
 
 Overview.propTypes = {};
 

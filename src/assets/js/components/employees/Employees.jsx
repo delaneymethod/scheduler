@@ -8,8 +8,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { hot } from 'react-hot-loader';
 
-const Shifts = () => <h1>Shifts page</h1>;
+const Employees = () => <h1>Employees</h1>;
 
-Shifts.propTypes = {};
+Employees.propTypes = {};
 
-export default hot(module)(Shifts);
+export default hot(module)(Employees);

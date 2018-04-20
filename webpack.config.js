@@ -22,7 +22,8 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = (env, options) => ({
 	entry: [
-		'./src/assets/js/scheduler.jsx',
+		'babel-polyfill',
+		'./src/assets/js/Scheduler.jsx',
 	],
 	output: {
 		publicPath: '/',
@@ -193,8 +194,8 @@ module.exports = (env, options) => ({
 		new webpack.HashedModuleIdsPlugin(),
 		new webpack.DefinePlugin({
 			'process.env': {
-				API_HOST: JSON.stringify('https://www.giggrafter.com/api/v1'),
 				NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+				API_HOST: JSON.stringify('http://localhost:8000'),
 			},
 		}),
 		new CopyWebpackPlugin([{
