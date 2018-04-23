@@ -19,7 +19,7 @@ import App from './components/App';
 import { saveState } from './store/persistedState';
 import { getShifts } from './actions/shiftActions';
 import configureStore from './store/configureStore';
-import registerServiceWorker from './registerServiceWorker';
+import registerServiceWorker from './helpers/registerServiceWorker';
 
 const store = configureStore();
 
@@ -29,13 +29,6 @@ store.subscribe(throttle(() => {
 		authenticated: store.getState().authenticated,
 	});
 }, 1000));
-
-/* Loads the shifts list from the API */
-/**
- * FIXME - Comment back in once the API is available
- *
- * store.dispatch(getShifts());
- */
 
 ReactDOM.render(
 	<Provider store={store}>

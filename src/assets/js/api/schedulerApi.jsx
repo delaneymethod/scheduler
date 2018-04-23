@@ -5,6 +5,7 @@
  */
 
 import axios from 'axios';
+import jwtDecode from 'jwt-decode';
 
 const { CancelToken } = axios;
 
@@ -54,10 +55,21 @@ class SchedulerApi {
 				cancelToken: axiosCall.token,
 			};
 
-			// FIXME: This value needs to come from the authenticated users account info, ideally saved in the store
-			axios.defaults.headers.common['X-Account-Id'] = 123;
+			try {
+				const jwt = localStorage.getItem('scheduler:jwt');
 
-			axios.defaults.headers.common.Authorization = 'Bearer 456';
+				const payload = jwtDecode(jwt);
+
+				const accountId = payload.account_id;
+
+				if (accountId) {
+					axios.defaults.headers.common['X-Account-Id'] = accountId;
+				}
+
+				axios.defaults.headers.common.Authorization = `Bearer ${jwt}`;
+			} catch (error) {
+				/* Do nothing */
+			}
 
 			return axios.request(config, cancelable)
 				.then(response => response.data)

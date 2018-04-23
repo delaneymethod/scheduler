@@ -6,10 +6,9 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { hot } from 'react-hot-loader';
 
-const Overview = () => <h1>Overview</h1>;
+const Register = () => <h1>Register</h1>;
 
-Overview.propTypes = {};
+Register.propTypes = {};
 
-export default hot(module)(Overview);
+export default Register;
