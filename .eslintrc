@@ -16,7 +16,8 @@
 		"indent": [2, "tab", {"SwitchCase": 1}],
 		"max-len": 0,
 		"import/extensions": "off",
-		"import/no-unresolved": "off"
+		"import/no-unresolved": "off",
+		"no-console": "off",
 	},
 	"overrides": [
 		{

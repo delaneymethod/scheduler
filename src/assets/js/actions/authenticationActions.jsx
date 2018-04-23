@@ -36,4 +36,15 @@ export const login = credentials => (dispatch) => {
 		});
 };
 
-export const logout = () => dispatch => dispatch(authenticated(false));
+export const logout = () => (dispatch) => {
+	dispatch(authenticated(false));
+
+	try {
+		localStorage.removeItem('scheduler:jwt');
+
+		return Promise.resolve(true);
+	} catch (error) {
+		/* Bubble the error back up the rabbit hole */
+		return Promise.reject(error);
+	}
+};

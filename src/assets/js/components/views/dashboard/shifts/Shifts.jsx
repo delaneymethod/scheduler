@@ -6,10 +6,9 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { hot } from 'react-hot-loader';
 
-const Employees = () => <h1>Employees</h1>;
+const Shifts = () => <h1>Shifts</h1>;
 
-Employees.propTypes = {};
+Shifts.propTypes = {};
 
-export default hot(module)(Employees);
+export default Shifts;
