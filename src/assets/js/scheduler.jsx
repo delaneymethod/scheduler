@@ -9,17 +9,26 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import fastclick from 'fastclick';
 import { Provider } from 'react-redux';
+import throttle from 'lodash/throttle';
 import { BrowserRouter } from 'react-router-dom';
 
 /* Included here to reduce the number of requests */
 import '../scss/scheduler';
 
 import App from './components/App';
+import { saveState } from './store/persistedState';
 import { getShifts } from './actions/shiftActions';
 import configureStore from './store/configureStore';
 import registerServiceWorker from './registerServiceWorker';
 
 const store = configureStore();
+
+/* Listen for state changes, saving a maximum once per second. We only want to persist the authenticated state for now. */
+store.subscribe(throttle(() => {
+	saveState({
+		authenticated: store.getState().authenticated,
+	});
+}, 1000));
 
 /* Loads the shifts list from the API */
 /**
