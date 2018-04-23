@@ -6,8 +6,13 @@
 
 import * as types from '../actions/actionTypes';
 import initialState from '../store/initialState';
+import { loadState } from '../store/persistedState';
 
-const authenticatedReducer = (state = initialState.authenticated, action) => {
+const persistedState = loadState();
+
+const combinedState = Object.assign(initialState, persistedState);
+
+const authenticatedReducer = (state = combinedState.authenticated, action) => {
 	if (action.type === types.AUTHENTICATED) {
 		return action.status;
 	}
