@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Set Docker environment variables
-export DOCKER_USER=giggrafter
+export DOCKER_USER=delaneymethod
 export DOCKER_IMAGE_NODE=node
 export DOCKER_IMAGE_NGINX=nginx
 
