@@ -13,8 +13,8 @@ import { loadState } from './persistedState';
 
 const persistedState = loadState();
 
-const state = Object.assign(initialState, persistedState);
+const combinedState = Object.assign(initialState, persistedState);
 
-const configureStore = () => createStore(reducers, state, applyMiddleware(thunk));
+const configureStore = () => createStore(reducers, combinedState, applyMiddleware(thunk));
 
 export default configureStore;

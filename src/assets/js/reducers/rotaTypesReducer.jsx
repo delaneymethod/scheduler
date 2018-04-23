@@ -6,8 +6,13 @@
 
 import * as types from '../actions/actionTypes';
 import initialState from '../store/initialState';
+import { loadState } from '../store/persistedState';
 
-const rotaTypesReducer = (state = initialState.rotaTypes, action) => {
+const persistedState = loadState();
+
+const combinedState = Object.assign(initialState, persistedState);
+
+const rotaTypesReducer = (state = combinedState.rotaTypes, action) => {
 	switch (action.type) {
 		case types.GET_ROTA_TYPES_SUCCESS:
 			return action.rotaTypes;

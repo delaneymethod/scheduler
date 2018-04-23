@@ -6,8 +6,13 @@
 
 import * as types from '../actions/actionTypes';
 import initialState from '../store/initialState';
+import { loadState } from '../store/persistedState';
 
-const companiesReducer = (state = initialState.companies, action) => {
+const persistedState = loadState();
+
+const combinedState = Object.assign(initialState, persistedState);
+
+const companiesReducer = (state = combinedState.companies, action) => {
 	switch (action.type) {
 		case types.GET_COMPANIES_SUCCESS:
 			return action.companies;

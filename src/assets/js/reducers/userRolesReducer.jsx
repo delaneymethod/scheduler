@@ -6,8 +6,13 @@
 
 import * as types from '../actions/actionTypes';
 import initialState from '../store/initialState';
+import { loadState } from '../store/persistedState';
 
-const userRolesReducer = (state = initialState.userRoles, action) => {
+const persistedState = loadState();
+
+const combinedState = Object.assign(initialState, persistedState);
+
+const userRolesReducer = (state = combinedState.userRoles, action) => {
 	switch (action.type) {
 		case types.GET_USER_ROLES_SUCCESS:
 			return action.userRoles;
