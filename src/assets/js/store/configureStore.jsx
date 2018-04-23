@@ -9,7 +9,12 @@ import { createStore, applyMiddleware } from 'redux';
 
 import reducers from '../reducers';
 import initialState from './initialState';
+import { loadState } from './persistedState';
 
-const configureStore = () => createStore(reducers, initialState, applyMiddleware(thunk));
+const persistedState = loadState();
+
+const state = Object.assign(initialState, persistedState);
+
+const configureStore = () => createStore(reducers, state, applyMiddleware(thunk));
 
 export default configureStore;
