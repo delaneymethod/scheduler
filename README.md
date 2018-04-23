@@ -16,6 +16,10 @@ Scheduler is an on-demand shift allocation platform that enables employers and e
 
 This document focuses on running the web app in a Docker environment and that you have Ubuntu, Docker, Jenkins, Node and Git experience/knowledge.
 
+The Docker images were built using Docker for Mac with Ubuntu as the base image. They have not been tested on Docker for Windows and therefore might not run on Windows. 
+
+If you are running Windows, please refer to the Hot Module Replacement (HMR) Development steps.
+
 ## DEVELOPMENT
 
 This section assumes you already have Docker setup and running locally.
