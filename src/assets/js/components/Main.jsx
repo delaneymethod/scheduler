@@ -11,6 +11,7 @@ import Home from './views/Home';
 import Login from './views/Login';
 import Logout from './views/Logout';
 import Register from './views/Register';
+import NotFoundPage from './views/NotFoundPage';
 
 import Dashboard from './views/dashboard/Dashboard';
 import Overview from './views/dashboard/Overview';
@@ -28,6 +29,7 @@ const Main = () => (
 			<Route exact path='/dashboard/overview' component={Overview} />
 			<Route exact path='/dashboard/shifts' component={Shifts} />
 			<Route exact path='/dashboard/employees' component={Employees} />
+			<Route component={NotFoundPage} />
 		</Switch>
 	</main>
 );

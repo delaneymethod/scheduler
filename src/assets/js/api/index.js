@@ -25,11 +25,30 @@ class SchedulerApi {
 			return error.response;
 		} else if (error.request) {
 			/* The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser */
-			return error.request;
+			const data = {};
+
+			if (error.message === 'Network Error') {
+				data.error = 'Network Error';
+
+				data.message = 'A network error occurred. Please try again.';
+			} else {
+				data.error = error.name;
+
+				data.message = error.message;
+			}
+
+			return {
+				data,
+			};
 		}
 
 		/* Something else happened in setting up the request that triggered an Error */
-		return error.message;
+		return {
+			data: {
+				error: 'Error',
+				message: error.message,
+			},
+		};
 	}
 
 	/* Cancellable request */
@@ -55,9 +74,10 @@ class SchedulerApi {
 				cancelToken: axiosCall.token,
 			};
 
-			try {
-				const jwt = localStorage.getItem('scheduler:jwt');
+			const jwt = localStorage.getItem('scheduler:jwt');
 
+			/* Check if the object is "falsey" (if the object is undefined, 0 or null) */
+			if (jwt) {
 				const payload = jwtDecode(jwt);
 
 				const accountId = payload.account_id;
@@ -67,8 +87,6 @@ class SchedulerApi {
 				}
 
 				axios.defaults.headers.common.Authorization = `Bearer ${jwt}`;
-			} catch (error) {
-				/* Do nothing */
 			}
 
 			return axios.request(config, cancelable)

@@ -4,26 +4,26 @@
  * @license https://www.giggrafter.com/license
  */
 
+import api from '../api';
 import * as types from './actionTypes';
-import schedulerApi from '../api/schedulerApi';
 
 export const ajaxLoading = status => ({
 	type: types.AJAX_LOADING,
 	status,
 });
 
-export const getUserTypesSuccess = userTypes => ({
-	type: types.GET_USER_TYPES_SUCCESS,
-	userTypes,
+export const getCompaniesSuccess = companies => ({
+	type: types.GET_COMPANIES_SUCCESS,
+	companies,
 });
 
-/* GET ALL USER TYPES */
-export const getUserTypes = () => (dispatch) => {
+/* GET ALL COMPANIES */
+export const getCompanies = () => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.getUserTypes()
-		.then((userTypes) => {
-			dispatch(getUserTypesSuccess(userTypes));
+	return api.getCompanies()
+		.then((companies) => {
+			dispatch(getCompaniesSuccess(companies));
 
 			dispatch(ajaxLoading(false));
 		})
@@ -35,18 +35,18 @@ export const getUserTypes = () => (dispatch) => {
 		});
 };
 
-export const getUserTypeSuccess = userType => ({
-	type: types.GET_USER_TYPE_SUCCESS,
-	userType,
+export const getCompanySuccess = company => ({
+	type: types.GET_COMPANY_SUCCESS,
+	company,
 });
 
-/* GET SPECIFIC USER TYPE */
-export const getUserType = userType => (dispatch) => {
+/* GET SPECIFIC COMPANY */
+export const getCompany = company => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.getUserType(userType)
+	return api.getCompany(company)
 		.then((data) => {
-			dispatch(getUserTypeSuccess(data));
+			dispatch(getCompanySuccess(data));
 
 			dispatch(ajaxLoading(false));
 		})
@@ -58,18 +58,18 @@ export const getUserType = userType => (dispatch) => {
 		});
 };
 
-export const createUserTypeSuccess = userType => ({
-	type: types.CREATE_USER_TYPE_SUCCESS,
-	userType,
+export const createCompanySuccess = company => ({
+	type: types.CREATE_COMPANY_SUCCESS,
+	company,
 });
 
-/* CREATE NEW USER TYPE */
-export const createUserType = userType => (dispatch) => {
+/* CREATE NEW COMPANY */
+export const createCompany = company => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.createUserType(userType)
+	return api.createCompany(company)
 		.then((data) => {
-			dispatch(createUserTypeSuccess(data));
+			dispatch(createCompanySuccess(data));
 
 			dispatch(ajaxLoading(false));
 		})
@@ -81,18 +81,18 @@ export const createUserType = userType => (dispatch) => {
 		});
 };
 
-export const updateUserTypeSuccess = userType => ({
-	type: types.UPDATE_USER_TYPE_SUCCESS,
-	userType,
+export const updateCompanySuccess = company => ({
+	type: types.UPDATE_COMPANY_SUCCESS,
+	company,
 });
 
-/* UPDATE SPECIFIC USER TYPE */
-export const updateUserType = userType => (dispatch) => {
+/* UPDATE SPECIFIC COMPANY */
+export const updateCompany = company => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.updateUserType(userType)
+	return api.updateCompany(company)
 		.then((data) => {
-			dispatch(updateUserTypeSuccess(data));
+			dispatch(updateCompanySuccess(data));
 
 			dispatch(ajaxLoading(false));
 		})
@@ -104,18 +104,18 @@ export const updateUserType = userType => (dispatch) => {
 		});
 };
 
-export const deleteUserTypeSuccess = userType => ({
-	type: types.DELETE_USER_TYPE_SUCCESS,
-	userType,
+export const deleteCompanySuccess = company => ({
+	type: types.DELETE_COMPANY_SUCCESS,
+	company,
 });
 
-/* DELETE SPECIFIC USER TYPE */
-export const deleteUserType = userType => (dispatch) => {
+/* DELETE SPECIFIC COMPANY */
+export const deleteCompany = company => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.deleteUserType(userType)
+	return api.deleteCompany(company)
 		.then(() => {
-			dispatch(deleteUserTypeSuccess(userType));
+			dispatch(deleteCompanySuccess(company));
 
 			dispatch(ajaxLoading(false));
 		})
