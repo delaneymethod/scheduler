@@ -98,7 +98,7 @@ List networks:
 
 ## DEVELOPMENT - NON DOCKER / WINDOWS
 
-This section assumes you are not running Docker.
+This section assumes you are running a local web server (E.g WAMP or MAMP) or a Hot Module Replacement (HMR) web server.
 
 ### Installation
 
@@ -124,21 +124,15 @@ You should be able to visit the web app at [http://localhost](http://localhost) 
 
 ### Building for Hot Module Replacement (HMR) Development
 
-This will compile and watch files for changes. Default browser will be opened and automatically reloaded with changes.
+This will compile and watch files for changes. 
+
+You do not need to have a local web server (E.g WAMP or MAMP) for HMR as HMR will create a development web server for you and serve the files for you.
+
+Your default browser will be opened and automatically reloaded when changes are made to the files.
 
 `npm run hot`
 
-You should be able to visit the web app at [http://localhost:8080](http://localhost:8080) in your browser, if it hasn't opened automatically. 
-
-### Building for Production
-
-This will compile and apply production ready changes like optimisation and magnification, outputting everything to the `public` folder.
-
-`npm run prod`
-
-You should be able to visit the web app at [http://localhost](http://localhost) in your browser.
-
-Note: You should not need to run Production ready scripts locally. You only do this to make sure production ready works. Production ready scripts will be automatically ran from Jenkins.
+You should be able to visit the web app in your browser, if it hasn't opened automatically.
 
 ## PRODUCTION
 
