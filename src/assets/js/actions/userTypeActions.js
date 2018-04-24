@@ -4,26 +4,26 @@
  * @license https://www.giggrafter.com/license
  */
 
+import api from '../api';
 import * as types from './actionTypes';
-import schedulerApi from '../api/schedulerApi';
 
 export const ajaxLoading = status => ({
 	type: types.AJAX_LOADING,
 	status,
 });
 
-export const getUserRolesSuccess = userRoles => ({
-	type: types.GET_USER_ROLES_SUCCESS,
-	userRoles,
+export const getUserTypesSuccess = userTypes => ({
+	type: types.GET_USER_TYPES_SUCCESS,
+	userTypes,
 });
 
-/* GET ALL USER ROLES */
-export const getUserRoles = () => (dispatch) => {
+/* GET ALL USER TYPES */
+export const getUserTypes = () => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.getUserRoles()
-		.then((userRoles) => {
-			dispatch(getUserRolesSuccess(userRoles));
+	return api.getUserTypes()
+		.then((userTypes) => {
+			dispatch(getUserTypesSuccess(userTypes));
 
 			dispatch(ajaxLoading(false));
 		})
@@ -35,18 +35,18 @@ export const getUserRoles = () => (dispatch) => {
 		});
 };
 
-export const getUserRoleSuccess = userRole => ({
-	type: types.GET_USER_ROLE_SUCCESS,
-	userRole,
+export const getUserTypeSuccess = userType => ({
+	type: types.GET_USER_TYPE_SUCCESS,
+	userType,
 });
 
-/* GET SPECIFIC USER ROLE */
-export const getUserRole = userRole => (dispatch) => {
+/* GET SPECIFIC USER TYPE */
+export const getUserType = userType => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.getUserRole(userRole)
+	return api.getUserType(userType)
 		.then((data) => {
-			dispatch(getUserRoleSuccess(data));
+			dispatch(getUserTypeSuccess(data));
 
 			dispatch(ajaxLoading(false));
 		})
@@ -58,18 +58,18 @@ export const getUserRole = userRole => (dispatch) => {
 		});
 };
 
-export const createUserRoleSuccess = userRole => ({
-	type: types.CREATE_USER_ROLE_SUCCESS,
-	userRole,
+export const createUserTypeSuccess = userType => ({
+	type: types.CREATE_USER_TYPE_SUCCESS,
+	userType,
 });
 
-/* CREATE NEW USER ROLE */
-export const createUserRole = userRole => (dispatch) => {
+/* CREATE NEW USER TYPE */
+export const createUserType = userType => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.createUserRole(userRole)
+	return api.createUserType(userType)
 		.then((data) => {
-			dispatch(createUserRoleSuccess(data));
+			dispatch(createUserTypeSuccess(data));
 
 			dispatch(ajaxLoading(false));
 		})
@@ -81,18 +81,18 @@ export const createUserRole = userRole => (dispatch) => {
 		});
 };
 
-export const updateUserRoleSuccess = userRole => ({
-	type: types.UPDATE_USER_ROLE_SUCCESS,
-	userRole,
+export const updateUserTypeSuccess = userType => ({
+	type: types.UPDATE_USER_TYPE_SUCCESS,
+	userType,
 });
 
-/* UPDATE SPECIFIC USER ROLE */
-export const updateUserRole = userRole => (dispatch) => {
+/* UPDATE SPECIFIC USER TYPE */
+export const updateUserType = userType => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.updateUserRole(userRole)
+	return api.updateUserType(userType)
 		.then((data) => {
-			dispatch(updateUserRoleSuccess(data));
+			dispatch(updateUserTypeSuccess(data));
 
 			dispatch(ajaxLoading(false));
 		})
@@ -104,18 +104,18 @@ export const updateUserRole = userRole => (dispatch) => {
 		});
 };
 
-export const deleteUserRoleSuccess = userRole => ({
-	type: types.DELETE_USER_ROLE_SUCCESS,
-	userRole,
+export const deleteUserTypeSuccess = userType => ({
+	type: types.DELETE_USER_TYPE_SUCCESS,
+	userType,
 });
 
-/* DELETE SPECIFIC USER ROLE */
-export const deleteUserRole = userRole => (dispatch) => {
+/* DELETE SPECIFIC USER TYPE */
+export const deleteUserType = userType => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.deleteUserRole(userRole)
+	return api.deleteUserType(userType)
 		.then(() => {
-			dispatch(deleteUserRoleSuccess(userRole));
+			dispatch(deleteUserTypeSuccess(userType));
 
 			dispatch(ajaxLoading(false));
 		})

@@ -4,26 +4,26 @@
  * @license https://www.giggrafter.com/license
  */
 
+import api from '../api';
 import * as types from './actionTypes';
-import schedulerApi from '../api/schedulerApi';
 
 export const ajaxLoading = status => ({
 	type: types.AJAX_LOADING,
 	status,
 });
 
-export const getCompaniesSuccess = companies => ({
-	type: types.GET_COMPANIES_SUCCESS,
-	companies,
+export const getUserRolesSuccess = userRoles => ({
+	type: types.GET_USER_ROLES_SUCCESS,
+	userRoles,
 });
 
-/* GET ALL COMPANIES */
-export const getCompanies = () => (dispatch) => {
+/* GET ALL USER ROLES */
+export const getUserRoles = () => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.getCompanies()
-		.then((companies) => {
-			dispatch(getCompaniesSuccess(companies));
+	return api.getUserRoles()
+		.then((userRoles) => {
+			dispatch(getUserRolesSuccess(userRoles));
 
 			dispatch(ajaxLoading(false));
 		})
@@ -35,18 +35,18 @@ export const getCompanies = () => (dispatch) => {
 		});
 };
 
-export const getCompanySuccess = company => ({
-	type: types.GET_COMPANY_SUCCESS,
-	company,
+export const getUserRoleSuccess = userRole => ({
+	type: types.GET_USER_ROLE_SUCCESS,
+	userRole,
 });
 
-/* GET SPECIFIC COMPANY */
-export const getCompany = company => (dispatch) => {
+/* GET SPECIFIC USER ROLE */
+export const getUserRole = userRole => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.getCompany(company)
+	return api.getUserRole(userRole)
 		.then((data) => {
-			dispatch(getCompanySuccess(data));
+			dispatch(getUserRoleSuccess(data));
 
 			dispatch(ajaxLoading(false));
 		})
@@ -58,18 +58,18 @@ export const getCompany = company => (dispatch) => {
 		});
 };
 
-export const createCompanySuccess = company => ({
-	type: types.CREATE_COMPANY_SUCCESS,
-	company,
+export const createUserRoleSuccess = userRole => ({
+	type: types.CREATE_USER_ROLE_SUCCESS,
+	userRole,
 });
 
-/* CREATE NEW COMPANY */
-export const createCompany = company => (dispatch) => {
+/* CREATE NEW USER ROLE */
+export const createUserRole = userRole => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.createCompany(company)
+	return api.createUserRole(userRole)
 		.then((data) => {
-			dispatch(createCompanySuccess(data));
+			dispatch(createUserRoleSuccess(data));
 
 			dispatch(ajaxLoading(false));
 		})
@@ -81,18 +81,18 @@ export const createCompany = company => (dispatch) => {
 		});
 };
 
-export const updateCompanySuccess = company => ({
-	type: types.UPDATE_COMPANY_SUCCESS,
-	company,
+export const updateUserRoleSuccess = userRole => ({
+	type: types.UPDATE_USER_ROLE_SUCCESS,
+	userRole,
 });
 
-/* UPDATE SPECIFIC COMPANY */
-export const updateCompany = company => (dispatch) => {
+/* UPDATE SPECIFIC USER ROLE */
+export const updateUserRole = userRole => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.updateCompany(company)
+	return api.updateUserRole(userRole)
 		.then((data) => {
-			dispatch(updateCompanySuccess(data));
+			dispatch(updateUserRoleSuccess(data));
 
 			dispatch(ajaxLoading(false));
 		})
@@ -104,18 +104,18 @@ export const updateCompany = company => (dispatch) => {
 		});
 };
 
-export const deleteCompanySuccess = company => ({
-	type: types.DELETE_COMPANY_SUCCESS,
-	company,
+export const deleteUserRoleSuccess = userRole => ({
+	type: types.DELETE_USER_ROLE_SUCCESS,
+	userRole,
 });
 
-/* DELETE SPECIFIC COMPANY */
-export const deleteCompany = company => (dispatch) => {
+/* DELETE SPECIFIC USER ROLE */
+export const deleteUserRole = userRole => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.deleteCompany(company)
+	return api.deleteUserRole(userRole)
 		.then(() => {
-			dispatch(deleteCompanySuccess(company));
+			dispatch(deleteUserRoleSuccess(userRole));
 
 			dispatch(ajaxLoading(false));
 		})

@@ -4,8 +4,8 @@
  * @license https://www.giggrafter.com/license
  */
 
+import api from '../api';
 import * as types from './actionTypes';
-import schedulerApi from '../api/schedulerApi';
 
 export const ajaxLoading = status => ({
 	type: types.AJAX_LOADING,
@@ -21,7 +21,7 @@ export const getRotasSuccess = rotas => ({
 export const getRotas = () => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.getRotas()
+	return api.getRotas()
 		.then((rotas) => {
 			dispatch(getRotasSuccess(rotas));
 
@@ -39,7 +39,7 @@ export const getRotas = () => (dispatch) => {
 export const getRotaByType = rotaType => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.getRotasByType(rotaType)
+	return api.getRotasByType(rotaType)
 		.then((data) => {
 			dispatch(getRotasSuccess(data));
 
@@ -62,7 +62,7 @@ export const getRotaSuccess = rota => ({
 export const getRota = rota => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.getRota(rota)
+	return api.getRota(rota)
 		.then((data) => {
 			dispatch(getRotaSuccess(data));
 
@@ -85,7 +85,7 @@ export const createRotaSuccess = rota => ({
 export const createRota = rota => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.createRota(rota)
+	return api.createRota(rota)
 		.then((data) => {
 			dispatch(createRotaSuccess(data));
 
@@ -108,7 +108,7 @@ export const updateRotaSuccess = rota => ({
 export const updateRota = rota => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.updateRota(rota)
+	return api.updateRota(rota)
 		.then((data) => {
 			dispatch(updateRotaSuccess(data));
 
@@ -131,7 +131,7 @@ export const deleteRotaSuccess = rota => ({
 export const deleteRota = rota => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.deleteRota(rota)
+	return api.deleteRota(rota)
 		.then(() => {
 			dispatch(deleteRotaSuccess(rota));
 

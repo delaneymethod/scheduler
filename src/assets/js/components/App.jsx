@@ -7,14 +7,15 @@
 import React from 'react';
 import { hot } from 'react-hot-loader';
 
-import Header from './Header';
 import Main from './Main';
+import Header from './Header';
+import ErrorBoundary from './ErrorBoundary';
 
 const App = () => (
-	<div>
+	<ErrorBoundary>
 		<Header />
 		<Main />
-	</div>
+	</ErrorBoundary>
 );
 
 export default hot(module)(App);

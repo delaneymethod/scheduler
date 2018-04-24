@@ -4,26 +4,26 @@
  * @license https://www.giggrafter.com/license
  */
 
+import api from '../api';
 import * as types from './actionTypes';
-import schedulerApi from '../api/schedulerApi';
 
 export const ajaxLoading = status => ({
 	type: types.AJAX_LOADING,
 	status,
 });
 
-export const getShiftsSuccess = shifts => ({
-	type: types.GET_SHIFTS_SUCCESS,
-	shifts,
+export const getPlacementsSuccess = placements => ({
+	type: types.GET_PLACEMENTS_SUCCESS,
+	placements,
 });
 
-/* GET ALL SHIFTS */
-export const getShifts = () => (dispatch) => {
+/* GET ALL PLACEMENTS */
+export const getPlacements = () => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.getShifts()
-		.then((shifts) => {
-			dispatch(getShiftsSuccess(shifts));
+	return api.getPlacements()
+		.then((placements) => {
+			dispatch(getPlacementsSuccess(placements));
 
 			dispatch(ajaxLoading(false));
 		})
@@ -35,18 +35,18 @@ export const getShifts = () => (dispatch) => {
 		});
 };
 
-export const getShiftSuccess = shift => ({
-	type: types.GET_SHIFT_SUCCESS,
-	shift,
+export const getPlacementSuccess = placement => ({
+	type: types.GET_PLACEMENT_SUCCESS,
+	placement,
 });
 
-/* GET SPECIFIC SHIFT */
-export const getShift = shift => (dispatch) => {
+/* GET SPECIFIC PLACEMENT */
+export const getPlacement = placement => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.getShift(shift)
+	return api.getPlacement(placement)
 		.then((data) => {
-			dispatch(getShiftSuccess(data));
+			dispatch(getPlacementSuccess(data));
 
 			dispatch(ajaxLoading(false));
 		})
@@ -58,18 +58,18 @@ export const getShift = shift => (dispatch) => {
 		});
 };
 
-export const createShiftSuccess = shift => ({
-	type: types.CREATE_SHIFT_SUCCESS,
-	shift,
+export const createPlacementSuccess = placement => ({
+	type: types.CREATE_PLACEMENT_SUCCESS,
+	placement,
 });
 
-/* CREATE NEW SHIFT */
-export const createShift = shift => (dispatch) => {
+/* CREATE NEW PLACEMENT */
+export const createPlacement = placement => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.createShift(shift)
+	return api.createPlacement(placement)
 		.then((data) => {
-			dispatch(createShiftSuccess(data));
+			dispatch(createPlacementSuccess(data));
 
 			dispatch(ajaxLoading(false));
 		})
@@ -81,18 +81,18 @@ export const createShift = shift => (dispatch) => {
 		});
 };
 
-export const updateShiftSuccess = shift => ({
-	type: types.UPDATE_SHIFT_SUCCESS,
-	shift,
+export const updatePlacementSuccess = placement => ({
+	type: types.UPDATE_PLACEMENT_SUCCESS,
+	placement,
 });
 
-/* UPDATE SPECIFIC SHIFT */
-export const updateShift = shift => (dispatch) => {
+/* UPDATE SPECIFIC PLACEMENT */
+export const updatePlacement = placement => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.updateShift(shift)
+	return api.updatePlacement(placement)
 		.then((data) => {
-			dispatch(updateShiftSuccess(data));
+			dispatch(updatePlacementSuccess(data));
 
 			dispatch(ajaxLoading(false));
 		})
@@ -104,18 +104,18 @@ export const updateShift = shift => (dispatch) => {
 		});
 };
 
-export const deleteShiftSuccess = shift => ({
-	type: types.DELETE_SHIFT_SUCCESS,
-	shift,
+export const deletePlacementSuccess = placement => ({
+	type: types.DELETE_PLACEMENT_SUCCESS,
+	placement,
 });
 
-/* DELETE SPECIFIC SHIFT */
-export const deleteShift = shift => (dispatch) => {
+/* DELETE SPECIFIC PLACEMENT */
+export const deletePlacement = placement => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.deleteShift(shift)
+	return api.deletePlacement(placement)
 		.then(() => {
-			dispatch(deleteShiftSuccess(shift));
+			dispatch(deletePlacementSuccess(placement));
 
 			dispatch(ajaxLoading(false));
 		})

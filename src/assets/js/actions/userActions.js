@@ -4,8 +4,8 @@
  * @license https://www.giggrafter.com/license
  */
 
+import api from '../api';
 import * as types from './actionTypes';
-import schedulerApi from '../api/schedulerApi';
 
 export const ajaxLoading = status => ({
 	type: types.AJAX_LOADING,
@@ -21,7 +21,7 @@ export const getUsersSuccess = users => ({
 export const getUsers = () => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.getUsers()
+	return api.getUsers()
 		.then((users) => {
 			dispatch(getUsersSuccess(users));
 
@@ -39,7 +39,7 @@ export const getUsers = () => (dispatch) => {
 export const getUsersByType = userType => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.getUsersByType(userType)
+	return api.getUsersByType(userType)
 		.then((data) => {
 			dispatch(getUsersSuccess(data));
 
@@ -57,7 +57,7 @@ export const getUsersByType = userType => (dispatch) => {
 export const getUsersByRole = userRole => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.getUsersByRole(userRole)
+	return api.getUsersByRole(userRole)
 		.then((data) => {
 			dispatch(getUsersSuccess(data));
 
@@ -80,7 +80,7 @@ export const getUserSuccess = user => ({
 export const getUser = user => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.getUser(user)
+	return api.getUser(user)
 		.then((data) => {
 			dispatch(getUserSuccess(data));
 
@@ -103,7 +103,7 @@ export const createUserSuccess = user => ({
 export const createUser = user => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.createUser(user)
+	return api.createUser(user)
 		.then((data) => {
 			dispatch(createUserSuccess(data));
 
@@ -126,7 +126,7 @@ export const updateUserSuccess = user => ({
 export const updateUser = user => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.updateUser(user)
+	return api.updateUser(user)
 		.then((data) => {
 			dispatch(updateUserSuccess(data));
 
@@ -149,7 +149,7 @@ export const deleteUserSuccess = user => ({
 export const deleteUser = user => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.deleteUser(user)
+	return api.deleteUser(user)
 		.then(() => {
 			dispatch(deleteUserSuccess(user));
 

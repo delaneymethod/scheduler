@@ -4,8 +4,8 @@
  * @license https://www.giggrafter.com/license
  */
 
+import api from '../api';
 import * as types from './actionTypes';
-import schedulerApi from '../api/schedulerApi';
 
 export const ajaxLoading = status => ({
 	type: types.AJAX_LOADING,
@@ -20,7 +20,7 @@ export const authenticated = status => ({
 export const login = credentials => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return schedulerApi.login(credentials)
+	return api.login(credentials)
 		.then((response) => {
 			dispatch(authenticated(true));
 
