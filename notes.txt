@@ -21,11 +21,7 @@ throw new Error('Scheduler has crashed!');
 http://airbnb.io/enzyme/
 https://github.com/kentcdodds/react-testing-library
 
-
-
-
-
-
+https://github.com/airbnb/javascript/tree/master/react
 
 curl -X POST http://localhost:8000/rota-type -H 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYXJyeS5seW5jaEBnaWdncmFmdGVyLmNvbSIsImV4cCI6MTUyNTM1MjMzN30.9f-vjX7f9VZNT0llfbJl3WFfWwXlKd00zAN9GR89m4U0OVhoXDwixhnz5DKJeba-wZj9XXih0Q7_tdU_Jww_sw' -H 'Cache-Control: no-cache' -H 'Content-Type: application/json' -H 'X-Account-Id: 2' -d '{"rota-name": "Bar1"}'
 

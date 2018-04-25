@@ -12,6 +12,14 @@ import { Alert, Col, Row } from 'reactstrap';
 
 import { logout } from '../../actions/authenticationActions';
 
+const propTypes = {
+	authenticated: PropTypes.bool.isRequired,
+};
+
+const defaultProps = {
+	authenticated: false,
+};
+
 class Logout extends Component {
 	constructor(props) {
 		super(props);
@@ -38,7 +46,19 @@ class Logout extends Component {
 
 	getInitialState = () => ({
 		errors: [],
-	})
+	});
+
+	componentDidMount = () => {
+		document.title = 'Scheduler';
+
+		/*
+		meta.description.setAttribute('content', '');
+		meta.keywords.setAttribute('content', '');
+		meta.author.setAttribute('content', '');
+		*/
+	};
+
+	componentDidUpdate = prevProps => ({});
 
 	errorMessages = () => {
 		if (this.state.errors.length) {
@@ -48,7 +68,7 @@ class Logout extends Component {
 		}
 
 		return '';
-	}
+	};
 
 	render = () => (
 		<Row>
@@ -60,9 +80,9 @@ class Logout extends Component {
 	);
 }
 
-Logout.propTypes = {
-	authenticated: PropTypes.bool.isRequired,
-};
+Logout.propTypes = propTypes;
+
+Logout.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
 	authenticated: state.authenticated,

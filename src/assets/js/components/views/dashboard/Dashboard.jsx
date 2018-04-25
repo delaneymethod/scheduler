@@ -14,6 +14,14 @@ import { Alert, Col, Row } from 'reactstrap';
 import { getUsers } from '../../../actions/userActions';
 import { getShifts } from '../../../actions/shiftActions';
 
+const propTypes = {
+	authenticated: PropTypes.bool.isRequired,
+};
+
+const defaultProps = {
+	authenticated: false,
+};
+
 class Dashboard extends Component {
 	constructor(props) {
 		super(props);
@@ -29,7 +37,35 @@ class Dashboard extends Component {
 		users: [],
 		shifts: [],
 		errors: [],
-	})
+	});
+
+	componentDidMount = () => {
+		document.title = 'Scheduler: Dashboard';
+
+		/*
+		meta.description.setAttribute('content', '');
+		meta.keywords.setAttribute('content', '');
+		meta.author.setAttribute('content', '');
+		*/
+
+		if (this.props.authenticated) {
+			this.getUsers();
+
+			this.getShifts();
+		}
+	};
+
+	componentDidUpdate = (prevProps) => {
+		if (this.props.authenticated) {
+			if (this.props.users !== prevProps.users) {
+				this.getUsers();
+			}
+
+			if (this.props.shifts !== prevProps.shifts) {
+				this.getShifts();
+			}
+		}
+	};
 
 	getUsers = () => {
 		this.props.actions.getUsers()
@@ -44,7 +80,7 @@ class Dashboard extends Component {
 
 				this.setState({ errors });
 			});
-	}
+	};
 
 	getShifts = () => {
 		this.props.actions.getShifts()
@@ -59,27 +95,7 @@ class Dashboard extends Component {
 
 				this.setState({ errors });
 			});
-	}
-
-	componentDidMount = () => {
-		if (this.props.authenticated) {
-			this.getUsers();
-
-			this.getShifts();
-		}
-	}
-
-	componentDidUpdate = (prevProps) => {
-		if (this.props.authenticated) {
-			if (this.props.users !== prevProps.users) {
-				this.getUsers();
-			}
-
-			if (this.props.shifts !== prevProps.shifts) {
-				this.getShifts();
-			}
-		}
-	}
+	};
 
 	errorMessages = () => {
 		if (this.state.errors.length) {
@@ -89,29 +105,25 @@ class Dashboard extends Component {
 		}
 
 		return '';
-	}
+	};
 
 	render = () => (
-		<BlockUi tag="div" blocking={this.state.ajaxLoading}>
-			<Row>
-				<Col>
-					<h2>Dashboard</h2>
-					{this.errorMessages()}
-					{this.state.users}
-					{this.state.shifts}
-				</Col>
-			</Row>
-		</BlockUi>
+		<Row>
+			<Col>
+				<h2>Dashboard</h2>
+				{this.errorMessages()}
+				{this.state.users}
+				{this.state.shifts}
+			</Col>
+		</Row>
 	);
 }
 
-Dashboard.propTypes = {
-	ajaxLoading: PropTypes.bool.isRequired,
-	authenticated: PropTypes.bool.isRequired,
-};
+Dashboard.propTypes = propTypes;
+
+Dashboard.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
-	ajaxLoading: state.ajaxLoading,
 	authenticated: state.authenticated,
 });
 

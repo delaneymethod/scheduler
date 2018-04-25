@@ -198,9 +198,19 @@ module.exports = (env, options) => ({
 				API_HOST: JSON.stringify('http://localhost:8000'),
 			},
 		}),
-		new CopyWebpackPlugin([{
-			from: 'src/assets/img',
-			to: 'assets/img',
-		}]),
+		new CopyWebpackPlugin([
+			{
+				force: true,
+				cache: true,
+				to: 'assets/img',
+				from: 'src/assets/img',
+				transform (content, path) => Promise.resolve(optimize(content)),
+			}, {
+				force: true,
+				cache: true,
+				to: 'assets/fonts',
+				from: 'node_modules/font-awesome/fonts',
+			}
+		]),
 	],
 });

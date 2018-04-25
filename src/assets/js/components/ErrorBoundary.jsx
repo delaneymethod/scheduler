@@ -5,7 +5,14 @@
  */
 
 import { Alert } from 'reactstrap';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
+
+const propTypes = {};
+
+const defaultProps = {};
 
 class ErrorBoundary extends Component {
 	constructor(props) {
@@ -17,7 +24,11 @@ class ErrorBoundary extends Component {
 	getInitialState = () => ({
 		error: null,
 		errorInfo: null,
-	})
+	});
+
+	componentDidMount = () => {};
+
+	componentDidUpdate = prevProps => ({});
 
 	componentDidCatch = (error, errorInfo) => this.setState({ error, errorInfo });
 
@@ -28,7 +39,15 @@ class ErrorBoundary extends Component {
 
 		/* Normally, just render children */
 		return this.props.children;
-	}
+	};
 }
 
-export default ErrorBoundary;
+ErrorBoundary.propTypes = propTypes;
+
+ErrorBoundary.defaultProps = defaultProps;
+
+const mapStateToProps = (state, props) => ({});
+
+const mapDispatchToProps = dispatch => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ErrorBoundary);

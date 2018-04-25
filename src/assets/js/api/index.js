@@ -74,11 +74,11 @@ class SchedulerApi {
 				cancelToken: axiosCall.token,
 			};
 
-			const jwt = localStorage.getItem('scheduler:jwt');
+			const token = sessionStorage.getItem('scheduler:token');
 
 			/* Check if the object is "falsey" (if the object is undefined, 0 or null) */
-			if (jwt) {
-				const payload = jwtDecode(jwt);
+			if (token) {
+				const payload = jwtDecode(token);
 
 				const accountId = payload.account_id;
 
@@ -86,7 +86,14 @@ class SchedulerApi {
 					axios.defaults.headers.common['X-Account-Id'] = accountId;
 				}
 
-				axios.defaults.headers.common.Authorization = `Bearer ${jwt}`;
+				axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+			}
+
+			const csrf = document.head.querySelector('meta[name="csrf-token"]');
+
+			/* Check if the object is "falsey" (if the object is undefined, 0 or null) */
+			if (csrf) {
+				axios.defaults.headers.common['X-CSRF-TOKEN'] = csrf.content;
 			}
 
 			return axios.request(config, cancelable)
