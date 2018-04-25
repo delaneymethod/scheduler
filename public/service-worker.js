@@ -9,8 +9,10 @@
 (() => {
 	const staticFilesToCache = [
 		'404.html',
+		'robots.txt',
 		'index.html',
 		'main.bundle.js',
+		'crossdomain.xml',
 		'main.bundle.css',
 		'vendors.bundle.js',
 		'scripts.bundle.js',

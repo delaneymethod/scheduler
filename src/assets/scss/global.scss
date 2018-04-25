@@ -1,0 +1,196 @@
+/**
+ * @link https://www.giggrafter.com
+ * @copyright Copyright (c) Gig Grafter
+ * @license https://www.giggrafter.com/license
+ */
+ 
+@import 'mixins';
+
+@import 'variables';
+
+@import '~bootstrap/scss/bootstrap';
+
+@import '~font-awesome/scss/font-awesome';
+
+@import '~react-block-ui/style';
+
+@import 'helpers';
+
+@font-face {
+	font-weight: 300;
+	font-style: normal;
+	font-family: 'Proxima Nova';
+	src: url('/assets/fonts/proximanova-light-webfont.woff2') format('woff2'), 
+		 url('/assets/fonts/proximanova-light-webfont.woff') format('woff');
+}
+
+@font-face {
+	font-weight: 400;
+	font-style: normal;
+	font-family: 'Proxima Nova';
+	src: url('/assets/fonts/proximanova-regular-webfont.woff2') format('woff2'), 
+		 url('/assets/fonts/proximanova-regular-webfont.woff') format('woff');
+}
+
+@font-face {
+	font-weight: 500;
+	font-style: normal;
+	font-family: 'Proxima Nova';
+	src: url('/assets/fonts/proximanova-semibold-webfont.woff2') format('woff2'), 
+		 url('/assets/fonts/proximanova-semibold-webfont.woff') format('woff');
+}
+
+@font-face {
+	font-weight: 600;
+	font-style: normal;
+	font-family: 'Proxima Nova';
+	src: url('/assets/fonts/proximanova-bold-webfont.woff2') format('woff2'), 
+		 url('/assets/fonts/proximanova-bold-webfont.woff') format('woff');
+}
+
+@include media-breakpoint-up(xl) {
+	.modal-xl {
+		max-width: $modal-xl;
+	}
+}
+
+body,
+html {
+	height: 100%;
+}
+
+::selection {
+	background: $dark;
+	color: $light;
+}
+
+.bg-dark {
+	color: $body-color-light;
+}
+
+.u-overflow-hidden {
+	overflow: hidden;
+}
+
+.u-overflow-scroll {
+	overflow: scroll;
+}
+
+a {
+	color: $body-color;
+	font-weight: $font-weight-semi;
+
+	&:hover {
+		color: $primary;
+	}
+}
+
+.h5 {
+	@extend %h5;
+	
+	font-weight: $font-weight-normal;
+
+	&--title {
+		@extend %h5;
+		@extend %text-uppercase;
+		
+		font-weight: $font-weight-semi;
+	}
+
+	&--title-card {
+		@extend %h5;
+		@extend %text-uppercase;
+		
+		font-weight: $font-weight-semi;
+		text-align: center;
+		padding-bottom: 2rem;
+		margin: 0;
+		
+		@include media-breakpoint-up(lg) {
+			padding-bottom: 3rem;
+		}
+	}
+}
+
+.error {
+	color: $danger;
+	margin-top: 0.5rem;
+}
+
+.warning {
+	color: $warning;
+	margin-top: 0.5rem;
+}
+
+.btn {
+	color: $body-color-light;
+	font-weight: $font-weight-semi;
+	
+	@include media-breakpoint-up(lg) {
+		line-height: 44px;
+	}
+}
+
+label {
+	@extend %text-uppercase;
+	
+	font-size: .75rem;
+	font-weight: $font-weight-semi;
+}
+
+.form-control {
+	color: $body-color !important;
+	background-color: $gray-300;
+	border: 1px solid $gray-600;
+	
+	@include media-breakpoint-up(lg) {
+		line-height: 44px;
+	}
+}
+
+.login-page-container,
+.register-page-container {
+	min-height: -moz-min-content; /* not implemented */
+	min-height: -webkit-min-content; /* works for opera and safari */
+	min-height: min-content; /* works for chrome */
+	
+	@include media-breakpoint-up(md) {
+		height: 100vh;
+	}
+
+	.panel-welcome {
+		width: 90%;
+		margin: 0 auto;
+		max-width: 620px;
+		
+		@include media-breakpoint-up(lg) {
+			width: 70%;
+		}
+	}
+	
+	.panel-page {
+		margin: 0 auto;
+		max-width: 720px;
+		width: 90%;
+	
+		&__content {
+			width: 100%;
+			padding: 2rem;
+			
+			@include media-breakpoint-up(lg) {
+				padding: 3rem;
+			}
+		}
+	
+		&__link {
+			margin-bottom: 1rem;
+			display: inline-block;
+		}
+		
+		&__forgot {
+			margin-top: 2rem;
+			display: block;
+			text-align: center;
+		}
+	}
+}

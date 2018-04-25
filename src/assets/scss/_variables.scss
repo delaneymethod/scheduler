@@ -7,3 +7,47 @@ $modal-xl: calculateRem(1200px) !default;
 $fa-font-path: '/assets/fonts';
 
 $flagsImagePath: '/assets/img/';
+
+$font-family-sans-serif: 'Proxima Nova', 'Helvetica Neue', Arial, sans-serif;
+
+$font-weight-light: 300;
+
+$font-weight-normal: 400;
+
+$font-weight-semi: 500;
+
+$font-weight-bold: 600;
+
+$gray-100: #FCFCFC;
+
+$gray-200: #F7F7F7;
+
+$gray-300: #F0F0F0;
+
+$gray-400: #EBEBEB;
+
+$gray-500: #E5E5E5;
+
+$gray-600: #D9D9D9;
+
+$gray-700: #C4C4C4;
+
+$gray-800: #B5B5B5;
+
+$gray-900: #9C9C9C;
+
+$primary: #90BC47;
+
+$secondary: #1CA3AE;
+
+$light: $gray-300;
+
+$dark: #343E48;
+
+$body-bg: $gray-300;
+
+$body-color: $dark;
+
+$body-color-light: $gray-200;
+
+$border-radius: 5px;

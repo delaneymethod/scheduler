@@ -14,7 +14,7 @@ const propTypes = {};
 
 const defaultProps = {};
 
-class Shifts extends Component {
+class Welcome extends Component {
 	constructor(props) {
 		super(props);
 
@@ -24,7 +24,7 @@ class Shifts extends Component {
 	getInitialState = () => ({});
 
 	componentDidMount = () => {
-		document.title = 'Scheduler: Shifts - Dashboard';
+		document.title = 'Scheduler: Welcome - Dashboard';
 
 		/*
 		meta.description.setAttribute('content', '');
@@ -38,18 +38,18 @@ class Shifts extends Component {
 	render = () => (
 		<Row>
 			<Col>
-				<h2>Shifts</h2>
+				<h2>Welcome</h2>
 			</Col>
 		</Row>
 	);
 }
 
-Shifts.propTypes = propTypes;
+Welcome.propTypes = propTypes;
 
-Shifts.defaultProps = defaultProps;
+Welcome.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({});
 
 const mapDispatchToProps = dispatch => ({});
 
-export default connect(mapStateToProps, mapDispatchToProps)(Shifts);
+export default connect(mapStateToProps, mapDispatchToProps)(Welcome);

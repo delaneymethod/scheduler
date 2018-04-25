@@ -13,7 +13,6 @@ import ErrorBoundary from './ErrorBoundary';
 
 const App = () => (
 	<ErrorBoundary>
-		<Header />
 		<Main />
 	</ErrorBoundary>
 );

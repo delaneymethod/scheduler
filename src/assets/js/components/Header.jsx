@@ -10,6 +10,14 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
 
+const propTypes = {
+	authenticated: PropTypes.bool.isRequired,
+};
+
+const defaultProps = {
+	authenticated: false,
+};
+
 class Header extends Component {
 	constructor(props) {
 		super(props);
@@ -21,13 +29,17 @@ class Header extends Component {
 
 	getInitialState = () => ({
 		isOpen: false,
-	})
+	});
+
+	componentDidMount = () => {};
+
+	componentDidUpdate = prevProps => ({});
 
 	handleToggle = () => {
 		this.setState({
 			isOpen: !this.state.isOpen,
 		});
-	}
+	};
 
 	render = () => (
 		<header>
@@ -46,9 +58,9 @@ class Header extends Component {
 	);
 }
 
-Header.propTypes = {
-	authenticated: PropTypes.bool.isRequired,
-};
+Header.propTypes = propTypes;
+
+Header.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
 	authenticated: state.authenticated,

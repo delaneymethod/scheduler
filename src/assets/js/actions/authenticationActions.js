@@ -17,10 +17,10 @@ export const authenticated = status => ({
 	status,
 });
 
-export const login = credentials => (dispatch) => {
+export const login = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return api.login(credentials)
+	return api.login(payload)
 		.then((response) => {
 			dispatch(authenticated(true));
 
@@ -29,6 +29,8 @@ export const login = credentials => (dispatch) => {
 			return response;
 		})
 		.catch((error) => {
+			dispatch(authenticated(false));
+
 			dispatch(ajaxLoading(false));
 
 			/* Bubble the error back up the rabbit hole */
@@ -40,11 +42,32 @@ export const logout = () => (dispatch) => {
 	dispatch(authenticated(false));
 
 	try {
-		localStorage.removeItem('scheduler:jwt');
+		sessionStorage.removeItem('scheduler:token');
 
 		return Promise.resolve(true);
 	} catch (error) {
 		/* Bubble the error back up the rabbit hole */
 		return Promise.reject(error);
 	}
+};
+
+export const register = payload => (dispatch) => {
+	dispatch(ajaxLoading(true));
+
+	return api.register(payload)
+		.then((response) => {
+			dispatch(authenticated(true));
+
+			dispatch(ajaxLoading(false));
+
+			return response;
+		})
+		.catch((error) => {
+			dispatch(authenticated(false));
+
+			dispatch(ajaxLoading(false));
+
+			/* Bubble the error back up the rabbit hole */
+			return Promise.reject(error);
+		});
 };

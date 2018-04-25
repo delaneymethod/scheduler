@@ -4,7 +4,6 @@
  * @license https://www.giggrafter.com/license
  */
 
-import 'bootstrap';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import fastclick from 'fastclick';
@@ -12,8 +11,7 @@ import { Provider } from 'react-redux';
 import throttle from 'lodash/throttle';
 import { BrowserRouter } from 'react-router-dom';
 
-/* Included here to reduce the number of requests */
-import '../scss/scheduler';
+import '../scss/global';
 
 import App from './components/App';
 import { saveState } from './store/persistedState';
@@ -41,6 +39,23 @@ ReactDOM.render(
 
 /* Polyfill to remove click delays on touch UIs */
 fastclick.attach(document.body);
+
+/* IE10 viewport hack for Surface/desktop Windows 8 bug */
+if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+	const msViewportStyle = document.createElement('style');
+
+	msViewportStyle.appendChild(document.createTextNode('@-ms-viewport{width:auto!important}'));
+
+	document.head.appendChild(msViewportStyle);
+}
+
+const navigatorUserAgent = navigator.userAgent;
+
+const isAndroid = (navigatorUserAgent.indexOf('Mozilla/5.0') > -1 && navigatorUserAgent.indexOf('Android ') > -1 && navigatorUserAgent.indexOf('AppleWebKit') > -1 && navigatorUserAgent.indexOf('Chrome') === -1);
+
+if (isAndroid) {
+	/* FIXME - Convert to vanilla JS instead of jQuery $('select.form-control').removeClass('form-control').css('width', '100%'); */
+}
 
 /* Add a service worker for Progressive Web App purposes */
 registerServiceWorker();

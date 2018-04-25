@@ -14,7 +14,7 @@ const propTypes = {};
 
 const defaultProps = {};
 
-class Shifts extends Component {
+class ForgottenYourPassword extends Component {
 	constructor(props) {
 		super(props);
 
@@ -24,7 +24,7 @@ class Shifts extends Component {
 	getInitialState = () => ({});
 
 	componentDidMount = () => {
-		document.title = 'Scheduler: Shifts - Dashboard';
+		document.title = 'Scheduler: Forgotten your Password';
 
 		/*
 		meta.description.setAttribute('content', '');
@@ -38,18 +38,18 @@ class Shifts extends Component {
 	render = () => (
 		<Row>
 			<Col>
-				<h2>Shifts</h2>
+				<h2>Forgotten Your Password</h2>
 			</Col>
 		</Row>
 	);
 }
 
-Shifts.propTypes = propTypes;
+ForgottenYourPassword.propTypes = propTypes;
 
-Shifts.defaultProps = defaultProps;
+ForgottenYourPassword.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({});
 
 const mapDispatchToProps = dispatch => ({});
 
-export default connect(mapStateToProps, mapDispatchToProps)(Shifts);
+export default connect(mapStateToProps, mapDispatchToProps)(ForgottenYourPassword);

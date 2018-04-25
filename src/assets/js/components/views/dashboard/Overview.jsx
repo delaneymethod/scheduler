@@ -4,11 +4,52 @@
  * @license https://www.giggrafter.com/license
  */
 
-import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Col, Row } from 'reactstrap';
+import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
 
-const Overview = () => <h1>Overview</h1>;
+const propTypes = {};
 
-Overview.propTypes = {};
+const defaultProps = {};
 
-export default Overview;
+class Overview extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = this.getInitialState();
+	}
+
+	getInitialState = () => ({});
+
+	componentDidMount = () => {
+		document.title = 'Scheduler: Overview - Dashboard';
+
+		/*
+		meta.description.setAttribute('content', '');
+		meta.keywords.setAttribute('content', '');
+		meta.author.setAttribute('content', '');
+		*/
+	};
+
+	componentDidUpdate = prevProps => ({});
+
+	render = () => (
+		<Row>
+			<Col>
+				<h2>Overview</h2>
+			</Col>
+		</Row>
+	);
+}
+
+Overview.propTypes = propTypes;
+
+Overview.defaultProps = defaultProps;
+
+const mapStateToProps = (state, props) => ({});
+
+const mapDispatchToProps = dispatch => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Overview);

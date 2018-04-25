@@ -6,7 +6,7 @@
 
 export const loadState = () => {
 	try {
-		const serializedState = localStorage.getItem('scheduler:state');
+		const serializedState = sessionStorage.getItem('scheduler:state');
 
 		return (serializedState === null) ? undefined : JSON.parse(serializedState);
 	} catch (error) {
@@ -18,7 +18,7 @@ export const saveState = (state) => {
 	try {
 		const serializedState = JSON.stringify(state);
 
-		return localStorage.setItem('scheduler:state', serializedState);
+		return sessionStorage.setItem('scheduler:state', serializedState);
 	} catch (error) {
 		return undefined;
 	}
