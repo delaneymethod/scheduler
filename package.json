@@ -9,7 +9,7 @@
 		"test": "./node_modules/.bin/jest",
 		"dev": "npm run development",
 		"development": "cross-env NODE_ENV='development' webpack --progress=true --watch --cache=false --display-error-details=true --mode=development",
-		"hot": "cross-env NODE_ENV='development' webpack-dev-server --progress=true --watch --open 'Google Chrome' --hot=true --display-error-details=true --mode=development",
+		"hot": "cross-env NODE_ENV='development' webpack-dev-server --progress=true --watch --open --hot=true --display-error-details=true --mode=development",
 		"prod": "npm run production",
 		"production": "cross-env NODE_ENV='production' webpack --progress=false --hide-modules --mode production"
 	},
