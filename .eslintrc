@@ -11,6 +11,7 @@
 		"airbnb-base"
 	],
 	"rules": {
+		"linebreak-style": 0,
 		"no-tabs": 0,
 		"no-unused-vars": 0,
 		"indent": [2, "tab", {"SwitchCase": 1}],
