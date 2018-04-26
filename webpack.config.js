@@ -204,7 +204,6 @@ module.exports = (env, options) => ({
 				cache: true,
 				to: 'assets/img',
 				from: 'src/assets/img',
-				transform (content, path) => Promise.resolve(optimize(content)),
 			}, {
 				force: true,
 				cache: true,
