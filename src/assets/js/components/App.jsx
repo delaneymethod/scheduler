@@ -8,13 +8,7 @@ import React from 'react';
 import { hot } from 'react-hot-loader';
 
 import Main from './Main';
-import Header from './Header';
-import ErrorBoundary from './ErrorBoundary';
 
-const App = () => (
-	<ErrorBoundary>
-		<Main />
-	</ErrorBoundary>
-);
+const App = () => <Main />;
 
 export default hot(module)(App);

@@ -119,6 +119,24 @@ class SchedulerApi {
 		return axiosRequest('POST', `${process.env.API_HOST}/login`, 200, credentials);
 	}
 
+	/* REGISTER */
+	static register(data) {
+		const axiosRequest = this.axiosRequest();
+
+		/* FIXME - backend needs to update field to snake case or camel case. */
+		/* 		 - needs to be consistant and renamed to lastName or last_name */
+		const transformedData = {
+			'business-name': data.businessName,
+			'first-name': data.firstName,
+			password: data.password,
+			'subscription-level': data.subscriptionLevel,
+			surname: data.lastName,
+			'user-name': data.email,
+		};
+
+		return axiosRequest('POST', `${process.env.API_HOST}/business-sign-up`, 200, transformedData);
+	}
+
 	/* USERS */
 	static getUsers() {
 		const axiosRequest = this.axiosRequest();
