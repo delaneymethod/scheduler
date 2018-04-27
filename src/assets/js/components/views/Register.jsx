@@ -47,6 +47,7 @@ class Register extends Component {
 		firstName: '',
 		businessName: '',
 		confirmPassword: '',
+		subscriptionLevel: 0,
 	});
 
 	componentDidMount = () => {
@@ -85,6 +86,7 @@ class Register extends Component {
 				lastName: this.state.lastName,
 				firstName: this.state.firstName,
 				businessName: this.state.businessName,
+				subscriptionLevel: this.state.subscriptionLevel,
 			};
 
 			this.props.actions.register(payload)

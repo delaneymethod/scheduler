@@ -83,9 +83,8 @@ class Login extends Component {
 				.then((response) => {
 					this.setState(this.getInitialState());
 
-					/* FIXME - Replace with value from response body */
-					// sessionStorage.setItem('scheduler:token', response.token);
-					sessionStorage.setItem('scheduler:token', 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYXJyeS5seW5jaEBnaWdncmFmdGVyLmNvbSIsImV4cCI6MTUyNTM1MjMzN30.9f-vjX7f9VZNT0llfbJl3WFfWwXlKd00zAN9GR89m4U0OVhoXDwixhnz5DKJeba-wZj9XXih0Q7_tdU_Jww_sw');
+					/* FIXME - Rename Token to token (lowercase) */
+					sessionStorage.setItem('scheduler:token', response.Token);
 
 					this.props.history.push('/dashboard');
 				})

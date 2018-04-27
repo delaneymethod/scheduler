@@ -5,7 +5,6 @@
  */
 
 import PropTypes from 'prop-types';
-import BlockUi from 'react-block-ui';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
@@ -74,7 +73,7 @@ class Dashboard extends Component {
 				const { errors } = this.state;
 
 				errors.push({
-					title: `${error.data.error} Getting Users`,
+					title: `GET /users ${error.data.error}`,
 					message: error.data.message,
 				});
 
@@ -89,7 +88,7 @@ class Dashboard extends Component {
 				const { errors } = this.state;
 
 				errors.push({
-					title: `${error.data.error} Getting Shifts`,
+					title: `GET /shifts ${error.data.error}`,
 					message: error.data.message,
 				});
 
