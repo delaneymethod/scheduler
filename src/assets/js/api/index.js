@@ -131,7 +131,7 @@ class SchedulerApi {
 			password: data.password,
 			'subscription-level': data.subscriptionLevel,
 			surname: data.lastName,
-			'user-name': data.email,
+			email: data.email,
 		};
 
 		return axiosRequest('POST', `${process.env.API_HOST}/business-sign-up`, 200, transformedData);

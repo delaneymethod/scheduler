@@ -47,7 +47,9 @@ class Register extends Component {
 		firstName: '',
 		businessName: '',
 		confirmPassword: '',
-		subscriptionLevel: 0,
+		/* FIXME - default subscription level to 1. Eventually based on chosen subscription plan, */
+		/* for now there is only 1 */
+		subscriptionLevel: 1,
 	});
 
 	componentDidMount = () => {
