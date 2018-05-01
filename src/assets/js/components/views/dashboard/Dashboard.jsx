@@ -13,6 +13,9 @@ import { Alert, Col, Row } from 'reactstrap';
 import { getUsers } from '../../../actions/userActions';
 import { getShifts } from '../../../actions/shiftActions';
 
+import Header from '../../Header';
+import ErrorMessage from '../../ErrorMessage';
+
 const propTypes = {
 	authenticated: PropTypes.bool.isRequired,
 };
@@ -66,53 +69,56 @@ class Dashboard extends Component {
 		}
 	};
 
+	/* TODO - Refactor so this is a component e.g. Users, which makes the API call and throws an error boundary component for any issues */
 	getUsers = () => {
 		this.props.actions.getUsers()
 			.then(users => this.setState(users))
 			.catch((error) => {
 				const { errors } = this.state;
 
-				errors.push({
-					title: `GET /users ${error.data.error}`,
-					message: error.data.message,
-				});
+				errors.push(error);
 
 				this.setState({ errors });
 			});
 	};
 
+	/* TODO - Refactor so this is a component e.g. Shifts, which makes the API call and throws an error boundary component for any issues */
 	getShifts = () => {
 		this.props.actions.getShifts()
 			.then(shifts => this.setState(shifts))
 			.catch((error) => {
 				const { errors } = this.state;
 
-				errors.push({
-					title: `GET /shifts ${error.data.error}`,
-					message: error.data.message,
-				});
+				errors.push(error);
 
 				this.setState({ errors });
 			});
 	};
 
-	errorMessages = () => {
-		if (this.state.errors.length) {
-			const errors = this.state.errors.map((error, index) => <Alert color="danger" key={index}><strong>{error.title}</strong><br />{error.message}</Alert>);
-
-			return <div>{errors}</div>;
-		}
-
-		return '';
-	};
+	errorMessages = () => ((this.state.errors.length) ? this.state.errors.map((error, index) => <ErrorMessage key={index} error={error.data} />) : '');
 
 	render = () => (
 		<Row>
 			<Col>
-				<h2>Dashboard</h2>
-				{this.errorMessages()}
-				{this.state.users}
-				{this.state.shifts}
+				<Header />
+				<Row>
+					<Col>
+						<h2>Dashboard</h2>
+						{this.errorMessages()}
+					</Col>
+				</Row>
+				<Row>
+					<Col xs="12" sm="12" md="3" lg="3" xl="3">
+						<h3>Users</h3>
+						{this.state.users}
+					</Col>
+				</Row>
+				<Row>
+					<Col xs="12" sm="12" md="3" lg="3" xl="3">
+						<h3>Shifts</h3>
+						{this.state.shifts}
+					</Col>
+				</Row>
 			</Col>
 		</Row>
 	);

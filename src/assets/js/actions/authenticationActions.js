@@ -6,6 +6,7 @@
 
 import api from '../api';
 import * as types from './actionTypes';
+import { deleteState } from '../store/persistedState';
 
 export const ajaxLoading = status => ({
 	type: types.AJAX_LOADING,
@@ -42,7 +43,9 @@ export const logout = () => (dispatch) => {
 	dispatch(authenticated(false));
 
 	try {
-		sessionStorage.removeItem('scheduler:token');
+		deleteState('token');
+
+		deleteState('user');
 
 		return Promise.resolve(true);
 	} catch (error) {

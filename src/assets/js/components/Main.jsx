@@ -14,10 +14,10 @@ import Login from './views/Login';
 import Logout from './views/Logout';
 import Register from './views/Register';
 import NotFoundPage from './views/NotFoundPage';
+import Verification from './views/Verification';
 import ForgottenYourPassword from './views/ForgottenYourPassword';
 
 import Dashboard from './views/dashboard/Dashboard';
-import Welcome from './views/dashboard/Welcome';
 import Overview from './views/dashboard/Overview';
 import Shifts from './views/dashboard/shifts/Shifts';
 import Employees from './views/dashboard/employees/Employees';
@@ -29,9 +29,9 @@ const Main = () => (
 			<Route exact path='/login' component={Login} />
 			<Route exact path='/logout' component={Logout} />
 			<Route exact path='/register' component={Register} />
+			<Route exact path='/verification' component={Verification} />
 			<Route exact path='/forgotten-your-password' component={ForgottenYourPassword} />
 			<Route exact path='/dashboard' component={Dashboard} />
-			<Route exact path='/dashboard/welcome' component={Welcome} />
 			<Route exact path='/dashboard/overview' component={Overview} />
 			<Route exact path='/dashboard/shifts' component={Shifts} />
 			<Route exact path='/dashboard/employees' component={Employees} />

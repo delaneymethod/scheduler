@@ -7,6 +7,8 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 
+import { getState } from '../store/persistedState';
+
 const { CancelToken } = axios;
 
 let axiosCall = null;
@@ -20,34 +22,37 @@ class SchedulerApi {
 	}
 
 	static parseError(error) {
+		const data = {
+			title: '',
+			message: '',
+		};
+
 		if (error.response) {
 			/* The request was made and the server responded with a status code that falls out of the range of 2xx */
-			return error.response;
+			if (error.response.data) {
+				data.title = `${error.response.data.error.code} ${error.response.data.error.type}`;
+				data.message = `${error.response.data.error.message}.<br />${error.response.data.error.hints.summary}.`;
+			} else {
+				data.title = `${error.response.code} ${error.response.name}`;
+				data.message = error.response.message;
+			}
 		} else if (error.request) {
 			/* The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser */
-			const data = {};
-
 			if (error.message === 'Network Error') {
-				data.error = 'Network Error';
-
+				data.title = '504 Network Error';
 				data.message = 'A network error occurred. Please try again.';
 			} else {
-				data.error = error.name;
-
+				data.title = error.name;
 				data.message = error.message;
 			}
-
-			return {
-				data,
-			};
+		} else {
+			/* Something else happened in setting up the request that triggered an Error */
+			data.title = 'Error';
+			data.message = error.message;
 		}
 
-		/* Something else happened in setting up the request that triggered an Error */
 		return {
-			data: {
-				error: 'Error',
-				message: error.message,
-			},
+			data,
 		};
 	}
 
@@ -74,24 +79,25 @@ class SchedulerApi {
 				cancelToken: axiosCall.token,
 			};
 
-			const token = sessionStorage.getItem('scheduler:token');
+			const token = getState('token');
 
-			/* Check if the object is "falsey" (if the object is undefined, 0 or null) */
+			/* Check if the object is not "falsey" (if the object is undefined, 0 or null) */
 			if (token) {
-				const payload = jwtDecode(token);
-
-				const accountId = payload.account_id;
-
-				if (accountId) {
-					axios.defaults.headers.common['X-Account-Id'] = accountId;
-				}
-
 				axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+			}
+
+			const user = getState('user');
+
+			/* Check if the object is not "falsey" (if the object is undefined, 0 or null) */
+			if (user) {
+				if (user.accountId) {
+					axios.defaults.headers.common['X-Account-Id'] = user.accountId;
+				}
 			}
 
 			const csrf = document.head.querySelector('meta[name="csrf-token"]');
 
-			/* Check if the object is "falsey" (if the object is undefined, 0 or null) */
+			/* Check if the object is not "falsey" (if the object is undefined, 0 or null) */
 			if (csrf) {
 				axios.defaults.headers.common['X-CSRF-TOKEN'] = csrf.content;
 			}
@@ -120,21 +126,10 @@ class SchedulerApi {
 	}
 
 	/* REGISTER */
-	static register(data) {
+	static register(business) {
 		const axiosRequest = this.axiosRequest();
 
-		/* FIXME - backend needs to update field to snake case or camel case. */
-		/* 		 - needs to be consistant and renamed to lastName or last_name */
-		const transformedData = {
-			'business-name': data.businessName,
-			'first-name': data.firstName,
-			password: data.password,
-			'subscription-level': data.subscriptionLevel,
-			surname: data.lastName,
-			email: data.email,
-		};
-
-		return axiosRequest('POST', `${process.env.API_HOST}/business-sign-up`, 200, transformedData);
+		return axiosRequest('POST', `${process.env.API_HOST}/business-sign-up`, 200, business);
 	}
 
 	/* USERS */

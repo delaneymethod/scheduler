@@ -9,9 +9,9 @@ import { createStore, applyMiddleware } from 'redux';
 
 import reducers from '../reducers';
 import initialState from './initialState';
-import { loadState } from './persistedState';
+import { getStates } from './persistedState';
 
-const persistedState = loadState();
+const persistedState = getStates();
 
 const combinedState = Object.assign(initialState, persistedState);
 

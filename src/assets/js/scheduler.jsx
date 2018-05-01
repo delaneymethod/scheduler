@@ -4,6 +4,7 @@
  * @license https://www.giggrafter.com/license
  */
 
+import 'bootstrap';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import fastclick from 'fastclick';
@@ -22,11 +23,7 @@ import registerServiceWorker from './helpers/registerServiceWorker';
 const store = configureStore();
 
 /* Listen for state changes, saving a maximum once per second. We only want to persist the authenticated state for now. */
-store.subscribe(throttle(() => {
-	saveState({
-		authenticated: store.getState().authenticated,
-	});
-}, 1000));
+store.subscribe(throttle(() => saveState('authenticated', store.getState().authenticated), 1000));
 
 ReactDOM.render(
 	<Provider store={store}>

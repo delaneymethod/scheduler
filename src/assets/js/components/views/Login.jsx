@@ -4,6 +4,7 @@
  * @license https://www.giggrafter.com/license
  */
 
+import jwtDecode from 'jwt-decode';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
@@ -11,8 +12,10 @@ import { bindActionCreators } from 'redux';
 import { Alert, Col, Row, Button, FormGroup, Label, Input } from 'reactstrap';
 import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
 
+import { saveState } from '../../store/persistedState';
 import { login } from '../../actions/authenticationActions';
 
+import ErrorMessage from '../ErrorMessage';
 import EmailField from '../fields/EmailField';
 import PasswordField from '../fields/PasswordField';
 
@@ -54,8 +57,6 @@ class Login extends Component {
 		*/
 	};
 
-	componentDidUpdate = prevProps => ({});
-
 	handleChange = (event) => {
 		const target = event.currentTarget;
 
@@ -81,33 +82,35 @@ class Login extends Component {
 
 			this.props.actions.login(payload)
 				.then((response) => {
-					this.setState(this.getInitialState());
+					const token = jwtDecode(response.token);
 
-					/* FIXME - Rename Token to token (lowercase) */
-					sessionStorage.setItem('scheduler:token', response.Token);
+					/* FIXME - Remove conditions once API has been updated with new responses */
+					const user = {
+						email: (response.email) ? response.email : 'barry.lynch@giggrafter.com',
+						userId: (token.sub) ? token.sub : 2,
+						firstName: (response.firstName) ? response.firstName : 'Barry',
+						accountIds: (response.accountIds) ? response.accountIds : [2],
+						/* We select the first account Id as default */
+						accountId: (response.accountIds) ? response.accountIds[0] : 2,
+					};
+
+					saveState('token', response.token);
+
+					saveState('user', user);
 
 					this.props.history.push('/dashboard');
 				})
 				.catch((error) => {
 					const { errors } = this.state;
 
-					errors.push({
-						title: error.data.error,
-						message: error.data.message,
-					});
+					errors.push(error);
 
 					this.setState({ errors });
 				});
 		}
 	};
 
-	errorMessages = () => {
-		if (this.state.errors.length) {
-			return this.state.errors.map((error, index) => <Alert color="danger" key={index}><strong>{error.title}</strong><br />{error.message}</Alert>);
-		}
-
-		return '';
-	};
+	errorMessages = () => ((this.state.errors.length) ? this.state.errors.map((error, index) => <ErrorMessage key={index} error={error.data} />) : '');
 
 	render = () => (
 		<Row className="d-flex flex-md-row flex-column login-page-container">

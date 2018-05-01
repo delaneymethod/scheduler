@@ -7,6 +7,7 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Col, Row } from 'reactstrap';
+import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 
@@ -41,6 +42,9 @@ class Home extends Component {
 		<Row>
 			<Col>
 				<h2>Home</h2>
+				<ul className="list-unstyled">
+					<li><Link to="/login" title="Login" className="btn btn-sm btn-success">Login</Link></li>
+				</ul>
 			</Col>
 		</Row>
 	);

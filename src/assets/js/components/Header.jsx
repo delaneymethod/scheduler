@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
-import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
+import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink, Col, Row } from 'reactstrap';
 
 const propTypes = {
 	authenticated: PropTypes.bool.isRequired,
@@ -31,10 +31,6 @@ class Header extends Component {
 		isOpen: false,
 	});
 
-	componentDidMount = () => {};
-
-	componentDidUpdate = prevProps => ({});
-
 	handleToggle = () => {
 		this.setState({
 			isOpen: !this.state.isOpen,
@@ -42,19 +38,21 @@ class Header extends Component {
 	};
 
 	render = () => (
-		<header>
-			<Navbar color="light" light expand="lg">
-				<NavbarBrand href="/" title="Home">Home</NavbarBrand>
-				<NavbarToggler onClick={this.handleToggle} />
-				<Collapse isOpen={this.state.isOpen} navbar>
-					<Nav className="mr-auto" navbar>
-						{(!this.props.authenticated) ? <NavItem><NavLink href="/login" title="Login">Login</NavLink></NavItem> : ''}
-						{(this.props.authenticated) ? <NavItem><NavLink href="/dashboard" title="Dashboard">Dashboard</NavLink></NavItem> : ''}
-						{(this.props.authenticated) ? <NavItem><NavLink href="/logout" title="Logout">Logout</NavLink></NavItem> : ''}
-					</Nav>
-				</Collapse>
-			</Navbar>
-		</header>
+		<Row>
+			<Col>
+				<Navbar color="dark" dark expand="lg">
+					<NavbarBrand href="/" title="Scheduler">Scheduler<span>.</span></NavbarBrand>
+					<NavbarToggler onClick={this.handleToggle} />
+					<Collapse isOpen={this.state.isOpen} navbar>
+						<Nav className="mr-auto" navbar>
+							{(!this.props.authenticated) ? <NavItem><NavLink href="/login" title="Login">Login</NavLink></NavItem> : ''}
+							{(this.props.authenticated) ? <NavItem><NavLink href="/dashboard" title="Dashboard">Dashboard</NavLink></NavItem> : ''}
+							{(this.props.authenticated) ? <NavItem><NavLink href="/logout" title="Logout">Logout</NavLink></NavItem> : ''}
+						</Nav>
+					</Collapse>
+				</Navbar>
+			</Col>
+		</Row>
 	);
 }
 
