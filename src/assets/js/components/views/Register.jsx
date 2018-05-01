@@ -62,8 +62,6 @@ class Register extends Component {
 		*/
 	};
 
-	componentDidUpdate = prevProps => ({});
-
 	handleChange = (event) => {
 		const target = event.currentTarget;
 
@@ -92,31 +90,18 @@ class Register extends Component {
 			};
 
 			this.props.actions.register(payload)
-				.then((response) => {
-					this.setState(this.getInitialState());
-
-					this.props.history.push('/dashboard/welcome');
-				})
+				.then(() => this.props.history.push('/verification'))
 				.catch((error) => {
 					const { errors } = this.state;
 
-					errors.push({
-						title: error.data.error,
-						message: error.data.message,
-					});
+					errors.push(error);
 
 					this.setState({ errors });
 				});
 		}
 	};
 
-	errorMessages = () => {
-		if (this.state.errors.length) {
-			return this.state.errors.map((error, index) => <Alert color="danger" key={index}><strong>{error.title}</strong><br />{error.message}</Alert>);
-		}
-
-		return '';
-	};
+	errorMessages = () => ((this.state.errors.length) ? this.state.errors.map((error, index) => <ErrorMessage key={index} error={error.data} />) : '');
 
 	render = () => (
 		<Row className="d-flex flex-md-row flex-column register-page-container">

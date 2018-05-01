@@ -7,6 +7,7 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Col, Row } from 'reactstrap';
+import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 
@@ -14,7 +15,7 @@ const propTypes = {};
 
 const defaultProps = {};
 
-class Welcome extends Component {
+class Verification extends Component {
 	constructor(props) {
 		super(props);
 
@@ -24,7 +25,9 @@ class Welcome extends Component {
 	getInitialState = () => ({});
 
 	componentDidMount = () => {
-		document.title = 'Scheduler: Welcome - Dashboard';
+		const meta = document.getElementsByTagName('meta');
+
+		document.title = 'Scheduler: Verification';
 
 		/*
 		meta.description.setAttribute('content', '');
@@ -38,18 +41,18 @@ class Welcome extends Component {
 	render = () => (
 		<Row>
 			<Col>
-				<h2>Welcome</h2>
+				<h2>Verification</h2>
 			</Col>
 		</Row>
 	);
 }
 
-Welcome.propTypes = propTypes;
+Verification.propTypes = propTypes;
 
-Welcome.defaultProps = defaultProps;
+Verification.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({});
 
 const mapDispatchToProps = dispatch => ({});
 
-export default connect(mapStateToProps, mapDispatchToProps)(Welcome);
+export default connect(mapStateToProps, mapDispatchToProps)(Verification);

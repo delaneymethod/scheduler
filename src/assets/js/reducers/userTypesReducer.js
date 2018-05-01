@@ -6,9 +6,9 @@
 
 import * as types from '../actions/actionTypes';
 import initialState from '../store/initialState';
-import { loadState } from '../store/persistedState';
+import { getStates } from '../store/persistedState';
 
-const persistedState = loadState();
+const persistedState = getStates();
 
 const combinedState = Object.assign(initialState, persistedState);
 

@@ -12,6 +12,9 @@ import { Alert, Col, Row } from 'reactstrap';
 
 import { logout } from '../../actions/authenticationActions';
 
+import Header from '../Header';
+import ErrorMessage from '../ErrorMessage';
+
 const propTypes = {
 	authenticated: PropTypes.bool.isRequired,
 };
@@ -35,10 +38,7 @@ class Logout extends Component {
 			.catch((error) => {
 				const { errors } = this.state;
 
-				errors.push({
-					title: 'Error logging out',
-					message: `${error.data.error}: ${error.data.message}`,
-				});
+				errors.push(error);
 
 				this.setState({ errors });
 			});
@@ -58,23 +58,18 @@ class Logout extends Component {
 		*/
 	};
 
-	componentDidUpdate = prevProps => ({});
-
-	errorMessages = () => {
-		if (this.state.errors.length) {
-			const errors = this.state.errors.map((error, index) => <Alert color="danger" key={index}><span className="alert-heading">{error.title}</span>{error.message}</Alert>);
-
-			return <div>{errors}</div>;
-		}
-
-		return '';
-	};
+	errorMessages = () => ((this.state.errors.length) ? this.state.errors.map((error, index) => <ErrorMessage key={index} error={error.data} />) : '');
 
 	render = () => (
 		<Row>
 			<Col>
-				<h2>Logging Out&hellip;</h2>
-				{this.errorMessages()}
+				<Header />
+				<Row>
+					<Col>
+						<h2>Logging Out&hellip;</h2>
+						{this.errorMessages()}
+					</Col>
+				</Row>
 			</Col>
 		</Row>
 	);
