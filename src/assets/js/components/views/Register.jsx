@@ -1,9 +1,3 @@
-/**
- * @link https://www.giggrafter.com
- * @copyright Copyright (c) Gig Grafter
- * @license https://www.giggrafter.com/license
- */
-
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
@@ -11,7 +5,11 @@ import { bindActionCreators } from 'redux';
 import { Alert, Col, Row, Button, FormGroup, Label, Input } from 'reactstrap';
 import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
 
+import constants from '../../helpers/constants';
 import { register } from '../../actions/authenticationActions';
+
+import ErrorMessage from '../ErrorMessage';
+import SuccessMessage from '../SuccessMessage';
 
 import TextField from '../fields/TextField';
 import EmailField from '../fields/EmailField';
@@ -30,7 +28,7 @@ class Register extends Component {
 		super(props);
 
 		if (this.props.authenticated) {
-			this.props.history.push('/dashboard');
+			this.props.history.push(constants.APP.ROUTES.DASHBOARD.HOME.URI);
 		}
 
 		this.state = this.getInitialState();
@@ -46,14 +44,14 @@ class Register extends Component {
 		lastName: '',
 		firstName: '',
 		businessName: '',
+		emailSent: false,
 		confirmPassword: '',
-		/* FIXME - default subscription level to 1. Eventually based on chosen subscription plan, */
-		/* for now there is only 1 */
+		/* FIXME - default subscription level to 1. Eventually based on chosen subscription plan, for now there is only 1 */
 		subscriptionLevel: 1,
 	});
 
 	componentDidMount = () => {
-		document.title = 'Scheduler: Register';
+		document.title = `${constants.APP.TITLE}: ${constants.APP.ROUTES.REGISTER.TITLE}`;
 
 		/*
 		meta.description.setAttribute('content', '');
@@ -75,7 +73,7 @@ class Register extends Component {
 	handleSubmit = (event) => {
 		event.preventDefault();
 
-		this.setState({ errors: [] });
+		this.setState({ errors: [], emailSent: false });
 
 		this.form.validateFields();
 
@@ -90,7 +88,7 @@ class Register extends Component {
 			};
 
 			this.props.actions.register(payload)
-				.then(() => this.props.history.push('/verification'))
+				.then(() => this.setState({ emailSent: true }))
 				.catch((error) => {
 					const { errors } = this.state;
 
@@ -107,16 +105,17 @@ class Register extends Component {
 		<Row className="d-flex flex-md-row flex-column register-page-container">
 			<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center bg-dark py-5">
 				<div className="panel-welcome">
-					<h1><a href="/" title="Scheduler"><img src="/assets/img/scheduler-logo.svg" alt="Scheduler Logo" className="mb-4" /></a></h1>
-					<p className="h5 mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta velit in lectus efficitur hendrerit. Quisque cursus arcu sollicitudin rhoncus molestie. Donec at rhoncus enim, ut rhoncus lacus. Sed eget felis est.</p>
+					<h1><a href={constants.APP.ROUTES.HOME.URI} title={constants.APP.TITLE}><img src={constants.APP.LOGO} alt={constants.APP.TITLE} className="mb-4" /></a></h1>
+					<p className="h5 mb-0">{constants.APP.ROUTES.REGISTER.MESSAGE}</p>
 				</div>
 			</Col>
 			<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center py-5">
 				<div className="panel-page">
-					<a href="/login" title="Already a member? Log In" className="panel-page__link float-right">Already a member? Log In</a>
+					<a href={constants.APP.ROUTES.LOGIN.URI} title={constants.APP.ROUTES.LOGIN.TITLE} className="panel-page__link float-right">Already a member? {constants.APP.ROUTES.LOGIN.TITLE}</a>
 					<div className="card panel-page__content">
-						<h2 className="h5--title-card">Register</h2>
+						<h2 className="h5--title-card">{constants.APP.ROUTES.REGISTER.TITLE}</h2>
 						{this.errorMessages()}
+						{(this.state.emailSent) ? <SuccessMessage message={`An email has been sent to <strong>${this.state.email}</strong>. Please follow the link in this email message to verify your account and complete registration.`} /> : ''}
 						<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 							<TextField fieldName="businessName" fieldLabel="Business Name" fieldValue={this.state.businessName} fieldPlaceholder="e.g. Gig Grafter.com" handleChange={this.handleChange} valueMissing="Please provide a valid business name." />
 							<Row>
@@ -130,7 +129,7 @@ class Register extends Component {
 							<EmailField emailValue={this.state.email} handleChange={this.handleChange} />
 							<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChange} />
 							<PasswordField fieldLabel="Confirm Password" fieldName="confirmPassword" fieldValue={this.state.confirmPassword} handleChange={this.handleChange} />
-							<Button type="submit" color="primary" className="mt-4" title="Register" block>Register</Button>
+							<Button type="submit" color="primary" className="mt-4" title={constants.APP.ROUTES.REGISTER.TITLE} block>{constants.APP.ROUTES.REGISTER.TITLE}</Button>
 						</FormWithConstraints>
 					</div>
 				</div>

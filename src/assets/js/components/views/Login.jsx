@@ -1,9 +1,3 @@
-/**
- * @link https://www.giggrafter.com
- * @copyright Copyright (c) Gig Grafter
- * @license https://www.giggrafter.com/license
- */
-
 import jwtDecode from 'jwt-decode';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -12,10 +6,12 @@ import { bindActionCreators } from 'redux';
 import { Alert, Col, Row, Button, FormGroup, Label, Input } from 'reactstrap';
 import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
 
+import constants from '../../helpers/constants';
 import { saveState } from '../../store/persistedState';
 import { login } from '../../actions/authenticationActions';
 
 import ErrorMessage from '../ErrorMessage';
+
 import EmailField from '../fields/EmailField';
 import PasswordField from '../fields/PasswordField';
 
@@ -32,7 +28,7 @@ class Login extends Component {
 		super(props);
 
 		if (this.props.authenticated) {
-			this.props.history.push('/dashboard');
+			this.props.history.push(constants.APP.ROUTES.DASHBOARD.HOME.URI);
 		}
 
 		this.state = this.getInitialState();
@@ -48,7 +44,7 @@ class Login extends Component {
 	});
 
 	componentDidMount = () => {
-		document.title = 'Scheduler: Login';
+		document.title = `${constants.APP.TITLE}: ${constants.APP.ROUTES.LOGIN.TITLE}`;
 
 		/*
 		meta.description.setAttribute('content', '');
@@ -98,7 +94,7 @@ class Login extends Component {
 
 					saveState('user', user);
 
-					this.props.history.push('/dashboard');
+					this.props.history.push(constants.APP.ROUTES.DASHBOARD.HOME.URI);
 				})
 				.catch((error) => {
 					const { errors } = this.state;
@@ -116,21 +112,21 @@ class Login extends Component {
 		<Row className="d-flex flex-md-row flex-column login-page-container">
 			<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center bg-dark py-5">
 				<div className="panel-welcome">
-					<h1><a href="/" title="Scheduler"><img src="/assets/img/scheduler-logo.svg" alt="Scheduler Logo" className="mb-4" /></a></h1>
-					<p className="h5 mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta velit in lectus efficitur hendrerit. Quisque cursus arcu sollicitudin rhoncus molestie. Donec at rhoncus enim, ut rhoncus lacus. Sed eget felis est.</p>
+					<h1><a href={constants.APP.ROUTES.HOME.URI} title={constants.APP.TITLE}><img src={constants.APP.LOGO} alt={constants.APP.TITLE} className="mb-4" /></a></h1>
+					<p className="h5 mb-0">{constants.APP.ROUTES.LOGIN.MESSAGE}</p>
 				</div>
 			</Col>
 			<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center py-5">
 				<div className="panel-page">
-					<a href="/register" title="Register" className="panel-page__link">Back to Register</a>
+					<a href={constants.APP.ROUTES.REGISTER.URI} title={constants.APP.ROUTES.REGISTER.TITLE} className="panel-page__link">Back to {constants.APP.ROUTES.REGISTER.TITLE}</a>
 					<div className="card panel-page__content">
-						<h2 className="h5--title-card">Login</h2>
+						<h2 className="h5--title-card">{constants.APP.ROUTES.LOGIN.TITLE}</h2>
 						{this.errorMessages()}
 						<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 							<EmailField emailValue={this.state.email} handleChange={this.handleChange} />
 							<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChange} />
-							<Button type="submit" color="primary" className="mt-4" title="Login" block>Login</Button>
-							<a href="/forgotten-your-password" title="Forgotten your password?" className="panel-page__forgot">Forgotten your password?</a>
+							<Button type="submit" color="primary" className="mt-4" title={constants.APP.ROUTES.LOGIN.TITLE} block>{constants.APP.ROUTES.LOGIN.TITLE}</Button>
+							<a href={constants.APP.ROUTES.FORGOTTEN_YOUR_PASSWORD.URI} title={constants.APP.ROUTES.FORGOTTEN_YOUR_PASSWORD.TITLE} className="panel-page__forgot">{constants.APP.ROUTES.FORGOTTEN_YOUR_PASSWORD.TITLE}</a>
 						</FormWithConstraints>
 					</div>
 				</div>

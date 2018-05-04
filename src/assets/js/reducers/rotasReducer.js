@@ -1,9 +1,3 @@
-/**
- * @link https://www.giggrafter.com
- * @copyright Copyright (c) Gig Grafter
- * @license https://www.giggrafter.com/license
- */
-
 import * as types from '../actions/actionTypes';
 import initialState from '../store/initialState';
 import { getStates } from '../store/persistedState';

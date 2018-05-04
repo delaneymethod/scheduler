@@ -1,9 +1,3 @@
-/**
- * @link https://www.giggrafter.com
- * @copyright Copyright (c) Gig Grafter
- * @license https://www.giggrafter.com/license
- */
-
 import api from '../api';
 import * as types from './actionTypes';
 import { deleteState } from '../store/persistedState';
@@ -68,6 +62,23 @@ export const register = payload => (dispatch) => {
 		.catch((error) => {
 			dispatch(authenticated(false));
 
+			dispatch(ajaxLoading(false));
+
+			/* Bubble the error back up the rabbit hole */
+			return Promise.reject(error);
+		});
+};
+
+export const forgottenYourPassword = payload => (dispatch) => {
+	dispatch(ajaxLoading(true));
+
+	return api.forgottenYourPassword(payload)
+		.then((response) => {
+			dispatch(ajaxLoading(false));
+
+			return response;
+		})
+		.catch((error) => {
 			dispatch(ajaxLoading(false));
 
 			/* Bubble the error back up the rabbit hole */

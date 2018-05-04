@@ -1,15 +1,11 @@
-/**
- * @link https://www.giggrafter.com
- * @copyright Copyright (c) Gig Grafter
- * @license https://www.giggrafter.com/license
- */
-
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Col, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
+
+import constants from '../../helpers/constants';
 
 const propTypes = {};
 
@@ -27,7 +23,7 @@ class Home extends Component {
 	componentDidMount = () => {
 		const meta = document.getElementsByTagName('meta');
 
-		document.title = 'Scheduler';
+		document.title = constants.APP.TITLE;
 
 		/*
 		meta.description.setAttribute('content', '');
@@ -41,9 +37,9 @@ class Home extends Component {
 	render = () => (
 		<Row>
 			<Col>
-				<h2>Home</h2>
+				<h2>{constants.APP.ROUTES.HOME.TITLE}</h2>
 				<ul className="list-unstyled">
-					<li><Link to="/login" title="Login" className="btn btn-sm btn-success">Login</Link></li>
+					<li><Link to={constants.APP.ROUTES.LOGIN.URI} title={constants.APP.ROUTES.LOGIN.TITLE} className="btn btn-primary">{constants.APP.ROUTES.LOGIN.TITLE}</Link></li>
 				</ul>
 			</Col>
 		</Row>

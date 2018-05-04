@@ -1,15 +1,10 @@
-/**
- * @link https://www.giggrafter.com
- * @copyright Copyright (c) Gig Grafter
- * @license https://www.giggrafter.com/license
- */
-
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { Alert, Col, Row } from 'reactstrap';
 
+import constants from '../../../helpers/constants';
 import { getUsers } from '../../../actions/userActions';
 import { getShifts } from '../../../actions/shiftActions';
 
@@ -29,7 +24,7 @@ class Dashboard extends Component {
 		super(props);
 
 		if (!this.props.authenticated) {
-			this.props.history.push('/login');
+			this.props.history.push(constants.APP.ROUTES.LOGIN.URI);
 		}
 
 		this.state = this.getInitialState();
@@ -42,7 +37,7 @@ class Dashboard extends Component {
 	});
 
 	componentDidMount = () => {
-		document.title = 'Scheduler: Dashboard';
+		document.title = `${constants.APP.TITLE}: ${constants.APP.ROUTES.DASHBOARD.HOME.TITLE}`;
 
 		/*
 		meta.description.setAttribute('content', '');
@@ -103,7 +98,7 @@ class Dashboard extends Component {
 				<Header />
 				<Row>
 					<Col>
-						<h2>Dashboard</h2>
+						<h2>{constants.APP.ROUTES.DASHBOARD.HOME.TITLE}</h2>
 						{this.errorMessages()}
 					</Col>
 				</Row>

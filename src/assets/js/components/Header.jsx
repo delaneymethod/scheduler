@@ -1,14 +1,10 @@
-/**
- * @link https://www.giggrafter.com
- * @copyright Copyright (c) Gig Grafter
- * @license https://www.giggrafter.com/license
- */
-
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink, Col, Row } from 'reactstrap';
+
+import constants from '../helpers/constants';
 
 const propTypes = {
 	authenticated: PropTypes.bool.isRequired,
@@ -41,14 +37,19 @@ class Header extends Component {
 		<Row>
 			<Col>
 				<Navbar color="dark" dark expand="lg">
-					<NavbarBrand href="/" title="Scheduler">Scheduler<span>.</span></NavbarBrand>
+					<NavbarBrand href={constants.APP.ROUTES.HOME.URI} title={constants.APP.TITLE}>{constants.APP.TITLE}<span>.</span></NavbarBrand>
 					<NavbarToggler onClick={this.handleToggle} />
 					<Collapse isOpen={this.state.isOpen} navbar>
-						<Nav className="mr-auto" navbar>
-							{(!this.props.authenticated) ? <NavItem><NavLink href="/login" title="Login">Login</NavLink></NavItem> : ''}
-							{(this.props.authenticated) ? <NavItem><NavLink href="/dashboard" title="Dashboard">Dashboard</NavLink></NavItem> : ''}
-							{(this.props.authenticated) ? <NavItem><NavLink href="/logout" title="Logout">Logout</NavLink></NavItem> : ''}
-						</Nav>
+						{this.props.authenticated ? (
+							<Nav className="mr-auto" navbar>
+								<NavItem><NavLink href={constants.APP.ROUTES.DASHBOARD.HOME.URI} title={constants.APP.ROUTES.DASHBOARD.HOME.TITLE}>{constants.APP.ROUTES.DASHBOARD.HOME.TITLE}</NavLink></NavItem>
+								<NavItem><NavLink href={constants.APP.ROUTES.LOGOUT.URI} title={constants.APP.ROUTES.LOGOUT.TITLE}>{constants.APP.ROUTES.LOGOUT.TITLE}</NavLink></NavItem>
+							</Nav>
+						) : (
+							<Nav className="mr-auto" navbar>
+								<NavItem><NavLink href={constants.APP.ROUTES.LOGIN.URI} title={constants.APP.ROUTES.LOGIN.TITLE}>{constants.APP.ROUTES.LOGIN.TITLE}</NavLink></NavItem>
+							</Nav>
+						)}
 					</Collapse>
 				</Navbar>
 			</Col>
