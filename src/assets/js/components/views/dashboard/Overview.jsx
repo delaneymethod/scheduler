@@ -1,14 +1,10 @@
-/**
- * @link https://www.giggrafter.com
- * @copyright Copyright (c) Gig Grafter
- * @license https://www.giggrafter.com/license
- */
-
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Col, Row } from 'reactstrap';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
+
+import constants from '../../../helpers/constants';
 
 const propTypes = {};
 
@@ -24,7 +20,7 @@ class Overview extends Component {
 	getInitialState = () => ({});
 
 	componentDidMount = () => {
-		document.title = 'Scheduler: Overview - Dashboard';
+		document.title = `${constants.APP.TITLE}: ${constants.APP.ROUTES.DASHBOARD.OVERVIEW.TITLE} - ${constants.APP.ROUTES.DASHBOARD.HOME.TITLE}`;
 
 		/*
 		meta.description.setAttribute('content', '');
@@ -38,7 +34,7 @@ class Overview extends Component {
 	render = () => (
 		<Row>
 			<Col>
-				<h2>Overview</h2>
+				<h2>{constants.APP.ROUTES.DASHBOARD.OVERVIEW.TITLE}</h2>
 			</Col>
 		</Row>
 	);

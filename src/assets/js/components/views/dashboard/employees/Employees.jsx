@@ -1,14 +1,10 @@
-/**
- * @link https://www.giggrafter.com
- * @copyright Copyright (c) Gig Grafter
- * @license https://www.giggrafter.com/license
- */
-
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Col, Row } from 'reactstrap';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
+
+import constants from '../../../../helpers/constants';
 
 const propTypes = {};
 
@@ -24,7 +20,7 @@ class Employees extends Component {
 	getInitialState = () => ({});
 
 	componentDidMount = () => {
-		document.title = 'Scheduler: Employees - Dashboard';
+		document.title = `${constants.APP.TITLE}: ${constants.APP.ROUTES.DASHBOARD.EMPLOYEES.TITLE} - ${constants.APP.ROUTES.DASHBOARD.HOME.TITLE}`;
 
 		/*
 		meta.description.setAttribute('content', '');
@@ -38,7 +34,7 @@ class Employees extends Component {
 	render = () => (
 		<Row>
 			<Col>
-				<h2>Employees</h2>
+				<h2>{constants.APP.ROUTES.DASHBOARD.EMPLOYEES.TITLE}</h2>
 			</Col>
 		</Row>
 	);

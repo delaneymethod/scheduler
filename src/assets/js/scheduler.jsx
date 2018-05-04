@@ -1,10 +1,5 @@
-/**
- * @link https://www.giggrafter.com
- * @copyright Copyright (c) Gig Grafter
- * @license https://www.giggrafter.com/license
- */
-
 import 'bootstrap';
+import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import fastclick from 'fastclick';

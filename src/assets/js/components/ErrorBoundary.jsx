@@ -1,9 +1,3 @@
-/**
- * @link https://www.giggrafter.com
- * @copyright Copyright (c) Gig Grafter
- * @license https://www.giggrafter.com/license
- */
-
 import { Alert } from 'reactstrap';
 import React, { Component } from 'react';
 

@@ -1,9 +1,3 @@
-/**
- * @link https://www.giggrafter.com
- * @copyright Copyright (c) Gig Grafter
- * @license https://www.giggrafter.com/license
- */
-
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 
@@ -31,24 +25,29 @@ class SchedulerApi {
 			/* The request was made and the server responded with a status code that falls out of the range of 2xx */
 			if (error.response.data) {
 				data.title = `${error.response.data.error.code} ${error.response.data.error.type}`;
-				data.message = `${error.response.data.error.message}.<br />${error.response.data.error.hints.summary}.`;
+
+				data.message = `<p>${error.response.data.error.message}.</p><p class="pb-0 mb-0">${error.response.data.error.hints.summary}.</p>`;
 			} else {
 				data.title = `${error.response.code} ${error.response.name}`;
-				data.message = error.response.message;
+
+				data.message = `<p>${error.response.message}.</p>`;
 			}
 		} else if (error.request) {
 			/* The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser */
 			if (error.message === 'Network Error') {
 				data.title = '504 Network Error';
-				data.message = 'A network error occurred. Please try again.';
+
+				data.message = '<p>A network error occurred. Please try again.</p>';
 			} else {
 				data.title = error.name;
-				data.message = error.message;
+
+				data.message = `<p>${error.message}.</p>`;
 			}
 		} else {
 			/* Something else happened in setting up the request that triggered an Error */
 			data.title = 'Error';
-			data.message = error.message;
+
+			data.message = `<p>${error.message}.</p>`;
 		}
 
 		return {
@@ -119,17 +118,24 @@ class SchedulerApi {
 	}
 
 	/* AUTHENTICATE */
-	static login(credentials) {
+	static login(data) {
 		const axiosRequest = this.axiosRequest();
 
-		return axiosRequest('POST', `${process.env.API_HOST}/login`, 200, credentials);
+		return axiosRequest('POST', `${process.env.API_HOST}/login`, 200, data);
 	}
 
 	/* REGISTER */
-	static register(business) {
+	static register(data) {
 		const axiosRequest = this.axiosRequest();
 
-		return axiosRequest('POST', `${process.env.API_HOST}/business-sign-up`, 200, business);
+		return axiosRequest('POST', `${process.env.API_HOST}/business-sign-up`, 200, data);
+	}
+
+	/* FORGOTTEN YOUR PASSWORD */
+	static forgottenYourPassword(data) {
+		const axiosRequest = this.axiosRequest();
+
+		return axiosRequest('POST', `${process.env.API_HOST}/forgotten-your-password`, 200, data);
 	}
 
 	/* USERS */

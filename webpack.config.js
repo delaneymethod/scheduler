@@ -21,10 +21,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = (env, options) => ({
-	entry: [
-		'babel-polyfill',
-		'./src/assets/js/Scheduler.jsx',
-	],
+	entry: './src/assets/js/Scheduler.jsx',
 	output: {
 		publicPath: '/',
 		filename: 'assets/js/[name].bundle.js',
@@ -33,7 +30,7 @@ module.exports = (env, options) => ({
 	watchOptions: {
 		ignored: /node_modules/,
 	},
-	devtool: (options.mode === 'production') ? 'source-map' : 'eval-source-map',
+	devtool: (options.mode === 'production') ? 'source-map' : 'cheap-module-source-map',
 	devServer: {
 		hot: true,
 		watchContentBase: true,
@@ -142,29 +139,9 @@ module.exports = (env, options) => ({
 		splitChunks: {
 			cacheGroups: {
 				commons: {
-					minSize: 0,
-					minChunks: 2,
-					chunks: 'all',
-					maxInitialRequests: 5,
-				},
-				vendor: {
-					priority: 10,
-					chunks: 'all',
-					enforce: true,
 					name: 'vendors',
+					chunks: 'initial',
 					test: /node_modules/,
-				},
-				styles: {
-					chunks: 'all',
-					enforce: true,
-					test: /\.css$/,
-					name: 'styles',
-				},
-				scripts: {
-					chunks: 'all',
-					enforce: true,
-					test: /\.js$/,
-					name: 'scripts',
 				},
 			},
 		},

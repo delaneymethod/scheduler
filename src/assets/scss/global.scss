@@ -1,9 +1,3 @@
-/**
- * @link https://www.giggrafter.com
- * @copyright Copyright (c) Gig Grafter
- * @license https://www.giggrafter.com/license
- */
- 
 @import 'mixins';
 
 @import 'variables';
@@ -161,7 +155,8 @@ label {
 }
 
 .login-page-container,
-.register-page-container {
+.register-page-container,
+.forgotten-your-password-page-container {
 	min-height: -moz-min-content; /* not implemented */
 	min-height: -webkit-min-content; /* works for opera and safari */
 	min-height: min-content; /* works for chrome */

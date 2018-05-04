@@ -1,14 +1,10 @@
-/**
- * @link https://www.giggrafter.com
- * @copyright Copyright (c) Gig Grafter
- * @license https://www.giggrafter.com/license
- */
-
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Col, Row } from 'reactstrap';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
+
+import constants from '../../helpers/constants';
 
 const propTypes = {};
 
@@ -24,7 +20,7 @@ class NotFoundPage extends Component {
 	getInitialState = () => ({});
 
 	componentDidMount = () => {
-		document.title = 'Scheduler: Not Found Page';
+		document.title = `${constants.APP.TITLE}: Not Found Page`;
 
 		/*
 		meta.description.setAttribute('content', '');

@@ -1,11 +1,3 @@
-/**
- * @link https://www.giggrafter.com
- * @copyright Copyright (c) Gig Grafter
- * @license https://www.giggrafter.com/license
- */
-
-/* https://developers.google.com/web/ilt/pwa/caching-files-with-service-worker */
-
 (() => {
 	const staticFilesToCache = [
 		'404.html',

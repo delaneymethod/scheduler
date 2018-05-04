@@ -1,15 +1,10 @@
-/**
- * @link https://www.giggrafter.com
- * @copyright Copyright (c) Gig Grafter
- * @license https://www.giggrafter.com/license
- */
-
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { Alert, Col, Row } from 'reactstrap';
 
+import constants from '../../helpers/constants';
 import { logout } from '../../actions/authenticationActions';
 
 import Header from '../Header';
@@ -28,13 +23,13 @@ class Logout extends Component {
 		super(props);
 
 		if (!this.props.authenticated) {
-			this.props.history.push('/login');
+			this.props.history.push(constants.APP.ROUTES.LOGIN.URI);
 		}
 
 		this.state = this.getInitialState();
 
 		this.props.actions.logout()
-			.then(() => this.props.history.push('/login'))
+			.then(() => this.props.history.push(constants.APP.ROUTES.LOGIN.URI))
 			.catch((error) => {
 				const { errors } = this.state;
 
@@ -49,7 +44,7 @@ class Logout extends Component {
 	});
 
 	componentDidMount = () => {
-		document.title = 'Scheduler';
+		document.title = `${constants.APP.TITLE}: ${constants.APP.ROUTES.LOGOUT.TITLE}`;
 
 		/*
 		meta.description.setAttribute('content', '');
@@ -66,7 +61,7 @@ class Logout extends Component {
 				<Header />
 				<Row>
 					<Col>
-						<h2>Logging Out&hellip;</h2>
+						<h2>{constants.APP.ROUTES.LOGOUT.TITLE}</h2>
 						{this.errorMessages()}
 					</Col>
 				</Row>

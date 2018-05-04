@@ -1,9 +1,3 @@
-/**
- * @link https://www.giggrafter.com
- * @copyright Copyright (c) Gig Grafter
- * @license https://www.giggrafter.com/license
- */
-
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
