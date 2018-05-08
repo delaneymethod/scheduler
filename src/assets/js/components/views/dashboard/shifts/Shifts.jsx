@@ -2,17 +2,26 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Col, Row } from 'reactstrap';
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
 
 import constants from '../../../../helpers/constants';
 
-const propTypes = {};
+import Header from '../../../common/Header';
 
-const defaultProps = {};
+const propTypes = {
+	authenticated: PropTypes.bool.isRequired,
+};
+
+const defaultProps = {
+	authenticated: false,
+};
 
 class Shifts extends Component {
 	constructor(props) {
 		super(props);
+
+		if (!this.props.authenticated) {
+			this.props.history.push(constants.APP.ROUTES.LOGIN.URI);
+		}
 
 		this.state = this.getInitialState();
 	}
@@ -23,18 +32,23 @@ class Shifts extends Component {
 		document.title = `${constants.APP.TITLE}: ${constants.APP.ROUTES.DASHBOARD.SHIFTS.TITLE} - ${constants.APP.ROUTES.DASHBOARD.HOME.TITLE}`;
 
 		/*
+		const meta = document.getElementsByTagName('meta');
+
 		meta.description.setAttribute('content', '');
 		meta.keywords.setAttribute('content', '');
 		meta.author.setAttribute('content', '');
 		*/
 	};
 
-	componentDidUpdate = prevProps => ({});
-
 	render = () => (
 		<Row>
-			<Col>
-				<h2>{constants.APP.ROUTES.DASHBOARD.SHIFTS.TITLE}</h2>
+			<Col xs="12" sm="12" md="12" lg="12" xl="12">
+				<Header history={this.props.history} />
+				<Row>
+					<Col xs="12" sm="12" md="12" lg="12" xl="12">
+						<h2>{constants.APP.ROUTES.DASHBOARD.SHIFTS.TITLE}</h2>
+					</Col>
+				</Row>
 			</Col>
 		</Row>
 	);
@@ -44,7 +58,9 @@ Shifts.propTypes = propTypes;
 
 Shifts.defaultProps = defaultProps;
 
-const mapStateToProps = (state, props) => ({});
+const mapStateToProps = (state, props) => ({
+	authenticated: state.authenticated,
+});
 
 const mapDispatchToProps = dispatch => ({});
 

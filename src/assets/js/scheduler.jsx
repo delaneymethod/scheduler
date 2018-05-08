@@ -10,15 +10,23 @@ import { BrowserRouter } from 'react-router-dom';
 import '../scss/global';
 
 import App from './components/App';
+
 import { saveState } from './store/persistedState';
+
 import { getShifts } from './actions/shiftActions';
+
 import configureStore from './store/configureStore';
+
 import registerServiceWorker from './helpers/registerServiceWorker';
 
 const store = configureStore();
 
-/* Listen for state changes, saving a maximum once per second. We only want to persist the authenticated state for now. */
-store.subscribe(throttle(() => saveState('authenticated', store.getState().authenticated), 1000));
+/* Listen for state changes, saving a maximum once per second. */
+store.subscribe(throttle(() => {
+	saveState('user', store.getState().user);
+
+	saveState('authenticated', store.getState().authenticated);
+}, 1000));
 
 ReactDOM.render(
 	<Provider store={store}>

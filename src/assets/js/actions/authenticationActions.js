@@ -1,6 +1,5 @@
 import api from '../api';
 import * as types from './actionTypes';
-import { deleteState } from '../store/persistedState';
 
 export const ajaxLoading = status => ({
 	type: types.AJAX_LOADING,
@@ -12,21 +11,26 @@ export const authenticated = status => ({
 	status,
 });
 
+export const getUserSuccess = user => ({
+	type: types.GET_USER,
+	user,
+});
+
 export const login = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
 	return api.login(payload)
-		.then((response) => {
-			dispatch(authenticated(true));
+		.then((user) => {
+			dispatch(getUserSuccess(user));
 
 			dispatch(ajaxLoading(false));
 
-			return response;
+			dispatch(authenticated(true));
 		})
 		.catch((error) => {
-			dispatch(authenticated(false));
-
 			dispatch(ajaxLoading(false));
+
+			dispatch(authenticated(false));
 
 			/* Bubble the error back up the rabbit hole */
 			return Promise.reject(error);
@@ -34,35 +38,22 @@ export const login = payload => (dispatch) => {
 };
 
 export const logout = () => (dispatch) => {
+	dispatch(getUserSuccess({}));
+
 	dispatch(authenticated(false));
 
-	try {
-		deleteState('token');
-
-		deleteState('user');
-
-		return Promise.resolve(true);
-	} catch (error) {
-		/* Bubble the error back up the rabbit hole */
-		return Promise.reject(error);
-	}
+	return Promise.resolve(true);
 };
 
 export const register = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
 	return api.register(payload)
-		.then((response) => {
-			dispatch(authenticated(true));
-
-			dispatch(ajaxLoading(false));
-
-			return response;
-		})
+		.then(() => dispatch(ajaxLoading(false)))
 		.catch((error) => {
-			dispatch(authenticated(false));
-
 			dispatch(ajaxLoading(false));
+
+			dispatch(authenticated(false));
 
 			/* Bubble the error back up the rabbit hole */
 			return Promise.reject(error);
@@ -73,11 +64,7 @@ export const forgottenYourPassword = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
 	return api.forgottenYourPassword(payload)
-		.then((response) => {
-			dispatch(ajaxLoading(false));
-
-			return response;
-		})
+		.then(() => dispatch(ajaxLoading(false)))
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
 

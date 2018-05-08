@@ -6,20 +6,20 @@ export const ajaxLoading = status => ({
 	status,
 });
 
+/* GET ALL PLACEMENTS */
 export const getPlacementsSuccess = placements => ({
-	type: types.GET_PLACEMENTS_SUCCESS,
+	type: types.GET_PLACEMENTS,
 	placements,
 });
 
-/* GET ALL PLACEMENTS */
 export const getPlacements = () => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
 	return api.getPlacements()
 		.then((placements) => {
-			dispatch(getPlacementsSuccess(placements));
-
 			dispatch(ajaxLoading(false));
+
+			dispatch(getPlacementsSuccess(placements));
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -28,21 +28,21 @@ export const getPlacements = () => (dispatch) => {
 			return Promise.reject(error);
 		});
 };
-
-export const getPlacementSuccess = placement => ({
-	type: types.GET_PLACEMENT_SUCCESS,
-	placement,
-});
 
 /* GET SPECIFIC PLACEMENT */
-export const getPlacement = placement => (dispatch) => {
+export const getPlacementSuccess = placement => ({
+	type: types.GET_PLACEMENT,
+	placement,
+});
+
+export const getPlacement = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return api.getPlacement(placement)
-		.then((data) => {
-			dispatch(getPlacementSuccess(data));
-
+	return api.getPlacement(payload)
+		.then((placement) => {		
 			dispatch(ajaxLoading(false));
+
+			dispatch(getPlacementSuccess(placement));
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -51,21 +51,21 @@ export const getPlacement = placement => (dispatch) => {
 			return Promise.reject(error);
 		});
 };
-
-export const createPlacementSuccess = placement => ({
-	type: types.CREATE_PLACEMENT_SUCCESS,
-	placement,
-});
 
 /* CREATE NEW PLACEMENT */
-export const createPlacement = placement => (dispatch) => {
+export const createPlacementSuccess = placement => ({
+	type: types.CREATE_PLACEMENT,
+	placement,
+});
+
+export const createPlacement = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return api.createPlacement(placement)
-		.then((data) => {
-			dispatch(createPlacementSuccess(data));
-
+	return api.createPlacement(payload)
+		.then((placement) => {
 			dispatch(ajaxLoading(false));
+
+			dispatch(createPlacementSuccess(placement));
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -74,21 +74,21 @@ export const createPlacement = placement => (dispatch) => {
 			return Promise.reject(error);
 		});
 };
-
-export const updatePlacementSuccess = placement => ({
-	type: types.UPDATE_PLACEMENT_SUCCESS,
-	placement,
-});
 
 /* UPDATE SPECIFIC PLACEMENT */
-export const updatePlacement = placement => (dispatch) => {
+export const updatePlacementSuccess = placement => ({
+	type: types.UPDATE_PLACEMENT,
+	placement,
+});
+
+export const updatePlacement = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return api.updatePlacement(placement)
-		.then((data) => {
-			dispatch(updatePlacementSuccess(data));
-
+	return api.updatePlacement(payload)
+		.then((placement) => {
 			dispatch(ajaxLoading(false));
+
+			dispatch(updatePlacementSuccess(placement));
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -98,20 +98,20 @@ export const updatePlacement = placement => (dispatch) => {
 		});
 };
 
+/* DELETE SPECIFIC PLACEMENT */
 export const deletePlacementSuccess = placement => ({
-	type: types.DELETE_PLACEMENT_SUCCESS,
+	type: types.DELETE_PLACEMENT,
 	placement,
 });
 
-/* DELETE SPECIFIC PLACEMENT */
-export const deletePlacement = placement => (dispatch) => {
+export const deletePlacement = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return api.deletePlacement(placement)
+	return api.deletePlacement(payload)
 		.then(() => {
-			dispatch(deletePlacementSuccess(placement));
-
 			dispatch(ajaxLoading(false));
+
+			dispatch(deletePlacementSuccess(payload));
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));

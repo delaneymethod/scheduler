@@ -2,14 +2,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
-import { Alert, Col, Row, Button, FormGroup, Label, Input } from 'reactstrap';
-import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
+import { Col, Row, Label, Input, Button, FormGroup } from 'reactstrap';
+import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 
 import constants from '../../helpers/constants';
+
 import { register } from '../../actions/authenticationActions';
 
-import ErrorMessage from '../ErrorMessage';
-import SuccessMessage from '../SuccessMessage';
+import ErrorMessage from '../common/ErrorMessage';
+import SuccessMessage from '../common/SuccessMessage';
 
 import TextField from '../fields/TextField';
 import EmailField from '../fields/EmailField';
@@ -34,6 +35,7 @@ class Register extends Component {
 		this.state = this.getInitialState();
 
 		this.handleChange = this.handleChange.bind(this);
+
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
@@ -46,7 +48,6 @@ class Register extends Component {
 		businessName: '',
 		emailSent: false,
 		confirmPassword: '',
-		/* FIXME - default subscription level to 1. Eventually based on chosen subscription plan, for now there is only 1 */
 		subscriptionLevel: 1,
 	});
 
@@ -54,6 +55,8 @@ class Register extends Component {
 		document.title = `${constants.APP.TITLE}: ${constants.APP.ROUTES.REGISTER.TITLE}`;
 
 		/*
+		const meta = document.getElementsByTagName('meta');
+
 		meta.description.setAttribute('content', '');
 		meta.keywords.setAttribute('content', '');
 		meta.author.setAttribute('content', '');
@@ -88,6 +91,7 @@ class Register extends Component {
 			};
 
 			this.props.actions.register(payload)
+				.then(() => console.log('check state'))
 				.then(() => this.setState({ emailSent: true }))
 				.catch((error) => {
 					const { errors } = this.state;

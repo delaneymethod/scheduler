@@ -14,7 +14,6 @@ export default {
 			},
 			LOGOUT: {
 				TITLE: 'Logout',
-				URI: '/logout',
 			},
 			REGISTER: {
 				TITLE: 'Register',

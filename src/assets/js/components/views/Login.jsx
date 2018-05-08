@@ -3,23 +3,26 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
-import { Alert, Col, Row, Button, FormGroup, Label, Input } from 'reactstrap';
-import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
+import { Col, Row, Label, Input, Button, FormGroup } from 'reactstrap';
+import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 
 import constants from '../../helpers/constants';
-import { saveState } from '../../store/persistedState';
+
+import { updateUser } from '../../actions/userActions';
 import { login } from '../../actions/authenticationActions';
 
-import ErrorMessage from '../ErrorMessage';
+import ErrorMessage from '../common/ErrorMessage';
 
 import EmailField from '../fields/EmailField';
 import PasswordField from '../fields/PasswordField';
 
 const propTypes = {
+	user: PropTypes.object.isRequired,
 	authenticated: PropTypes.bool.isRequired,
 };
 
 const defaultProps = {
+	user: {},
 	authenticated: false,
 };
 
@@ -34,6 +37,7 @@ class Login extends Component {
 		this.state = this.getInitialState();
 
 		this.handleChange = this.handleChange.bind(this);
+
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
@@ -47,6 +51,8 @@ class Login extends Component {
 		document.title = `${constants.APP.TITLE}: ${constants.APP.ROUTES.LOGIN.TITLE}`;
 
 		/*
+		const meta = document.getElementsByTagName('meta');
+
 		meta.description.setAttribute('content', '');
 		meta.keywords.setAttribute('content', '');
 		meta.author.setAttribute('content', '');
@@ -77,24 +83,34 @@ class Login extends Component {
 			};
 
 			this.props.actions.login(payload)
-				.then((response) => {
-					const token = jwtDecode(response.token);
+				.then(() => {
+					/* The tokens subject contains the users Id */
+					const token = jwtDecode(this.props.user.token);
 
-					/* FIXME - Remove conditions once API has been updated with new responses */
-					const user = {
-						email: (response.email) ? response.email : 'barry.lynch@giggrafter.com',
-						userId: (token.sub) ? token.sub : 2,
-						firstName: (response.firstName) ? response.firstName : 'Barry',
-						accountIds: (response.accountIds) ? response.accountIds : [2],
-						/* We select the first account Id as default */
-						accountId: (response.accountIds) ? response.accountIds[0] : 2,
-					};
+					this.props.user.userId = parseInt(token.sub, 10);
 
-					saveState('token', response.token);
+					/* FIXME - Remove once login response is updated with accounts */
+					this.props.user.accounts = [{
+						id: 1,
+						title: 'Account 1',
+					}, {
+						id: 2,
+						title: 'Account 2',
+					}, {
+						id: 3,
+						title: 'Account 3',
+					}, {
+						id: 4,
+						title: 'Account 4',
+					}];
 
-					saveState('user', user);
+					/* Use the first account as the selected account */
+					const [account] = this.props.user.accounts;
 
-					this.props.history.push(constants.APP.ROUTES.DASHBOARD.HOME.URI);
+					this.props.user.account = account;
+
+					/* Update the user state and then go to the dashboard */
+					this.props.actions.updateUser(this.props.user).then(() => this.props.history.push(constants.APP.ROUTES.DASHBOARD.HOME.URI));
 				})
 				.catch((error) => {
 					const { errors } = this.state;
@@ -140,11 +156,12 @@ Login.propTypes = propTypes;
 Login.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
+	user: state.user,
 	authenticated: state.authenticated,
 });
 
 const mapDispatchToProps = dispatch => ({
-	actions: bindActionCreators({ login }, dispatch),
+	actions: bindActionCreators({ login, updateUser }, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import initialState from './initialState';
 
 const prefix = 'scheduler';
@@ -12,7 +13,6 @@ export const getState = (key) => {
 	}
 };
 
-/* eslint-disable no-param-reassign */
 export const getStates = () => {
 	const allStates = Object.keys(sessionStorage).reduce((states, key) => {
 		key = key.replace(`${prefix}:`, '');
@@ -30,7 +30,6 @@ export const getStates = () => {
 		return combinedStates;
 	}, initialState);
 };
-/* eslint-enable no-param-reassign */
 
 export const saveState = (key, data) => {
 	try {
@@ -49,3 +48,4 @@ export const deleteState = (key) => {
 		return undefined;
 	}
 };
+/* eslint-enable no-param-reassign */

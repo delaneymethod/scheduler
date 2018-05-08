@@ -2,14 +2,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
-import { Alert, Col, Row, Button, FormGroup, Label, Input } from 'reactstrap';
-import { FormWithConstraints, FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
+import { Col, Row, Label, Input, Button, FormGroup } from 'reactstrap';
+import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 
 import constants from '../../helpers/constants';
+
 import { forgottenYourPassword } from '../../actions/authenticationActions';
 
-import ErrorMessage from '../ErrorMessage';
-import SuccessMessage from '../SuccessMessage';
+import ErrorMessage from '../common/ErrorMessage';
+import SuccessMessage from '../common/SuccessMessage';
 
 import EmailField from '../fields/EmailField';
 
@@ -32,6 +33,7 @@ class ForgottenYourPassword extends Component {
 		this.state = this.getInitialState();
 
 		this.handleChange = this.handleChange.bind(this);
+
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
@@ -45,6 +47,8 @@ class ForgottenYourPassword extends Component {
 		document.title = `${constants.APP.TITLE}: ${constants.APP.ROUTES.FORGOTTEN_YOUR_PASSWORD.TITLE}`;
 
 		/*
+		const meta = document.getElementsByTagName('meta');
+
 		meta.description.setAttribute('content', '');
 		meta.keywords.setAttribute('content', '');
 		meta.author.setAttribute('content', '');
@@ -74,6 +78,7 @@ class ForgottenYourPassword extends Component {
 			};
 
 			this.props.actions.forgottenYourPassword(payload)
+				.then(() => console.log('check state'))
 				.then(() => this.setState({ emailSent: true }))
 				.catch((error) => {
 					const { errors } = this.state;

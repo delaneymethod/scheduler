@@ -6,20 +6,20 @@ export const ajaxLoading = status => ({
 	status,
 });
 
+/* GET ALL ROTAS */
 export const getRotasSuccess = rotas => ({
-	type: types.GET_ROTAS_SUCCESS,
+	type: types.GET_ROTAS,
 	rotas,
 });
 
-/* GET ALL ROTAS */
 export const getRotas = () => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
 	return api.getRotas()
 		.then((rotas) => {
-			dispatch(getRotasSuccess(rotas));
-
 			dispatch(ajaxLoading(false));
+
+			dispatch(getRotasSuccess(rotas));
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -30,14 +30,14 @@ export const getRotas = () => (dispatch) => {
 };
 
 /* GET ROTAS BY TYPE */
-export const getRotaByType = rotaType => (dispatch) => {
+export const getRotaByType = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return api.getRotasByType(rotaType)
-		.then((data) => {
-			dispatch(getRotasSuccess(data));
-
+	return api.getRotasByType(payload)
+		.then((rotaType) => {
 			dispatch(ajaxLoading(false));
+
+			dispatch(getRotasSuccess(rotaType));
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -46,21 +46,21 @@ export const getRotaByType = rotaType => (dispatch) => {
 			return Promise.reject(error);
 		});
 };
-
-export const getRotaSuccess = rota => ({
-	type: types.GET_ROTA_SUCCESS,
-	rota,
-});
 
 /* GET SPECIFIC ROTA */
-export const getRota = rota => (dispatch) => {
+export const getRotaSuccess = rota => ({
+	type: types.GET_ROTA,
+	rota,
+});
+
+export const getRota = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return api.getRota(rota)
-		.then((data) => {
-			dispatch(getRotaSuccess(data));
-
+	return api.getRota(payload)
+		.then((rota) => {
 			dispatch(ajaxLoading(false));
+
+			dispatch(getRotaSuccess(rota));
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -69,21 +69,21 @@ export const getRota = rota => (dispatch) => {
 			return Promise.reject(error);
 		});
 };
-
-export const createRotaSuccess = rota => ({
-	type: types.CREATE_ROTA_SUCCESS,
-	rota,
-});
 
 /* CREATE NEW ROTA */
-export const createRota = rota => (dispatch) => {
+export const createRotaSuccess = rota => ({
+	type: types.CREATE_ROTA,
+	rota,
+});
+
+export const createRota = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return api.createRota(rota)
-		.then((data) => {
-			dispatch(createRotaSuccess(data));
-
+	return api.createRota(payload)
+		.then((rota) => {
 			dispatch(ajaxLoading(false));
+
+			dispatch(createRotaSuccess(rota));
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -92,21 +92,21 @@ export const createRota = rota => (dispatch) => {
 			return Promise.reject(error);
 		});
 };
-
-export const updateRotaSuccess = rota => ({
-	type: types.UPDATE_ROTA_SUCCESS,
-	rota,
-});
 
 /* UPDATE SPECIFIC ROTA */
-export const updateRota = rota => (dispatch) => {
+export const updateRotaSuccess = rota => ({
+	type: types.UPDATE_ROTA,
+	rota,
+});
+
+export const updateRota = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return api.updateRota(rota)
-		.then((data) => {
-			dispatch(updateRotaSuccess(data));
-
+	return api.updateRota(payload)
+		.then((rota) => {
 			dispatch(ajaxLoading(false));
+
+			dispatch(updateRotaSuccess(rota));
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -116,20 +116,20 @@ export const updateRota = rota => (dispatch) => {
 		});
 };
 
+/* DELETE SPECIFIC ROTA */
 export const deleteRotaSuccess = rota => ({
-	type: types.DELETE_ROTA_SUCCESS,
+	type: types.DELETE_ROTA,
 	rota,
 });
 
-/* DELETE SPECIFIC ROTA */
-export const deleteRota = rota => (dispatch) => {
+export const deleteRota = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return api.deleteRota(rota)
+	return api.deleteRota(payload)
 		.then(() => {
-			dispatch(deleteRotaSuccess(rota));
-
 			dispatch(ajaxLoading(false));
+
+			dispatch(deleteRotaSuccess(payload));
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));

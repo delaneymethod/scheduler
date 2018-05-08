@@ -8,23 +8,23 @@ const combinedState = Object.assign(initialState, persistedState);
 
 const rotaTypesReducer = (state = combinedState.rotaTypes, action) => {
 	switch (action.type) {
-		case types.GET_ROTA_TYPES_SUCCESS:
+		case types.GET_ROTA_TYPES:
 			return action.rotaTypes;
 
-		case types.GET_ROTA_TYPE_SUCCESS:
-		case types.UPDATE_ROTA_TYPE_SUCCESS:
+		case types.GET_ROTA_TYPE:
+		case types.UPDATE_ROTA_TYPE:
 			return [
 				...state.filter(rotaType => rotaType.id !== action.rotaType.id),
 				Object.assign({}, action.rotaType),
 			];
 
-		case types.CREATE_ROTA_TYPE_SUCCESS:
+		case types.CREATE_ROTA_TYPE:
 			return [
 				...state,
 				Object.assign({}, action.rotaType),
 			];
 
-		case types.DELETE_ROTA_TYPE_SUCCESS:
+		case types.DELETE_ROTA_TYPE:
 			return [
 				...state.filter(rotaType => rotaType.id !== action.rotaType.id),
 			];
