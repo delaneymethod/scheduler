@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Col, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
 
 import constants from '../../helpers/constants';
 
@@ -21,24 +20,22 @@ class Home extends Component {
 	getInitialState = () => ({});
 
 	componentDidMount = () => {
-		const meta = document.getElementsByTagName('meta');
-
 		document.title = constants.APP.TITLE;
 
 		/*
+		const meta = document.getElementsByTagName('meta');
+
 		meta.description.setAttribute('content', '');
 		meta.keywords.setAttribute('content', '');
 		meta.author.setAttribute('content', '');
 		*/
 	};
 
-	componentDidUpdate = prevProps => ({});
-
 	render = () => (
 		<Row>
-			<Col>
+			<Col xs="12" sm="12" md="12" lg="12" xl="12">
 				<h2>{constants.APP.ROUTES.HOME.TITLE}</h2>
-				<ul className="list-unstyled">
+				<ul>
 					<li><Link to={constants.APP.ROUTES.LOGIN.URI} title={constants.APP.ROUTES.LOGIN.TITLE} className="btn btn-primary">{constants.APP.ROUTES.LOGIN.TITLE}</Link></li>
 				</ul>
 			</Col>

@@ -78,19 +78,16 @@ class SchedulerApi {
 				cancelToken: axiosCall.token,
 			};
 
-			const token = getState('token');
-
-			/* Check if the object is not "falsey" (if the object is undefined, 0 or null) */
-			if (token) {
-				axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-			}
-
 			const user = getState('user');
 
 			/* Check if the object is not "falsey" (if the object is undefined, 0 or null) */
 			if (user) {
-				if (user.accountId) {
-					axios.defaults.headers.common['X-Account-Id'] = user.accountId;
+				if (user.token) {
+					axios.defaults.headers.common.Authorization = `Bearer ${user.token}`;
+				}
+
+				if (user.account) {
+					axios.defaults.headers.common['X-Account-Id'] = user.account.id;
 				}
 			}
 
@@ -109,169 +106,101 @@ class SchedulerApi {
 						return null;
 					}
 
+					/* Bubble the error back up the rabbit hole */
 					const error = this.parseError(thrown);
 
-					/* Bubble the error back up the rabbit hole */
 					return Promise.reject(error);
 				});
 		};
 	}
 
 	/* AUTHENTICATE */
-	static login(data) {
+	static login(payload) {
 		const axiosRequest = this.axiosRequest();
 
-		return axiosRequest('POST', `${process.env.API_HOST}/login`, 200, data);
+		return axiosRequest('POST', `${process.env.API_HOST}/login`, 200, payload);
 	}
 
 	/* REGISTER */
-	static register(data) {
+	static register(payload) {
 		const axiosRequest = this.axiosRequest();
 
-		return axiosRequest('POST', `${process.env.API_HOST}/business-sign-up`, 200, data);
+		return axiosRequest('POST', `${process.env.API_HOST}/business-sign-up`, 200, payload);
 	}
 
 	/* FORGOTTEN YOUR PASSWORD */
-	static forgottenYourPassword(data) {
+	static forgottenYourPassword(payload) {
 		const axiosRequest = this.axiosRequest();
 
-		return axiosRequest('POST', `${process.env.API_HOST}/forgotten-your-password`, 200, data);
+		return axiosRequest('POST', `${process.env.API_HOST}/forgotten-your-password`, 200, payload);
 	}
 
-	/* USERS */
-	static getUsers() {
+	/* EMPLOYEES */
+	static getEmployees() {
 		const axiosRequest = this.axiosRequest();
 
-		return axiosRequest('GET', `${process.env.API_HOST}/users`);
+		return axiosRequest('GET', `${process.env.API_HOST}/employees`);
 	}
 
-	static getUser(user) {
+	static getEmployee(employee) {
 		const axiosRequest = this.axiosRequest();
 
-		return axiosRequest('GET', `${process.env.API_HOST}/users/${user.id}`);
+		return axiosRequest('GET', `${process.env.API_HOST}/employees/${employee.id}`);
 	}
 
-	static getUsersByType(userType) {
+	static createEmployee(employee) {
 		const axiosRequest = this.axiosRequest();
 
-		return axiosRequest('GET', `${process.env.API_HOST}/users/type/${userType.id}`);
+		return axiosRequest('POST', `${process.env.API_HOST}/employees`, 201, employee);
 	}
 
-	static getUsersByRole(userRole) {
+	static updateEmployee(employee) {
 		const axiosRequest = this.axiosRequest();
 
-		return axiosRequest('GET', `${process.env.API_HOST}/users/role/${userRole.id}`);
+		return axiosRequest('PUT', `${process.env.API_HOST}/employees/${employee.id}`, 204, employee);
 	}
 
-	static createUser(user) {
+	static deleteEmployee(employee) {
 		const axiosRequest = this.axiosRequest();
 
-		return axiosRequest('POST', `${process.env.API_HOST}/users`, 201, user);
+		return axiosRequest('DELETE', `${process.env.API_HOST}/employees/${employee.id}`, 204);
 	}
 
-	static updateUser(user) {
+	/* ACCOUNTS */
+	static getAccounts() {
 		const axiosRequest = this.axiosRequest();
 
-		return axiosRequest('PUT', `${process.env.API_HOST}/users/${user.id}`, 204, user);
+		return axiosRequest('GET', `${process.env.API_HOST}/accounts`);
 	}
 
-	static deleteUser(user) {
+	static getAccount(account) {
 		const axiosRequest = this.axiosRequest();
 
-		return axiosRequest('DELETE', `${process.env.API_HOST}/users/${user.id}`, 204);
+		return axiosRequest('GET', `${process.env.API_HOST}/accounts/${account.id}`);
 	}
 
-	/* USER TYPES */
-	static getUserTypes() {
+	static createAccount(account) {
 		const axiosRequest = this.axiosRequest();
 
-		return axiosRequest('GET', `${process.env.API_HOST}/user-types`);
+		return axiosRequest('POST', `${process.env.API_HOST}/accounts`, 201, account);
 	}
 
-	static getUserType(userType) {
+	static updateAccount(account) {
 		const axiosRequest = this.axiosRequest();
 
-		return axiosRequest('GET', `${process.env.API_HOST}/user-types/${userType.id}`);
+		return axiosRequest('PUT', `${process.env.API_HOST}/accounts/${account.id}`, 204, account);
 	}
 
-	static createUserType(userType) {
+	static deleteAccount(account) {
 		const axiosRequest = this.axiosRequest();
 
-		return axiosRequest('POST', `${process.env.API_HOST}/user-types`, 201, userType);
+		return axiosRequest('DELETE', `${process.env.API_HOST}/accounts/${account.id}`, 204);
 	}
 
-	static updateUserType(userType) {
+	static switchAccount(account) {
 		const axiosRequest = this.axiosRequest();
 
-		return axiosRequest('PUT', `${process.env.API_HOST}/user-types/${userType.id}`, 204, userType);
-	}
-
-	static deleteUserType(userType) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('DELETE', `${process.env.API_HOST}/user-types/${userType.id}`, 204);
-	}
-
-	/* USER ROLES */
-	static getUserRoles() {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('GET', `${process.env.API_HOST}/user-roles`);
-	}
-
-	static getUserRole(userRole) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('GET', `${process.env.API_HOST}/user-roles/${userRole.id}`);
-	}
-
-	static createUserRole(userRole) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('POST', `${process.env.API_HOST}/user-roles`, 201, userRole);
-	}
-
-	static updateUserRole(userRole) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('PUT', `${process.env.API_HOST}/user-roles/${userRole.id}`, 204, userRole);
-	}
-
-	static deleteUserRole(userRole) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('DELETE', `${process.env.API_HOST}/user-roles/${userRole.id}`, 204);
-	}
-
-	/* COMPANIES */
-	static getCompanies() {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('GET', `${process.env.API_HOST}/companies`);
-	}
-
-	static getCompany(company) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('GET', `${process.env.API_HOST}/companies/${company.id}`);
-	}
-
-	static createCompany(company) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('POST', `${process.env.API_HOST}/companies`, 201, company);
-	}
-
-	static updateCompany(company) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('PUT', `${process.env.API_HOST}/companies/${company.id}`, 204, company);
-	}
-
-	static deleteCompany(company) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('DELETE', `${process.env.API_HOST}/companies/${company.id}`, 204);
+		return axiosRequest('POST', `${process.env.API_HOST}/accounts/switch`, 201, account);
 	}
 
 	/* SHIFTS */

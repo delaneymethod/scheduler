@@ -1,25 +1,25 @@
 import api from '../api';
 import * as types from './actionTypes';
 
+export const getShiftsSuccess = shifts => ({
+	type: types.GET_SHIFTS,
+	shifts,
+});
+
+/* GET ALL SHIFTS */
 export const ajaxLoading = status => ({
 	type: types.AJAX_LOADING,
 	status,
 });
 
-export const getShiftsSuccess = shifts => ({
-	type: types.GET_SHIFTS_SUCCESS,
-	shifts,
-});
-
-/* GET ALL SHIFTS */
 export const getShifts = () => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
 	return api.getShifts()
 		.then((shifts) => {
-			dispatch(getShiftsSuccess(shifts));
-
 			dispatch(ajaxLoading(false));
+
+			dispatch(getShiftsSuccess(shifts));
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -28,21 +28,21 @@ export const getShifts = () => (dispatch) => {
 			return Promise.reject(error);
 		});
 };
-
-export const getShiftSuccess = shift => ({
-	type: types.GET_SHIFT_SUCCESS,
-	shift,
-});
 
 /* GET SPECIFIC SHIFT */
-export const getShift = shift => (dispatch) => {
+export const getShiftSuccess = shift => ({
+	type: types.GET_SHIFT,
+	shift,
+});
+
+export const getShift = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return api.getShift(shift)
-		.then((data) => {
-			dispatch(getShiftSuccess(data));
-
+	return api.getShift(payload)
+		.then((shift) => {
 			dispatch(ajaxLoading(false));
+
+			dispatch(getShiftSuccess(shift));
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -51,21 +51,21 @@ export const getShift = shift => (dispatch) => {
 			return Promise.reject(error);
 		});
 };
-
-export const createShiftSuccess = shift => ({
-	type: types.CREATE_SHIFT_SUCCESS,
-	shift,
-});
 
 /* CREATE NEW SHIFT */
-export const createShift = shift => (dispatch) => {
+export const createShiftSuccess = shift => ({
+	type: types.CREATE_SHIFT,
+	shift,
+});
+
+export const createShift = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return api.createShift(shift)
-		.then((data) => {
-			dispatch(createShiftSuccess(data));
-
+	return api.createShift(payload)
+		.then((shift) => {
 			dispatch(ajaxLoading(false));
+
+			dispatch(createShiftSuccess(shift));
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -74,21 +74,21 @@ export const createShift = shift => (dispatch) => {
 			return Promise.reject(error);
 		});
 };
-
-export const updateShiftSuccess = shift => ({
-	type: types.UPDATE_SHIFT_SUCCESS,
-	shift,
-});
 
 /* UPDATE SPECIFIC SHIFT */
-export const updateShift = shift => (dispatch) => {
+export const updateShiftSuccess = shift => ({
+	type: types.UPDATE_SHIFT,
+	shift,
+});
+
+export const updateShift = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return api.updateShift(shift)
-		.then((data) => {
-			dispatch(updateShiftSuccess(data));
-
+	return api.updateShift(payload)
+		.then((shift) => {
 			dispatch(ajaxLoading(false));
+
+			dispatch(updateShiftSuccess(shift));
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -98,20 +98,20 @@ export const updateShift = shift => (dispatch) => {
 		});
 };
 
+/* DELETE SPECIFIC SHIFT */
 export const deleteShiftSuccess = shift => ({
-	type: types.DELETE_SHIFT_SUCCESS,
+	type: types.DELETE_SHIFT,
 	shift,
 });
 
-/* DELETE SPECIFIC SHIFT */
-export const deleteShift = shift => (dispatch) => {
+export const deleteShift = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return api.deleteShift(shift)
+	return api.deleteShift(payload)
 		.then(() => {
-			dispatch(deleteShiftSuccess(shift));
-
 			dispatch(ajaxLoading(false));
+
+			dispatch(deleteShiftSuccess(payload));
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));

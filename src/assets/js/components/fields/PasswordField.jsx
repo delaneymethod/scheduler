@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Button, FormGroup, Label, Input } from 'reactstrap';
-import { FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
+import { Label, Input, Button, FormGroup } from 'reactstrap';
+import { FieldFeedback, FieldFeedbacks } from 'react-form-with-constraints';
 
 const propTypes = {
 	fieldName: PropTypes.string.isRequired,

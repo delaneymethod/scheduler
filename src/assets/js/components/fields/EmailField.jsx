@@ -1,6 +1,6 @@
 import React from 'react';
-import { FormGroup, Label, Input } from 'reactstrap';
-import { FieldFeedbacks, FieldFeedback } from 'react-form-with-constraints';
+import { Label, Input, FormGroup } from 'reactstrap';
+import { FieldFeedback, FieldFeedbacks } from 'react-form-with-constraints';
 
 const EmailField = props => (
 	<FormGroup>
