@@ -78,7 +78,6 @@ class ForgottenYourPassword extends Component {
 			};
 
 			this.props.actions.forgottenYourPassword(payload)
-				.then(() => console.log('check state'))
 				.then(() => this.setState({ emailSent: true }))
 				.catch((error) => {
 					const { errors } = this.state;
