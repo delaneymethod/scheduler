@@ -15,11 +15,7 @@ class Home extends Component {
 		super(props);
 
 		this.state = this.getInitialState();
-	}
 
-	getInitialState = () => ({});
-
-	componentDidMount = () => {
 		document.title = constants.APP.TITLE;
 
 		/*
@@ -29,7 +25,9 @@ class Home extends Component {
 		meta.keywords.setAttribute('content', '');
 		meta.author.setAttribute('content', '');
 		*/
-	};
+	}
+
+	getInitialState = () => ({});
 
 	render = () => (
 		<Row>

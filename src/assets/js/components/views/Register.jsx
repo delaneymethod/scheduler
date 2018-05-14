@@ -37,6 +37,18 @@ class Register extends Component {
 		this.handleChange = this.handleChange.bind(this);
 
 		this.handleSubmit = this.handleSubmit.bind(this);
+
+		this.handleChangePassword = this.handleChangePassword.bind(this);
+
+		document.title = `${constants.APP.TITLE}: ${constants.APP.ROUTES.REGISTER.TITLE}`;
+
+		/*
+		const meta = document.getElementsByTagName('meta');
+
+		meta.description.setAttribute('content', '');
+		meta.keywords.setAttribute('content', '');
+		meta.author.setAttribute('content', '');
+		*/
 	}
 
 	getInitialState = () => ({
@@ -51,34 +63,33 @@ class Register extends Component {
 		subscriptionLevel: 1,
 	});
 
-	componentDidMount = () => {
-		document.title = `${constants.APP.TITLE}: ${constants.APP.ROUTES.REGISTER.TITLE}`;
-
-		/*
-		const meta = document.getElementsByTagName('meta');
-
-		meta.description.setAttribute('content', '');
-		meta.keywords.setAttribute('content', '');
-		meta.author.setAttribute('content', '');
-		*/
-	};
-
-	handleChange = (event) => {
+	handleChange = async (event) => {
 		const target = event.currentTarget;
-
-		this.form.validateFields(target);
 
 		this.setState({
 			[target.name]: target.value,
 		});
+
+		await this.form.validateFields(target);
 	};
 
-	handleSubmit = (event) => {
+	handleChangePassword = async (event) => {
+		const target = event.currentTarget;
+
+		this.setState({
+			[target.name]: target.value,
+		});
+
+		/* We want to validate the target field and the password confirmation field */
+		await this.form.validateFields(target, 'confirmPassword');
+	};
+
+	handleSubmit = async (event) => {
 		event.preventDefault();
 
 		this.setState({ errors: [], emailSent: false });
 
-		this.form.validateFields();
+		await this.form.validateFields();
 
 		if (this.form.isValid()) {
 			const payload = {
@@ -91,7 +102,17 @@ class Register extends Component {
 			};
 
 			this.props.actions.register(payload)
-				.then(() => this.setState({ emailSent: true }))
+				.then(() => {
+					this.setState({
+						password: '',
+						lastName: '',
+						firstName: '',
+						emailSent: true,
+						businessName: '',
+						confirmPassword: '',
+						subscriptionLevel: 1,
+					});
+				})
 				.catch((error) => {
 					const { errors } = this.state;
 
@@ -129,8 +150,8 @@ class Register extends Component {
 									<TextField fieldName="lastName" fieldLabel="Last Name" fieldValue={this.state.lastName} fieldPlaceholder="e.g. Lynch" handleChange={this.handleChange} valueMissing="Please provide a valid last name." />
 								</Col>
 							</Row>
-							<EmailField emailValue={this.state.email} handleChange={this.handleChange} />
-							<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChange} />
+							<EmailField fieldValue={this.state.email} handleChange={this.handleChange} />
+							<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChangePassword} showPasswordStrength showPasswordCommon />
 							<PasswordField fieldLabel="Confirm Password" fieldName="confirmPassword" fieldValue={this.state.confirmPassword} handleChange={this.handleChange} />
 							<Button type="submit" color="primary" className="mt-4" title={constants.APP.ROUTES.REGISTER.TITLE} block>{constants.APP.ROUTES.REGISTER.TITLE}</Button>
 						</FormWithConstraints>

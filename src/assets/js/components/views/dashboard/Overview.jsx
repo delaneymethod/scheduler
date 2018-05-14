@@ -24,11 +24,7 @@ class Overview extends Component {
 		}
 
 		this.state = this.getInitialState();
-	}
 
-	getInitialState = () => ({});
-
-	componentDidMount = () => {
 		document.title = `${constants.APP.TITLE}: ${constants.APP.ROUTES.DASHBOARD.OVERVIEW.TITLE} - ${constants.APP.ROUTES.DASHBOARD.HOME.TITLE}`;
 
 		/*
@@ -38,7 +34,9 @@ class Overview extends Component {
 		meta.keywords.setAttribute('content', '');
 		meta.author.setAttribute('content', '');
 		*/
-	};
+	}
+
+	getInitialState = () => ({});
 
 	render = () => (
 		<Row>

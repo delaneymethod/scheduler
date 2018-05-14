@@ -40,8 +40,6 @@ class Header extends Component {
 	};
 
 	handleToggle = (event) => {
-		event.preventDefault();
-
 		this.setState({
 			isOpen: !this.state.isOpen,
 		});

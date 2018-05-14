@@ -13,8 +13,8 @@ export const getState = (key) => {
 	}
 };
 
-export const getStates = () => {
-	const allStates = Object.keys(sessionStorage).reduce((states, key) => {
+export const getStates = async () => {
+	const allStates = await Object.keys(sessionStorage).reduce((states, key) => {
 		key = key.replace(`${prefix}:`, '');
 
 		states[key] = getState(key);

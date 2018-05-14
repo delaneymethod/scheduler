@@ -39,15 +39,7 @@ class Login extends Component {
 		this.handleChange = this.handleChange.bind(this);
 
 		this.handleSubmit = this.handleSubmit.bind(this);
-	}
 
-	getInitialState = () => ({
-		email: '',
-		errors: [],
-		password: '',
-	});
-
-	componentDidMount = () => {
 		document.title = `${constants.APP.TITLE}: ${constants.APP.ROUTES.LOGIN.TITLE}`;
 
 		/*
@@ -57,24 +49,30 @@ class Login extends Component {
 		meta.keywords.setAttribute('content', '');
 		meta.author.setAttribute('content', '');
 		*/
-	};
+	}
 
-	handleChange = (event) => {
+	getInitialState = () => ({
+		email: '',
+		errors: [],
+		password: '',
+	});
+
+	handleChange = async (event) => {
 		const target = event.currentTarget;
-
-		this.form.validateFields(target);
 
 		this.setState({
 			[target.name]: target.value,
 		});
+
+		await this.form.validateFields(target);
 	};
 
-	handleSubmit = (event) => {
+	handleSubmit = async (event) => {
 		event.preventDefault();
 
 		this.setState({ errors: [] });
 
-		this.form.validateFields();
+		await this.form.validateFields();
 
 		if (this.form.isValid()) {
 			const payload = {
@@ -139,7 +137,7 @@ class Login extends Component {
 						<h2 className="h5--title-card">{constants.APP.ROUTES.LOGIN.TITLE}</h2>
 						{this.errorMessages()}
 						<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
-							<EmailField emailValue={this.state.email} handleChange={this.handleChange} />
+							<EmailField fieldValue={this.state.email} handleChange={this.handleChange} />
 							<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChange} />
 							<Button type="submit" color="primary" className="mt-4" title={constants.APP.ROUTES.LOGIN.TITLE} block>{constants.APP.ROUTES.LOGIN.TITLE}</Button>
 							<a href={constants.APP.ROUTES.FORGOTTEN_YOUR_PASSWORD.URI} title={constants.APP.ROUTES.FORGOTTEN_YOUR_PASSWORD.TITLE} className="panel-page__forgot">{constants.APP.ROUTES.FORGOTTEN_YOUR_PASSWORD.TITLE}</a>

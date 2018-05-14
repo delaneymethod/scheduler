@@ -35,15 +35,7 @@ class ForgottenYourPassword extends Component {
 		this.handleChange = this.handleChange.bind(this);
 
 		this.handleSubmit = this.handleSubmit.bind(this);
-	}
 
-	getInitialState = () => ({
-		email: '',
-		errors: [],
-		emailSent: false,
-	});
-
-	componentDidMount = () => {
 		document.title = `${constants.APP.TITLE}: ${constants.APP.ROUTES.FORGOTTEN_YOUR_PASSWORD.TITLE}`;
 
 		/*
@@ -53,24 +45,30 @@ class ForgottenYourPassword extends Component {
 		meta.keywords.setAttribute('content', '');
 		meta.author.setAttribute('content', '');
 		*/
-	};
+	}
 
-	handleChange = (event) => {
+	getInitialState = () => ({
+		email: '',
+		errors: [],
+		emailSent: false,
+	});
+
+	handleChange = async (event) => {
 		const target = event.currentTarget;
-
-		this.form.validateFields(target);
 
 		this.setState({
 			[target.name]: target.value,
 		});
+
+		await this.form.validateFields(target);
 	};
 
-	handleSubmit = (event) => {
+	handleSubmit = async (event) => {
 		event.preventDefault();
 
 		this.setState({ errors: [], emailSent: false });
 
-		this.form.validateFields();
+		await this.form.validateFields();
 
 		if (this.form.isValid()) {
 			const payload = {
@@ -78,7 +76,7 @@ class ForgottenYourPassword extends Component {
 			};
 
 			this.props.actions.forgottenYourPassword(payload)
-				.then(() => this.setState({ emailSent: true }))
+				.then(() => this.setState(Object.assign(this.getInitialState(), { emailSent: true })))
 				.catch((error) => {
 					const { errors } = this.state;
 
@@ -107,7 +105,7 @@ class ForgottenYourPassword extends Component {
 						{this.errorMessages()}
 						{(this.state.emailSent) ? <SuccessMessage message={`An email has been sent to <strong>${this.state.email}</strong>. Please follow the link in this email message to set your password.`} /> : ''}
 						<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
-							<EmailField emailValue={this.state.email} handleChange={this.handleChange} />
+							<EmailField fieldValue={this.state.email} handleChange={this.handleChange} />
 							<Button type="submit" color="primary" className="mt-4" title={constants.APP.ROUTES.FORGOTTEN_YOUR_PASSWORD.TITLE} block>{constants.APP.ROUTES.FORGOTTEN_YOUR_PASSWORD.TITLE}</Button>
 						</FormWithConstraints>
 					</div>
