@@ -14,11 +14,7 @@ class NotFoundPage extends Component {
 		super(props);
 
 		this.state = this.getInitialState();
-	}
 
-	getInitialState = () => ({});
-
-	componentDidMount = () => {
 		document.title = `${constants.APP.TITLE}: Not Found Page`;
 
 		/*
@@ -28,7 +24,9 @@ class NotFoundPage extends Component {
 		meta.keywords.setAttribute('content', '');
 		meta.author.setAttribute('content', '');
 		*/
-	};
+	}
+
+	getInitialState = () => ({});
 
 	render = () => (
 		<Row>

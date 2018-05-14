@@ -39,8 +39,6 @@ class SwitchAccountDropdown extends Component {
 	});
 
 	handleChange = (event, accountId) => {
-		event.preventDefault();
-
 		this.setState({ errors: [] });
 
 		this.props.actions.switchAccount({ accountId })
@@ -55,8 +53,6 @@ class SwitchAccountDropdown extends Component {
 	};
 
 	handleToggle = (event) => {
-		event.preventDefault();
-
 		this.setState({
 			isOpen: !this.state.isOpen,
 		});
