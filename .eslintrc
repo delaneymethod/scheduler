@@ -1,14 +1,15 @@
 {
 	"env": {
     	"node": true,
-    	"browser": true
+    	"browser": true,
+    	"jest": true,
     },
 	"parser": "babel-eslint",
 	"plugins": [
-		"react"
+		"react",
 	],
 	"extends": [
-		"airbnb-base"
+		"airbnb-base",
 	],
 	"rules": {
 		"linebreak-style": 0,
@@ -20,12 +21,4 @@
 		"import/no-unresolved": "off",
 		"no-console": "off",
 	},
-	"overrides": [
-		{
-			files: '__tests__/**/*.js',
-			env: {
-				jest: true,
-			},
-		},
-	],
 }

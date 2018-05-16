@@ -39,7 +39,7 @@ export const getPlacement = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
 	return api.getPlacement(payload)
-		.then((placement) => {		
+		.then((placement) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(getPlacementSuccess(placement));

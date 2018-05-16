@@ -19,3 +19,5 @@
 /!docker/node/packaged/.gitkeep
 /public/404.html
 /public/index.html
+/coverage
+/__tests__/__snapshots__
