@@ -1,7 +1,7 @@
 import accountsReducer from '../src/assets/js/reducers/accountsReducer';
 import { GET_ACCOUNT, GET_ACCOUNTS, CREATE_ACCOUNT, UPDATE_ACCOUNT, DELETE_ACCOUNT } from '../src/assets/js/actions/actionTypes';
 
-const findRotaType = (accounts, id) => (accounts.length ? accounts.find(account => account.id === id) : null);
+const findAccount = (accounts, id) => (accounts.length ? accounts.find(account => account.id === id) : null);
 
 describe('Accounts Reducer', () => {
 	let mockAccounts;
@@ -28,7 +28,7 @@ describe('Accounts Reducer', () => {
 
 		const accounts = accountsReducer(mockAccounts, action);
 
-		const account = findRotaType(accounts, mockAccount.id);
+		const account = findAccount(accounts, mockAccount.id);
 
 		expect(account).toEqual(mockAccount);
 	});
@@ -73,7 +73,7 @@ describe('Accounts Reducer', () => {
 
 		const accounts = accountsReducer(mockAccounts, action);
 
-		const account = findRotaType(accounts, mockAccount.id);
+		const account = findAccount(accounts, mockAccount.id);
 
 		expect(account.last_updated).toEqual(mockAccount.last_updated);
 	});
