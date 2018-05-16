@@ -4,17 +4,17 @@ import initialState from './initialState';
 const prefix = 'scheduler';
 
 export const getState = (key) => {
-	try {
+	if (sessionStorage.getItem) {
 		const serializedData = sessionStorage.getItem(`${prefix}:${key}`);
 
 		return (serializedData === null) ? undefined : JSON.parse(serializedData);
-	} catch (error) {
-		return undefined;
 	}
+
+	return false;
 };
 
-export const getStates = async () => {
-	const allStates = await Object.keys(sessionStorage).reduce((states, key) => {
+export const getStates = () => {
+	const allStates = Object.keys(sessionStorage).reduce((states, key) => {
 		key = key.replace(`${prefix}:`, '');
 
 		states[key] = getState(key);
@@ -32,20 +32,24 @@ export const getStates = async () => {
 };
 
 export const saveState = (key, data) => {
-	try {
+	if (sessionStorage.setItem) {
 		const serializedData = JSON.stringify(data);
 
-		return sessionStorage.setItem(`${prefix}:${key}`, serializedData);
-	} catch (error) {
-		return undefined;
+		sessionStorage.setItem(`${prefix}:${key}`, serializedData);
+
+		return true;
 	}
+
+	return false;
 };
 
 export const deleteState = (key) => {
-	try {
-		return sessionStorage.removeItem(`${prefix}:${key}`);
-	} catch (error) {
-		return undefined;
+	if (getState(key) === undefined || getState(key) === false) {
+		return false;
 	}
+
+	sessionStorage.removeItem(`${prefix}:${key}`);
+
+	return true;
 };
 /* eslint-enable no-param-reassign */

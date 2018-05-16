@@ -6,6 +6,7 @@ import { Async, FieldFeedback, FieldFeedbacks } from 'react-form-with-constraint
 import PasswordStrengthMeter from '../common/PasswordStrengthMeter';
 
 import isPasswordCommon from '../../helpers/isPasswordCommon';
+import { addClass, removeClass } from '../../helpers/classes';
 
 const propTypes = {
 	minLength: PropTypes.number,
@@ -42,13 +43,15 @@ class PasswordField extends Component {
 		if (input.getAttribute('type') === 'password') {
 			input.setAttribute('type', 'text');
 
-			icon.classList.add('fa-eye');
-			icon.classList.remove('fa-eye-slash');
+			addClass(icon, 'fa-eye');
+
+			removeClass(icon, 'fa-eye-slash');
 		} else {
 			input.setAttribute('type', 'password');
 
-			icon.classList.remove('fa-eye');
-			icon.classList.add('fa-eye-slash');
+			addClass(icon, 'fa-eye-slash');
+
+			removeClass(icon, 'fa-eye');
 		}
 	};
 

@@ -2,9 +2,9 @@ import React from 'react';
 import { hot } from 'react-hot-loader';
 import { Route, Switch } from 'react-router-dom';
 
-import ErrorBoundary from './ErrorBoundary';
-
 import constants from '../helpers/constants';
+
+import ErrorBoundary from './ErrorBoundary';
 
 import Home from './views/Home';
 import Login from './views/Login';
@@ -19,7 +19,7 @@ import Employees from './views/dashboard/employees/Employees';
 
 const App = () => (
 	<ErrorBoundary>
-		<Switch>
+		<Switch context="router">
 			<Route exact path={constants.APP.ROUTES.HOME.URI} component={Home} />
 			<Route exact path={constants.APP.ROUTES.LOGIN.URI} component={Login} />
 			<Route exact path={constants.APP.ROUTES.REGISTER.URI} component={Register} />
@@ -28,7 +28,7 @@ const App = () => (
 			<Route exact path={constants.APP.ROUTES.DASHBOARD.OVERVIEW.URI} component={Overview} />
 			<Route exact path={constants.APP.ROUTES.DASHBOARD.SHIFTS.URI} component={Shifts} />
 			<Route exact path={constants.APP.ROUTES.DASHBOARD.EMPLOYEES.URI} component={Employees} />
-			<Route component={NotFoundPage} />
+			<Route path="*" component={NotFoundPage} />
 		</Switch>
 	</ErrorBoundary>
 );

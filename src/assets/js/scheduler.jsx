@@ -1,6 +1,6 @@
-import 'bootstrap';
 import 'babel-polyfill';
 import React from 'react';
+import 'classlist-polyfill';
 import ReactDOM from 'react-dom';
 import fastclick from 'fastclick';
 import { Provider } from 'react-redux';
@@ -16,6 +16,8 @@ import { saveState } from './store/persistedState';
 import { getShifts } from './actions/shiftActions';
 
 import configureStore from './store/configureStore';
+
+import { removeClass } from './helpers/classes';
 
 import registerServiceWorker from './helpers/registerServiceWorker';
 
@@ -54,7 +56,11 @@ const navigatorUserAgent = navigator.userAgent;
 const isAndroid = (navigatorUserAgent.indexOf('Mozilla/5.0') > -1 && navigatorUserAgent.indexOf('Android ') > -1 && navigatorUserAgent.indexOf('AppleWebKit') > -1 && navigatorUserAgent.indexOf('Chrome') === -1);
 
 if (isAndroid) {
-	/* FIXME - Convert to vanilla JS instead of jQuery $('select.form-control').removeClass('form-control').css('width', '100%'); */
+	const element = document.querySelector('select.form-control');
+
+	element.style.width = '100%';
+
+	removeClass(element, 'form-control');
 }
 
 /* Add a service worker for Progressive Web App purposes */

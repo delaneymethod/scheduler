@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
+import { FormWithConstraints } from 'react-form-with-constraints';
 import { Col, Row, Label, Input, Button, FormGroup } from 'reactstrap';
-import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 
 import constants from '../../helpers/constants';
 
