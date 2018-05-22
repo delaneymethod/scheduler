@@ -1,4 +1,4 @@
-import api from '../api';
+import * as api from '../api';
 import * as types from './actionTypes';
 
 export const ajaxLoading = status => ({
@@ -30,7 +30,7 @@ export const getRotas = () => (dispatch) => {
 };
 
 /* GET ROTAS BY TYPE */
-export const getRotaByType = payload => (dispatch) => {
+export const getRotasByType = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
 	return api.getRotasByType(payload)
@@ -126,10 +126,10 @@ export const deleteRota = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
 	return api.deleteRota(payload)
-		.then(() => {
+		.then((rota) => {
 			dispatch(ajaxLoading(false));
 
-			dispatch(deleteRotaSuccess(payload));
+			dispatch(deleteRotaSuccess(rota));
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));

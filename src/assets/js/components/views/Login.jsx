@@ -88,19 +88,21 @@ class Login extends Component {
 					this.props.user.userId = parseInt(token.sub, 10);
 
 					/* FIXME - Remove once login response is updated with accounts */
-					this.props.user.accounts = [{
-						id: 1,
-						title: 'Account 1',
-					}, {
-						id: 2,
-						title: 'Account 2',
-					}, {
-						id: 3,
-						title: 'Account 3',
-					}, {
-						id: 4,
-						title: 'Account 4',
-					}];
+					this.props.user.accounts = [
+						{
+							id: 1,
+							title: 'Account 1',
+						}, {
+							id: 2,
+							title: 'Account 2',
+						}, {
+							id: 3,
+							title: 'Account 3',
+						}, {
+							id: 4,
+							title: 'Account 4',
+						},
+					];
 
 					/* Use the first account as the selected account */
 					const [account] = this.props.user.accounts;

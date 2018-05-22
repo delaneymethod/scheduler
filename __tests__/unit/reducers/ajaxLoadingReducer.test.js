@@ -1,5 +1,6 @@
-import { AJAX_LOADING } from '../src/assets/js/actions/actionTypes';
-import ajaxLoadingReducer from '../src/assets/js/reducers/ajaxLoadingReducer';
+import { AJAX_LOADING } from '../../../src/assets/js/actions/actionTypes';
+
+import ajaxLoadingReducer from '../../../src/assets/js/reducers/ajaxLoadingReducer';
 
 describe('Ajax Loading Reducer', () => {
 	it('should return the initial state', () => {
@@ -12,6 +13,6 @@ describe('Ajax Loading Reducer', () => {
 			type: AJAX_LOADING,
 		};
 
-		expect(ajaxLoadingReducer({}, action)).toEqual(status);
+		expect(ajaxLoadingReducer({}, action)).toEqual(false);
 	});
 });

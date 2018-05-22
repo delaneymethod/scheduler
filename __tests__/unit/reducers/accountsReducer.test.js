@@ -1,5 +1,6 @@
-import accountsReducer from '../src/assets/js/reducers/accountsReducer';
-import { GET_ACCOUNT, GET_ACCOUNTS, CREATE_ACCOUNT, UPDATE_ACCOUNT, DELETE_ACCOUNT } from '../src/assets/js/actions/actionTypes';
+import accountsReducer from '../../../src/assets/js/reducers/accountsReducer';
+
+import { GET_ACCOUNT, GET_ACCOUNTS, CREATE_ACCOUNT, UPDATE_ACCOUNT, DELETE_ACCOUNT } from '../../../src/assets/js/actions/actionTypes';
 
 const findAccount = (accounts, id) => (accounts.length ? accounts.find(account => account.id === id) : null);
 

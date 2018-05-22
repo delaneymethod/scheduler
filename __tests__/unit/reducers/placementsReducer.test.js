@@ -1,5 +1,6 @@
-import placementsReducer from '../src/assets/js/reducers/placementsReducer';
-import { GET_PLACEMENT, GET_PLACEMENTS, CREATE_PLACEMENT, UPDATE_PLACEMENT, DELETE_PLACEMENT } from '../src/assets/js/actions/actionTypes';
+import placementsReducer from '../../../src/assets/js/reducers/placementsReducer';
+
+import { GET_PLACEMENT, GET_PLACEMENTS, CREATE_PLACEMENT, UPDATE_PLACEMENT, DELETE_PLACEMENT } from '../../../src/assets/js/actions/actionTypes';
 
 const findPlacement = (placements, id) => (placements.length ? placements.find(placement => placement.id === id) : null);
 

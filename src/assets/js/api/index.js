@@ -1,337 +1,143 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 
-import { getState } from '../store/persistedState';
+import formatError from '../helpers/errors';
 
-const { CancelToken } = axios;
+import constants from '../helpers/constants';
+
+import { getState } from '../store/persistedState';
 
 let axiosCall = null;
 
-class SchedulerApi {
-	static requestHeaders() {
-		return {
-			'Cache-Control': 'no-cache',
-			'Content-Type': 'application/json',
-		};
+const { CancelToken } = axios;
+
+const requestHeaders = () => ({
+	'Cache-Control': 'no-cache',
+	'Content-Type': 'application/json',
+});
+
+/* Cancellable request */
+const request = (method, url, expectedStatus = 200, data = null) => {
+	if (axiosCall) {
+		axiosCall.cancel();
 	}
 
-	static parseError(error) {
-		const data = {
-			title: '',
-			message: '',
-		};
+	axiosCall = CancelToken.source();
 
-		if (error.response) {
-			/* The request was made and the server responded with a status code that falls out of the range of 2xx */
-			if (error.response.data) {
-				data.title = `${error.response.data.error.code} ${error.response.data.error.type}`;
+	const headers = requestHeaders();
 
-				data.message = `<p>${error.response.data.error.message}.</p><p class="pb-0 mb-0">${error.response.data.error.hints.summary}.</p>`;
-			} else {
-				data.title = `${error.response.code} ${error.response.name}`;
+	const config = {
+		url,
+		method,
+		headers,
+		data,
+		cancelToken: axiosCall.token,
+		validateStatus: status => status === expectedStatus,
+	};
 
-				data.message = `<p>${error.response.message}.</p>`;
-			}
-		} else if (error.request) {
-			/* The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser */
-			if (error.message === 'Network Error') {
-				data.title = '504 Network Error';
+	const user = getState('user');
 
-				data.message = '<p>A network error occurred. Please try again.</p>';
-			} else {
-				data.title = error.name;
-
-				data.message = `<p>${error.message}.</p>`;
-			}
-		} else {
-			/* Something else happened in setting up the request that triggered an Error */
-			data.title = 'Error';
-
-			data.message = `<p>${error.message}.</p>`;
+	if (user) {
+		if (user.token) {
+			axios.defaults.headers.common.Authorization = `Bearer ${user.token}`;
 		}
 
-		return {
-			data,
-		};
+		if (user.account) {
+			axios.defaults.headers.common['X-Account-Id'] = user.account.id;
+		}
 	}
 
-	/* Cancellable request */
-	static axiosRequest() {
-		return (method, url, expectedStatus = 200, data = null) => {
-			if (axiosCall) {
-				axiosCall.cancel();
+	axios.defaults.baseURL = constants.API.HOST;
+
+	return axios.request(config)
+		.then(response => response.data)
+		.catch((thrown) => {
+			if (axios.isCancel(thrown)) {
+				return null;
 			}
 
-			axiosCall = CancelToken.source();
+			/* Bubble the error back up the rabbit hole */
+			const error = formatError(thrown);
 
-			const headers = this.requestHeaders();
+			return Promise.reject(error);
+		});
+};
 
-			const config = {
-				url,
-				method,
-				headers,
-				data,
-				validateStatus: status => status === expectedStatus,
-			};
+/* LOGIN */
+export const login = payload => request('POST', '/login', 200, payload);
 
-			const cancelable = {
-				cancelToken: axiosCall.token,
-			};
+/* REGISTER */
+export const register = payload => request('POST', '/business-sign-up', 200, payload);
 
-			const user = getState('user');
+/* FORGOTTEN YOUR PASSWORD */
+export const forgottenYourPassword = payload => request('POST', '/forgotten-your-password', 200, payload);
 
-			/* Check if the object is not "falsey" (if the object is undefined, 0 or null) */
-			if (user) {
-				if (user.token) {
-					axios.defaults.headers.common.Authorization = `Bearer ${user.token}`;
-				}
+/* EMPLOYEES */
+export const getEmployees = () => request('GET', '/employees');
 
-				if (user.account) {
-					axios.defaults.headers.common['X-Account-Id'] = user.account.id;
-				}
-			}
+export const getEmployee = employee => request('GET', `/employees/${employee.id}`);
 
-			const csrf = document.head.querySelector('meta[name="csrf-token"]');
+export const createEmployee = employee => request('POST', '/employees', 201, employee);
 
-			/* Check if the object is not "falsey" (if the object is undefined, 0 or null) */
-			if (csrf) {
-				axios.defaults.headers.common['X-CSRF-TOKEN'] = csrf.content;
-			}
+export const updateEmployee = employee => request('PUT', `/employees/${employee.id}`, 200, employee);
 
-			return axios.request(config, cancelable)
-				.then(response => response.data)
-				.catch((thrown) => {
-					if (axios.isCancel(thrown)) {
-						/* Duplicate request cancelled */
-						return null;
-					}
+export const deleteEmployee = employee => request('DELETE', `/employees/${employee.id}`, 204);
 
-					/* Bubble the error back up the rabbit hole */
-					const error = this.parseError(thrown);
+/* ACCOUNTS */
+export const getAccounts = () => request('GET', '/accounts');
 
-					return Promise.reject(error);
-				});
-		};
-	}
+export const getAccount = account => request('GET', `/accounts/${account.id}`);
 
-	/* AUTHENTICATE */
-	static login(payload) {
-		const axiosRequest = this.axiosRequest();
+export const createAccount = account => request('POST', '/accounts', 201, account);
 
-		return axiosRequest('POST', `${process.env.API_HOST}/login`, 200, payload);
-	}
+export const updateAccount = account => request('PUT', `/accounts/${account.id}`, 200, account);
 
-	/* REGISTER */
-	static register(payload) {
-		const axiosRequest = this.axiosRequest();
+export const deleteAccount = account => request('DELETE', `/accounts/${account.id}`, 204);
 
-		return axiosRequest('POST', `${process.env.API_HOST}/business-sign-up`, 200, payload);
-	}
+export const switchAccount = account => request('POST', '/accounts/switch', 200, account);
 
-	/* FORGOTTEN YOUR PASSWORD */
-	static forgottenYourPassword(payload) {
-		const axiosRequest = this.axiosRequest();
+/* SHIFTS */
+export const getShifts = () => request('GET', '/shifts');
 
-		return axiosRequest('POST', `${process.env.API_HOST}/forgotten-your-password`, 200, payload);
-	}
+export const getShift = shift => request('GET', `/shifts/${shift.id}`);
 
-	/* EMPLOYEES */
-	static getEmployees() {
-		const axiosRequest = this.axiosRequest();
+export const createShift = shift => request('POST', '/shifts', 201, shift);
 
-		return axiosRequest('GET', `${process.env.API_HOST}/employees`);
-	}
+export const updateShift = shift => request('PUT', `/shifts/${shift.id}`, 200, shift);
 
-	static getEmployee(employee) {
-		const axiosRequest = this.axiosRequest();
+export const deleteShift = shift => request('DELETE', `/shifts/${shift.id}`, 204);
 
-		return axiosRequest('GET', `${process.env.API_HOST}/employees/${employee.id}`);
-	}
+/* ROTAS */
+export const getRotas = () => request('GET', '/rotas');
 
-	static createEmployee(employee) {
-		const axiosRequest = this.axiosRequest();
+export const getRota = rota => request('GET', `/rotas/${rota.id}`);
 
-		return axiosRequest('POST', `${process.env.API_HOST}/employees`, 201, employee);
-	}
+export const getRotasByType = rotaType => request('GET', `/rotas/type/${rotaType.id}`);
 
-	static updateEmployee(employee) {
-		const axiosRequest = this.axiosRequest();
+export const createRota = rota => request('POST', '/rotas', 201, rota);
 
-		return axiosRequest('PUT', `${process.env.API_HOST}/employees/${employee.id}`, 204, employee);
-	}
+export const updateRota = rota => request('PUT', `/rotas/${rota.id}`, 200, rota);
 
-	static deleteEmployee(employee) {
-		const axiosRequest = this.axiosRequest();
+export const deleteRota = rota => request('DELETE', `/rotas/${rota.id}`, 204);
 
-		return axiosRequest('DELETE', `${process.env.API_HOST}/employees/${employee.id}`, 204);
-	}
+/* ROTA TYPES */
+export const getRotaTypes = () => request('GET', '/rota-types');
 
-	/* ACCOUNTS */
-	static getAccounts() {
-		const axiosRequest = this.axiosRequest();
+export const getRotaType = rotaType => request('GET', `/rota-types/${rotaType.id}`);
 
-		return axiosRequest('GET', `${process.env.API_HOST}/accounts`);
-	}
+export const createRotaType = rotaType => request('POST', '/rota-types', 201, rotaType);
 
-	static getAccount(account) {
-		const axiosRequest = this.axiosRequest();
+export const updateRotaType = rotaType => request('PUT', `/rota-types/${rotaType.id}`, 200, rotaType);
 
-		return axiosRequest('GET', `${process.env.API_HOST}/accounts/${account.id}`);
-	}
+export const deleteRotaType = rotaType => request('DELETE', `/rota-types/${rotaType.id}`, 204);
 
-	static createAccount(account) {
-		const axiosRequest = this.axiosRequest();
+/* PLACEMENTS */
+export const getPlacements = () => request('GET', '/placements');
 
-		return axiosRequest('POST', `${process.env.API_HOST}/accounts`, 201, account);
-	}
+export const getPlacement = placement => request('GET', `/placements/${placement.id}`);
 
-	static updateAccount(account) {
-		const axiosRequest = this.axiosRequest();
+export const createPlacement = placement => request('POST', '/placements', 201, placement);
 
-		return axiosRequest('PUT', `${process.env.API_HOST}/accounts/${account.id}`, 204, account);
-	}
+export const updatePlacement = placement => request('PUT', `/placements/${placement.id}`, 200, placement);
 
-	static deleteAccount(account) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('DELETE', `${process.env.API_HOST}/accounts/${account.id}`, 204);
-	}
-
-	static switchAccount(account) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('POST', `${process.env.API_HOST}/accounts/switch`, 201, account);
-	}
-
-	/* SHIFTS */
-	static getShifts() {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('GET', `${process.env.API_HOST}/shifts`);
-	}
-
-	static getShift(shift) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('GET', `${process.env.API_HOST}/shifts/${shift.id}`);
-	}
-
-	static createShift(shift) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('POST', `${process.env.API_HOST}/shifts`, 201, shift);
-	}
-
-	static updateShift(shift) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('PUT', `${process.env.API_HOST}/shifts/${shift.id}`, 204, shift);
-	}
-
-	static deleteShift(shift) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('DELETE', `${process.env.API_HOST}/shifts/${shift.id}`, 204);
-	}
-
-	/* ROTAS */
-	static getRotas() {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('GET', `${process.env.API_HOST}/rotas`);
-	}
-
-	static getRota(rota) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('GET', `${process.env.API_HOST}/rotas/${rota.id}`);
-	}
-
-	static getRotasByType(rotaType) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('GET', `${process.env.API_HOST}/rotas/type/${rotaType.id}`);
-	}
-
-	static createRota(rota) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('POST', `${process.env.API_HOST}/rotas`, 201, rota);
-	}
-
-	static updateRota(rota) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('PUT', `${process.env.API_HOST}/rotas/${rota.id}`, 204, rota);
-	}
-
-	static deleteRota(rota) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('DELETE', `${process.env.API_HOST}/rotas/${rota.id}`, 204);
-	}
-
-	/* ROTA TYPES */
-	static getRotaTypes() {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('GET', `${process.env.API_HOST}/rota-types`);
-	}
-
-	static getRotaType(rotaType) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('GET', `${process.env.API_HOST}/rota-types/${rotaType.id}`);
-	}
-
-	static createRotaType(rotaType) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('POST', `${process.env.API_HOST}/rota-types`, 201, rotaType);
-	}
-
-	static updateRotaType(rotaType) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('PUT', `${process.env.API_HOST}/rota-types/${rotaType.id}`, 204, rotaType);
-	}
-
-	static deleteRotaType(rotaType) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('DELETE', `${process.env.API_HOST}/rota-types/${rotaType.id}`, 204);
-	}
-
-	/* PLACEMENTS */
-	static getPlacements() {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('GET', `${process.env.API_HOST}/placements`);
-	}
-
-	static getPlacement(placement) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('GET', `${process.env.API_HOST}/placements/${placement.id}`);
-	}
-
-	static createPlacement(placement) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('POST', `${process.env.API_HOST}/placements`, 201, placement);
-	}
-
-	static updatePlacement(placement) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('PUT', `${process.env.API_HOST}/placements/${placement.id}`, 204, placement);
-	}
-
-	static deletePlacement(placement) {
-		const axiosRequest = this.axiosRequest();
-
-		return axiosRequest('DELETE', `${process.env.API_HOST}/placements/${placement.id}`, 204);
-	}
-}
-
-export default SchedulerApi;
+export const deletePlacement = placement => request('DELETE', `/placements/${placement.id}`, 204);

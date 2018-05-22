@@ -1,4 +1,4 @@
-import { getState, getStates, saveState, deleteState } from '../src/assets/js/store/persistedState';
+import { getState, getStates, saveState, deleteState } from '../../../src/assets/js/store/persistedState';
 
 describe('Persisted State', () => {
 	it('should return true on save', () => {
