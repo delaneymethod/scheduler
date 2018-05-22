@@ -1,4 +1,4 @@
-import api from '../api';
+import * as api from '../api';
 import * as types from './actionTypes';
 
 export const ajaxLoading = status => ({

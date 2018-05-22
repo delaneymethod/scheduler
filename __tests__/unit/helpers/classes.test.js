@@ -1,4 +1,4 @@
-import { addClass, removeClass } from '../src/assets/js/helpers/classes';
+import { addClass, removeClass } from '../../../src/assets/js/helpers/classes';
 
 describe('Classes', () => {
 	let div;

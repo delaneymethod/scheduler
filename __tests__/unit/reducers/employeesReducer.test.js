@@ -1,5 +1,6 @@
-import employeesReducer from '../src/assets/js/reducers/employeesReducer';
-import { GET_EMPLOYEE, GET_EMPLOYEES, CREATE_EMPLOYEE, UPDATE_EMPLOYEE, DELETE_EMPLOYEE } from '../src/assets/js/actions/actionTypes';
+import employeesReducer from '../../../src/assets/js/reducers/employeesReducer';
+
+import { GET_EMPLOYEE, GET_EMPLOYEES, CREATE_EMPLOYEE, UPDATE_EMPLOYEE, DELETE_EMPLOYEE } from '../../../src/assets/js/actions/actionTypes';
 
 const findEmployee = (employees, id) => (employees.length ? employees.find(employee => employee.id === id) : null);
 

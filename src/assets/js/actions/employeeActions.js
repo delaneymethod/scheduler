@@ -1,4 +1,4 @@
-import api from '../api';
+import * as api from '../api';
 import * as types from './actionTypes';
 
 export const ajaxLoading = status => ({
@@ -99,19 +99,19 @@ export const updateEmployee = payload => (dispatch) => {
 };
 
 /* DELETE SPECIFIC EMPLOYEE */
-export const deleteEmployee = employee => ({
+export const deleteEmployeeSuccess = employee => ({
 	type: types.DELETE_EMPLOYEE,
 	employee,
 });
 
-export const deleteEmployeeSuccess = payload => (dispatch) => {
+export const deleteEmployee = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
 	return api.deleteEmployee(payload)
-		.then(() => {
+		.then((employee) => {
 			dispatch(ajaxLoading(false));
 
-			dispatch(deleteEmployeeSuccess(payload));
+			dispatch(deleteEmployeeSuccess(employee));
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));

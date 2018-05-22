@@ -1,5 +1,6 @@
-import rotasReducer from '../src/assets/js/reducers/rotasReducer';
-import { GET_ROTA, GET_ROTAS, CREATE_ROTA, UPDATE_ROTA, DELETE_ROTA } from '../src/assets/js/actions/actionTypes';
+import rotasReducer from '../../../src/assets/js/reducers/rotasReducer';
+
+import { GET_ROTA, GET_ROTAS, CREATE_ROTA, UPDATE_ROTA, DELETE_ROTA } from '../../../src/assets/js/actions/actionTypes';
 
 const findRota = (rotas, id) => (rotas.length ? rotas.find(rota => rota.id === id) : null);
 

@@ -1,5 +1,6 @@
-import { AUTHENTICATED } from '../src/assets/js/actions/actionTypes';
-import authenticatedReducer from '../src/assets/js/reducers/authenticatedReducer';
+import { AUTHENTICATED } from '../../../src/assets/js/actions/actionTypes';
+
+import authenticatedReducer from '../../../src/assets/js/reducers/authenticatedReducer';
 
 describe('Authenticated Reducer', () => {
 	it('should return the initial state', () => expect(authenticatedReducer(undefined, {})).toEqual(false));

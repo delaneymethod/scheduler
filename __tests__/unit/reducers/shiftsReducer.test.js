@@ -1,5 +1,6 @@
-import shiftsReducer from '../src/assets/js/reducers/shiftsReducer';
-import { GET_SHIFT, GET_SHIFTS, CREATE_SHIFT, UPDATE_SHIFT, DELETE_SHIFT } from '../src/assets/js/actions/actionTypes';
+import shiftsReducer from '../../../src/assets/js/reducers/shiftsReducer';
+
+import { GET_SHIFT, GET_SHIFTS, CREATE_SHIFT, UPDATE_SHIFT, DELETE_SHIFT } from '../../../src/assets/js/actions/actionTypes';
 
 const findShift = (shifts, id) => (shifts.length ? shifts.find(shift => shift.id === id) : null);
 

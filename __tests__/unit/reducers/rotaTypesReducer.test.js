@@ -1,5 +1,6 @@
-import rotaTypesReducer from '../src/assets/js/reducers/rotaTypesReducer';
-import { GET_ROTA_TYPE, GET_ROTA_TYPES, CREATE_ROTA_TYPE, UPDATE_ROTA_TYPE, DELETE_ROTA_TYPE } from '../src/assets/js/actions/actionTypes';
+import rotaTypesReducer from '../../../src/assets/js/reducers/rotaTypesReducer';
+
+import { GET_ROTA_TYPE, GET_ROTA_TYPES, CREATE_ROTA_TYPE, UPDATE_ROTA_TYPE, DELETE_ROTA_TYPE } from '../../../src/assets/js/actions/actionTypes';
 
 const findRotaType = (rotaTypes, id) => (rotaTypes.length ? rotaTypes.find(rotaType => rotaType.id === id) : null);
 

@@ -1,4 +1,4 @@
-import api from '../api';
+import * as api from '../api';
 import * as types from './actionTypes';
 
 export const getShiftsSuccess = shifts => ({
@@ -108,10 +108,10 @@ export const deleteShift = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
 	return api.deleteShift(payload)
-		.then(() => {
+		.then((shift) => {
 			dispatch(ajaxLoading(false));
 
-			dispatch(deleteShiftSuccess(payload));
+			dispatch(deleteShiftSuccess(shift));
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));

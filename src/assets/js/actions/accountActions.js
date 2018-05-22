@@ -1,4 +1,5 @@
-import api from '../api';
+import * as api from '../api';
+
 import * as types from './actionTypes';
 
 export const ajaxLoading = status => ({
@@ -108,10 +109,10 @@ export const deleteAccount = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
 	return api.deleteAccount(payload)
-		.then(() => {
+		.then((account) => {
 			dispatch(ajaxLoading(false));
 
-			dispatch(deleteAccountSuccess(payload));
+			dispatch(deleteAccountSuccess(account));
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));

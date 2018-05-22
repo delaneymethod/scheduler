@@ -11,13 +11,13 @@ import '../scss/global';
 
 import App from './components/App';
 
+import { removeClass } from './helpers/classes';
+
 import { saveState } from './store/persistedState';
 
 import { getShifts } from './actions/shiftActions';
 
 import configureStore from './store/configureStore';
-
-import { removeClass } from './helpers/classes';
 
 import registerServiceWorker from './helpers/registerServiceWorker';
 

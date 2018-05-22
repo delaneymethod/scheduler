@@ -1,5 +1,6 @@
-import { GET_USER } from '../src/assets/js/actions/actionTypes';
-import userReducer from '../src/assets/js/reducers/userReducer';
+import { GET_USER } from '../../../src/assets/js/actions/actionTypes';
+
+import userReducer from '../../../src/assets/js/reducers/userReducer';
 
 describe('User Reducer', () => {
 	it('should return the initial state', () => expect(userReducer(undefined, {})).toEqual({}));
