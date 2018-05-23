@@ -19,7 +19,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-	minLength: 3,
+	minLength: 10,
 	fieldName: '',
 	fieldValue: '',
 	fieldLabel: '',
@@ -61,7 +61,7 @@ class PasswordField extends Component {
 			<div className="input-group">
 				<Input type="password" name={this.props.fieldName} id={this.props.fieldName} value={this.props.fieldValue} placeholder="e.g. y1Fwc]_C" autoComplete="off" onChange={this.props.handleChange} required pattern={`.{${this.props.minLength},}`} />
 				<div className="input-group-append">
-					<Button color="light" title="Toggle Value" className="input-group-text" onClick={this.handleToggle}><i className="fa fa-eye-slash text-primary" id={this.props.fieldName.concat('-fa')} aria-hidden="true"></i></Button>
+					<Button color="light" title="Toggle Value" className="input-group-text" onClick={this.handleToggle} tabIndex="-1"><i className="fa fa-eye-slash text-primary" id={this.props.fieldName.concat('-fa')} aria-hidden="true"></i></Button>
 				</div>
 			</div>
 			{(this.props.showPasswordStrength && this.props.fieldName === 'password' && this.props.fieldValue.length >= this.props.minLength) ? (
@@ -69,7 +69,7 @@ class PasswordField extends Component {
 			) : null}
 			<FieldFeedbacks for={this.props.fieldName} show="all">
 				<FieldFeedback when="valueMissing">- Please provide a valid password.</FieldFeedback>
-				<FieldFeedback when="patternMismatch">- Should be at least {this.props.minLength} characters long.</FieldFeedback>
+				<FieldFeedback when="patternMismatch">- Password should be at least {this.props.minLength} characters long.</FieldFeedback>
 			</FieldFeedbacks>
 			{(this.props.showPasswordCommon && this.props.fieldName === 'password') ? (
 				<FieldFeedbacks for="password" show="all">

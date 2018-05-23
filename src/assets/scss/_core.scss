@@ -1,0 +1,40 @@
+@include media-breakpoint-up(xl) {
+	.modal-xl {
+		max-width: $modal-xl;
+	}
+}
+
+body,
+html {
+	height: 100%;
+}
+
+::-moz-selection {
+	color: $light;
+	background: $dark;
+}
+
+::selection {
+	color: $light;
+	background: $dark;
+}
+
+.bg-dark {
+	color: $body-color-light;
+}
+
+.alert {
+	p:last-child {
+		margin-bottom: 0;
+	}
+}
+
+.error {
+	color: $danger;
+	margin-top: 0.5rem;
+}
+
+.warning {
+	color: $warning;
+	margin-top: 0.5rem;
+}

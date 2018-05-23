@@ -1,7 +1,11 @@
 @function calculateRem($size) {
-	$remSize: $size / 16px;
-	
-	@return $remSize * 1rem;
+	$remSize: ($size / 16px);
+
+	@return ($remSize * 1rem);
+}
+
+@mixin tab-focus() {
+	outline: none !important;
 }
 
 @mixin placeholder {
@@ -11,76 +15,90 @@
 	:-ms-input-placeholder {@content}
 }
 
+@mixin text-shadow($args...) {
+	text-shadow: $args;
+	-moz-text-shadow: $args;
+	-webkit-text-shadow: $args;
+}
+
+@mixin box-shadow($args...) {
+	box-shadow: $args;
+	-moz-box-shadow: $args;
+	-webkit-box-shadow: $args;
+}
+	
 @mixin font-size($size) {
 	font-size: $size;
 	font-size: calculateRem($size);
 }
 
 @mixin transform($args...) {
-	-webkit-transform: $args;
-	-moz-transform: $args;
-	-ms-transform: $args;
-	-o-transform: $args;
 	transform: $args;
+	-o-transform: $args;
+	-ms-transform: $args;
+	-moz-transform: $args;
+	-webkit-transform: $args;
 }
 
 @mixin transform-origin($args...) {
-	-webkit-transform-origin: $args;
-	-moz-transform-origin: $args;
-	-ms-transform-origin: $args;
-	-o-transform-origin: $args;
 	transform-origin: $args;
+	-o-transform-origin: $args;
+	-ms-transform-origin: $args;
+	-moz-transform-origin: $args;
+	-webkit-transform-origin: $args;
 }
 
 @mixin transition($args...) {
-	-webkit-transition: $args;
-	-moz-transition: $args;
-	-ms-transition: $args;
-	-o-transition: $args;
 	transition: $args;
+	-o-transition: $args;
+	-ms-transition: $args;
+	-moz-transition: $args;
+	-webkit-transition: $args;
 }
 
 @mixin opacity($opacity) {
 	opacity: $opacity;
-	$opacity-ie: $opacity * 100;
+
+	$opacity-ie: ($opacity * 100);
+
 	filter: alpha(opacity=$opacity-ie);
 }
 
 @mixin border-top-left-radius($args...) {
-	-webkit-border-top-left-radius: $args;
-	-moz-border-radius-topleft: $args;
 	border-top-left-radius: $args;
+	-moz-border-radius-topleft: $args;
+	-webkit-border-top-left-radius: $args;
 }
 
 @mixin border-bottom-left-radius($args...) {
-	-webkit-border-bottom-left-radius: $args;
-	-moz-border-radius-bottomleft: $args;
 	border-bottom-left-radius: $args;
+	-moz-border-radius-bottomleft: $args;
+	-webkit-border-bottom-left-radius: $args;
 }
 
 @mixin border-top-right-radius($args...) {
-	-webkit-border-top-right-radius: $args;
-	-moz-border-radius-topright: $args;
 	border-top-right-radius: $args;
+	-moz-border-radius-topright: $args;
+	-webkit-border-top-right-radius: $args;
 }
 
 @mixin border-bottom-right-radius($args...) {
-	-webkit-border-bottom-right-radius: $args;
-	-moz-border-radius-bottomright: $args;
 	border-bottom-right-radius: $args;
+	-moz-border-radius-bottomright: $args;
+	-webkit-border-bottom-right-radius: $args;
 }
 
 @mixin border-radius($args...) {
-	-webkit-border-top-left-radius: $args;
-	-webkit-border-bottom-left-radius: $args;
-	-webkit-border-top-right-radius: $args;
-	-webkit-border-bottom-right-radius: $args;
-	-moz-border-radius-topleft: $args;
-	-moz-border-radius-bottomleft: $args;
-	-moz-border-radius-topright: $args;
-	-moz-border-radius-bottomright: $args;
 	border-top-left-radius: $args;
-	border-bottom-left-radius: $args;
 	border-top-right-radius: $args;
+	border-bottom-left-radius: $args;
 	border-bottom-right-radius: $args;
+	-moz-border-radius-topleft: $args;
+	-moz-border-radius-topright: $args;
+	-moz-border-radius-bottomleft: $args;
+	-moz-border-radius-bottomright: $args;
+	-webkit-border-top-left-radius: $args;
+	-webkit-border-top-right-radius: $args;
+	-webkit-border-bottom-left-radius: $args;
+	-webkit-border-bottom-right-radius: $args;
 }

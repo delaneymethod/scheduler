@@ -1,0 +1,31 @@
+input,
+button,
+textarea {
+	&:focus {
+		outline: none !important;
+	}
+}
+
+label {
+	@extend %text-uppercase;
+	
+	// font-size: 0.75rem;
+	font-weight: $font-weight-semi;
+}
+
+.custom-select,
+.form-control {
+	// font-size: 0.875em;
+	background-color: $gray-300;
+	color: $body-color !important;
+	font-weight: $font-weight-semi;
+	border: calculateRem(1px) solid $gray-600;
+
+	@include media-breakpoint-up(lg) {
+		line-height: calculateRem(44px);
+	}
+}
+
+.custom-select {
+	height: auto;
+}

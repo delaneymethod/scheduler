@@ -1,0 +1,45 @@
+.h3 {
+	@extend %h3;
+
+	font-weight: $font-weight-normal;
+}
+
+.h5 {
+	@extend %h5;
+
+	font-weight: $font-weight-normal;
+
+	&--title {
+		@extend %h5;
+		@extend %text-uppercase;
+
+		font-weight: $font-weight-semi;
+	}
+
+	&--title-card {
+		@extend %h5;
+		@extend %text-uppercase;
+
+		margin: 0;
+		text-align: center;
+		padding-bottom: 2rem;
+		font-weight: $font-weight-semi;
+
+		@include media-breakpoint-up(lg) {
+			padding-bottom: 3rem;
+		}
+	}
+}
+
+b {
+	font-weight: $font-weight-bold;
+}
+
+a {
+	color: $body-color;
+	font-weight: $font-weight-semi;
+
+	&:hover {
+		color: $primary;
+	}
+}

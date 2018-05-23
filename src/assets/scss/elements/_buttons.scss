@@ -1,0 +1,54 @@
+.btn {
+	box-shadow: none;
+	// font-size: 0.75rem;
+	text-transform: none;
+	color: $body-color-light;
+	border-radius: $border-radius;
+	font-weight: $font-weight-semi;
+
+	@include media-breakpoint-down(lg) {
+		padding: 0.75rem 1.5rem;
+	}
+
+	@include media-breakpoint-up(lg) {
+		padding: 0 1.5rem;
+		line-height: calculateRem(44px);
+	}
+
+	&:focus {
+		outline: none !important;
+	}
+}
+
+.btn-nav {
+	padding: 0 1.5rem;
+	line-height: calculateRem(44px);
+}
+
+.btn-action {
+	background-color: lighten($dark, 10%);
+	
+	&:hover {
+		color: $body-color-light;
+		background-color: darken($dark, 10%);
+	}
+}
+
+.btn-user {
+	background-color: transparent;
+
+	&:hover {
+		color: $body-color-light;
+		background-color: darken($dark, 10%);
+	}
+}
+
+.btn-sm {
+	line-height: normal;
+}
+
+.btn-icon {
+	padding: 0.5rem;
+	// font-size: 0.65rem;
+	line-height: normal;
+}
