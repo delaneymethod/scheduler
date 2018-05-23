@@ -42,11 +42,6 @@ class Overview extends Component {
 		<Row>
 			<Col xs="12" sm="12" md="12" lg="12" xl="12">
 				<Header history={this.props.history} />
-				<Row>
-					<Col xs="12" sm="12" md="12" lg="12" xl="12">
-						<h2>{constants.APP.ROUTES.DASHBOARD.OVERVIEW.TITLE}</h2>
-					</Col>
-				</Row>
 			</Col>
 		</Row>
 	);

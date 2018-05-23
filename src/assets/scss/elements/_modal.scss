@@ -1,0 +1,44 @@
+.modal-header {
+	color: $body-color-light;
+	background-color: $secondary;
+
+	.label-wrap {
+		* {
+			margin: 0;
+			line-height: 1;
+		}
+	}
+
+	.close {
+		margin: 0;
+		top: 1rem;
+		opacity: 1;
+		padding: 0;
+		right: 1rem;
+		display: block;
+		text-shadow: none;
+		position: absolute;
+		color: $body-color-light;
+
+		&:hover {
+			opacity: 0.5;
+			cursor: pointer;
+		}
+
+		label,
+		span {
+			display: inline-block;
+			vertical-align: middle;
+		}
+
+		label {
+			margin: 0;
+		}
+	}
+}
+
+.modal-body,
+.modal-header {
+	position: relative;
+	padding: ($grid-gutter-width * 1.5) ($grid-gutter-width * 2);
+}

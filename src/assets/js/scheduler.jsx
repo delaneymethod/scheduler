@@ -1,3 +1,4 @@
+import 'bootstrap';
 import 'babel-polyfill';
 import React from 'react';
 import 'classlist-polyfill';

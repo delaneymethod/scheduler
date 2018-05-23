@@ -6,166 +6,149 @@
 
 @import '~font-awesome/scss/font-awesome';
 
+@import 'core';
+
+@import 'fonts';
+
 @import 'helpers';
 
-@font-face {
-	font-weight: 300;
-	font-style: normal;
-	font-family: 'Proxima Nova';
-	src: url('/assets/fonts/proximanova-light-webfont.woff2') format('woff2'), 
-		 url('/assets/fonts/proximanova-light-webfont.woff') format('woff');
-}
+@import 'typography';
 
-@font-face {
-	font-weight: 400;
-	font-style: normal;
-	font-family: 'Proxima Nova';
-	src: url('/assets/fonts/proximanova-regular-webfont.woff2') format('woff2'), 
-		 url('/assets/fonts/proximanova-regular-webfont.woff') format('woff');
-}
+@import 'utilities';
 
-@font-face {
-	font-weight: 500;
-	font-style: normal;
-	font-family: 'Proxima Nova';
-	src: url('/assets/fonts/proximanova-semibold-webfont.woff2') format('woff2'), 
-		 url('/assets/fonts/proximanova-semibold-webfont.woff') format('woff');
-}
+@import 'elements/buttons';
 
-@font-face {
-	font-weight: 600;
-	font-style: normal;
-	font-family: 'Proxima Nova';
-	src: url('/assets/fonts/proximanova-bold-webfont.woff2') format('woff2'), 
-		 url('/assets/fonts/proximanova-bold-webfont.woff') format('woff');
-}
+@import 'elements/forms';
 
-@include media-breakpoint-up(xl) {
-	.modal-xl {
-		max-width: $modal-xl;
-	}
-}
+@import 'elements/popovers';
 
-body,
-html {
-	height: 100%;
-}
+@import 'elements/tables';
 
-::selection {
-	background: $dark;
-	color: $light;
-}
+@import 'elements/modal';
 
-.bg-dark {
-	color: $body-color-light;
-}
+header {
+	h1 {
+		a {
+			color: $white;
+			line-height: normal;
+			text-decoration: none;
+			background-color: transparent;
+			font-size: calculateRem(28px);
+			font-weight: $font-weight-normal;
 
-.u-overflow-hidden {
-	overflow: hidden;
-}
+			&:hover {
+				color: $white;
+				text-decoration: none;
+			}
 
-.u-overflow-scroll {
-	overflow: scroll;
-}
+			span {
+				color: $primary;
+			}
+		}
 
-.navbar-brand {
-	color: #ffffff;
-	font-size: 22px;
-	line-height: normal;
-	font-family: 'Proxima Nova';
-	background-color: transparent;
-	font-weight: $font-weight-normal;
-	text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-	
-	span {
-		color: $primary;
-	}
-}
-
-a {
-	color: $body-color;
-	font-weight: $font-weight-semi;
-
-	&:hover {
-		color: $primary;
-	}
-}
-
-.h5 {
-	@extend %h5;
-	
-	font-weight: $font-weight-normal;
-
-	&--title {
-		@extend %h5;
-		@extend %text-uppercase;
+		@include media-breakpoint-up(md) {
+			margin-top: 0.5rem;
+		}
 		
-		font-weight: $font-weight-semi;
-	}
-
-	&--title-card {
-		@extend %h5;
-		@extend %text-uppercase;
-		
-		font-weight: $font-weight-semi;
-		text-align: center;
-		padding-bottom: 2rem;
-		margin: 0;
-		
-		@include media-breakpoint-up(lg) {
-			padding-bottom: 3rem;
+		@include media-breakpoint-down(sm) {
+			margin-top: 0;
+			margin-bottom: 1rem;
 		}
 	}
-}
 
-.alert {
-	p:last-child {
-		margin-bottom: 0;
+	.week-toggle {
+		color: $dark;
+		overflow: hidden;
+		// font-size: 0.75rem;
+		border-radius: $border-radius;
+		background-color: $body-color-light;
+	
+		@include media-breakpoint-down(sm) {
+			margin: 0;
+			text-align: center;
+			margin-bottom: 1rem;
+		}
+
+		span {
+			padding: 0 1.25rem;
+			line-height: calculateRem(44px);
+		}
+	
+		.btn-toggle {
+			padding: 0 0.75rem;
+			background-color: transparent;
+			line-height: calculateRem(44px);
+	
+			&:hover {
+				cursor: pointer;
+				color: $primary;
+			}
+		}
 	}
-}
-
-.error {
-	color: $danger;
-	margin-top: 0.5rem;
-}
-
-.warning {
-	color: $warning;
-	margin-top: 0.5rem;
-}
-
-.btn {
-	color: $body-color-light;
-	font-weight: $font-weight-semi;
 	
-	@include media-breakpoint-up(lg) {
-		line-height: 44px;
-	}
-}
+	.navbar {
+		flex-grow: 1;
 
-label {
-	@extend %text-uppercase;
-	
-	font-size: .75rem;
-	font-weight: $font-weight-semi;
-}
+		@include media-breakpoint-down(sm) {
+			width: 100%;
+		}
 
-.form-control {
-	color: $body-color !important;
-	background-color: $gray-300;
-	border: 1px solid $gray-600;
-	
-	@include media-breakpoint-up(lg) {
-		line-height: 44px;
+		.navbar-menu-toggle {
+			@include media-breakpoint-down(sm) {
+				margin: 0;
+			}
+		}
+
+		.actions {
+			@extend %clearfix;
+			@extend %clearlist;
+
+			li {
+				float: left;
+
+				.dropdown-item,
+				.dropdown-toggle {
+					cursor: pointer;
+				}
+
+				.dropdown-toggle {
+					color: $white;
+					outline: none !important;
+					text-decoration: none;
+
+					&:active,
+					&:focus,
+					&:hover {
+						color: $white;
+						outline: none !important;
+						outline-style: none !important;
+					}
+				}
+
+				&:last-child {
+					padding-right: 0 !important;
+				}
+			}
+
+			.active a {
+				background-color: darken($dark, 10%);
+			}
+		}
+		
+		.profile-toggle {
+			@include media-breakpoint-down(sm) {
+				margin: 0;
+			}
+		}
 	}
 }
 
 .login-page-container,
 .register-page-container,
 .forgotten-your-password-page-container {
-	min-height: -moz-min-content; /* not implemented */
-	min-height: -webkit-min-content; /* works for opera and safari */
-	min-height: min-content; /* works for chrome */
+	min-height: min-content;
+	min-height: -moz-min-content;
+	min-height: -webkit-min-content;
 	
 	@include media-breakpoint-up(md) {
 		height: 100vh;
@@ -174,7 +157,7 @@ label {
 	.panel-welcome {
 		width: 90%;
 		margin: 0 auto;
-		max-width: 620px;
+		max-width: calculateRem(620px);
 		
 		@include media-breakpoint-up(lg) {
 			width: 70%;
@@ -182,10 +165,10 @@ label {
 	}
 	
 	.panel-page {
-		margin: 0 auto;
-		max-width: 720px;
 		width: 90%;
-	
+		margin: 0 auto;
+		max-width: calculateRem(720px);
+		
 		&__content {
 			width: 100%;
 			padding: 2rem;
@@ -201,8 +184,8 @@ label {
 		}
 		
 		&__forgot {
-			margin-top: 2rem;
 			display: block;
+			margin-top: 2rem;
 			text-align: center;
 		}
 	}

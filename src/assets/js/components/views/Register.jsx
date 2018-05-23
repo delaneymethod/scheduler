@@ -60,7 +60,8 @@ class Register extends Component {
 		businessName: '',
 		emailSent: false,
 		confirmPassword: '',
-		subscriptionLevel: 1,
+		/* FIXME - pull in all subscriptions from API */
+		subscriptionLevel: 'bfea792d-dd9c-456b-9634-9e811b0c5319',
 	});
 
 	handleChange = async (event) => {
@@ -110,7 +111,8 @@ class Register extends Component {
 						emailSent: true,
 						businessName: '',
 						confirmPassword: '',
-						subscriptionLevel: 1,
+						/* FIXME - pull in all subscriptions from API */
+						subscriptionLevel: 'bfea792d-dd9c-456b-9634-9e811b0c5319',
 					});
 				})
 				.catch((error) => {

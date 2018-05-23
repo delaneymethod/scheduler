@@ -1,9 +1,28 @@
+%h3 {
+	line-height: 1.5;
+	font-size: 1.375rem;
+}
+
 %h5 {
 	line-height: 1.5;
 	font-size: 1.125rem;
 }
 
 %text-uppercase {
-	letter-spacing: 2px;
 	text-transform: uppercase;
+	letter-spacing: calculateRem(2px);
+}
+
+%clearlist {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+%clearfix {
+	&:after {
+		content: '';
+		clear: both;
+		display: table;
+	}
 }

@@ -85,24 +85,7 @@ class Login extends Component {
 					/* The tokens subject contains the users Id */
 					const token = jwtDecode(this.props.user.token);
 
-					this.props.user.userId = parseInt(token.sub, 10);
-
-					/* FIXME - Remove once login response is updated with accounts */
-					this.props.user.accounts = [
-						{
-							id: 1,
-							title: 'Account 1',
-						}, {
-							id: 2,
-							title: 'Account 2',
-						}, {
-							id: 3,
-							title: 'Account 3',
-						}, {
-							id: 4,
-							title: 'Account 4',
-						},
-					];
+					this.props.user.userId = token.sub;
 
 					/* Use the first account as the selected account */
 					const [account] = this.props.user.accounts;

@@ -1,0 +1,63 @@
+.popover {
+	box-shadow: 0 0 calculateRem(10px) 0 rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: 0 0 calculateRem(10px) 0 rgba(0, 0, 0, 0.5);
+	-webkit-box-shadow: 0 0 calculateRem(10px) 0 rgba(0, 0, 0, 0.5);
+}
+
+.popover-body {
+	padding: 0;
+	// font-size: 0.75rem;
+	text-align: center;
+
+	.popover-menu {
+		@extend %clearlist;
+	
+		margin: calculateRem(5px);
+	
+		li {
+			margin: 0;
+			padding: 0 !important;
+			float: none;
+			width: calculateRem(150px);
+	
+			&:not(:last-child) {
+				margin-bottom: 0.5rem;
+			}
+			
+			&:last-child {
+				margin-bottom: 0.4rem;
+			}
+	
+			.btn {
+				width: 100%;
+			}
+		}
+	
+		.btn-sm {
+			// font-size: 0.75rem;
+		}
+	}
+}
+
+.bs-popover-right {
+	.arrow {
+		top: calculateRem(9px) !important;
+	}
+}
+
+.cell-popover {
+	a:not(.btn) {
+		display: block;
+		color: $body-color-light;
+		text-transform: uppercase;
+		padding: $table-cell-padding;
+
+		&:last-child {
+			background-color: darken($dark, 10%);
+		}
+
+		i {
+			margin-right: calculateRem(2px);
+		}
+	}
+}
