@@ -6,6 +6,7 @@ import { Async, FieldFeedback, FieldFeedbacks } from 'react-form-with-constraint
 import PasswordStrengthMeter from '../common/PasswordStrengthMeter';
 
 import isPasswordCommon from '../../helpers/isPasswordCommon';
+
 import { addClass, removeClass } from '../../helpers/classes';
 
 const propTypes = {
@@ -61,7 +62,7 @@ class PasswordField extends Component {
 			<div className="input-group">
 				<Input type="password" name={this.props.fieldName} id={this.props.fieldName} value={this.props.fieldValue} placeholder="e.g. y1Fwc]_C" autoComplete="off" onChange={this.props.handleChange} required pattern={`.{${this.props.minLength},}`} />
 				<div className="input-group-append">
-					<Button color="light" title="Toggle Value" className="input-group-text" onClick={this.handleToggle} tabIndex="-1"><i className="fa fa-eye-slash text-primary" id={this.props.fieldName.concat('-fa')} aria-hidden="true"></i></Button>
+					<Button color="muted" title="Toggle Value" className="input-group-text" onClick={this.handleToggle} tabIndex="-1"><i className="fa fa-eye-slash text-primary" id={this.props.fieldName.concat('-fa')} aria-hidden="true"></i></Button>
 				</div>
 			</div>
 			{(this.props.showPasswordStrength && this.props.fieldName === 'password' && this.props.fieldValue.length >= this.props.minLength) ? (

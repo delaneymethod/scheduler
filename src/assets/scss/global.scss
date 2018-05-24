@@ -106,12 +106,7 @@ header {
 			li {
 				float: left;
 
-				.dropdown-item,
-				.dropdown-toggle {
-					cursor: pointer;
-				}
-
-				.dropdown-toggle {
+				.btn-profile-popover {
 					color: $white;
 					outline: none !important;
 					text-decoration: none;
@@ -122,6 +117,7 @@ header {
 						color: $white;
 						outline: none !important;
 						outline-style: none !important;
+						background-color: darken($dark, 10%);
 					}
 				}
 

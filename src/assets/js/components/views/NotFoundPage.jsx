@@ -1,19 +1,11 @@
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { Col, Row } from 'reactstrap';
 import React, { Component } from 'react';
 
 import constants from '../../helpers/constants';
 
-const propTypes = {};
-
-const defaultProps = {};
-
 class NotFoundPage extends Component {
 	constructor(props) {
 		super(props);
-
-		this.state = this.getInitialState();
 
 		document.title = `${constants.APP.TITLE}: Not Found Page`;
 
@@ -26,8 +18,6 @@ class NotFoundPage extends Component {
 		*/
 	}
 
-	getInitialState = () => ({});
-
 	render = () => (
 		<Row>
 			<Col xs="12" sm="12" md="12" lg="12" xl="12">
@@ -37,12 +27,4 @@ class NotFoundPage extends Component {
 	);
 }
 
-NotFoundPage.propTypes = propTypes;
-
-NotFoundPage.defaultProps = defaultProps;
-
-const mapStateToProps = (state, props) => ({});
-
-const mapDispatchToProps = dispatch => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(NotFoundPage);
+export default NotFoundPage;

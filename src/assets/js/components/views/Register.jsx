@@ -10,11 +10,16 @@ import constants from '../../helpers/constants';
 import { register } from '../../actions/authenticationActions';
 
 import ErrorMessage from '../common/ErrorMessage';
+
 import SuccessMessage from '../common/SuccessMessage';
 
 import TextField from '../fields/TextField';
+
 import EmailField from '../fields/EmailField';
+
 import PasswordField from '../fields/PasswordField';
+
+const routes = constants.APP.ROUTES;
 
 const propTypes = {
 	authenticated: PropTypes.bool.isRequired,
@@ -29,7 +34,7 @@ class Register extends Component {
 		super(props);
 
 		if (this.props.authenticated) {
-			this.props.history.push(constants.APP.ROUTES.DASHBOARD.HOME.URI);
+			this.props.history.push(routes.DASHBOARD.HOME.URI);
 		}
 
 		this.state = this.getInitialState();
@@ -40,7 +45,7 @@ class Register extends Component {
 
 		this.handleChangePassword = this.handleChangePassword.bind(this);
 
-		document.title = `${constants.APP.TITLE}: ${constants.APP.ROUTES.REGISTER.TITLE}`;
+		document.title = `${constants.APP.TITLE}: ${routes.REGISTER.TITLE}`;
 
 		/*
 		const meta = document.getElementsByTagName('meta');
@@ -131,15 +136,15 @@ class Register extends Component {
 		<Row className="d-flex flex-md-row flex-column register-page-container">
 			<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center bg-dark py-5">
 				<div className="panel-welcome">
-					<h1><a href={constants.APP.ROUTES.HOME.URI} title={constants.APP.TITLE}><img src={constants.APP.LOGO} alt={constants.APP.TITLE} className="mb-4" /></a></h1>
-					<p className="h5 mb-0">{constants.APP.ROUTES.REGISTER.MESSAGE}</p>
+					<h1><a href={routes.HOME.URI} title={constants.APP.TITLE}><img src={constants.APP.LOGO} alt={constants.APP.TITLE} className="mb-4" /></a></h1>
+					<p className="h5 mb-0">{routes.REGISTER.MESSAGE}</p>
 				</div>
 			</Col>
 			<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center py-5">
 				<div className="panel-page">
-					<a href={constants.APP.ROUTES.LOGIN.URI} title={constants.APP.ROUTES.LOGIN.TITLE} className="panel-page__link float-right">Already a member? {constants.APP.ROUTES.LOGIN.TITLE}</a>
+					<a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} className="panel-page__link float-right">Already a member? {routes.LOGIN.TITLE}</a>
 					<div className="card panel-page__content">
-						<h2 className="h5--title-card">{constants.APP.ROUTES.REGISTER.TITLE}</h2>
+						<h2 className="h5--title-card">{routes.REGISTER.TITLE}</h2>
 						{this.errorMessages()}
 						{(this.state.emailSent) ? <SuccessMessage message={`An email has been sent to <strong>${this.state.email}</strong>. Please follow the link in this email message to verify your account and complete registration.`} /> : ''}
 						<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
@@ -155,7 +160,7 @@ class Register extends Component {
 							<EmailField fieldValue={this.state.email} handleChange={this.handleChange} />
 							<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChangePassword} showPasswordStrength showPasswordCommon />
 							<PasswordField fieldLabel="Confirm Password" fieldName="confirmPassword" fieldValue={this.state.confirmPassword} handleChange={this.handleChange} />
-							<Button type="submit" color="primary" className="mt-4" title={constants.APP.ROUTES.REGISTER.TITLE} block>{constants.APP.ROUTES.REGISTER.TITLE}</Button>
+							<Button type="submit" color="primary" className="mt-4" title={routes.REGISTER.TITLE} block>{routes.REGISTER.TITLE}</Button>
 						</FormWithConstraints>
 					</div>
 				</div>

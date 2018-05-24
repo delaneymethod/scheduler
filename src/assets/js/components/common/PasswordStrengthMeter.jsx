@@ -1,5 +1,5 @@
-import React from 'react';
 import zxcvbn from 'zxcvbn';
+import React, { Fragment } from 'react';
 
 const PasswordStrengthMeter = (props) => {
 	let progressBar = 0;
@@ -46,12 +46,12 @@ const PasswordStrengthMeter = (props) => {
 	}
 
 	return (
-		<div>
+		<Fragment>
 			<div className="progress mt-2" style={{ height: '2px' }}>
 				<div className={progressCSS} role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={progressBar} style={{ width: `${progressBar}%` }}></div>
 			</div>
 			<div className={progressTextCSS}>{progressText}</div>
-		</div>
+		</Fragment>
 	);
 };
 

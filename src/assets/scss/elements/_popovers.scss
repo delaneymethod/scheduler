@@ -16,8 +16,8 @@
 	
 		li {
 			margin: 0;
-			padding: 0 !important;
 			float: none;
+			padding: 0 !important;
 			width: calculateRem(150px);
 	
 			&:not(:last-child) {
