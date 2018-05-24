@@ -9,12 +9,16 @@ import { Col, Row, Label, Input, Button, FormGroup } from 'reactstrap';
 import constants from '../../helpers/constants';
 
 import { updateUser } from '../../actions/userActions';
+
 import { login } from '../../actions/authenticationActions';
 
 import ErrorMessage from '../common/ErrorMessage';
 
 import EmailField from '../fields/EmailField';
+
 import PasswordField from '../fields/PasswordField';
+
+const routes = constants.APP.ROUTES;
 
 const propTypes = {
 	user: PropTypes.object.isRequired,
@@ -31,7 +35,7 @@ class Login extends Component {
 		super(props);
 
 		if (this.props.authenticated) {
-			this.props.history.push(constants.APP.ROUTES.DASHBOARD.HOME.URI);
+			this.props.history.push(routes.DASHBOARD.HOME.URI);
 		}
 
 		this.state = this.getInitialState();
@@ -40,7 +44,7 @@ class Login extends Component {
 
 		this.handleSubmit = this.handleSubmit.bind(this);
 
-		document.title = `${constants.APP.TITLE}: ${constants.APP.ROUTES.LOGIN.TITLE}`;
+		document.title = `${constants.APP.TITLE}: ${routes.LOGIN.TITLE}`;
 
 		/*
 		const meta = document.getElementsByTagName('meta');
@@ -93,7 +97,7 @@ class Login extends Component {
 					this.props.user.account = account;
 
 					/* Update the user state and then go to the dashboard */
-					this.props.actions.updateUser(this.props.user).then(() => this.props.history.push(constants.APP.ROUTES.DASHBOARD.HOME.URI));
+					this.props.actions.updateUser(this.props.user).then(() => this.props.history.push(routes.DASHBOARD.HOME.URI));
 				})
 				.catch((error) => {
 					const { errors } = this.state;
@@ -111,21 +115,21 @@ class Login extends Component {
 		<Row className="d-flex flex-md-row flex-column login-page-container">
 			<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center bg-dark py-5">
 				<div className="panel-welcome">
-					<h1><a href={constants.APP.ROUTES.HOME.URI} title={constants.APP.TITLE}><img src={constants.APP.LOGO} alt={constants.APP.TITLE} className="mb-4" /></a></h1>
-					<p className="h5 mb-0">{constants.APP.ROUTES.LOGIN.MESSAGE}</p>
+					<h1><a href={routes.HOME.URI} title={constants.APP.TITLE}><img src={constants.APP.LOGO} alt={constants.APP.TITLE} className="mb-4" /></a></h1>
+					<p className="h5 mb-0">{routes.LOGIN.MESSAGE}</p>
 				</div>
 			</Col>
 			<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center py-5">
 				<div className="panel-page">
-					<a href={constants.APP.ROUTES.REGISTER.URI} title={constants.APP.ROUTES.REGISTER.TITLE} className="panel-page__link">Back to {constants.APP.ROUTES.REGISTER.TITLE}</a>
+					<a href={routes.REGISTER.URI} title={routes.REGISTER.TITLE} className="panel-page__link">Back to {routes.REGISTER.TITLE}</a>
 					<div className="card panel-page__content">
-						<h2 className="h5--title-card">{constants.APP.ROUTES.LOGIN.TITLE}</h2>
+						<h2 className="h5--title-card">{routes.LOGIN.TITLE}</h2>
 						{this.errorMessages()}
 						<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 							<EmailField fieldValue={this.state.email} handleChange={this.handleChange} />
 							<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChange} />
-							<Button type="submit" color="primary" className="mt-4" title={constants.APP.ROUTES.LOGIN.TITLE} block>{constants.APP.ROUTES.LOGIN.TITLE}</Button>
-							<a href={constants.APP.ROUTES.FORGOTTEN_YOUR_PASSWORD.URI} title={constants.APP.ROUTES.FORGOTTEN_YOUR_PASSWORD.TITLE} className="panel-page__forgot">{constants.APP.ROUTES.FORGOTTEN_YOUR_PASSWORD.TITLE}</a>
+							<Button type="submit" color="primary" className="mt-4" title={routes.LOGIN.TITLE} block>{routes.LOGIN.TITLE}</Button>
+							<a href={routes.FORGOTTEN_YOUR_PASSWORD.URI} title={routes.FORGOTTEN_YOUR_PASSWORD.TITLE} className="panel-page__forgot">{routes.FORGOTTEN_YOUR_PASSWORD.TITLE}</a>
 						</FormWithConstraints>
 					</div>
 				</div>

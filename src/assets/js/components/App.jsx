@@ -17,17 +17,19 @@ import Overview from './views/dashboard/Overview';
 import Shifts from './views/dashboard/shifts/Shifts';
 import Employees from './views/dashboard/employees/Employees';
 
+const routes = constants.APP.ROUTES;
+
 const App = () => (
 	<ErrorBoundary>
 		<Switch context="router">
-			<Route exact path={constants.APP.ROUTES.HOME.URI} component={Home} />
-			<Route exact path={constants.APP.ROUTES.LOGIN.URI} component={Login} />
-			<Route exact path={constants.APP.ROUTES.REGISTER.URI} component={Register} />
-			<Route exact path={constants.APP.ROUTES.FORGOTTEN_YOUR_PASSWORD.URI} component={ForgottenYourPassword} />
-			<Route exact path={constants.APP.ROUTES.DASHBOARD.HOME.URI} component={Dashboard} />
-			<Route exact path={constants.APP.ROUTES.DASHBOARD.OVERVIEW.URI} component={Overview} />
-			<Route exact path={constants.APP.ROUTES.DASHBOARD.SHIFTS.URI} component={Shifts} />
-			<Route exact path={constants.APP.ROUTES.DASHBOARD.EMPLOYEES.URI} component={Employees} />
+			<Route exact path={routes.HOME.URI} component={Home} />
+			<Route exact path={routes.LOGIN.URI} component={Login} />
+			<Route exact path={routes.REGISTER.URI} component={Register} />
+			<Route exact path={routes.FORGOTTEN_YOUR_PASSWORD.URI} component={ForgottenYourPassword} />
+			<Route exact path={routes.DASHBOARD.HOME.URI} component={Dashboard} />
+			<Route exact path={routes.DASHBOARD.OVERVIEW.URI} component={Overview} />
+			<Route exact path={routes.DASHBOARD.SHIFTS.URI} component={Shifts} />
+			<Route exact path={routes.DASHBOARD.EMPLOYEES.URI} component={Employees} />
 			<Route path="*" component={NotFoundPage} />
 		</Switch>
 	</ErrorBoundary>

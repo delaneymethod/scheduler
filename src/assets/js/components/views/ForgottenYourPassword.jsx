@@ -10,9 +10,12 @@ import constants from '../../helpers/constants';
 import { forgottenYourPassword } from '../../actions/authenticationActions';
 
 import ErrorMessage from '../common/ErrorMessage';
+
 import SuccessMessage from '../common/SuccessMessage';
 
 import EmailField from '../fields/EmailField';
+
+const routes = constants.APP.ROUTES;
 
 const propTypes = {
 	authenticated: PropTypes.bool.isRequired,
@@ -27,7 +30,7 @@ class ForgottenYourPassword extends Component {
 		super(props);
 
 		if (this.props.authenticated) {
-			this.props.history.push(constants.APP.ROUTES.DASHBOARD.HOME.URI);
+			this.props.history.push(routes.DASHBOARD.HOME.URI);
 		}
 
 		this.state = this.getInitialState();
@@ -36,7 +39,7 @@ class ForgottenYourPassword extends Component {
 
 		this.handleSubmit = this.handleSubmit.bind(this);
 
-		document.title = `${constants.APP.TITLE}: ${constants.APP.ROUTES.FORGOTTEN_YOUR_PASSWORD.TITLE}`;
+		document.title = `${constants.APP.TITLE}: ${routes.FORGOTTEN_YOUR_PASSWORD.TITLE}`;
 
 		/*
 		const meta = document.getElementsByTagName('meta');
@@ -93,20 +96,20 @@ class ForgottenYourPassword extends Component {
 		<Row className="d-flex flex-md-row flex-column forgotten-your-password-page-container">
 			<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center bg-dark py-5">
 				<div className="panel-welcome">
-					<h1><a href={constants.APP.ROUTES.HOME.URI} title={constants.APP.TITLE}><img src={constants.APP.LOGO} alt={constants.APP.TITLE} className="mb-4" /></a></h1>
-					<p className="h5 mb-0">{constants.APP.ROUTES.LOGIN.MESSAGE}</p>
+					<h1><a href={routes.HOME.URI} title={constants.APP.TITLE}><img src={constants.APP.LOGO} alt={constants.APP.TITLE} className="mb-4" /></a></h1>
+					<p className="h5 mb-0">{routes.LOGIN.MESSAGE}</p>
 				</div>
 			</Col>
 			<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center py-5">
 				<div className="panel-page">
-					<a href={constants.APP.ROUTES.LOGIN.URI} title={constants.APP.ROUTES.LOGIN.TITLE} className="panel-page__link">Back to {constants.APP.ROUTES.LOGIN.TITLE}</a>
+					<a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} className="panel-page__link">Back to {routes.LOGIN.TITLE}</a>
 					<div className="card panel-page__content">
-						<h2 className="h5--title-card">{constants.APP.ROUTES.FORGOTTEN_YOUR_PASSWORD.TITLE}</h2>
+						<h2 className="h5--title-card">{routes.FORGOTTEN_YOUR_PASSWORD.TITLE}</h2>
 						{this.errorMessages()}
 						{(this.state.emailSent) ? <SuccessMessage message={`An email has been sent to <strong>${this.state.email}</strong>. Please follow the link in this email message to set your password.`} /> : ''}
 						<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 							<EmailField fieldValue={this.state.email} handleChange={this.handleChange} />
-							<Button type="submit" color="primary" className="mt-4" title={constants.APP.ROUTES.FORGOTTEN_YOUR_PASSWORD.TITLE} block>{constants.APP.ROUTES.FORGOTTEN_YOUR_PASSWORD.TITLE}</Button>
+							<Button type="submit" color="primary" className="mt-4" title={routes.FORGOTTEN_YOUR_PASSWORD.TITLE} block>{routes.FORGOTTEN_YOUR_PASSWORD.TITLE}</Button>
 						</FormWithConstraints>
 					</div>
 				</div>

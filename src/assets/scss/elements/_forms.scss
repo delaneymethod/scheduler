@@ -18,7 +18,7 @@ label {
 	// font-size: 0.875em;
 	background-color: $gray-300;
 	color: $body-color !important;
-	font-weight: $font-weight-semi;
+	// font-weight: $font-weight-semi;
 	border: calculateRem(1px) solid $gray-600;
 
 	@include media-breakpoint-up(lg) {

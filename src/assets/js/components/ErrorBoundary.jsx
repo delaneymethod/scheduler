@@ -1,5 +1,14 @@
+import PropTypes from 'prop-types';
 import { Alert } from 'reactstrap';
 import React, { Component } from 'react';
+
+const propTypes = {
+	children: PropTypes.node,
+};
+
+const defaultProps = {
+	children: null,
+};
 
 class ErrorBoundary extends Component {
 	constructor(props) {
@@ -24,5 +33,9 @@ class ErrorBoundary extends Component {
 		return this.props.children;
 	};
 }
+
+ErrorBoundary.propTypes = propTypes;
+
+ErrorBoundary.defaultProps = defaultProps;
 
 export default ErrorBoundary;

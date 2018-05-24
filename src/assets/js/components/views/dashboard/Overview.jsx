@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Col, Row } from 'reactstrap';
-import React, { Component } from 'react';
+import React, { Fragment, Component } from 'react';
 
 import constants from '../../../helpers/constants';
 
 import Header from '../../common/Header';
+
+const routes = constants.APP.ROUTES;
 
 const propTypes = {
 	authenticated: PropTypes.bool.isRequired,
@@ -20,12 +21,10 @@ class Overview extends Component {
 		super(props);
 
 		if (!this.props.authenticated) {
-			this.props.history.push(constants.APP.ROUTES.LOGIN.URI);
+			this.props.history.push(routes.LOGIN.URI);
 		}
 
-		this.state = this.getInitialState();
-
-		document.title = `${constants.APP.TITLE}: ${constants.APP.ROUTES.DASHBOARD.OVERVIEW.TITLE} - ${constants.APP.ROUTES.DASHBOARD.HOME.TITLE}`;
+		document.title = `${constants.APP.TITLE}: ${routes.DASHBOARD.OVERVIEW.TITLE} - ${routes.DASHBOARD.HOME.TITLE}`;
 
 		/*
 		const meta = document.getElementsByTagName('meta');
@@ -36,14 +35,10 @@ class Overview extends Component {
 		*/
 	}
 
-	getInitialState = () => ({});
-
 	render = () => (
-		<Row>
-			<Col xs="12" sm="12" md="12" lg="12" xl="12">
-				<Header history={this.props.history} />
-			</Col>
-		</Row>
+		<Fragment>
+			<Header history={this.props.history} />
+		</Fragment>
 	);
 }
 

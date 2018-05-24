@@ -1,20 +1,13 @@
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { Col, Row } from 'reactstrap';
-import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
 
 import constants from '../../helpers/constants';
 
-const propTypes = {};
-
-const defaultProps = {};
+const routes = constants.APP.ROUTES;
 
 class Home extends Component {
 	constructor(props) {
 		super(props);
-
-		this.state = this.getInitialState();
 
 		document.title = constants.APP.TITLE;
 
@@ -27,26 +20,16 @@ class Home extends Component {
 		*/
 	}
 
-	getInitialState = () => ({});
-
 	render = () => (
 		<Row>
 			<Col xs="12" sm="12" md="12" lg="12" xl="12">
-				<h2>{constants.APP.ROUTES.HOME.TITLE}</h2>
+				<h2>{routes.HOME.TITLE}</h2>
 				<ul>
-					<li><Link to={constants.APP.ROUTES.LOGIN.URI} title={constants.APP.ROUTES.LOGIN.TITLE} className="btn btn-primary">{constants.APP.ROUTES.LOGIN.TITLE}</Link></li>
+					<li><a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} className="btn btn-primary">{routes.LOGIN.TITLE}</a></li>
 				</ul>
 			</Col>
 		</Row>
 	);
 }
 
-Home.propTypes = propTypes;
-
-Home.defaultProps = defaultProps;
-
-const mapStateToProps = (state, props) => ({});
-
-const mapDispatchToProps = dispatch => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default Home;
