@@ -27,7 +27,7 @@ class EmailField extends Component {
 		mailcheck.defaultSecondLevelDomains.push('giggrafter');
 	}
 
-	handleBlur = (event) => {
+	handleBlur = () => {
 		mailcheck.run({
 			email: this.props.fieldValue,
 			suggested: (suggested) => {

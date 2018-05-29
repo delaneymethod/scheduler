@@ -29,7 +29,7 @@ describe('Account Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ accounts: {} });
 
 		const expectedActions = [{
 			status: true,
@@ -55,7 +55,7 @@ describe('Account Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ accounts: {} });
 
 		return store.dispatch(actions.getAccounts({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -70,7 +70,7 @@ describe('Account Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ accounts: {} });
 
 		const expectedActions = [{
 			status: true,
@@ -100,7 +100,7 @@ describe('Account Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ accounts: {} });
 
 		return store.dispatch(actions.getAccount({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -115,7 +115,7 @@ describe('Account Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ accounts: {} });
 
 		const expectedActions = [{
 			status: true,
@@ -145,7 +145,7 @@ describe('Account Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ accounts: {} });
 
 		return store.dispatch(actions.createAccount({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -160,7 +160,7 @@ describe('Account Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ accounts: {} });
 
 		const expectedActions = [{
 			status: true,
@@ -190,7 +190,7 @@ describe('Account Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ accounts: {} });
 
 		return store.dispatch(actions.updateAccount({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -205,7 +205,7 @@ describe('Account Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ accounts: {} });
 
 		const expectedActions = [{
 			status: true,
@@ -235,7 +235,7 @@ describe('Account Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ accounts: {} });
 
 		return store.dispatch(actions.deleteAccount({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -250,7 +250,7 @@ describe('Account Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ accounts: {} });
 
 		const expectedActions = [{
 			status: true,
@@ -280,7 +280,7 @@ describe('Account Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ accounts: {} });
 
 		return store.dispatch(actions.switchAccount({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});

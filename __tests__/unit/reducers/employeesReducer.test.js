@@ -18,7 +18,7 @@ describe('Employees Reducer', () => {
 		}];
 	});
 
-	it('should return the initial state', () => expect(employeesReducer(undefined, {})).toEqual([]));
+	it('should return the initial state', () => expect(employeesReducer(undefined, {})).toEqual({}));
 
 	it('should handle GET_EMPLOYEE', () => {
 		const mockEmployee = mockEmployees[0];

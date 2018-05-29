@@ -26,6 +26,12 @@ label {
 	}
 }
 
-.custom-select {
+.custom-select,
+select.form-control:not([size]):not([multiple]) {
 	height: auto;
+}
+
+.custom-select-xl {
+	height: $custom-select-height-xl;
+	font-size: $custom-select-font-size-xl;
 }

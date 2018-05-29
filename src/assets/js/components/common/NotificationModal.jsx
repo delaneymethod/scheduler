@@ -20,7 +20,7 @@ const defaultProps = {
 	onClose: () => {},
 };
 
-class Notification extends Component {
+class NotificationModal extends Component {
 	render = () => {
 		if (!this.props.show) {
 			return null;
@@ -40,8 +40,8 @@ class Notification extends Component {
 	};
 }
 
-Notification.propTypes = propTypes;
+NotificationModal.propTypes = propTypes;
 
-Notification.defaultProps = defaultProps;
+NotificationModal.defaultProps = defaultProps;
 
-export default Notification;
+export default NotificationModal;

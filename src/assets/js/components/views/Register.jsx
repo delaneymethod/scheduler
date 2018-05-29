@@ -5,28 +5,30 @@ import { bindActionCreators } from 'redux';
 import { Col, Row, Label, Input, Button, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 
-import constants from '../../helpers/constants';
-
-import { register } from '../../actions/authenticationActions';
-
-import ErrorMessage from '../common/ErrorMessage';
-
-import SuccessMessage from '../common/SuccessMessage';
-
 import TextField from '../fields/TextField';
 
 import EmailField from '../fields/EmailField';
 
+import constants from '../../helpers/constants';
+
 import PasswordField from '../fields/PasswordField';
+
+import NotificationAlert from '../common/NotificationAlert';
+
+import { register } from '../../actions/authenticationActions';
+
+import { getSubscriptionLevels } from '../../actions/subscriptionLevelActions';
 
 const routes = constants.APP.ROUTES;
 
 const propTypes = {
 	authenticated: PropTypes.bool.isRequired,
+	subscriptionLevels: PropTypes.object.isRequired,
 };
 
 const defaultProps = {
 	authenticated: false,
+	subscriptionLevels: {},
 };
 
 class Register extends Component {
@@ -47,27 +49,35 @@ class Register extends Component {
 
 		document.title = `${constants.APP.TITLE}: ${routes.REGISTER.TITLE}`;
 
-		/*
 		const meta = document.getElementsByTagName('meta');
 
-		meta.description.setAttribute('content', '');
-		meta.keywords.setAttribute('content', '');
-		meta.author.setAttribute('content', '');
-		*/
+		meta.description.setAttribute('content', routes.REGISTER.META.DESCRIPTION);
+		meta.keywords.setAttribute('content', routes.REGISTER.META.KEYWORDS);
+		meta.author.setAttribute('content', constants.APP.AUTHOR);
 	}
 
 	getInitialState = () => ({
+		error: {},
 		email: '',
-		errors: [],
 		password: '',
 		lastName: '',
 		firstName: '',
 		businessName: '',
 		emailSent: false,
 		confirmPassword: '',
-		/* FIXME - pull in all subscriptions from API */
-		subscriptionLevel: 'bfea792d-dd9c-456b-9634-9e811b0c5319',
+		subscriptionLevelId: '',
 	});
+
+	componentDidMount = () => this.props.actions.getSubscriptionLevels().catch(error => this.setState({ error }));
+
+	componentWillReceiveProps = (nextProps) => {
+		/* Used to set a default the subscription level id value after the getSubscriptionLevels action has completed */
+		const { subscriptionLevels } = nextProps;
+
+		if (subscriptionLevels) {
+			this.setState({ subscriptionLevelId: subscriptionLevels.data.map(({ subscriptionLevelId }) => subscriptionLevelId).toString() });
+		}
+	};
 
 	handleChange = async (event) => {
 		const target = event.currentTarget;
@@ -93,7 +103,7 @@ class Register extends Component {
 	handleSubmit = async (event) => {
 		event.preventDefault();
 
-		this.setState({ errors: [], emailSent: false });
+		this.setState({ error: {} });
 
 		await this.form.validateFields();
 
@@ -104,33 +114,18 @@ class Register extends Component {
 				lastName: this.state.lastName,
 				firstName: this.state.firstName,
 				businessName: this.state.businessName,
-				subscriptionLevel: this.state.subscriptionLevel,
+				subscriptionLevelId: this.state.subscriptionLevelId,
 			};
 
 			this.props.actions.register(payload)
-				.then(() => {
-					this.setState({
-						password: '',
-						lastName: '',
-						firstName: '',
-						emailSent: true,
-						businessName: '',
-						confirmPassword: '',
-						/* FIXME - pull in all subscriptions from API */
-						subscriptionLevel: 'bfea792d-dd9c-456b-9634-9e811b0c5319',
-					});
-				})
-				.catch((error) => {
-					const { errors } = this.state;
-
-					errors.push(error);
-
-					this.setState({ errors });
-				});
+				.then(() => this.setState(Object.assign(this.getInitialState(), { emailSent: true })))
+				.catch(error => this.setState({ error }));
 		}
 	};
 
-	errorMessages = () => ((this.state.errors.length) ? this.state.errors.map((error, index) => <ErrorMessage key={index} error={error.data} />) : '');
+	errorMessage = () => (this.state.error.data ? <NotificationAlert color="danger" title={this.state.error.data.title} message={this.state.error.data.message} /> : null);
+
+	successMessage = () => (this.state.emailSent ? <NotificationAlert color="success" message={`An email has been sent to <strong>${this.state.email}</strong>. Please follow the link in this email message to verify your account and complete registration.`} /> : null);
 
 	render = () => (
 		<Row className="d-flex flex-md-row flex-column register-page-container">
@@ -145,9 +140,20 @@ class Register extends Component {
 					<a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} className="panel-page__link float-right">Already a member? {routes.LOGIN.TITLE}</a>
 					<div className="card panel-page__content">
 						<h2 className="h5--title-card">{routes.REGISTER.TITLE}</h2>
-						{this.errorMessages()}
-						{(this.state.emailSent) ? <SuccessMessage message={`An email has been sent to <strong>${this.state.email}</strong>. Please follow the link in this email message to verify your account and complete registration.`} /> : ''}
+						{this.errorMessage()}
+						{this.successMessage()}
 						<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
+							{(this.props.subscriptionLevels.object === 'list' && this.props.subscriptionLevels.total_count > 0) ? (
+								<FormGroup>
+									<Label for="subscriptionLevelId">Subscription Type</Label>
+									<Input type="select" name="subscriptionLevelId" id="subscriptionLevelId" className="custom-select custom-select-xl" onChange={this.handleChange} required>
+										{this.props.subscriptionLevels.data.map((subscriptionLevel, index) => <option key={index} value={subscriptionLevel.subscriptionLevelId} label={subscriptionLevel.subscriptionLevelName} />)}
+									</Input>
+									<FieldFeedbacks for="subscriptionLevelId" show="all">
+										<FieldFeedback when="*">- Please select a subscription.</FieldFeedback>
+									</FieldFeedbacks>
+								</FormGroup>
+							) : null}
 							<TextField fieldName="businessName" fieldLabel="Business Name" fieldValue={this.state.businessName} fieldPlaceholder="e.g. Gig Grafter.com" handleChange={this.handleChange} valueMissing="Please provide a valid business name." />
 							<Row>
 								<Col xs="12" sm="12" md="12" lg="6" xl="6">
@@ -175,10 +181,11 @@ Register.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
 	authenticated: state.authenticated,
+	subscriptionLevels: state.subscriptionLevels,
 });
 
 const mapDispatchToProps = dispatch => ({
-	actions: bindActionCreators({ register }, dispatch),
+	actions: bindActionCreators({ register, getSubscriptionLevels }, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Register);

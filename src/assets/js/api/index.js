@@ -72,6 +72,9 @@ export const register = payload => request('POST', '/business-sign-up', 200, pay
 /* FORGOTTEN YOUR PASSWORD */
 export const forgottenYourPassword = payload => request('POST', '/forgotten-your-password', 200, payload);
 
+/* SUBSCRIPTION LEVELS */
+export const getSubscriptionLevels = () => request('GET', '/subscription-levels');
+
 /* EMPLOYEES */
 export const getEmployees = () => request('GET', '/employees');
 

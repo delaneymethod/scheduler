@@ -3,19 +3,19 @@ import React, { Component } from 'react';
 
 import constants from '../../helpers/constants';
 
+const routes = constants.APP.ROUTES;
+
 class NotFoundPage extends Component {
 	constructor(props) {
 		super(props);
 
-		document.title = `${constants.APP.TITLE}: Not Found Page`;
+		document.title = `${constants.APP.TITLE}: ${routes.PAGE_NOT_FOUND.TITLE}`;
 
-		/*
 		const meta = document.getElementsByTagName('meta');
 
-		meta.description.setAttribute('content', '');
-		meta.keywords.setAttribute('content', '');
-		meta.author.setAttribute('content', '');
-		*/
+		meta.description.setAttribute('content', routes.PAGE_NOT_FOUND.META.DESCRIPTION);
+		meta.keywords.setAttribute('content', routes.PAGE_NOT_FOUND.META.KEYWORDS);
+		meta.author.setAttribute('content', constants.APP.AUTHOR);
 	}
 
 	render = () => (

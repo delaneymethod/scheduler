@@ -2,18 +2,16 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
-import { Col, Row, Label, Input, Button, FormGroup } from 'reactstrap';
+import { Col, Row, Button } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
+
+import EmailField from '../fields/EmailField';
 
 import constants from '../../helpers/constants';
 
+import NotificationAlert from '../common/NotificationAlert';
+
 import { forgottenYourPassword } from '../../actions/authenticationActions';
-
-import ErrorMessage from '../common/ErrorMessage';
-
-import SuccessMessage from '../common/SuccessMessage';
-
-import EmailField from '../fields/EmailField';
 
 const routes = constants.APP.ROUTES;
 
@@ -41,18 +39,16 @@ class ForgottenYourPassword extends Component {
 
 		document.title = `${constants.APP.TITLE}: ${routes.FORGOTTEN_YOUR_PASSWORD.TITLE}`;
 
-		/*
 		const meta = document.getElementsByTagName('meta');
 
-		meta.description.setAttribute('content', '');
-		meta.keywords.setAttribute('content', '');
-		meta.author.setAttribute('content', '');
-		*/
+		meta.description.setAttribute('content', routes.FORGOTTEN_YOUR_PASSWORD.META.DESCRIPTION);
+		meta.keywords.setAttribute('content', routes.FORGOTTEN_YOUR_PASSWORD.META.KEYWORDS);
+		meta.author.setAttribute('content', constants.APP.AUTHOR);
 	}
 
 	getInitialState = () => ({
+		error: {},
 		email: '',
-		errors: [],
 		emailSent: false,
 	});
 
@@ -69,7 +65,7 @@ class ForgottenYourPassword extends Component {
 	handleSubmit = async (event) => {
 		event.preventDefault();
 
-		this.setState({ errors: [], emailSent: false });
+		this.setState({ error: {} });
 
 		await this.form.validateFields();
 
@@ -80,17 +76,13 @@ class ForgottenYourPassword extends Component {
 
 			this.props.actions.forgottenYourPassword(payload)
 				.then(() => this.setState(Object.assign(this.getInitialState(), { emailSent: true })))
-				.catch((error) => {
-					const { errors } = this.state;
-
-					errors.push(error);
-
-					this.setState({ errors });
-				});
+				.catch(error => this.setState({ error }));
 		}
 	};
 
-	errorMessages = () => ((this.state.errors.length) ? this.state.errors.map((error, index) => <ErrorMessage key={index} error={error.data} />) : '');
+	errorMessage = () => (this.state.error.data ? <NotificationAlert color="danger" title={this.state.error.data.title} message={this.state.error.data.message} /> : null);
+
+	successMessage = () => (this.state.emailSent ? <NotificationAlert color="success" message={`An email has been sent to <strong>${this.state.email}</strong>. Please follow the link in this email message to set your password.`} /> : null);
 
 	render = () => (
 		<Row className="d-flex flex-md-row flex-column forgotten-your-password-page-container">
@@ -105,8 +97,8 @@ class ForgottenYourPassword extends Component {
 					<a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} className="panel-page__link">Back to {routes.LOGIN.TITLE}</a>
 					<div className="card panel-page__content">
 						<h2 className="h5--title-card">{routes.FORGOTTEN_YOUR_PASSWORD.TITLE}</h2>
-						{this.errorMessages()}
-						{(this.state.emailSent) ? <SuccessMessage message={`An email has been sent to <strong>${this.state.email}</strong>. Please follow the link in this email message to set your password.`} /> : ''}
+						{this.errorMessage()}
+						{this.successMessage()}
 						<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 							<EmailField fieldValue={this.state.email} handleChange={this.handleChange} />
 							<Button type="submit" color="primary" className="mt-4" title={routes.FORGOTTEN_YOUR_PASSWORD.TITLE} block>{routes.FORGOTTEN_YOUR_PASSWORD.TITLE}</Button>

@@ -29,7 +29,7 @@ describe('Employee Actions', () => {
 			});
 		});
 
-		store = mockStore({ employees: [] });
+		store = mockStore({ employees: {} });
 
 		const expectedActions = [{
 			status: true,
@@ -70,7 +70,7 @@ describe('Employee Actions', () => {
 			});
 		});
 
-		store = mockStore({ employees: [] });
+		store = mockStore({ employees: {} });
 
 		const expectedActions = [{
 			status: true,
@@ -115,7 +115,7 @@ describe('Employee Actions', () => {
 			});
 		});
 
-		store = mockStore({ employees: [] });
+		store = mockStore({ employees: {} });
 
 		const expectedActions = [{
 			status: true,
@@ -160,7 +160,7 @@ describe('Employee Actions', () => {
 			});
 		});
 
-		store = mockStore({ employees: [] });
+		store = mockStore({ employees: {} });
 
 		const expectedActions = [{
 			status: true,
@@ -205,7 +205,7 @@ describe('Employee Actions', () => {
 			});
 		});
 
-		store = mockStore({ employees: [] });
+		store = mockStore({ employees: {} });
 
 		const expectedActions = [{
 			status: true,
