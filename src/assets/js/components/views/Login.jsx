@@ -3,20 +3,20 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
+import { Col, Row, Button } from 'reactstrap';
 import { FormWithConstraints } from 'react-form-with-constraints';
-import { Col, Row, Label, Input, Button, FormGroup } from 'reactstrap';
+
+import EmailField from '../fields/EmailField';
 
 import constants from '../../helpers/constants';
+
+import PasswordField from '../fields/PasswordField';
 
 import { updateUser } from '../../actions/userActions';
 
 import { login } from '../../actions/authenticationActions';
 
-import ErrorMessage from '../common/ErrorMessage';
-
-import EmailField from '../fields/EmailField';
-
-import PasswordField from '../fields/PasswordField';
+import NotificationAlert from '../common/NotificationAlert';
 
 const routes = constants.APP.ROUTES;
 
@@ -46,20 +46,38 @@ class Login extends Component {
 
 		document.title = `${constants.APP.TITLE}: ${routes.LOGIN.TITLE}`;
 
-		/*
 		const meta = document.getElementsByTagName('meta');
 
-		meta.description.setAttribute('content', '');
-		meta.keywords.setAttribute('content', '');
-		meta.author.setAttribute('content', '');
-		*/
+		meta.description.setAttribute('content', routes.LOGIN.META.DESCRIPTION);
+		meta.keywords.setAttribute('content', routes.LOGIN.META.KEYWORDS);
+		meta.author.setAttribute('content', constants.APP.AUTHOR);
 	}
 
 	getInitialState = () => ({
+		error: {},
 		email: '',
-		errors: [],
 		password: '',
 	});
+
+	componentWillReceiveProps = (nextProps) => {
+		/* Used to update the user info in the store after the login action has completed */
+		const { user } = nextProps;
+
+		if (user) {
+			/* The tokens subject contains the users Id */
+			const token = jwtDecode(user.token);
+
+			user.userId = token.sub;
+
+			/* Use the first account as the selected account */
+			const [account] = user.accounts;
+
+			user.account = account;
+
+			/* Update the user state and then go to the dashboard */
+			nextProps.actions.updateUser(user).then(() => nextProps.history.push(routes.DASHBOARD.HOME.URI));
+		}
+	};
 
 	handleChange = async (event) => {
 		const target = event.currentTarget;
@@ -74,7 +92,7 @@ class Login extends Component {
 	handleSubmit = async (event) => {
 		event.preventDefault();
 
-		this.setState({ errors: [] });
+		this.setState({ error: {} });
 
 		await this.form.validateFields();
 
@@ -85,31 +103,12 @@ class Login extends Component {
 			};
 
 			this.props.actions.login(payload)
-				.then(() => {
-					/* The tokens subject contains the users Id */
-					const token = jwtDecode(this.props.user.token);
-
-					this.props.user.userId = token.sub;
-
-					/* Use the first account as the selected account */
-					const [account] = this.props.user.accounts;
-
-					this.props.user.account = account;
-
-					/* Update the user state and then go to the dashboard */
-					this.props.actions.updateUser(this.props.user).then(() => this.props.history.push(routes.DASHBOARD.HOME.URI));
-				})
-				.catch((error) => {
-					const { errors } = this.state;
-
-					errors.push(error);
-
-					this.setState({ errors });
-				});
+				.then(() => this.setState(this.getInitialState()))
+				.catch(error => this.setState({ error }));
 		}
 	};
 
-	errorMessages = () => ((this.state.errors.length) ? this.state.errors.map((error, index) => <ErrorMessage key={index} error={error.data} />) : '');
+	errorMessage = () => (this.state.error.data ? <NotificationAlert color="danger" title={this.state.error.data.title} message={this.state.error.data.message} /> : null);
 
 	render = () => (
 		<Row className="d-flex flex-md-row flex-column login-page-container">
@@ -124,7 +123,7 @@ class Login extends Component {
 					<a href={routes.REGISTER.URI} title={routes.REGISTER.TITLE} className="panel-page__link">Back to {routes.REGISTER.TITLE}</a>
 					<div className="card panel-page__content">
 						<h2 className="h5--title-card">{routes.LOGIN.TITLE}</h2>
-						{this.errorMessages()}
+						{this.errorMessage()}
 						<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 							<EmailField fieldValue={this.state.email} handleChange={this.handleChange} />
 							<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChange} />

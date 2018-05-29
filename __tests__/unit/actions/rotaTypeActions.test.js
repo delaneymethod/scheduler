@@ -160,7 +160,7 @@ describe('Rota Type Actions', () => {
 			});
 		});
 
-		store = mockStore({ rotaTypes: [] });
+		store = mockStore({ rotaTypes: {} });
 
 		const expectedActions = [{
 			status: true,
@@ -205,7 +205,7 @@ describe('Rota Type Actions', () => {
 			});
 		});
 
-		store = mockStore({ rotaTypes: [] });
+		store = mockStore({ rotaTypes: {} });
 
 		const expectedActions = [{
 			status: true,

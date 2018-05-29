@@ -3,11 +3,11 @@ import React, { Component } from 'react';
 import { Label, Input, Button, FormGroup } from 'reactstrap';
 import { Async, FieldFeedback, FieldFeedbacks } from 'react-form-with-constraints';
 
-import PasswordStrengthMeter from '../common/PasswordStrengthMeter';
-
 import isPasswordCommon from '../../helpers/isPasswordCommon';
 
 import { addClass, removeClass } from '../../helpers/classes';
+
+import PasswordStrengthMeter from '../common/PasswordStrengthMeter';
 
 const propTypes = {
 	minLength: PropTypes.number,
@@ -36,7 +36,7 @@ class PasswordField extends Component {
 		this.handleToggle = this.handleToggle.bind(this);
 	}
 
-	handleToggle = (event) => {
+	handleToggle = () => {
 		const input = document.querySelector(`input[id=${this.props.fieldName}]`);
 
 		const icon = document.querySelector(`i[id=${this.props.fieldName}-fa]`);

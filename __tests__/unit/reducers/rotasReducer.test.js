@@ -20,7 +20,7 @@ describe('Rotas Reducer', () => {
 		}];
 	});
 
-	it('should return the initial state', () => expect(rotasReducer(undefined, {})).toEqual([]));
+	it('should return the initial state', () => expect(rotasReducer(undefined, {})).toEqual({}));
 
 	it('should handle GET_ROTA', () => {
 		const mockRota = mockRotas[0];

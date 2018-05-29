@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
-import { Nav, Col, Row, Navbar, NavItem } from 'reactstrap';
+import { Col, Row, Navbar, NavItem } from 'reactstrap';
 
 import constants from '../../helpers/constants';
 

@@ -153,10 +153,10 @@ describe('API', () => {
 		const payload = {
 			lastName: 'Lynch',
 			firstName: 'Barry',
-			subscriptionLevel: 1,
 			businessName: 'Gig Grafter',
 			password: 'passwordMustBe10',
 			email: 'barry.lynch@giggrafter.com',
+			subscriptionLevelId: '1eaf7eb7-4996-4b95-8593-8b18a6bff6b9',
 		};
 
 		return api.register(payload).then(data => expect(data.emailSent).toEqual(true));
@@ -201,6 +201,14 @@ describe('API', () => {
 			expect(second).toBe(null);
 			expect(third).toEqual({});
 		});
+	});
+
+	it('should get subscription levels', () => {
+		mock.onGet('/subscription-levels').reply(200, {
+			subscriptionLevels: [],
+		});
+
+		return api.getSubscriptionLevels().then(data => expect(data.subscriptionLevels).toEqual([]));
 	});
 
 	it('should get employees', () => {

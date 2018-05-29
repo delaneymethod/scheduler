@@ -6,9 +6,9 @@ import { Dropdown, DropdownMenu, DropdownItem, DropdownToggle } from 'reactstrap
 
 import constants from '../../helpers/constants';
 
-import { switchAccount } from '../../actions/accountActions';
+import NotificationModal from './NotificationModal';
 
-import Notification from './Notification';
+import { switchAccount } from '../../actions/accountActions';
 
 const routes = constants.APP.ROUTES;
 
@@ -18,19 +18,8 @@ const propTypes = {
 };
 
 const defaultProps = {
-	account: {
-		id: 1,
-		name: 'Account 1',
-	},
-	accounts: [
-		{
-			id: 1,
-			name: 'Account 1',
-		}, {
-			id: 2,
-			name: 'Account 2',
-		},
-	],
+	account: {},
+	accounts: {},
 };
 
 class SwitchAccount extends Component {
@@ -43,48 +32,39 @@ class SwitchAccount extends Component {
 
 		this.handleDropdownToggle = this.handleDropdownToggle.bind(this);
 
-		this.handleNotificationToggle = this.handleNotificationToggle.bind(this);
+		this.handleNotificationModalToggle = this.handleNotificationModalToggle.bind(this);
 	}
 
 	getInitialState = () => ({
-		error: '',
+		error: {},
 		isDropdownOpen: false,
-		isNotificationOpen: false,
+		isNotificationModalOpen: false,
 	});
 
-	handleSwitchAccount = (event, accountId) => {
-		this.props.actions.switchAccount({ accountId })
-			.then(() => this.props.history.push(routes.DASHBOARD.HOME.URI))
-			.catch(error => this.handleNotificationToggle(error));
-	};
+	handleSwitchAccount = accountId => this.props.actions.switchAccount({ accountId }).then(() => this.props.history.push(routes.DASHBOARD.HOME.URI)).catch((error) => {
+		this.setState({ error });
 
-	handleDropdownToggle = (event) => {
-		event.preventDefault();
+		this.handleNotificationModalToggle();
+	});
 
-		this.setState({
-			isDropdownOpen: !this.state.isDropdownOpen,
-		});
-	};
+	handleDropdownToggle = () => this.setState({ isDropdownOpen: !this.state.isDropdownOpen });
 
-	handleNotificationToggle = (error) => {
-		this.setState({
-			error,
-			isNotificationOpen: !this.state.isNotificationOpen,
-		});
-	};
+	handleNotificationModalToggle = () => this.setState({ isNotificationModalOpen: !this.state.isNotificationModalOpen });
 
 	render = () => (
 		<Fragment>
-			<Dropdown isOpen={this.state.isDropdownOpen} toggle={this.handleDropdownToggle}>
-				<DropdownToggle caret>{this.props.account.name}</DropdownToggle>
-				<DropdownMenu>
-					{this.props.accounts.filter(account => account.id !== this.props.account.id).map((account, index) => <DropdownItem key={index} title={account.name} onClick={event => this.handleSwitchAccount(event, account.id)}>{account.name}</DropdownItem>)}
-				</DropdownMenu>
-			</Dropdown>
+			{(this.props.accounts.object === 'list' && this.props.accounts.total_count > 0) ? (
+				<Dropdown isOpen={this.state.isDropdownOpen} toggle={this.handleDropdownToggle}>
+					<DropdownToggle caret>{this.props.account.name}</DropdownToggle>
+					<DropdownMenu>
+						{this.props.accounts.data.filter(account => account.id !== this.props.account.id).map((account, index) => <DropdownItem key={index} title={account.name} onClick={() => this.handleSwitchAccount(account.id)}>{account.name}</DropdownItem>)}
+					</DropdownMenu>
+				</Dropdown>
+			) : null}
 			{(this.state.error.data) ? (
-				<Notification title={this.state.error.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isNotificationOpen} onClose={this.handleNotificationToggle}>
+				<NotificationModal title={this.state.error.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isNotificationModalOpen} onClose={this.handleNotificationModalToggle}>
 					<div dangerouslySetInnerHTML={{ __html: this.state.error.data.message }} />
-				</Notification>
+				</NotificationModal>
 			) : null}
 		</Fragment>
 	);

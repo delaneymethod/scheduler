@@ -2,11 +2,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React, { Fragment, Component } from 'react';
 
-import constants from '../../../../helpers/constants';
-
 import Header from '../../../common/Header';
 
 import Toolbar from '../../../common/Toolbar';
+
+import constants from '../../../../helpers/constants';
 
 const routes = constants.APP.ROUTES;
 
@@ -28,13 +28,11 @@ class Employees extends Component {
 
 		document.title = `${constants.APP.TITLE}: ${routes.DASHBOARD.EMPLOYEES.TITLE} - ${routes.DASHBOARD.HOME.TITLE}`;
 
-		/*
 		const meta = document.getElementsByTagName('meta');
 
-		meta.description.setAttribute('content', '');
-		meta.keywords.setAttribute('content', '');
-		meta.author.setAttribute('content', '');
-		*/
+		meta.description.setAttribute('content', routes.DASHBOARD.EMPLOYEES.META.DESCRIPTION);
+		meta.keywords.setAttribute('content', routes.DASHBOARD.EMPLOYEES.META.KEYWORDS);
+		meta.author.setAttribute('content', constants.APP.AUTHOR);
 	}
 
 	render = () => (

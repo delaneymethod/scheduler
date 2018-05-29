@@ -9,6 +9,7 @@ import rotaTypes from './rotaTypesReducer';
 import placements from './placementsReducer';
 import ajaxLoading from './ajaxLoadingReducer';
 import authenticated from './authenticatedReducer';
+import subscriptionLevels from './subscriptionLevelsReducer';
 
 const reducers = combineReducers({
 	user,
@@ -20,6 +21,7 @@ const reducers = combineReducers({
 	placements,
 	ajaxLoading,
 	authenticated,
+	subscriptionLevels,
 });
 
 export default reducers;
