@@ -2,11 +2,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
-import { Dropdown, DropdownMenu, DropdownItem, DropdownToggle } from 'reactstrap';
+import { Form, Label, Input, FormGroup } from 'reactstrap';
+
+import Modal from './Modal';
 
 import constants from '../../helpers/constants';
 
-import NotificationModal from './NotificationModal';
+import { updateUser } from '../../actions/userActions';
 
 import { switchAccount } from '../../actions/accountActions';
 
@@ -19,7 +21,7 @@ const propTypes = {
 
 const defaultProps = {
 	account: {},
-	accounts: {},
+	accounts: [],
 };
 
 class SwitchAccount extends Component {
@@ -28,43 +30,57 @@ class SwitchAccount extends Component {
 
 		this.state = this.getInitialState();
 
-		this.handleSwitchAccount = this.handleSwitchAccount.bind(this);
+		this.handleModal = this.handleModal.bind(this);
 
-		this.handleDropdownToggle = this.handleDropdownToggle.bind(this);
-
-		this.handleNotificationModalToggle = this.handleNotificationModalToggle.bind(this);
+		this.handleChange = this.handleChange.bind(this);
 	}
 
 	getInitialState = () => ({
 		error: {},
-		isDropdownOpen: false,
-		isNotificationModalOpen: false,
+		isModalOpen: false,
 	});
 
-	handleSwitchAccount = accountId => this.props.actions.switchAccount({ accountId }).then(() => this.props.history.push(routes.DASHBOARD.HOME.URI)).catch((error) => {
-		this.setState({ error });
+	handleChange = (event) => {
+		const accountId = event.target.value;
 
-		this.handleNotificationModalToggle();
-	});
+		const {
+			user,
+			actions,
+			account,
+			accounts,
+		} = this.props;
 
-	handleDropdownToggle = () => this.setState({ isDropdownOpen: !this.state.isDropdownOpen });
+		if (accountId !== account.id) {
+			this.props.actions.switchAccount({ accountId })
+				.then(() => {
+					user.account = accounts.map(({ id }) => accountId);
 
-	handleNotificationModalToggle = () => this.setState({ isNotificationModalOpen: !this.state.isNotificationModalOpen });
+					actions.updateUser(user).then(() => window.location.reload());
+				})
+				.catch((error) => {
+					this.setState({ error });
+
+					this.handleModal();
+				});
+		}
+	};
+
+	handleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
 
 	render = () => (
 		<Fragment>
-			{(this.props.accounts.object === 'list' && this.props.accounts.total_count > 0) ? (
-				<Dropdown isOpen={this.state.isDropdownOpen} toggle={this.handleDropdownToggle}>
-					<DropdownToggle caret>{this.props.account.name}</DropdownToggle>
-					<DropdownMenu>
-						{this.props.accounts.data.filter(account => account.id !== this.props.account.id).map((account, index) => <DropdownItem key={index} title={account.name} onClick={() => this.handleSwitchAccount(account.id)}>{account.name}</DropdownItem>)}
-					</DropdownMenu>
-				</Dropdown>
-			) : null}
+			<Form>
+				<FormGroup>
+					<Label for="accountId">Account</Label>
+					<Input type="select" name="accountId" id="accountId" className="custom-select custom-select-md custom-select-lg custom-select-xl" onChange={this.handleChange} defaultValue={this.props.account.id}>
+						{this.props.accounts.map((account, index) => <option key={index} value={account.id} label={account.name} />)}
+					</Input>
+				</FormGroup>
+			</Form>
 			{(this.state.error.data) ? (
-				<NotificationModal title={this.state.error.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isNotificationModalOpen} onClose={this.handleNotificationModalToggle}>
+				<Modal title={this.state.error.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isModalOpen} onClose={this.handleModal}>
 					<div dangerouslySetInnerHTML={{ __html: this.state.error.data.message }} />
-				</NotificationModal>
+				</Modal>
 			) : null}
 		</Fragment>
 	);
@@ -74,10 +90,13 @@ SwitchAccount.propTypes = propTypes;
 
 SwitchAccount.defaultProps = defaultProps;
 
-const mapStateToProps = (state, props) => ({});
+const mapStateToProps = (state, props) => ({
+	account: state.user.account,
+	accounts: state.user.accounts,
+});
 
 const mapDispatchToProps = dispatch => ({
-	actions: bindActionCreators({ switchAccount }, dispatch),
+	actions: bindActionCreators({ updateUser, switchAccount }, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SwitchAccount);

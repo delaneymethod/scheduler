@@ -19,7 +19,7 @@ describe('Authentication Actions', () => {
 
 	afterEach(() => moxios.uninstall());
 
-	it('should create GET_USER, AJAX_LOADING and AUTHENTICATED actions on login', () => {
+	it('should create UPDATE_USER, AJAX_LOADING and AUTHENTICATED actions on login', () => {
 		moxios.wait(() => {
 			const request = moxios.requests.mostRecent();
 
@@ -36,7 +36,7 @@ describe('Authentication Actions', () => {
 			type: types.AJAX_LOADING,
 		}, {
 			user: mockPayload,
-			type: types.GET_USER,
+			type: types.UPDATE_USER,
 		}, {
 			status: false,
 			type: types.AJAX_LOADING,
@@ -89,7 +89,7 @@ describe('Authentication Actions', () => {
 		return store.dispatch(actions.login(payload)).catch(error => expect(error).toEqual(expectedError));
 	});
 
-	it('should create AJAX_LOADING and AUTHENTICATED actions on logout', () => {
+	it('should create UPDATE_USER and AUTHENTICATED actions on logout', () => {
 		moxios.wait(() => {
 			const request = moxios.requests.mostRecent();
 
@@ -103,7 +103,7 @@ describe('Authentication Actions', () => {
 
 		const expectedActions = [{
 			user: {},
-			type: types.GET_USER,
+			type: types.UPDATE_USER,
 		}, {
 			status: false,
 			type: types.AUTHENTICATED,

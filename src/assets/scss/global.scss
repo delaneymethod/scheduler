@@ -6,6 +6,8 @@
 
 @import '~font-awesome/scss/font-awesome';
 
+@import '~react-datepicker/src/stylesheets/datepicker';
+
 @import 'core';
 
 @import 'fonts';
@@ -25,6 +27,8 @@
 @import 'elements/tables';
 
 @import 'elements/modal';
+
+@import 'elements/calendar';
 
 header {
 	h1 {
@@ -57,23 +61,17 @@ header {
 	}
 
 	.week-toggle {
-		color: $dark;
 		overflow: hidden;
 		// font-size: 0.75rem;
 		border-radius: $border-radius;
 		background-color: $body-color-light;
-	
+		
 		@include media-breakpoint-down(sm) {
 			margin: 0;
 			text-align: center;
 			margin-bottom: 1rem;
 		}
 
-		span {
-			padding: 0 1.25rem;
-			line-height: calculateRem(44px);
-		}
-	
 		.btn-toggle {
 			padding: 0 0.75rem;
 			background-color: transparent;
@@ -81,8 +79,13 @@ header {
 	
 			&:hover {
 				cursor: pointer;
-				color: $primary;
+				color: $primary !important;
 			}
+		}
+
+		.btn-week-picker {
+			padding: 0 1.25rem;
+			line-height: calculateRem(43px);
 		}
 	}
 	
@@ -108,9 +111,9 @@ header {
 
 				.btn-profile-popover {
 					color: $white;
-					outline: none !important;
 					text-decoration: none;
-
+					outline: none !important;
+					
 					&:active,
 					&:focus,
 					&:hover {

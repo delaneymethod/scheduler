@@ -1,3 +1,4 @@
 node_modules
 public
 coverage
+src/assets/js/vendors

@@ -1,4 +1,5 @@
 export default {
+	week: {},
 	user: {},
 	rotas: {},
 	shifts: {},

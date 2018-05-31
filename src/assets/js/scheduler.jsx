@@ -24,9 +24,13 @@ const store = configureStore();
 
 /* Listen for state changes, saving a maximum once per second. */
 store.subscribe(throttle(() => {
-	saveState('user', store.getState().user);
+	const { week, user, authenticated } = store.getState();
 
-	saveState('authenticated', store.getState().authenticated);
+	saveState('week', week);
+
+	saveState('user', user);
+
+	saveState('authenticated', authenticated);
 }, 1000));
 
 ReactDOM.render(

@@ -6,9 +6,7 @@ import constants from '../../helpers/constants';
 const routes = constants.APP.ROUTES;
 
 class Home extends Component {
-	constructor(props) {
-		super(props);
-
+	componentDidMount = () => {
 		document.title = constants.APP.TITLE;
 
 		const meta = document.getElementsByTagName('meta');
@@ -16,7 +14,7 @@ class Home extends Component {
 		meta.description.setAttribute('content', routes.HOME.META.DESCRIPTION);
 		meta.keywords.setAttribute('content', routes.HOME.META.KEYWORDS);
 		meta.author.setAttribute('content', constants.APP.AUTHOR);
-	}
+	};
 
 	render = () => (
 		<Row>

@@ -17,13 +17,7 @@ const defaultProps = {
 };
 
 class Shifts extends Component {
-	constructor(props) {
-		super(props);
-
-		if (!this.props.authenticated) {
-			this.props.history.push(routes.LOGIN.URI);
-		}
-
+	componentDidMount = () => {
 		document.title = `${constants.APP.TITLE}: ${routes.DASHBOARD.SHIFTS.TITLE} - ${routes.DASHBOARD.HOME.TITLE}`;
 
 		const meta = document.getElementsByTagName('meta');
@@ -31,7 +25,15 @@ class Shifts extends Component {
 		meta.description.setAttribute('content', routes.DASHBOARD.SHIFTS.META.DESCRIPTION);
 		meta.keywords.setAttribute('content', routes.DASHBOARD.SHIFTS.META.KEYWORDS);
 		meta.author.setAttribute('content', constants.APP.AUTHOR);
-	}
+	};
+
+	componentWillReceiveProps = (nextProps) => {
+		const { history, authenticated } = nextProps;
+
+		if (!authenticated) {
+			history.push(routes.LOGIN.URI);
+		}
+	};
 
 	render = () => (
 		<Fragment>

@@ -12,7 +12,7 @@ const mockStore = configureMockStore(middlewares);
 describe('User Actions', () => {
 	let store;
 
-	it('should create GET_USER action on updateUser', () => {
+	it('should create UPDATE_USER action on updateUser', () => {
 		store = mockStore({ user: {} });
 
 		const payload = {
@@ -21,7 +21,7 @@ describe('User Actions', () => {
 
 		const expectedActions = [{
 			user: payload,
-			type: types.GET_USER,
+			type: types.UPDATE_USER,
 		}];
 
 		return store.dispatch(actions.updateUser(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));

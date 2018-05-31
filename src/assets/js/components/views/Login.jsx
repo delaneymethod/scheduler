@@ -6,6 +6,8 @@ import { bindActionCreators } from 'redux';
 import { Col, Row, Button } from 'reactstrap';
 import { FormWithConstraints } from 'react-form-with-constraints';
 
+import Alert from '../common/Alert';
+
 import EmailField from '../fields/EmailField';
 
 import constants from '../../helpers/constants';
@@ -15,8 +17,6 @@ import PasswordField from '../fields/PasswordField';
 import { updateUser } from '../../actions/userActions';
 
 import { login } from '../../actions/authenticationActions';
-
-import NotificationAlert from '../common/NotificationAlert';
 
 const routes = constants.APP.ROUTES;
 
@@ -34,23 +34,11 @@ class Login extends Component {
 	constructor(props) {
 		super(props);
 
-		if (this.props.authenticated) {
-			this.props.history.push(routes.DASHBOARD.HOME.URI);
-		}
-
 		this.state = this.getInitialState();
 
 		this.handleChange = this.handleChange.bind(this);
 
 		this.handleSubmit = this.handleSubmit.bind(this);
-
-		document.title = `${constants.APP.TITLE}: ${routes.LOGIN.TITLE}`;
-
-		const meta = document.getElementsByTagName('meta');
-
-		meta.description.setAttribute('content', routes.LOGIN.META.DESCRIPTION);
-		meta.keywords.setAttribute('content', routes.LOGIN.META.KEYWORDS);
-		meta.author.setAttribute('content', constants.APP.AUTHOR);
 	}
 
 	getInitialState = () => ({
@@ -59,10 +47,29 @@ class Login extends Component {
 		password: '',
 	});
 
-	componentWillReceiveProps = (nextProps) => {
-		/* Used to update the user info in the store after the login action has completed */
-		const { user } = nextProps;
+	componentDidMount = () => {
+		document.title = `${constants.APP.TITLE}: ${routes.LOGIN.TITLE}`;
 
+		const meta = document.getElementsByTagName('meta');
+
+		meta.description.setAttribute('content', routes.LOGIN.META.DESCRIPTION);
+		meta.keywords.setAttribute('content', routes.LOGIN.META.KEYWORDS);
+		meta.author.setAttribute('content', constants.APP.AUTHOR);
+	};
+
+	componentWillReceiveProps = (nextProps) => {
+		const {
+			user,
+			actions,
+			history,
+			authenticated,
+		} = nextProps;
+
+		if (authenticated) {
+			history.push(routes.DASHBOARD.HOME.URI);
+		}
+
+		/* Used to update the user info in the store after the login action has completed */
 		if (user) {
 			/* The tokens subject contains the users Id */
 			const token = jwtDecode(user.token);
@@ -75,7 +82,7 @@ class Login extends Component {
 			user.account = account;
 
 			/* Update the user state and then go to the dashboard */
-			nextProps.actions.updateUser(user).then(() => nextProps.history.push(routes.DASHBOARD.HOME.URI));
+			actions.updateUser(user).then(() => history.push(routes.DASHBOARD.HOME.URI));
 		}
 	};
 
@@ -92,23 +99,25 @@ class Login extends Component {
 	handleSubmit = async (event) => {
 		event.preventDefault();
 
+		const { actions } = this.props;
+
 		this.setState({ error: {} });
 
 		await this.form.validateFields();
 
 		if (this.form.isValid()) {
+			const { email, password } = this.state;
+
 			const payload = {
-				email: this.state.email,
-				password: this.state.password,
+				email,
+				password,
 			};
 
-			this.props.actions.login(payload)
-				.then(() => this.setState(this.getInitialState()))
-				.catch(error => this.setState({ error }));
+			actions.login(payload).catch(error => this.setState({ error }));
 		}
 	};
 
-	errorMessage = () => (this.state.error.data ? <NotificationAlert color="danger" title={this.state.error.data.title} message={this.state.error.data.message} /> : null);
+	errorMessage = () => (this.state.error.data ? <Alert color="danger" title={this.state.error.data.title} message={this.state.error.data.message} /> : null);
 
 	render = () => (
 		<Row className="d-flex flex-md-row flex-column login-page-container">

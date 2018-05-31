@@ -11,8 +11,8 @@ export const authenticated = status => ({
 	status,
 });
 
-export const getUserSuccess = user => ({
-	type: types.GET_USER,
+export const updateUserSuccess = user => ({
+	type: types.UPDATE_USER,
 	user,
 });
 
@@ -21,7 +21,7 @@ export const login = payload => (dispatch) => {
 
 	return api.login(payload)
 		.then((user) => {
-			dispatch(getUserSuccess(user));
+			dispatch(updateUserSuccess(user));
 
 			dispatch(ajaxLoading(false));
 
@@ -38,7 +38,7 @@ export const login = payload => (dispatch) => {
 };
 
 export const logout = () => (dispatch) => {
-	dispatch(getUserSuccess({}));
+	dispatch(updateUserSuccess({}));
 
 	dispatch(authenticated(false));
 

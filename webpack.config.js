@@ -46,7 +46,20 @@ module.exports = (env, options) => ({
 				'eslint-loader',
 			],
 		}, {
-			test: /\.(css|scss)$/,
+			test: /\.(css)$/,
+			exclude: /node_modules|bower_components/,
+			use: [
+				MiniCssExtractPlugin.loader,
+				{
+					/* Interprets `@import` and `url()` like `import/require()` and will resolve them */
+					loader: 'css-loader',
+					options: {
+						sourceMap: true,
+					},
+				},
+			],
+		}, {
+			test: /\.(scss)$/,
 			exclude: /node_modules|bower_components/,
 			use: [
 				{
@@ -167,6 +180,11 @@ module.exports = (env, options) => ({
 			template: 'src/404.html',
 			filename: '404.html',
 			hash: (options.mode === 'production'),
+		}),
+		new webpack.ProvidePlugin({
+			$: 'jquery',
+			jQuery: 'jquery',
+			'window.jQuery': 'jquery',
 		}),
 		new webpack.HashedModuleIdsPlugin(),
 		new CopyWebpackPlugin([

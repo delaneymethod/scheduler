@@ -17,13 +17,7 @@ const defaultProps = {
 };
 
 class Overview extends Component {
-	constructor(props) {
-		super(props);
-
-		if (!this.props.authenticated) {
-			this.props.history.push(routes.LOGIN.URI);
-		}
-
+	componentDidMount = () => {
 		document.title = `${constants.APP.TITLE}: ${routes.DASHBOARD.OVERVIEW.TITLE} - ${routes.DASHBOARD.HOME.TITLE}`;
 
 		const meta = document.getElementsByTagName('meta');
@@ -31,7 +25,15 @@ class Overview extends Component {
 		meta.description.setAttribute('content', routes.DASHBOARD.OVERVIEW.META.DESCRIPTION);
 		meta.keywords.setAttribute('content', routes.DASHBOARD.OVERVIEW.META.KEYWORDS);
 		meta.author.setAttribute('content', constants.APP.AUTHOR);
-	}
+	};
+
+	componentWillReceiveProps = (nextProps) => {
+		const { history, authenticated } = nextProps;
+
+		if (!authenticated) {
+			history.push(routes.LOGIN.URI);
+		}
+	};
 
 	render = () => (
 		<Fragment>

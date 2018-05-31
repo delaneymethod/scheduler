@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Modal, Button, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
+import { Modal as ModalCore, Button, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 
 const propTypes = {
 	show: PropTypes.bool,
@@ -20,28 +20,28 @@ const defaultProps = {
 	onClose: () => {},
 };
 
-class NotificationModal extends Component {
+class Modal extends Component {
 	render = () => {
 		if (!this.props.show) {
 			return null;
 		}
 
 		return (
-			<Modal isOpen={this.props.show} toggle={this.props.onClose} className={this.props.className}>
+			<ModalCore isOpen={this.props.show} toggle={this.props.onClose} className={this.props.className}>
 				<ModalHeader toggle={this.props.onClose}>{this.props.title}</ModalHeader>
-				<ModalBody>
+				<ModalBody className="p-4 p-sm-4 p-md-5 p-lg-5 p-xl-5">
 					{this.props.children}
 				</ModalBody>
-				<ModalFooter>
-					<Button color="secondary" onClick={this.props.onClose}>{this.props.buttonLabel}</Button>
+				<ModalFooter className="text-sm-center text-md-right">
+					<Button color="secondary" className="btn-block-sm-only" onClick={this.props.onClose}>{this.props.buttonLabel}</Button>
 				</ModalFooter>
-			</Modal>
+			</ModalCore>
 		);
 	};
 }
 
-NotificationModal.propTypes = propTypes;
+Modal.propTypes = propTypes;
 
-NotificationModal.defaultProps = defaultProps;
+Modal.defaultProps = defaultProps;
 
-export default NotificationModal;
+export default Modal;

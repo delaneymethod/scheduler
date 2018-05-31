@@ -1,7 +1,7 @@
 import zxcvbn from 'zxcvbn';
 import React, { Fragment } from 'react';
 
-const PasswordStrengthMeter = (props) => {
+const PasswordStrengthMeter = ({ password }) => {
 	let progressBar = 0;
 
 	let progressText = '';
@@ -10,7 +10,7 @@ const PasswordStrengthMeter = (props) => {
 
 	let progressCSS = 'progress-bar';
 
-	const evaluation = zxcvbn(props.password);
+	const evaluation = zxcvbn(password);
 
 	progressBar = Math.floor((evaluation.score / 4) * 100);
 
