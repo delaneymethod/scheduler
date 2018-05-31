@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 
+import week from './weekReducer';
 import user from './userReducer';
 import rotas from './rotasReducer';
 import shifts from './shiftsReducer';
@@ -12,6 +13,7 @@ import authenticated from './authenticatedReducer';
 import subscriptionLevels from './subscriptionLevelsReducer';
 
 const reducers = combineReducers({
+	week,
 	user,
 	rotas,
 	shifts,

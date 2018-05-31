@@ -6,12 +6,14 @@ const persistedState = getStates();
 
 const combinedState = Object.assign(initialState, persistedState);
 
-const userReducer = (state = combinedState.user, action) => {
-	if (action.type === types.UPDATE_USER) {
-		return action.user;
-	}
+const weekReducer = (state = combinedState.week, action) => {
+	switch (action.type) {
+		case types.UPDATE_WEEK:
+			return action.week;
 
-	return state;
+		default:
+			return state;
+	}
 };
 
-export default userReducer;
+export default weekReducer;

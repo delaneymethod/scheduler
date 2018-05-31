@@ -21,12 +21,19 @@ const defaultProps = {
 	handleChange: () => {},
 };
 
-const TextField = props => (
+const TextField = ({
+	fieldName,
+	fieldValue,
+	fieldLabel,
+	valueMissing,
+	handleChange,
+	fieldPlaceholder,
+}) => (
 	<FormGroup>
-		<Label for={props.fieldName}>{props.fieldLabel}</Label>
-		<Input type="text" name={props.fieldName} id={props.fieldName} value={props.fieldValue} placeholder={props.fieldPlaceholder} onChange={props.handleChange} required />
-		<FieldFeedbacks for={props.fieldName} show="all">
-			<FieldFeedback when="valueMissing">- {props.valueMissing}</FieldFeedback>
+		<Label for={fieldName}>{fieldLabel}</Label>
+		<Input type="text" name={fieldName} id={fieldName} value={fieldValue} placeholder={fieldPlaceholder} onChange={handleChange} required />
+		<FieldFeedbacks for={fieldName} show="all">
+			<FieldFeedback when="valueMissing">- {valueMissing}</FieldFeedback>
 		</FieldFeedbacks>
 	</FormGroup>
 );

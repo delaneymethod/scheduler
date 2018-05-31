@@ -2,11 +2,21 @@
 	color: $white;
 	text-transform: uppercase;
 	background-color: $secondary;
-
+	
 	.label-wrap {
 		* {
 			margin: 0;
 			line-height: 1;
+		}
+	}
+	
+	.modal-title {
+		width: 100%;
+		font-size: 1.3rem;
+		text-align: center;
+
+		@include media-breakpoint-up(md) {
+			text-align: left;
 		}
 	}
 

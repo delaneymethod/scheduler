@@ -31,6 +31,8 @@ select.form-control:not([size]):not([multiple]) {
 	height: auto;
 }
 
+.custom-select-md,
+.custom-select-lg,
 .custom-select-xl {
 	height: $custom-select-height-xl;
 	font-size: $custom-select-font-size-xl;

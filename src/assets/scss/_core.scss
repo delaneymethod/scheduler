@@ -4,6 +4,14 @@
 	}
 }
 
+
+@include media-breakpoint-down(sm) {
+	.btn-block-sm-only {
+		display: block;
+		width: 100%;
+	}
+}
+
 body,
 html {
 	height: 100%;

@@ -6,9 +6,7 @@ import constants from '../../helpers/constants';
 const routes = constants.APP.ROUTES;
 
 class NotFoundPage extends Component {
-	constructor(props) {
-		super(props);
-
+	componentDidMount = () => {
 		document.title = `${constants.APP.TITLE}: ${routes.PAGE_NOT_FOUND.TITLE}`;
 
 		const meta = document.getElementsByTagName('meta');
@@ -16,7 +14,7 @@ class NotFoundPage extends Component {
 		meta.description.setAttribute('content', routes.PAGE_NOT_FOUND.META.DESCRIPTION);
 		meta.keywords.setAttribute('content', routes.PAGE_NOT_FOUND.META.KEYWORDS);
 		meta.author.setAttribute('content', constants.APP.AUTHOR);
-	}
+	};
 
 	render = () => (
 		<Row>

@@ -38,12 +38,14 @@ const request = (method, url, expectedStatus = 200, data = null) => {
 	const user = getState('user');
 
 	if (user) {
-		if (user.token) {
-			axios.defaults.headers.common.Authorization = `Bearer ${user.token}`;
+		const { token, account } = user;
+
+		if (token) {
+			axios.defaults.headers.common.Authorization = `Bearer ${token}`;
 		}
 
-		if (user.account) {
-			axios.defaults.headers.common['X-Account-Id'] = user.account.id;
+		if (account) {
+			axios.defaults.headers.common['X-Account-Id'] = account.id;
 		}
 	}
 

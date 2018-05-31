@@ -28,21 +28,25 @@ class EmailField extends Component {
 	}
 
 	handleBlur = () => {
+		const { email } = this.props;
+
+		const { didYouMean, suggestion } = this.refs;
+
 		mailcheck.run({
-			email: this.props.fieldValue,
+			email,
 			suggested: (suggested) => {
-				addClass(this.refs.didYouMean, 'd-block');
+				addClass(didYouMean, 'd-block');
 
-				removeClass(this.refs.didYouMean, 'd-none');
+				removeClass(didYouMean, 'd-none');
 
-				this.refs.suggestion.innerText = suggested.full;
+				suggestion.innerText = suggested.full;
 			},
 			empty: () => {
-				addClass(this.refs.didYouMean, 'd-none');
+				addClass(didYouMean, 'd-none');
 
-				removeClass(this.refs.didYouMean, 'd-block');
+				removeClass(didYouMean, 'd-block');
 
-				this.refs.suggestion.innerText = '';
+				suggestion.innerText = '';
 			},
 		});
 	};

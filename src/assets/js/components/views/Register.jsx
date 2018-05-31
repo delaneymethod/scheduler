@@ -5,6 +5,8 @@ import { bindActionCreators } from 'redux';
 import { Col, Row, Label, Input, Button, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 
+import Alert from '../common/Alert';
+
 import TextField from '../fields/TextField';
 
 import EmailField from '../fields/EmailField';
@@ -12,8 +14,6 @@ import EmailField from '../fields/EmailField';
 import constants from '../../helpers/constants';
 
 import PasswordField from '../fields/PasswordField';
-
-import NotificationAlert from '../common/NotificationAlert';
 
 import { register } from '../../actions/authenticationActions';
 
@@ -35,10 +35,6 @@ class Register extends Component {
 	constructor(props) {
 		super(props);
 
-		if (this.props.authenticated) {
-			this.props.history.push(routes.DASHBOARD.HOME.URI);
-		}
-
 		this.state = this.getInitialState();
 
 		this.handleChange = this.handleChange.bind(this);
@@ -46,14 +42,6 @@ class Register extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 
 		this.handleChangePassword = this.handleChangePassword.bind(this);
-
-		document.title = `${constants.APP.TITLE}: ${routes.REGISTER.TITLE}`;
-
-		const meta = document.getElementsByTagName('meta');
-
-		meta.description.setAttribute('content', routes.REGISTER.META.DESCRIPTION);
-		meta.keywords.setAttribute('content', routes.REGISTER.META.KEYWORDS);
-		meta.author.setAttribute('content', constants.APP.AUTHOR);
 	}
 
 	getInitialState = () => ({
@@ -68,9 +56,29 @@ class Register extends Component {
 		subscriptionLevelId: '',
 	});
 
-	componentDidMount = () => this.props.actions.getSubscriptionLevels().catch(error => this.setState({ error }));
+	componentDidMount = () => {
+		const { actions } = this.props;
+
+		actions.getSubscriptionLevels().catch(error => this.setState({ error }));
+
+		document.title = `${constants.APP.TITLE}: ${routes.LOGIN.TITLE}`;
+
+		document.title = `${constants.APP.TITLE}: ${routes.REGISTER.TITLE}`;
+
+		const meta = document.getElementsByTagName('meta');
+
+		meta.description.setAttribute('content', routes.REGISTER.META.DESCRIPTION);
+		meta.keywords.setAttribute('content', routes.REGISTER.META.KEYWORDS);
+		meta.author.setAttribute('content', constants.APP.AUTHOR);
+	};
 
 	componentWillReceiveProps = (nextProps) => {
+		const { history, authenticated } = this.props;
+
+		if (authenticated) {
+			history.push(routes.DASHBOARD.HOME.URI);
+		}
+
 		/* Used to set a default the subscription level id value after the getSubscriptionLevels action has completed */
 		const { subscriptionLevels } = nextProps;
 
@@ -103,29 +111,44 @@ class Register extends Component {
 	handleSubmit = async (event) => {
 		event.preventDefault();
 
+		const { actions } = this.props;
+
 		this.setState({ error: {} });
 
 		await this.form.validateFields();
 
 		if (this.form.isValid()) {
+			const {
+				email,
+				password,
+				lastName,
+				firstName,
+				businessName,
+				subscriptionLevelId,
+			} = this.state;
+
 			const payload = {
-				email: this.state.email,
-				password: this.state.password,
-				lastName: this.state.lastName,
-				firstName: this.state.firstName,
-				businessName: this.state.businessName,
-				subscriptionLevelId: this.state.subscriptionLevelId,
+				email,
+				password,
+				lastName,
+				firstName,
+				businessName,
+				/* FIXME - rename subscriptionLevel to subscriptionLevelId once backend has been updated */
+				subscriptionLevel: subscriptionLevelId,
 			};
 
-			this.props.actions.register(payload)
-				.then(() => this.setState(Object.assign(this.getInitialState(), { emailSent: true })))
+			actions.register(payload)
+				.then(() => this.setState(Object.assign(this.getInitialState(), {
+					email,
+					emailSent: true,
+				})))
 				.catch(error => this.setState({ error }));
 		}
 	};
 
-	errorMessage = () => (this.state.error.data ? <NotificationAlert color="danger" title={this.state.error.data.title} message={this.state.error.data.message} /> : null);
+	errorMessage = () => (this.state.error.data ? <Alert color="danger" title={this.state.error.data.title} message={this.state.error.data.message} /> : null);
 
-	successMessage = () => (this.state.emailSent ? <NotificationAlert color="success" message={`An email has been sent to <strong>${this.state.email}</strong>. Please follow the link in this email message to verify your account and complete registration.`} /> : null);
+	successMessage = () => (this.state.emailSent ? <Alert color="success" message={`An email has been sent to <strong>${this.state.email}</strong>. Please follow the link in this email message to verify your account and complete registration.`} /> : null);
 
 	render = () => (
 		<Row className="d-flex flex-md-row flex-column register-page-container">

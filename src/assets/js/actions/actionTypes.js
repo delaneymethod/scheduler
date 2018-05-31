@@ -2,7 +2,9 @@ export const AJAX_LOADING = 'AJAX_LOADING';
 
 export const AUTHENTICATED = 'AUTHENTICATED';
 
-export const GET_USER = 'GET_USER';
+export const UPDATE_WEEK = 'UPDATE_WEEK';
+
+export const UPDATE_USER = 'UPDATE_USER';
 
 export const GET_SUBSCRIPTION_LEVELS = 'GET_SUBSCRIPTION_LEVELS';
 

@@ -5,6 +5,12 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { Col, Row, Navbar, NavItem } from 'reactstrap';
 
+import Modal from './Modal';
+
+import WeekPicker from './WeekPicker';
+
+import SwitchAccount from './SwitchAccount';
+
 import constants from '../../helpers/constants';
 
 import { logout } from '../../actions/authenticationActions';
@@ -27,10 +33,13 @@ class Header extends Component {
 
 		this.state = this.getInitialState();
 
+		this.handleModal = this.handleModal.bind(this);
+
 		this.handleLogout = this.handleLogout.bind(this);
 	}
 
 	getInitialState = () => ({
+		isModalOpen: false,
 		shiftsIsActive: false,
 		overviewIsActive: false,
 		employeesIsActive: false,
@@ -59,14 +68,19 @@ class Header extends Component {
 			content: () => $('#profile-list').html(),
 		});
 
-		$(document).on('shown.bs.popover', () => $('.logout').bind('click').on('click', event => this.handleLogout(event)));
+		/* Bit hacky and not the "React Way" but because we are using Popovers, event handlers are not binded! */
+		$(document).on('shown.bs.popover', () => {
+			$('.logout, .switch-account').bind('click');
+
+			$('.logout').on('click', () => this.handleLogout());
+
+			$('.switch-account').on('click', () => this.handleModal());
+		});
 	};
 
-	handleLogout = (event) => {
-		event.preventDefault();
+	handleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
 
-		this.props.actions.logout().then(() => this.props.history.push(routes.LOGIN.URI));
-	};
+	handleLogout = () => this.props.actions.logout().then(() => this.props.history.push(routes.LOGIN.URI));
 
 	render = () => (
 		<Row>
@@ -74,11 +88,7 @@ class Header extends Component {
 				<header className="pt-3 pl-0 pr-0 pb-3">
 					<nav className="p-0 m-0 d-flex flex-md-row flex-column align-items-center">
 						<h1 className="pt-1 pl-1 pr-1 pb-1"><a className="d-block" href={routes.HOME.URI} title={constants.APP.TITLE}>{constants.APP.TITLE}<span>.</span></a></h1>
-						<div className="week-toggle p-0 ml-md-3 mr-md-3 ml-lg-4 mr-lg-4 ml-xl-5 mr-xl-5">
-							<button type="button" name="previous-week" className="btn-toggle border-0"><i className="fa fa-caret-left" aria-hidden="true"></i></button>
-							<span><strong>Mon</strong>, Mar 12 - <strong>Sun</strong>, Mar 19</span>
-							<button type="button"name="next-week" className="btn-toggle border-0"><i className="fa fa-caret-right" aria-hidden="true"></i></button>
-						</div>
+						<WeekPicker />
 						<Navbar className="p-0 m-0" color="dark" dark expand="xl">
 							<button type="button" className="btn btn-nav btn-action btn-navigation-popover navbar-toggler border-0 text-white" aria-label="Toggle Navigation"><i className="fa fa-navicon" aria-hidden="true"></i></button>
 							<div className="collapse navbar-collapse" id="navigation-list">
@@ -94,12 +104,16 @@ class Header extends Component {
 									<button type="button" className="btn btn-nav btn-user btn-profile-popover ml-r border-0" aria-label="Toggle Profile Options">Hello, {this.props.user.firstName}<i className="pl-2 fa fa-chevron-down" aria-hidden="true"></i></button>
 									<div className="d-none" id="profile-list">
 										<ul className="popover-menu">
+											<li><button type="button" title="Switch Account" className="btn btn-action btn-nav border-0 switch-account">Switch Account</button></li>
 											<li><button type="button" title={routes.LOGOUT.TITLE} className="btn btn-action btn-nav border-0 logout">{routes.LOGOUT.TITLE}</button></li>
 										</ul>
 									</div>
 								</li>
 							</ul>
 						</Navbar>
+						<Modal title="Switch Account" className="modal-dialog" buttonLabel="Cancel" show={this.state.isModalOpen} onClose={this.handleModal}>
+							<SwitchAccount />
+						</Modal>
 					</nav>
 				</header>
 			</Col>
