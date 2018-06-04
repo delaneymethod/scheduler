@@ -9,6 +9,5 @@ phases:
 
 artifacts:
   files:
-    - build/**/*
-    - yarn.lock
-    - package.json
+    - public/**/*
+    - src/**/*
