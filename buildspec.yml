@@ -9,5 +9,15 @@ phases:
 
 artifacts:
   files:
+  	- __tests__
     - public/**/*
     - src/**/*
+    - package.json
+    - .eslintrc
+    - webpack.config.js
+    - jest.config.js
+    - .npmignore
+	- .gitignore
+	- .gitattributes
+	- .eslintignore
+	- .babelrc
