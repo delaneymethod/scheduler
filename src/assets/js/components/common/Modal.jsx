@@ -1,22 +1,25 @@
 import PropTypes from 'prop-types';
+import isEmpty from 'lodash/isEmpty';
 import React, { Component } from 'react';
 import { Modal as ModalCore, Button, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 
 const propTypes = {
 	show: PropTypes.bool,
+	title: PropTypes.string,
 	children: PropTypes.node,
+	isStatic: PropTypes.bool,
 	className: PropTypes.string,
-	title: PropTypes.string.isRequired,
+	buttonLabel: PropTypes.string,
 	onClose: PropTypes.func.isRequired,
-	buttonLabel: PropTypes.string.isRequired,
 };
 
 const defaultProps = {
-	title: '',
+	title: null,
 	show: false,
 	className: '',
 	children: null,
-	buttonLabel: '',
+	isStatic: false,
+	buttonLabel: null,
 	onClose: () => {},
 };
 
@@ -27,14 +30,18 @@ class Modal extends Component {
 		}
 
 		return (
-			<ModalCore isOpen={this.props.show} toggle={this.props.onClose} className={this.props.className}>
-				<ModalHeader toggle={this.props.onClose}>{this.props.title}</ModalHeader>
+			<ModalCore backdrop={(this.props.isStatic) ? 'static' : true} keyboard={this.props.isStatic} centered={true} isOpen={this.props.show} toggle={this.props.onClose} className={this.props.className}>
+				{(!isEmpty(this.props.title)) ? (
+					<ModalHeader toggle={this.props.onClose}>{this.props.title}</ModalHeader>
+				) : null}
 				<ModalBody className="p-4 p-sm-4 p-md-5 p-lg-5 p-xl-5">
 					{this.props.children}
 				</ModalBody>
-				<ModalFooter className="text-sm-center text-md-right">
-					<Button color="secondary" className="btn-block-sm-only" onClick={this.props.onClose}>{this.props.buttonLabel}</Button>
-				</ModalFooter>
+				{(!isEmpty(this.props.buttonLabel)) ? (
+					<ModalFooter className="text-sm-center text-md-right">
+						<Button color="secondary" className="btn-block-sm-only" onClick={this.props.onClose}>{this.props.buttonLabel}</Button>
+					</ModalFooter>
+				) : null}
 			</ModalCore>
 		);
 	};

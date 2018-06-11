@@ -13,8 +13,6 @@ const mockStore = configureMockStore(middlewares);
 describe('Subscription Level Actions', () => {
 	let store;
 
-	let mockPayload;
-
 	beforeEach(() => moxios.install());
 
 	afterEach(() => moxios.uninstall());
@@ -25,11 +23,13 @@ describe('Subscription Level Actions', () => {
 
 			request.respondWith({
 				status: 200,
-				response: mockPayload,
+				response: {
+					data: [],
+				},
 			});
 		});
 
-		store = mockStore({ subscriptionLevels: {} });
+		store = mockStore({ subscriptionLevels: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -38,7 +38,7 @@ describe('Subscription Level Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			subscriptionLevels: mockPayload,
+			subscriptionLevels: [],
 			type: types.GET_SUBSCRIPTION_LEVELS,
 		}];
 
@@ -51,11 +51,11 @@ describe('Subscription Level Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
-		store = mockStore({ subscriptionLevels: {} });
+		store = mockStore({ subscriptionLevels: [] });
 
 		return store.dispatch(actions.getSubscriptionLevels({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});

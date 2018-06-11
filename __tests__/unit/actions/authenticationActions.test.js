@@ -13,8 +13,6 @@ const mockStore = configureMockStore(middlewares);
 describe('Authentication Actions', () => {
 	let store;
 
-	let mockPayload;
-
 	beforeEach(() => moxios.install());
 
 	afterEach(() => moxios.uninstall());
@@ -25,7 +23,7 @@ describe('Authentication Actions', () => {
 
 			request.respondWith({
 				status: 200,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -35,7 +33,7 @@ describe('Authentication Actions', () => {
 			status: true,
 			type: types.AJAX_LOADING,
 		}, {
-			user: mockPayload,
+			user: {},
 			type: types.UPDATE_USER,
 		}, {
 			status: false,
@@ -99,14 +97,44 @@ describe('Authentication Actions', () => {
 			});
 		});
 
-		store = mockStore({ user: {} });
+		store = mockStore({
+			rota: {},
+			week: {},
+			user: {},
+			rotas: [],
+			shifts: [],
+			rotaType: {},
+			rotaTypes: [],
+			placements: [],
+		});
 
 		const expectedActions = [{
-			user: {},
-			type: types.UPDATE_USER,
+			rotas: [],
+			type: 'GET_ROTAS',
+		}, {
+			shifts: [],
+			type: 'GET_SHIFTS',
 		}, {
 			status: false,
-			type: types.AUTHENTICATED,
+			type: 'AUTHENTICATED',
+		}, {
+			type: 'UPDATE_USER',
+			user: {},
+		}, {
+			type: 'SWITCH_WEEK',
+			week: {},
+		}, {
+			rota: {},
+			type: 'SWITCH_ROTA',
+		}, {
+			rotaTypes: [],
+			type: 'GET_ROTA_TYPES',
+		}, {
+			placements: [],
+			type: 'GET_PLACEMENTS',
+		}, {
+			rotaType: {},
+			type: 'SWITCH_ROTA_TYPE',
 		}];
 
 		return store.dispatch(actions.logout()).then(() => expect(store.getActions()).toEqual(expectedActions));
@@ -208,7 +236,9 @@ describe('Authentication Actions', () => {
 			email: 'barry@giggrafter.com',
 		};
 
-		return store.dispatch(actions.forgottenYourPassword(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
+		return store.dispatch(actions.forgottenYourPassword(payload))
+			.then(() => expect(store.getActions()).toEqual(expectedActions))
+			.catch(error => console.log(error));
 	});
 
 	it('should catch error on forgotten your password', () => {

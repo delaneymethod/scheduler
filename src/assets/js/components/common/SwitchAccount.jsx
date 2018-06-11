@@ -41,21 +41,18 @@ class SwitchAccount extends Component {
 	});
 
 	handleChange = (event) => {
+		const { actions } = this.props;
+
 		const accountId = event.target.value;
 
-		const {
-			user,
-			actions,
-			account,
-			accounts,
-		} = this.props;
-
-		if (accountId !== account.id) {
-			this.props.actions.switchAccount({ accountId })
+		if (accountId !== this.props.account.id) {
+			console.log('Called SwitchAccount handleChange switchAccount');
+			actions.switchAccount({ accountId })
 				.then(() => {
-					user.account = accounts.map(({ id }) => accountId);
+					this.props.user.account = this.props.accounts.map(({ id }) => accountId);
 
-					actions.updateUser(user).then(() => window.location.reload());
+					console.log('Called SwitchAccount handleChange updateUser');
+					actions.updateUser(this.props.user).then(() => window.location.reload());
 				})
 				.catch((error) => {
 					this.setState({ error });

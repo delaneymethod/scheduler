@@ -1,10 +1,10 @@
 .react-datepicker__portal {
-	opacity: 0.85;
-	background-color: #343E48;
+	background-color: rgba(52, 62, 72, 0.85);
 	
 	.react-datepicker {
 		border: 0;
 		font-family: inherit;
+		background-color: $white !important;
 	
 		.react-datepicker__navigation--next {
 			border-left-color: $white;

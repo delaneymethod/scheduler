@@ -13,8 +13,6 @@ const mockStore = configureMockStore(middlewares);
 describe('Rota Type Actions', () => {
 	let store;
 
-	let mockPayload;
-
 	beforeEach(() => moxios.install());
 
 	afterEach(() => moxios.uninstall());
@@ -25,7 +23,9 @@ describe('Rota Type Actions', () => {
 
 			request.respondWith({
 				status: 200,
-				response: mockPayload,
+				response: {
+					data: [],
+				},
 			});
 		});
 
@@ -38,7 +38,7 @@ describe('Rota Type Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			rotaTypes: mockPayload,
+			rotaTypes: [],
 			type: types.GET_ROTA_TYPES,
 		}];
 
@@ -51,7 +51,7 @@ describe('Rota Type Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -66,7 +66,7 @@ describe('Rota Type Actions', () => {
 
 			request.respondWith({
 				status: 200,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -79,7 +79,7 @@ describe('Rota Type Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			rotaType: mockPayload,
+			rotaType: {},
 			type: types.GET_ROTA_TYPE,
 		}];
 
@@ -96,7 +96,7 @@ describe('Rota Type Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -111,7 +111,7 @@ describe('Rota Type Actions', () => {
 
 			request.respondWith({
 				status: 201,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -124,7 +124,7 @@ describe('Rota Type Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			rotaType: mockPayload,
+			rotaType: {},
 			type: types.CREATE_ROTA_TYPE,
 		}];
 
@@ -141,7 +141,7 @@ describe('Rota Type Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -156,7 +156,7 @@ describe('Rota Type Actions', () => {
 
 			request.respondWith({
 				status: 200,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -169,7 +169,7 @@ describe('Rota Type Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			rotaType: mockPayload,
+			rotaType: {},
 			type: types.UPDATE_ROTA_TYPE,
 		}];
 
@@ -186,7 +186,7 @@ describe('Rota Type Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -201,7 +201,7 @@ describe('Rota Type Actions', () => {
 
 			request.respondWith({
 				status: 204,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -214,7 +214,7 @@ describe('Rota Type Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			rotaType: mockPayload,
+			rotaType: {},
 			type: types.DELETE_ROTA_TYPE,
 		}];
 
@@ -231,12 +231,32 @@ describe('Rota Type Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
 		store = mockStore({ accounts: [] });
 
 		return store.dispatch(actions.deleteRotaType({})).catch(error => expect(store.getActions()).not.toBeNull());
+	});
+
+	it('should create SWITCH_ROTA_TYPE action on switchRotaType', () => {
+		moxios.wait(() => {
+			const request = moxios.requests.mostRecent();
+
+			request.respondWith({
+				status: 200,
+				response: {},
+			});
+		});
+
+		store = mockStore({ rotaType: {} });
+
+		const expectedActions = [{
+			rotaType: {},
+			type: types.SWITCH_ROTA_TYPE,
+		}];
+
+		return store.dispatch(actions.switchRotaType({})).then(() => expect(store.getActions()).toEqual(expectedActions));
 	});
 });

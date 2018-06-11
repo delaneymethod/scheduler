@@ -16,6 +16,41 @@ export const updateUserSuccess = user => ({
 	user,
 });
 
+export const switchWeekSuccess = week => ({
+	type: types.SWITCH_WEEK,
+	week,
+});
+
+export const switchRotaSuccess = rota => ({
+	type: types.SWITCH_ROTA,
+	rota,
+});
+
+export const getRotasSuccess = rotas => ({
+	type: types.GET_ROTAS,
+	rotas,
+});
+
+export const getShiftsSuccess = shifts => ({
+	type: types.GET_SHIFTS,
+	shifts,
+});
+
+export const getRotaTypesSuccess = rotaTypes => ({
+	type: types.GET_ROTA_TYPES,
+	rotaTypes,
+});
+
+export const switchRotaTypeSuccess = rotaType => ({
+	type: types.SWITCH_ROTA_TYPE,
+	rotaType,
+});
+
+export const getPlacementsSuccess = placements => ({
+	type: types.GET_PLACEMENTS,
+	placements,
+});
+
 export const login = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
@@ -26,6 +61,8 @@ export const login = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(authenticated(true));
+
+			return user;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -38,9 +75,23 @@ export const login = payload => (dispatch) => {
 };
 
 export const logout = () => (dispatch) => {
-	dispatch(updateUserSuccess({}));
+	dispatch(getRotasSuccess([]));
+
+	dispatch(getShiftsSuccess([]));
 
 	dispatch(authenticated(false));
+
+	dispatch(updateUserSuccess({}));
+
+	dispatch(switchWeekSuccess({}));
+
+	dispatch(switchRotaSuccess({}));
+
+	dispatch(getRotaTypesSuccess([]));
+
+	dispatch(getPlacementsSuccess([]));
+
+	dispatch(switchRotaTypeSuccess({}));
 
 	return Promise.resolve(true);
 };

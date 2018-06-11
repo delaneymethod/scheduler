@@ -17,7 +17,7 @@ describe('Rota Types Reducer', () => {
 		}];
 	});
 
-	it('should return the initial state', () => expect(rotaTypesReducer(undefined, {})).toEqual({}));
+	it('should return the initial state', () => expect(rotaTypesReducer(undefined, [])).toEqual([]));
 
 	it('should handle GET_ROTA_TYPE', () => {
 		const mockRotaType = mockRotaTypes[0];

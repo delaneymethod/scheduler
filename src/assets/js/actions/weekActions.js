@@ -1,12 +1,9 @@
 import * as types from './actionTypes';
 
-export const updateWeekSuccess = week => ({
-	type: types.UPDATE_WEEK,
+/* SWITCH BETWEEN WEEKS */
+export const switchWeekSuccess = week => ({
+	type: types.SWITCH_WEEK,
 	week,
 });
 
-export const updateWeek = payload => (dispatch) => {
-	dispatch(updateWeekSuccess(payload));
-
-	return Promise.resolve(true);
-};
+export const switchWeek = payload => dispatch => Promise.resolve(dispatch(switchWeekSuccess(payload)));

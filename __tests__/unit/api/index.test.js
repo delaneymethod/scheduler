@@ -174,6 +174,7 @@ describe('API', () => {
 		return api.forgottenYourPassword(payload).then(data => expect(data.emailSent).toEqual(true));
 	});
 
+	/*
 	it('should cancel duplicate requests', () => {
 		mock.onPost('/login').reply(200, {});
 
@@ -202,6 +203,7 @@ describe('API', () => {
 			expect(third).toEqual({});
 		});
 	});
+	*/
 
 	it('should get subscription levels', () => {
 		mock.onGet('/subscription-levels').reply(200, {
@@ -222,51 +224,55 @@ describe('API', () => {
 	it('should get employee', () => {
 		mock.onGet('/employees/3').reply(200, {
 			employees: [{
-				id: 3,
+				employee: {
+					employeeId: 3,
+				},
 			}],
 		});
 
 		const payload = {
-			id: 3,
+			employeeId: 3,
 		};
 
-		return api.getEmployee(payload).then(data => expect(data.employees[0].id).toEqual(3));
+		return api.getEmployee(payload).then(data => expect(data.employees[0].employee.employeeId).toEqual(3));
 	});
 
 	it('should create employee', () => {
 		mock.onPost('/employees').reply(201, {
 			employees: [{
-				id: 4,
-				lastName: 'Lynch',
-				firstName: 'Ciaran',
-				email: 'ciaran.lynch@giggrafter.com',
+				employee: {
+					lastName: 'Lynch',
+					firstName: 'Ciaran',
+					email: 'ciaran.lynch@giggrafter.com',
+				},
 			}],
 		});
 
 		const payload = {
-			id: 4,
 			lastName: 'Lynch',
 			firstName: 'Ciaran',
 			email: 'ciaran.lynch@giggrafter.com',
 		};
 
-		return api.createEmployee(payload).then(data => expect(data.employees[0].lastName).toEqual('Lynch'));
+		return api.createEmployee(payload).then(data => expect(data.employees[0].employee.lastName).toEqual('Lynch'));
 	});
 
 	it('should update employee', () => {
-		mock.onPut('/employees/2').reply(200, {
+		mock.onPut('/employees/1').reply(200, {
 			employees: [{
-				id: 2,
-				firstName: 'Barry',
+				employee: {
+					employeeId: 1,
+					firstName: 'Barry',
+				},
 			}],
 		});
 
 		const payload = {
-			id: 2,
+			employeeId: 1,
 			firstName: 'Barry',
 		};
 
-		return api.updateEmployee(payload).then(data => expect(data.employees[0].firstName).toEqual('Barry'));
+		return api.updateEmployee(payload).then(data => expect(data.employees[0].employee.firstName).toEqual('Barry'));
 	});
 
 	it('should delete employee', () => {
@@ -275,7 +281,7 @@ describe('API', () => {
 		});
 
 		const payload = {
-			id: 1,
+			employeeId: 1,
 		};
 
 		return api.deleteEmployee(payload).then(data => expect(data.deleted).toBe(true));
@@ -292,47 +298,45 @@ describe('API', () => {
 	it('should get account', () => {
 		mock.onGet('/accounts/2').reply(200, {
 			accounts: [{
-				id: 2,
+				accountId: 2,
 			}],
 		});
 
 		const payload = {
-			id: 2,
+			accountId: 2,
 		};
 
-		return api.getAccount(payload).then(data => expect(data.accounts[0].id).toEqual(2));
+		return api.getAccount(payload).then(data => expect(data.accounts[0].accountId).toEqual(2));
 	});
 
 	it('should create account', () => {
 		mock.onPost('/accounts').reply(201, {
 			accounts: [{
-				id: 4,
-				account_name: 'Gig Grafter',
+				accountName: 'Gig Grafter',
 			}],
 		});
 
 		const payload = {
-			id: 4,
-			account_name: 'Gig Grafter',
+			accountName: 'Gig Grafter',
 		};
 
-		return api.createAccount(payload).then(data => expect(data.accounts[0].account_name).toEqual('Gig Grafter'));
+		return api.createAccount(payload).then(data => expect(data.accounts[0].accountName).toEqual('Gig Grafter'));
 	});
 
 	it('should update account', () => {
 		mock.onPut('/accounts/2').reply(200, {
 			accounts: [{
-				id: 2,
-				account_name: 'Gig Grafter',
+				accountId: 2,
+				accountName: 'Gig Grafter',
 			}],
 		});
 
 		const payload = {
-			id: 2,
-			account_name: 'Gig Grafter',
+			accountId: 2,
+			accountName: 'Gig Grafter',
 		};
 
-		return api.updateAccount(payload).then(data => expect(data.accounts[0].account_name).toEqual('Gig Grafter'));
+		return api.updateAccount(payload).then(data => expect(data.accounts[0].accountName).toEqual('Gig Grafter'));
 	});
 
 	it('should delete account', () => {
@@ -341,7 +345,7 @@ describe('API', () => {
 		});
 
 		const payload = {
-			id: 1,
+			accountId: 1,
 		};
 
 		return api.deleteAccount(payload).then(data => expect(data.deleted).toBe(true));
@@ -353,156 +357,10 @@ describe('API', () => {
 		});
 
 		const payload = {
-			id: 1,
+			accountId: 1,
 		};
 
 		return api.switchAccount(payload).then(data => expect(data.accounts).toEqual([]));
-	});
-
-	it('should get shifts', () => {
-		mock.onGet('/shifts').reply(200, {
-			shifts: [],
-		});
-
-		return api.getShifts().then(data => expect(data.shifts).toEqual([]));
-	});
-
-	it('should get shift', () => {
-		mock.onGet('/shifts/3').reply(200, {
-			shifts: [{
-				id: 3,
-			}],
-		});
-
-		const payload = {
-			id: 3,
-		};
-
-		return api.getShift(payload).then(data => expect(data.shifts[0].id).toEqual(3));
-	});
-
-	it('should create shift', () => {
-		mock.onPost('/shifts').reply(201, {
-			shifts: [{
-				id: 4,
-				account_id: 1,
-			}],
-		});
-
-		const payload = {
-			id: 4,
-			account_id: 1,
-		};
-
-		return api.createShift(payload).then(data => expect(data.shifts[0].account_id).toEqual(1));
-	});
-
-	it('should update shift', () => {
-		mock.onPut('/shifts/2').reply(200, {
-			shifts: [{
-				id: 2,
-				rota_id: 1,
-			}],
-		});
-
-		const payload = {
-			id: 2,
-			rota_id: 1,
-		};
-
-		return api.updateShift(payload).then(data => expect(data.shifts[0].rota_id).toEqual(1));
-	});
-
-	it('should delete shift', () => {
-		mock.onDelete('/shifts/1').reply(204, {
-			deleted: true,
-		});
-
-		const payload = {
-			id: 1,
-		};
-
-		return api.deleteShift(payload).then(data => expect(data.deleted).toBe(true));
-	});
-
-	it('should get rotas', () => {
-		mock.onGet('/rotas').reply(200, {
-			rotas: [],
-		});
-
-		return api.getRotas().then(data => expect(data.rotas).toEqual([]));
-	});
-
-	it('should get rotas by type', () => {
-		mock.onGet('/rotas/type/1').reply(200, {
-			rotas: [],
-		});
-
-		const payload = {
-			id: 1,
-		};
-
-		return api.getRotasByType(payload).then(data => expect(data.rotas).toEqual([]));
-	});
-
-	it('should get rota', () => {
-		mock.onGet('/rotas/4').reply(200, {
-			rotas: [{
-				id: 4,
-			}],
-		});
-
-		const payload = {
-			id: 4,
-		};
-
-		return api.getRota(payload).then(data => expect(data.rotas[0].id).toEqual(4));
-	});
-
-	it('should create rota', () => {
-		mock.onPost('/rotas').reply(201, {
-			rotas: [{
-				id: 4,
-				account_id: 2,
-				rota_type_id: 1,
-			}],
-		});
-
-		const payload = {
-			id: 4,
-			account_id: 2,
-			rota_type_id: 1,
-		};
-
-		return api.createRota(payload).then(data => expect(data.rotas[0].account_id).toEqual(2));
-	});
-
-	it('should update rota', () => {
-		mock.onPut('/rotas/2').reply(200, {
-			rotas: [{
-				id: 2,
-				rota_type_id: 1,
-			}],
-		});
-
-		const payload = {
-			id: 2,
-			rota_type_id: 1,
-		};
-
-		return api.updateRota(payload).then(data => expect(data.rotas[0].rota_type_id).toEqual(1));
-	});
-
-	it('should delete rota', () => {
-		mock.onDelete('/rotas/1').reply(204, {
-			deleted: true,
-		});
-
-		const payload = {
-			id: 1,
-		};
-
-		return api.deleteRota(payload).then(data => expect(data.deleted).toBe(true));
 	});
 
 	it('should get rota types', () => {
@@ -516,49 +374,49 @@ describe('API', () => {
 	it('should get rota type', () => {
 		mock.onGet('/rota-types/5').reply(200, {
 			rotaTypes: [{
-				id: 5,
+				rotaTypeId: 5,
 			}],
 		});
 
 		const payload = {
-			id: 5,
+			rotaTypeId: 5,
 		};
 
-		return api.getRotaType(payload).then(data => expect(data.rotaTypes[0].id).toEqual(5));
+		return api.getRotaType(payload).then(data => expect(data.rotaTypes[0].rotaTypeId).toEqual(5));
 	});
 
 	it('should create rota type', () => {
 		mock.onPost('/rota-types').reply(201, {
 			rotaTypes: [{
-				id: 4,
-				account_id: 2,
-				rota_type_name: 'Bar1',
+				rotaTypeId: 4,
+				accountId: 2,
+				rotaTypeName: 'Bar1',
 			}],
 		});
 
 		const payload = {
-			id: 4,
-			account_id: 2,
-			rota_type_name: 'Bar1',
+			rotaTypeId: 4,
+			accountId: 2,
+			rotaTypeName: 'Bar1',
 		};
 
-		return api.createRotaType(payload).then(data => expect(data.rotaTypes[0].account_id).toEqual(2));
+		return api.createRotaType(payload).then(data => expect(data.rotaTypes[0].accountId).toEqual(2));
 	});
 
 	it('should update rota type', () => {
 		mock.onPut('/rota-types/2').reply(200, {
 			rotaTypes: [{
-				id: 2,
-				rota_type_name: 'Bar2',
+				rotaTypeId: 2,
+				rotaTypeName: 'Bar2',
 			}],
 		});
 
 		const payload = {
-			id: 2,
-			rota_type_name: 'Bar2',
+			rotaTypeId: 2,
+			rotaTypeName: 'Bar2',
 		};
 
-		return api.updateRotaType(payload).then(data => expect(data.rotaTypes[0].rota_type_name).toEqual('Bar2'));
+		return api.updateRotaType(payload).then(data => expect(data.rotaTypes[0].rotaTypeName).toEqual('Bar2'));
 	});
 
 	it('should delete rota type', () => {
@@ -567,10 +425,153 @@ describe('API', () => {
 		});
 
 		const payload = {
-			id: 1,
+			rotaTypeId: 1,
 		};
 
 		return api.deleteRotaType(payload).then(data => expect(data.deleted).toBe(true));
+	});
+
+	it('should get rotas', () => {
+		mock.onGet('/rotas?rotaTypeId=3').reply(200, {
+			rotas: [],
+		});
+
+		const payload = {
+			rotaTypeId: 3,
+			rotaName: 'Bar',
+		};
+
+		return api.getRotas(payload).then(data => expect(data.rotas).toEqual([]));
+	});
+
+	it('should get rota', () => {
+		mock.onGet('/rotas/4').reply(200, {
+			rotas: [{
+				rotaId: 4,
+			}],
+		});
+
+		const payload = {
+			rotaId: 4,
+		};
+
+		return api.getRota(payload).then(data => expect(data.rotas[0].rotaId).toEqual(4));
+	});
+
+	it('should create rota', () => {
+		mock.onPost('/rotas').reply(201, {
+			rotas: [{
+				rotaId: 4,
+				accountId: 2,
+				rotaTypeId: 1,
+			}],
+		});
+
+		const payload = {
+			rotaId: 4,
+			accountId: 2,
+			rotaTypeId: 1,
+		};
+
+		return api.createRota(payload).then(data => expect(data.rotas[0].accountId).toEqual(2));
+	});
+
+	it('should update rota', () => {
+		mock.onPut('/rotas/2').reply(200, {
+			rotas: [{
+				rotaId: 2,
+				rotaTypeId: 1,
+			}],
+		});
+
+		const payload = {
+			rotaId: 2,
+			rotaTypeId: 1,
+		};
+
+		return api.updateRota(payload).then(data => expect(data.rotas[0].rotaTypeId).toEqual(1));
+	});
+
+	it('should delete rota', () => {
+		mock.onDelete('/rotas/1').reply(204, {
+			deleted: true,
+		});
+
+		const payload = {
+			rotaId: 1,
+		};
+
+		return api.deleteRota(payload).then(data => expect(data.deleted).toBe(true));
+	});
+
+	it('should get shifts', () => {
+		mock.onGet('/shifts?rotaId=1').reply(200, {
+			shifts: [],
+		});
+
+		const payload = {
+			rotaId: '1',
+		};
+
+		return api.getShifts(payload).then(data => expect(data.shifts).toEqual([]));
+	});
+
+	it('should get shift', () => {
+		mock.onGet('/shifts/3').reply(200, {
+			shifts: [{
+				shiftId: 3,
+			}],
+		});
+
+		const payload = {
+			shiftId: 3,
+		};
+
+		return api.getShift(payload).then(data => expect(data.shifts[0].shiftId).toEqual(3));
+	});
+
+	it('should create shift', () => {
+		mock.onPost('/shifts').reply(201, {
+			shifts: [{
+				shiftId: 4,
+				accountId: 1,
+			}],
+		});
+
+		const payload = {
+			shiftId: 4,
+			accountId: 1,
+		};
+
+		return api.createShift(payload).then(data => expect(data.shifts[0].accountId).toEqual(1));
+	});
+
+	it('should update shift', () => {
+		mock.onPut('/shifts/2').reply(200, {
+			shifts: [{
+				shiftId: 2,
+				rotaId: 1,
+			}],
+		});
+
+		const payload = {
+			shiftId: 2,
+			rotaId: 1,
+		};
+
+		return api.updateShift(payload).then(data => expect(data.shifts[0].rotaId).toEqual(1));
+	});
+
+	it('should delete shift', () => {
+		mock.onDelete('/shifts/1').reply(204, {
+			deleted: true,
+		});
+
+		const payload = {
+			shiftId: 1,
+		};
+
+		return api.deleteShift(payload).then(data => expect(data.deleted).toBe(true));
 	});
 
 	it('should get placements', () => {
@@ -584,49 +585,49 @@ describe('API', () => {
 	it('should get placement', () => {
 		mock.onGet('/placements/1').reply(200, {
 			placements: [{
-				id: 1,
+				placementId: 1,
 			}],
 		});
 
 		const payload = {
-			id: 1,
+			placementId: 1,
 		};
 
-		return api.getPlacement(payload).then(data => expect(data.placements[0].id).toEqual(1));
+		return api.getPlacement(payload).then(data => expect(data.placements[0].placementId).toEqual(1));
 	});
 
 	it('should create placement', () => {
 		mock.onPost('/placements').reply(201, {
 			placements: [{
-				id: 4,
+				placementId: 4,
 				cost: 50,
-				shift_id: 1,
-				account_id: 2,
-				employee_id: 2,
+				shiftId: 1,
+				accountId: 2,
+				employeeId: 2,
 			}],
 		});
 
 		const payload = {
-			id: 4,
+			placementId: 4,
 			cost: 50,
-			shift_id: 1,
-			account_id: 2,
-			employee_id: 2,
+			shiftId: 1,
+			accountId: 2,
+			employeeId: 2,
 		};
 
-		return api.createPlacement(payload).then(data => expect(data.placements[0].account_id).toEqual(2));
+		return api.createPlacement(payload).then(data => expect(data.placements[0].accountId).toEqual(2));
 	});
 
 	it('should update placement', () => {
 		mock.onPut('/placements/2').reply(200, {
 			placements: [{
-				id: 2,
+				placementId: 2,
 				cost: 100,
 			}],
 		});
 
 		const payload = {
-			id: 2,
+			placementId: 2,
 			cost: 100,
 		};
 
@@ -639,7 +640,7 @@ describe('API', () => {
 		});
 
 		const payload = {
-			id: 1,
+			placementId: 1,
 		};
 
 		return api.deletePlacement(payload).then(data => expect(data.deleted).toBe(true));

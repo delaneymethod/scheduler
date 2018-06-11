@@ -20,6 +20,8 @@ export const getSubscriptionLevels = () => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(getSubscriptionLevelsSuccess(subscriptionLevels));
+
+			return subscriptionLevels;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));

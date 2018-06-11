@@ -19,7 +19,7 @@ describe('Placements Reducer', () => {
 		}];
 	});
 
-	it('should return the initial state', () => expect(placementsReducer(undefined, {})).toEqual({}));
+	it('should return the initial state', () => expect(placementsReducer(undefined, [])).toEqual([]));
 
 	it('should handle GET_PLACEMENT', () => {
 		const mockPlacement = mockPlacements[0];

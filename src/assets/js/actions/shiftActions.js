@@ -12,14 +12,16 @@ export const ajaxLoading = status => ({
 	status,
 });
 
-export const getShifts = () => (dispatch) => {
+export const getShifts = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return api.getShifts()
+	return api.getShifts(payload)
 		.then((shifts) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(getShiftsSuccess(shifts));
+
+			return shifts;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -43,6 +45,8 @@ export const getShift = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(getShiftSuccess(shift));
+
+			return shift;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -66,6 +70,8 @@ export const createShift = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(createShiftSuccess(shift));
+
+			return shift;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -89,6 +95,8 @@ export const updateShift = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(updateShiftSuccess(shift));
+
+			return shift;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -112,6 +120,8 @@ export const deleteShift = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(deleteShiftSuccess(shift));
+
+			return shift;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));

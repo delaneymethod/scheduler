@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import { Label, Input, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks } from 'react-form-with-constraints';
@@ -23,7 +24,7 @@ const defaultProps = {
 	handleChange: () => {},
 };
 
-const TextField = ({
+const DateField = ({
 	fieldName,
 	fieldValue,
 	fieldLabel,
@@ -34,15 +35,15 @@ const TextField = ({
 }) => (
 	<FormGroup>
 		<Label for={fieldName}>{fieldLabel} {(fieldRequired) ? (<span className="text-danger">&#42;</span>) : null}</Label>
-		<Input type="text" name={fieldName} id={fieldName} value={fieldValue} placeholder={fieldPlaceholder} onChange={handleChange} required={fieldRequired} />
+		<Input type="date" name={fieldName} id={fieldName} value={fieldValue} placeholder={fieldPlaceholder} onChange={handleChange} required={fieldRequired} min={moment().format('Y-MM-DD')} pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" />
 		<FieldFeedbacks for={fieldName} show="all">
 			<FieldFeedback when="valueMissing">- {valueMissing}</FieldFeedback>
 		</FieldFeedbacks>
 	</FormGroup>
 );
 
-TextField.propTypes = propTypes;
+DateField.propTypes = propTypes;
 
-TextField.defaultProps = defaultProps;
+DateField.defaultProps = defaultProps;
 
-export default TextField;
+export default DateField;

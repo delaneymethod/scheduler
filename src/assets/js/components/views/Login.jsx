@@ -1,32 +1,19 @@
-import jwtDecode from 'jwt-decode';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Col, Row } from 'reactstrap';
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
-import { Col, Row, Button } from 'reactstrap';
-import { FormWithConstraints } from 'react-form-with-constraints';
 
-import Alert from '../common/Alert';
-
-import EmailField from '../fields/EmailField';
+import LoginForm from '../forms/LoginForm';
 
 import constants from '../../helpers/constants';
-
-import PasswordField from '../fields/PasswordField';
-
-import { updateUser } from '../../actions/userActions';
-
-import { login } from '../../actions/authenticationActions';
 
 const routes = constants.APP.ROUTES;
 
 const propTypes = {
-	user: PropTypes.object.isRequired,
 	authenticated: PropTypes.bool.isRequired,
 };
 
 const defaultProps = {
-	user: {},
 	authenticated: false,
 };
 
@@ -34,18 +21,12 @@ class Login extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = this.getInitialState();
+		const { history, authenticated } = this.props;
 
-		this.handleChange = this.handleChange.bind(this);
-
-		this.handleSubmit = this.handleSubmit.bind(this);
+		if (authenticated) {
+			history.push(routes.DASHBOARD.HOME.URI);
+		}
 	}
-
-	getInitialState = () => ({
-		error: {},
-		email: '',
-		password: '',
-	});
 
 	componentDidMount = () => {
 		document.title = `${constants.APP.TITLE}: ${routes.LOGIN.TITLE}`;
@@ -56,68 +37,6 @@ class Login extends Component {
 		meta.keywords.setAttribute('content', routes.LOGIN.META.KEYWORDS);
 		meta.author.setAttribute('content', constants.APP.AUTHOR);
 	};
-
-	componentWillReceiveProps = (nextProps) => {
-		const {
-			user,
-			actions,
-			history,
-			authenticated,
-		} = nextProps;
-
-		if (authenticated) {
-			history.push(routes.DASHBOARD.HOME.URI);
-		}
-
-		/* Used to update the user info in the store after the login action has completed */
-		if (user) {
-			/* The tokens subject contains the users Id */
-			const token = jwtDecode(user.token);
-
-			user.userId = token.sub;
-
-			/* Use the first account as the selected account */
-			const [account] = user.accounts;
-
-			user.account = account;
-
-			/* Update the user state and then go to the dashboard */
-			actions.updateUser(user).then(() => history.push(routes.DASHBOARD.HOME.URI));
-		}
-	};
-
-	handleChange = async (event) => {
-		const target = event.currentTarget;
-
-		this.setState({
-			[target.name]: target.value,
-		});
-
-		await this.form.validateFields(target);
-	};
-
-	handleSubmit = async (event) => {
-		event.preventDefault();
-
-		const { actions } = this.props;
-
-		this.setState({ error: {} });
-
-		await this.form.validateFields();
-
-		if (this.form.isValid()) {
-			const { email, password } = this.state;
-
-			const payload = {
-				email,
-				password,
-			};
-
-			actions.login(payload).catch(error => this.setState({ error }));
-		}
-	};
-
-	errorMessage = () => (this.state.error.data ? <Alert color="danger" title={this.state.error.data.title} message={this.state.error.data.message} /> : null);
 
 	render = () => (
 		<Row className="d-flex flex-md-row flex-column login-page-container">
@@ -132,13 +51,7 @@ class Login extends Component {
 					<a href={routes.REGISTER.URI} title={routes.REGISTER.TITLE} className="panel-page__link">Back to {routes.REGISTER.TITLE}</a>
 					<div className="card panel-page__content">
 						<h2 className="h5--title-card">{routes.LOGIN.TITLE}</h2>
-						{this.errorMessage()}
-						<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
-							<EmailField fieldValue={this.state.email} handleChange={this.handleChange} />
-							<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChange} />
-							<Button type="submit" color="primary" className="mt-4" title={routes.LOGIN.TITLE} block>{routes.LOGIN.TITLE}</Button>
-							<a href={routes.FORGOTTEN_YOUR_PASSWORD.URI} title={routes.FORGOTTEN_YOUR_PASSWORD.TITLE} className="panel-page__forgot">{routes.FORGOTTEN_YOUR_PASSWORD.TITLE}</a>
-						</FormWithConstraints>
+						<LoginForm history={this.props.history} />
 					</div>
 				</div>
 			</Col>
@@ -151,12 +64,9 @@ Login.propTypes = propTypes;
 Login.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
-	user: state.user,
 	authenticated: state.authenticated,
 });
 
-const mapDispatchToProps = dispatch => ({
-	actions: bindActionCreators({ login, updateUser }, dispatch),
-});
+const mapDispatchToProps = dispatch => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

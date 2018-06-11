@@ -21,6 +21,8 @@ export const getAccounts = () => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(getAccountsSuccess(accounts));
+
+			return accounts;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -44,6 +46,8 @@ export const getAccount = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(getAccountSuccess(account));
+
+			return account;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -67,6 +71,8 @@ export const createAccount = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(createAccountSuccess(account));
+
+			return account;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -90,6 +96,8 @@ export const updateAccount = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(updateAccountSuccess(account));
+
+			return account;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -113,6 +121,8 @@ export const deleteAccount = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(deleteAccountSuccess(account));
+
+			return account;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -136,6 +146,8 @@ export const switchAccount = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(switchAccountSuccess(account));
+
+			return account;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));

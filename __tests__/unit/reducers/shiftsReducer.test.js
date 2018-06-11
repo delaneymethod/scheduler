@@ -22,7 +22,7 @@ describe('Shifts Reducer', () => {
 		}];
 	});
 
-	it('should return the initial state', () => expect(shiftsReducer(undefined, {})).toEqual({}));
+	it('should return the initial state', () => expect(shiftsReducer(undefined, [])).toEqual([]));
 
 	it('should handle GET_SHIFT', () => {
 		const mockShift = mockShifts[0];

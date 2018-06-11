@@ -17,7 +17,7 @@ describe('Accounts Reducer', () => {
 		}];
 	});
 
-	it('should return the initial state', () => expect(accountsReducer(undefined, {})).toEqual({}));
+	it('should return the initial state', () => expect(accountsReducer(undefined, [])).toEqual([]));
 
 	it('should handle GET_ACCOUNT', () => {
 		const mockAccount = mockAccounts[0];

@@ -12,32 +12,16 @@ export const getRotasSuccess = rotas => ({
 	rotas,
 });
 
-export const getRotas = () => (dispatch) => {
+export const getRotas = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return api.getRotas()
+	return api.getRotas(payload)
 		.then((rotas) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(getRotasSuccess(rotas));
-		})
-		.catch((error) => {
-			dispatch(ajaxLoading(false));
 
-			/* Bubble the error back up the rabbit hole */
-			return Promise.reject(error);
-		});
-};
-
-/* GET ROTAS BY TYPE */
-export const getRotasByType = payload => (dispatch) => {
-	dispatch(ajaxLoading(true));
-
-	return api.getRotasByType(payload)
-		.then((rotaType) => {
-			dispatch(ajaxLoading(false));
-
-			dispatch(getRotasSuccess(rotaType));
+			return rotas;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -61,6 +45,8 @@ export const getRota = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(getRotaSuccess(rota));
+
+			return rota;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -84,6 +70,8 @@ export const createRota = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(createRotaSuccess(rota));
+
+			return rota;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -107,6 +95,8 @@ export const updateRota = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(updateRotaSuccess(rota));
+
+			return rota;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -130,6 +120,8 @@ export const deleteRota = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(deleteRotaSuccess(rota));
+
+			return rota;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -138,3 +130,11 @@ export const deleteRota = payload => (dispatch) => {
 			return Promise.reject(error);
 		});
 };
+
+/* SWITCH BETWEEN ROTAS */
+export const switchRotaSuccess = rota => ({
+	type: types.SWITCH_ROTA,
+	rota,
+});
+
+export const switchRota = payload => dispatch => Promise.resolve(dispatch(switchRotaSuccess(payload)));

@@ -7,9 +7,11 @@ import constants from '../helpers/constants';
 
 import { getState } from '../store/persistedState';
 
-let axiosCall = null;
+/*
+const axiosCall = null;
 
 const { CancelToken } = axios;
+*/
 
 const requestHeaders = () => ({
 	'Cache-Control': 'no-cache',
@@ -18,20 +20,22 @@ const requestHeaders = () => ({
 
 /* Cancellable request */
 const request = (method, url, expectedStatus = 200, data = null) => {
+	/*
 	if (axiosCall) {
 		axiosCall.cancel();
 	}
 
 	axiosCall = CancelToken.source();
+	*/
 
 	const headers = requestHeaders();
 
 	const config = {
 		url,
+		data,
 		method,
 		headers,
-		data,
-		cancelToken: axiosCall.token,
+		/* cancelToken: axiosCall.token, */
 		validateStatus: status => status === expectedStatus,
 	};
 
@@ -51,12 +55,15 @@ const request = (method, url, expectedStatus = 200, data = null) => {
 
 	axios.defaults.baseURL = constants.API.HOST;
 
+	/* If the response is an array of data, the data array will be wrapped in a data attribute. Confusing I know! */
 	return axios.request(config)
-		.then(response => response.data)
+		.then(response => ((response.data.data) ? response.data.data : response.data))
 		.catch((thrown) => {
+			/*
 			if (axios.isCancel(thrown)) {
 				return null;
 			}
+			*/
 
 			/* Bubble the error back up the rabbit hole */
 			const error = formatError(thrown);
@@ -80,69 +87,78 @@ export const getSubscriptionLevels = () => request('GET', '/subscription-levels'
 /* EMPLOYEES */
 export const getEmployees = () => request('GET', '/employees');
 
-export const getEmployee = employee => request('GET', `/employees/${employee.id}`);
+export const getEmployee = employee => request('GET', `/employees/${employee.employeeId}`);
 
 export const createEmployee = employee => request('POST', '/employees', 201, employee);
 
-export const updateEmployee = employee => request('PUT', `/employees/${employee.id}`, 200, employee);
+export const updateEmployee = employee => request('PUT', `/employees/${employee.employeeId}`, 200, employee);
 
-export const deleteEmployee = employee => request('DELETE', `/employees/${employee.id}`, 204);
+export const deleteEmployee = employee => request('DELETE', `/employees/${employee.employeeId}`, 204);
 
 /* ACCOUNTS */
 export const getAccounts = () => request('GET', '/accounts');
 
-export const getAccount = account => request('GET', `/accounts/${account.id}`);
+export const getAccount = account => request('GET', `/accounts/${account.accountId}`);
 
 export const createAccount = account => request('POST', '/accounts', 201, account);
 
-export const updateAccount = account => request('PUT', `/accounts/${account.id}`, 200, account);
+export const updateAccount = account => request('PUT', `/accounts/${account.accountId}`, 200, account);
 
-export const deleteAccount = account => request('DELETE', `/accounts/${account.id}`, 204);
+export const deleteAccount = account => request('DELETE', `/accounts/${account.accountId}`, 204);
 
 export const switchAccount = account => request('POST', '/accounts/switch', 200, account);
 
 /* SHIFTS */
-export const getShifts = () => request('GET', '/shifts');
+export const getShifts = rota => request('GET', `/shifts?rotaId=${rota.rotaId}`);
 
-export const getShift = shift => request('GET', `/shifts/${shift.id}`);
+export const getShift = shift => request('GET', `/shifts/${shift.shiftId}`);
 
 export const createShift = shift => request('POST', '/shifts', 201, shift);
 
-export const updateShift = shift => request('PUT', `/shifts/${shift.id}`, 200, shift);
+export const updateShift = shift => request('PUT', `/shifts/${shift.shiftId}`, 200, shift);
 
-export const deleteShift = shift => request('DELETE', `/shifts/${shift.id}`, 204);
+export const deleteShift = shift => request('DELETE', `/shifts/${shift.shiftId}`, 204);
 
 /* ROTAS */
-export const getRotas = () => request('GET', '/rotas');
+export const getRotas = rotaType => request('GET', `/rotas?rotaTypeId=${rotaType.rotaTypeId}`);
 
-export const getRota = rota => request('GET', `/rotas/${rota.id}`);
-
-export const getRotasByType = rotaType => request('GET', `/rotas/type/${rotaType.id}`);
+export const getRota = rota => request('GET', `/rotas/${rota.rotaId}`);
 
 export const createRota = rota => request('POST', '/rotas', 201, rota);
 
-export const updateRota = rota => request('PUT', `/rotas/${rota.id}`, 200, rota);
+export const updateRota = rota => request('PUT', `/rotas/${rota.rotaId}`, 200, rota);
 
-export const deleteRota = rota => request('DELETE', `/rotas/${rota.id}`, 204);
+export const deleteRota = rota => request('DELETE', `/rotas/${rota.rotaId}`, 204);
 
 /* ROTA TYPES */
 export const getRotaTypes = () => request('GET', '/rota-types');
 
-export const getRotaType = rotaType => request('GET', `/rota-types/${rotaType.id}`);
+export const getRotaType = rotaType => request('GET', `/rota-types/${rotaType.rotaTypeId}`);
 
 export const createRotaType = rotaType => request('POST', '/rota-types', 201, rotaType);
 
-export const updateRotaType = rotaType => request('PUT', `/rota-types/${rotaType.id}`, 200, rotaType);
+export const updateRotaType = rotaType => request('PUT', `/rota-types/${rotaType.rotaTypeId}`, 200, rotaType);
 
-export const deleteRotaType = rotaType => request('DELETE', `/rota-types/${rotaType.id}`, 204);
+export const deleteRotaType = rotaType => request('DELETE', `/rota-types/${rotaType.rotaTypeId}`, 204);
 
 /* PLACEMENTS */
 export const getPlacements = () => request('GET', '/placements');
 
-export const getPlacement = placement => request('GET', `/placements/${placement.id}`);
+export const getPlacement = placement => request('GET', `/placements/${placement.placementId}`);
 
 export const createPlacement = placement => request('POST', '/placements', 201, placement);
 
-export const updatePlacement = placement => request('PUT', `/placements/${placement.id}`, 200, placement);
+export const updatePlacement = placement => request('PUT', `/placements/${placement.placementId}`, 200, placement);
 
-export const deletePlacement = placement => request('DELETE', `/placements/${placement.id}`, 204);
+export const deletePlacement = placement => request('DELETE', `/placements/${placement.placementId}`, 204);
+
+/* ROLES */
+export const getRoles = () => request('GET', '/roles');
+
+export const getRole = role => request('GET', `/roles/${role.id}`);
+
+export const createRole = role => request('POST', '/roles', 201, role);
+
+export const updateRole = role => request('PUT', `/roles/${role.id}`, 200, role);
+
+export const deleteRole = role => request('DELETE', `/roles/${role.id}`, 204);

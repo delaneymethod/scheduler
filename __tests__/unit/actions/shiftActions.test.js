@@ -13,8 +13,6 @@ const mockStore = configureMockStore(middlewares);
 describe('Shift Actions', () => {
 	let store;
 
-	let mockPayload;
-
 	beforeEach(() => moxios.install());
 
 	afterEach(() => moxios.uninstall());
@@ -25,7 +23,9 @@ describe('Shift Actions', () => {
 
 			request.respondWith({
 				status: 200,
-				response: mockPayload,
+				response: {
+					data: [],
+				},
 			});
 		});
 
@@ -38,11 +38,15 @@ describe('Shift Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			shifts: mockPayload,
+			shifts: [],
 			type: types.GET_SHIFTS,
 		}];
 
-		return store.dispatch(actions.getShifts()).then(() => expect(store.getActions()).toEqual(expectedActions));
+		const payload = {
+			rotaId: 1,
+		};
+
+		return store.dispatch(actions.getShifts(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
 	});
 
 	it('should catch error on failed getShifts', () => {
@@ -51,7 +55,7 @@ describe('Shift Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -66,7 +70,7 @@ describe('Shift Actions', () => {
 
 			request.respondWith({
 				status: 200,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -79,7 +83,7 @@ describe('Shift Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			shift: mockPayload,
+			shift: {},
 			type: types.GET_SHIFT,
 		}];
 
@@ -96,7 +100,7 @@ describe('Shift Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -111,7 +115,7 @@ describe('Shift Actions', () => {
 
 			request.respondWith({
 				status: 201,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -124,7 +128,7 @@ describe('Shift Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			shift: mockPayload,
+			shift: {},
 			type: types.CREATE_SHIFT,
 		}];
 
@@ -141,7 +145,7 @@ describe('Shift Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -156,7 +160,7 @@ describe('Shift Actions', () => {
 
 			request.respondWith({
 				status: 200,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -169,7 +173,7 @@ describe('Shift Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			shift: mockPayload,
+			shift: {},
 			type: types.UPDATE_SHIFT,
 		}];
 
@@ -186,7 +190,7 @@ describe('Shift Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -201,7 +205,7 @@ describe('Shift Actions', () => {
 
 			request.respondWith({
 				status: 204,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -214,7 +218,7 @@ describe('Shift Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			shift: mockPayload,
+			shift: {},
 			type: types.DELETE_SHIFT,
 		}];
 
@@ -231,7 +235,7 @@ describe('Shift Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 

@@ -4,20 +4,20 @@ import configureMockStore from 'redux-mock-store';
 
 import * as types from '../../../src/assets/js/actions/actionTypes';
 
-import * as actions from '../../../src/assets/js/actions/placementActions';
+import * as actions from '../../../src/assets/js/actions/roleActions';
 
 const middlewares = [thunk];
 
 const mockStore = configureMockStore(middlewares);
 
-describe('Placement Actions', () => {
+describe('Role Actions', () => {
 	let store;
 
 	beforeEach(() => moxios.install());
 
 	afterEach(() => moxios.uninstall());
 
-	it('should create GET_PLACEMENTS and AJAX_LOADING actions on getPlacements', () => {
+	it('should create GET_ROLES and AJAX_LOADING actions on getRoles', () => {
 		moxios.wait(() => {
 			const request = moxios.requests.mostRecent();
 
@@ -29,7 +29,7 @@ describe('Placement Actions', () => {
 			});
 		});
 
-		store = mockStore({ placements: {} });
+		store = mockStore({ roles: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -38,14 +38,18 @@ describe('Placement Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			placements: [],
-			type: types.GET_PLACEMENTS,
+			roles: [],
+			type: types.GET_ROLES,
 		}];
 
-		return store.dispatch(actions.getPlacements()).then(() => expect(store.getActions()).toEqual(expectedActions));
+		const payload = {
+			roleId: 1,
+		};
+
+		return store.dispatch(actions.getRoles(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
 	});
 
-	it('should catch error on failed getPlacements', () => {
+	it('should catch error on failed getRoles', () => {
 		moxios.wait(() => {
 			const request = moxios.requests.mostRecent();
 
@@ -55,12 +59,12 @@ describe('Placement Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ roles: [] });
 
-		return store.dispatch(actions.getPlacements({})).catch(error => expect(store.getActions()).not.toBeNull());
+		return store.dispatch(actions.getRoles({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
 
-	it('should create GET_PLACEMENT and AJAX_LOADING actions on getPlacement', () => {
+	it('should create GET_ROLE and AJAX_LOADING actions on getRole', () => {
 		moxios.wait(() => {
 			const request = moxios.requests.mostRecent();
 
@@ -70,7 +74,7 @@ describe('Placement Actions', () => {
 			});
 		});
 
-		store = mockStore({ placements: {} });
+		store = mockStore({ roles: {} });
 
 		const expectedActions = [{
 			status: true,
@@ -79,18 +83,18 @@ describe('Placement Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			placement: {},
-			type: types.GET_PLACEMENT,
+			role: {},
+			type: types.GET_ROLE,
 		}];
 
 		const payload = {
-			id: 2,
+			roleId: 2,
 		};
 
-		return store.dispatch(actions.getPlacement(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
+		return store.dispatch(actions.getRole(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
 	});
 
-	it('should catch error on failed getPlacement', () => {
+	it('should catch error on failed getRole', () => {
 		moxios.wait(() => {
 			const request = moxios.requests.mostRecent();
 
@@ -100,12 +104,12 @@ describe('Placement Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ roles: [] });
 
-		return store.dispatch(actions.getPlacement({})).catch(error => expect(store.getActions()).not.toBeNull());
+		return store.dispatch(actions.getRole({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
 
-	it('should create CREATE_PLACEMENT and AJAX_LOADING actions on createPlacement', () => {
+	it('should create CREATE_ROLE and AJAX_LOADING actions on createRole', () => {
 		moxios.wait(() => {
 			const request = moxios.requests.mostRecent();
 
@@ -115,7 +119,7 @@ describe('Placement Actions', () => {
 			});
 		});
 
-		store = mockStore({ placements: {} });
+		store = mockStore({ roles: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -124,18 +128,18 @@ describe('Placement Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			placement: {},
-			type: types.CREATE_PLACEMENT,
+			role: {},
+			type: types.CREATE_ROLE,
 		}];
 
 		const payload = {
-			id: 1,
+			roleId: 1,
 		};
 
-		return store.dispatch(actions.createPlacement(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
+		return store.dispatch(actions.createRole(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
 	});
 
-	it('should catch error on failed createPlacement', () => {
+	it('should catch error on failed createRole', () => {
 		moxios.wait(() => {
 			const request = moxios.requests.mostRecent();
 
@@ -145,12 +149,12 @@ describe('Placement Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ roles: [] });
 
-		return store.dispatch(actions.createPlacement({})).catch(error => expect(store.getActions()).not.toBeNull());
+		return store.dispatch(actions.createRole({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
 
-	it('should create UPDATE_PLACEMENT and AJAX_LOADING actions on updatePlacement', () => {
+	it('should create UPDATE_ROLE and AJAX_LOADING actions on updateRole', () => {
 		moxios.wait(() => {
 			const request = moxios.requests.mostRecent();
 
@@ -160,7 +164,7 @@ describe('Placement Actions', () => {
 			});
 		});
 
-		store = mockStore({ placements: {} });
+		store = mockStore({ roles: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -169,18 +173,18 @@ describe('Placement Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			placement: {},
-			type: types.UPDATE_PLACEMENT,
+			role: {},
+			type: types.UPDATE_ROLE,
 		}];
 
 		const payload = {
-			id: 1,
+			roleId: 1,
 		};
 
-		return store.dispatch(actions.updatePlacement(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
+		return store.dispatch(actions.updateRole(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
 	});
 
-	it('should catch error on failed updatePlacement', () => {
+	it('should catch error on failed updateRole', () => {
 		moxios.wait(() => {
 			const request = moxios.requests.mostRecent();
 
@@ -190,12 +194,12 @@ describe('Placement Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ roles: [] });
 
-		return store.dispatch(actions.updatePlacement({})).catch(error => expect(store.getActions()).not.toBeNull());
+		return store.dispatch(actions.updateRole({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
 
-	it('should create DELETE_PLACEMENT and AJAX_LOADING actions on deletePlacement', () => {
+	it('should create DELETE_ROLE and AJAX_LOADING actions on deleteRole', () => {
 		moxios.wait(() => {
 			const request = moxios.requests.mostRecent();
 
@@ -205,7 +209,7 @@ describe('Placement Actions', () => {
 			});
 		});
 
-		store = mockStore({ placements: {} });
+		store = mockStore({ roles: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -214,18 +218,18 @@ describe('Placement Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			placement: {},
-			type: types.DELETE_PLACEMENT,
+			role: {},
+			type: types.DELETE_ROLE,
 		}];
 
 		const payload = {
-			id: 2,
+			roleId: 2,
 		};
 
-		return store.dispatch(actions.deletePlacement(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
+		return store.dispatch(actions.deleteRole(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
 	});
 
-	it('should catch error on failed deletePlacement', () => {
+	it('should catch error on failed deleteRole', () => {
 		moxios.wait(() => {
 			const request = moxios.requests.mostRecent();
 
@@ -235,8 +239,8 @@ describe('Placement Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ roles: [] });
 
-		return store.dispatch(actions.deletePlacement({})).catch(error => expect(store.getActions()).not.toBeNull());
+		return store.dispatch(actions.deleteRole({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
 });

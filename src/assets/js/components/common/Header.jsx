@@ -90,18 +90,18 @@ class Header extends Component {
 						<h1 className="pt-1 pl-1 pr-1 pb-1"><a className="d-block" href={routes.HOME.URI} title={constants.APP.TITLE}>{constants.APP.TITLE}<span>.</span></a></h1>
 						<WeekPicker />
 						<Navbar className="p-0 m-0" color="dark" dark expand="xl">
-							<button type="button" className="btn btn-nav btn-action btn-navigation-popover navbar-toggler border-0 text-white" aria-label="Toggle Navigation"><i className="fa fa-navicon" aria-hidden="true"></i></button>
+							<button type="button" className="btn btn-nav btn-action btn-navigation-popover navbar-toggler border-0 text-white" aria-label="Toggle Navigation"><i className="fa fa-fw fa-navicon" aria-hidden="true"></i></button>
 							<div className="collapse navbar-collapse" id="navigation-list">
 								<ul className="actions popover-menu">
-									<NavItem className={(this.state.employeesIsActive) ? 'pr-3 ml-0 active' : 'pr-3 ml-0'}><a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a></NavItem>
-									<NavItem className={(this.state.shiftsIsActive) ? 'pr-3 ml-0 active' : 'pr-3 ml-0'}><a href={dashboard.SHIFTS.URI} title={dashboard.SHIFTS.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-th" aria-hidden="true"></i>{dashboard.SHIFTS.TITLE}</a></NavItem>
-									<NavItem className={(this.state.overviewIsActive) ? 'pr-3 ml-0 active' : 'pr-3 ml-0'}><a href={dashboard.OVERVIEW.URI} title={dashboard.OVERVIEW.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-bar-chart" aria-hidden="true"></i>{dashboard.OVERVIEW.TITLE}</a></NavItem>
+									<NavItem className={(this.state.employeesIsActive) ? 'pr-3 ml-0 active' : 'pr-3 ml-0'}><a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a></NavItem>
+									<NavItem className={(this.state.shiftsIsActive) ? 'pr-3 ml-0 active' : 'pr-3 ml-0'}><a href={dashboard.SHIFTS.URI} title={dashboard.SHIFTS.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-th" aria-hidden="true"></i>{dashboard.SHIFTS.TITLE}</a></NavItem>
+									<NavItem className={(this.state.overviewIsActive) ? 'pr-3 ml-0 active' : 'pr-3 ml-0'}><a href={dashboard.OVERVIEW.URI} title={dashboard.OVERVIEW.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-bar-chart" aria-hidden="true"></i>{dashboard.OVERVIEW.TITLE}</a></NavItem>
 								</ul>
 							</div>
 							<ul className="actions profile-toggle ml-auto">
 								<NavItem className="nav-item pr-3 ml-0"><a href="" title="Publish" className="btn btn-nav btn-primary pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 border-0">Publish</a></NavItem>
 								<li className="nav-item ml-0">
-									<button type="button" className="btn btn-nav btn-user btn-profile-popover ml-r border-0" aria-label="Toggle Profile Options">Hello, {this.props.user.firstName}<i className="pl-2 fa fa-chevron-down" aria-hidden="true"></i></button>
+									<button type="button" className="btn btn-nav btn-user btn-profile-popover ml-r border-0" aria-label="Toggle Profile Options">Hello, {this.props.user.firstName}<i className="pl-2 fa fa-fw fa-chevron-down" aria-hidden="true"></i></button>
 									<div className="d-none" id="profile-list">
 										<ul className="popover-menu">
 											<li><button type="button" title="Switch Account" className="btn btn-action btn-nav border-0 switch-account">Switch Account</button></li>

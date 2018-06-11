@@ -20,6 +20,16 @@
 	}
 }
 
+.btn-rotas-popover {
+	color: $dark;
+	background-color: $white;
+	
+	&:hover {
+		color: $white !important;
+		background-color: darken($dark, 10%);
+	}
+}
+
 .btn-nav {
 	padding: 0 1.5rem;
 	line-height: calculateRem(44px);
@@ -51,4 +61,26 @@
 	padding: 0.5rem;
 	// font-size: 0.65rem;
 	line-height: normal;
+}
+
+.btn-disabled {
+	color: $white !important;
+	cursor: not-allowed !important;
+	background-color: #EBEBE4 !important;
+	
+	i {
+		color: $white !important;
+		cursor: not-allowed !important;
+	}
+	
+	&:hover {
+		color: $white !important;
+		cursor: not-allowed !important;
+		background-color: #EBEBE4 !important;
+		
+		i {
+			color: $white !important;
+			cursor: not-allowed !important;
+		}
+	}
 }

@@ -9,19 +9,21 @@ describe('Employees Reducer', () => {
 
 	beforeEach(() => {
 		mockEmployees = [{
-			id: 2,
-			email: 'barry.lynch@giggrafter.com',
-			first_name: 'Barry',
-			surname: 'Lynch',
-			created_date: '2018-04-18 15:53:18',
-			last_updated: '2018-04-18 15:53:18',
+			employee: {
+				id: 2,
+				email: 'barry.lynch@giggrafter.com',
+				first_name: 'Barry',
+				surname: 'Lynch',
+				created_date: '2018-04-18 15:53:18',
+				last_updated: '2018-04-18 15:53:18',
+			},
 		}];
 	});
 
-	it('should return the initial state', () => expect(employeesReducer(undefined, {})).toEqual({}));
+	it('should return the initial state', () => expect(employeesReducer(undefined, [])).toEqual([]));
 
 	it('should handle GET_EMPLOYEE', () => {
-		const mockEmployee = mockEmployees[0];
+		const mockEmployee = mockEmployees[0].employee;
 
 		const action = {
 			type: GET_EMPLOYEE,
@@ -46,12 +48,14 @@ describe('Employees Reducer', () => {
 
 	it('should handle CREATE_EMPLOYEE', () => {
 		const mockEmployee = {
-			id: 3,
-			email: 'hello@delaneymethod.com',
-			first_name: 'Sean',
-			surname: 'Delaney',
-			created_date: '2018-04-18 15:53:18',
-			last_updated: '2018-04-18 15:53:18',
+			employee: {
+				id: 3,
+				email: 'hello@delaneymethod.com',
+				first_name: 'Sean',
+				surname: 'Delaney',
+				created_date: '2018-04-18 15:53:18',
+				last_updated: '2018-04-18 15:53:18',
+			},
 		};
 
 		const action = {

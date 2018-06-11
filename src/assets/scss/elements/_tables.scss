@@ -1,12 +1,10 @@
 .rota-table {
-	padding: 1rem 0;
-	margin-bottom: 0;
 	max-height: 100vh;
 	// font-size: 0.75rem;
 	border-collapse: separate;
 	min-width: calculateRem(1000px);
 	border-spacing: calculateRem(5px);
-
+	
 	tfoot tr,
 	thead tr {
 		width: 100%;

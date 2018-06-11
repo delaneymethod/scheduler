@@ -13,8 +13,6 @@ const mockStore = configureMockStore(middlewares);
 describe('Account Actions', () => {
 	let store;
 
-	let mockPayload;
-
 	beforeEach(() => moxios.install());
 
 	afterEach(() => moxios.uninstall());
@@ -25,11 +23,13 @@ describe('Account Actions', () => {
 
 			request.respondWith({
 				status: 200,
-				response: mockPayload,
+				response: {
+					data: [],
+				},
 			});
 		});
 
-		store = mockStore({ accounts: {} });
+		store = mockStore({ accounts: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -38,7 +38,7 @@ describe('Account Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			accounts: mockPayload,
+			accounts: [],
 			type: types.GET_ACCOUNTS,
 		}];
 
@@ -51,11 +51,11 @@ describe('Account Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: [],
 			});
 		});
 
-		store = mockStore({ accounts: {} });
+		store = mockStore({ accounts: [] });
 
 		return store.dispatch(actions.getAccounts({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -66,11 +66,11 @@ describe('Account Actions', () => {
 
 			request.respondWith({
 				status: 200,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
-		store = mockStore({ accounts: {} });
+		store = mockStore({ accounts: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -79,7 +79,7 @@ describe('Account Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			account: mockPayload,
+			account: {},
 			type: types.GET_ACCOUNT,
 		}];
 
@@ -96,11 +96,11 @@ describe('Account Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
-		store = mockStore({ accounts: {} });
+		store = mockStore({ accounts: [] });
 
 		return store.dispatch(actions.getAccount({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -111,11 +111,11 @@ describe('Account Actions', () => {
 
 			request.respondWith({
 				status: 201,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
-		store = mockStore({ accounts: {} });
+		store = mockStore({ accounts: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -124,7 +124,7 @@ describe('Account Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			account: mockPayload,
+			account: {},
 			type: types.CREATE_ACCOUNT,
 		}];
 
@@ -141,11 +141,11 @@ describe('Account Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
-		store = mockStore({ accounts: {} });
+		store = mockStore({ accounts: [] });
 
 		return store.dispatch(actions.createAccount({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -156,11 +156,11 @@ describe('Account Actions', () => {
 
 			request.respondWith({
 				status: 200,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
-		store = mockStore({ accounts: {} });
+		store = mockStore({ accounts: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -169,7 +169,7 @@ describe('Account Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			account: mockPayload,
+			account: {},
 			type: types.UPDATE_ACCOUNT,
 		}];
 
@@ -186,11 +186,11 @@ describe('Account Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
-		store = mockStore({ accounts: {} });
+		store = mockStore({ accounts: [] });
 
 		return store.dispatch(actions.updateAccount({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -201,11 +201,11 @@ describe('Account Actions', () => {
 
 			request.respondWith({
 				status: 204,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
-		store = mockStore({ accounts: {} });
+		store = mockStore({ accounts: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -214,7 +214,7 @@ describe('Account Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			account: mockPayload,
+			account: {},
 			type: types.DELETE_ACCOUNT,
 		}];
 
@@ -231,11 +231,11 @@ describe('Account Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
-		store = mockStore({ accounts: {} });
+		store = mockStore({ accounts: [] });
 
 		return store.dispatch(actions.deleteAccount({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -246,11 +246,11 @@ describe('Account Actions', () => {
 
 			request.respondWith({
 				status: 200,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
-		store = mockStore({ accounts: {} });
+		store = mockStore({ accounts: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -259,7 +259,7 @@ describe('Account Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			account: mockPayload,
+			account: {},
 			type: types.SWITCH_ACCOUNT,
 		}];
 
@@ -276,11 +276,11 @@ describe('Account Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
-		store = mockStore({ accounts: {} });
+		store = mockStore({ accounts: [] });
 
 		return store.dispatch(actions.switchAccount({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});

@@ -2,7 +2,7 @@ export const AJAX_LOADING = 'AJAX_LOADING';
 
 export const AUTHENTICATED = 'AUTHENTICATED';
 
-export const UPDATE_WEEK = 'UPDATE_WEEK';
+export const SWITCH_WEEK = 'SWITCH_WEEK';
 
 export const UPDATE_USER = 'UPDATE_USER';
 
@@ -36,6 +36,7 @@ export const GET_ROTA = 'GET_ROTA';
 export const CREATE_ROTA = 'CREATE_ROTA';
 export const UPDATE_ROTA = 'UPDATE_ROTA';
 export const DELETE_ROTA = 'DELETE_ROTA';
+export const SWITCH_ROTA = 'SWITCH_ROTA';
 
 export const GET_ROTA_TYPES = 'GET_ROTA_TYPES';
 
@@ -43,6 +44,7 @@ export const GET_ROTA_TYPE = 'GET_ROTA_TYPE';
 export const CREATE_ROTA_TYPE = 'CREATE_ROTA_TYPE';
 export const UPDATE_ROTA_TYPE = 'UPDATE_ROTA_TYPE';
 export const DELETE_ROTA_TYPE = 'DELETE_ROTA_TYPE';
+export const SWITCH_ROTA_TYPE = 'SWITCH_ROTA_TYPE';
 
 export const GET_PLACEMENTS = 'GET_PLACEMENTS';
 
@@ -50,3 +52,10 @@ export const GET_PLACEMENT = 'GET_PLACEMENT';
 export const CREATE_PLACEMENT = 'CREATE_PLACEMENT';
 export const UPDATE_PLACEMENT = 'UPDATE_PLACEMENT';
 export const DELETE_PLACEMENT = 'DELETE_PLACEMENT';
+
+export const GET_ROLES = 'GET_ROLES';
+
+export const GET_ROLE = 'GET_ROLE';
+export const CREATE_ROLE = 'CREATE_ROLE';
+export const UPDATE_ROLE = 'UPDATE_ROLE';
+export const DELETE_ROLE = 'DELETE_ROLE';

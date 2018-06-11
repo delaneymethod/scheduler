@@ -13,8 +13,6 @@ const mockStore = configureMockStore(middlewares);
 describe('Employee Actions', () => {
 	let store;
 
-	let mockPayload;
-
 	beforeEach(() => moxios.install());
 
 	afterEach(() => moxios.uninstall());
@@ -25,7 +23,9 @@ describe('Employee Actions', () => {
 
 			request.respondWith({
 				status: 200,
-				response: mockPayload,
+				response: {
+					data: [],
+				},
 			});
 		});
 
@@ -38,7 +38,7 @@ describe('Employee Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			employees: mockPayload,
+			employees: [],
 			type: types.GET_EMPLOYEES,
 		}];
 
@@ -51,7 +51,7 @@ describe('Employee Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -66,7 +66,7 @@ describe('Employee Actions', () => {
 
 			request.respondWith({
 				status: 200,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -79,7 +79,7 @@ describe('Employee Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			employee: mockPayload,
+			employee: {},
 			type: types.GET_EMPLOYEE,
 		}];
 
@@ -96,7 +96,7 @@ describe('Employee Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -111,7 +111,7 @@ describe('Employee Actions', () => {
 
 			request.respondWith({
 				status: 201,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -124,7 +124,7 @@ describe('Employee Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			employee: mockPayload,
+			employee: {},
 			type: types.CREATE_EMPLOYEE,
 		}];
 
@@ -141,7 +141,7 @@ describe('Employee Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -156,7 +156,7 @@ describe('Employee Actions', () => {
 
 			request.respondWith({
 				status: 200,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -169,7 +169,7 @@ describe('Employee Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			employee: mockPayload,
+			employee: {},
 			type: types.UPDATE_EMPLOYEE,
 		}];
 
@@ -186,7 +186,7 @@ describe('Employee Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -201,7 +201,7 @@ describe('Employee Actions', () => {
 
 			request.respondWith({
 				status: 204,
-				response: mockPayload,
+				response: {},
 			});
 		});
 
@@ -214,7 +214,7 @@ describe('Employee Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			employee: mockPayload,
+			employee: {},
 			type: types.DELETE_EMPLOYEE,
 		}];
 
@@ -231,7 +231,7 @@ describe('Employee Actions', () => {
 
 			request.respondWith({
 				status: 400,
-				response: mockPayload,
+				response: {},
 			});
 		});
 

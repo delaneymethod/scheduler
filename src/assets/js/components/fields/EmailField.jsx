@@ -10,10 +10,12 @@ import { addClass, removeClass } from '../../helpers/classes';
 const propTypes = {
 	fieldValue: PropTypes.string.isRequired,
 	handleChange: PropTypes.func.isRequired,
+	fieldRequired: PropTypes.bool.isRequired,
 };
 
 const defaultProps = {
 	fieldValue: '',
+	fieldRequired: false,
 	handleChange: () => {},
 };
 
@@ -24,16 +26,16 @@ class EmailField extends Component {
 		this.handleBlur = this.handleBlur.bind(this);
 
 		mailcheck.defaultDomains.push('giggrafter.com');
+
 		mailcheck.defaultSecondLevelDomains.push('giggrafter');
 	}
 
 	handleBlur = () => {
-		const { email } = this.props;
-
 		const { didYouMean, suggestion } = this.refs;
 
+		console.log('Called EmailField handleBlur mailcheck');
 		mailcheck.run({
-			email,
+			email: this.props.fieldValue,
 			suggested: (suggested) => {
 				addClass(didYouMean, 'd-block');
 
@@ -53,8 +55,8 @@ class EmailField extends Component {
 
 	render = () => (
 		<FormGroup>
-			<Label for="email">Email Address</Label>
-			<Input type="email" name="email" id="email" value={this.props.fieldValue} ref="input" placeholder="e.g. hello@giggrafter.com" onBlur={this.handleBlur} onChange={this.props.handleChange} required />
+			<Label for="email">Email Address {(this.props.fieldRequired) ? (<span className="text-danger">&#42;</span>) : null}</Label>
+			<Input type="email" name="email" id="email" value={this.props.fieldValue} ref="input" placeholder="e.g. hello@giggrafter.com" onBlur={this.handleBlur} onChange={this.props.handleChange} required={this.props.fieldRequired} />
 			<FieldFeedbacks for="email" show="all">
 				<FieldFeedback when="*">- Please provide a valid email address.</FieldFeedback>
 			</FieldFeedbacks>

@@ -24,6 +24,31 @@ export default {
 			LOGOUT: {
 				TITLE: 'Logout',
 			},
+			SHIFTS: {
+				DELETE: {
+					TITLE: 'Delete Shift',
+				},
+				UPDATE: {
+					TITLE: 'Update Shift',
+				},
+				CREATE: {
+					TITLE: 'Create Shift',
+				},
+			},
+			ROTAS: {
+				DELETE: {
+					TITLE: 'Delete Rota',
+					MESSAGE: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta velit in lectus efficitur hendrerit. Quisque cursus arcu sollicitudin rhoncus molestie. Donec at rhoncus enim, ut rhoncus lacus. Sed eget felis est.',
+				},
+				UPDATE: {
+					TITLE: 'Update Rota',
+					MESSAGE: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta velit in lectus efficitur hendrerit. Quisque cursus arcu sollicitudin rhoncus molestie. Donec at rhoncus enim, ut rhoncus lacus. Sed eget felis est.',
+				},
+				CREATE: {
+					TITLE: 'Create Rota',
+					MESSAGE: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta velit in lectus efficitur hendrerit. Quisque cursus arcu sollicitudin rhoncus molestie. Donec at rhoncus enim, ut rhoncus lacus. Sed eget felis est.',
+				},
+			},
 			REGISTER: {
 				TITLE: 'Register',
 				URI: '/register',
@@ -85,6 +110,6 @@ export default {
 		},
 	},
 	API: {
-		HOST: '//schedulerlbtest-844744214.eu-west-1.elb.amazonaws.com',
+		HOST: '//schedulerlbtest-844744214.eu-west-1.elb.amazonaws.com/v1',
 	},
 };

@@ -2,25 +2,21 @@ import rotasReducer from '../../../src/assets/js/reducers/rotasReducer';
 
 import { GET_ROTA, GET_ROTAS, CREATE_ROTA, UPDATE_ROTA, DELETE_ROTA } from '../../../src/assets/js/actions/actionTypes';
 
-const findRota = (rotas, id) => (rotas.length ? rotas.find(rota => rota.id === id) : null);
+const findRota = (rotas, rotaId) => (rotas.length ? rotas.find(rota => rota.rotaId === rotaId) : null);
 
 describe('Rotas Reducer', () => {
 	let mockRotas;
 
 	beforeEach(() => {
 		mockRotas = [{
-			id: 1,
-			account_id: 2,
-			rota_type_id: 1,
-			start_date: '2019-03-07',
-			budget: 2500.25,
-			rota_status: 'DRAFT',
-			created_date: '2018-04-24 09:32:21',
-			last_updated: '2018-04-24 09:32:20',
+			roleId: 1,
+			rotaTypeId: 1,
+			startDate: '2019-03-07',
+			budget: 15000,
 		}];
 	});
 
-	it('should return the initial state', () => expect(rotasReducer(undefined, {})).toEqual({}));
+	it('should return the initial state', () => expect(rotasReducer(undefined, [])).toEqual([]));
 
 	it('should handle GET_ROTA', () => {
 		const mockRota = mockRotas[0];
@@ -32,7 +28,7 @@ describe('Rotas Reducer', () => {
 
 		const rotas = rotasReducer(mockRotas, action);
 
-		const rota = findRota(rotas, mockRota.id);
+		const rota = findRota(rotas, mockRota.rotaId);
 
 		expect(rota).toEqual(mockRota);
 	});
@@ -48,14 +44,10 @@ describe('Rotas Reducer', () => {
 
 	it('should handle CREATE_ROTA', () => {
 		const mockRota = {
-			id: 1,
-			account_id: 3,
-			rota_type_id: 1,
-			start_date: '2019-03-07',
+			roleId: 1,
+			rotaTypeId: 1,
+			startDate: '2019-03-07',
 			budget: 15000,
-			rota_status: 'DRAFT',
-			created_date: '2018-04-24 09:32:21',
-			last_updated: '2018-04-24 09:32:20',
 		};
 
 		const action = {
@@ -71,7 +63,7 @@ describe('Rotas Reducer', () => {
 	it('should handle UPDATE_ROTA', () => {
 		const mockRota = mockRotas[0];
 
-		mockRota.last_updated = '2018-05-16 16:40:32';
+		mockRota.budget = 2018;
 
 		const action = {
 			type: UPDATE_ROTA,
@@ -80,9 +72,9 @@ describe('Rotas Reducer', () => {
 
 		const rotas = rotasReducer(mockRotas, action);
 
-		const rota = findRota(rotas, mockRota.id);
+		const rota = findRota(rotas, mockRota.rotaId);
 
-		expect(rota.last_updated).toEqual(mockRota.last_updated);
+		expect(rota.budget).toEqual(mockRota.budget);
 	});
 
 	it('should handle DELETE_ROTA', () => {

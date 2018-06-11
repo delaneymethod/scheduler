@@ -20,6 +20,8 @@ export const getRotaTypes = () => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(getRotaTypesSuccess(rotaTypes));
+
+			return rotaTypes;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -43,6 +45,8 @@ export const getRotaType = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(getRotaTypeSuccess(rotaType));
+
+			return rotaType;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -66,6 +70,8 @@ export const createRotaType = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(createRotaTypeSuccess(rotaType));
+
+			return rotaType;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -89,6 +95,8 @@ export const updateRotaType = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(updateRotaTypeSuccess(rotaType));
+
+			return rotaType;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -112,6 +120,8 @@ export const deleteRotaType = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(deleteRotaTypeSuccess(rotaType));
+
+			return rotaType;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -120,3 +130,11 @@ export const deleteRotaType = payload => (dispatch) => {
 			return Promise.reject(error);
 		});
 };
+
+/* SWITCH BETWEEN ROTA TYPES */
+export const switchRotaTypeSuccess = rotaType => ({
+	type: types.SWITCH_ROTA_TYPE,
+	rotaType,
+});
+
+export const switchRotaType = payload => dispatch => Promise.resolve(dispatch(switchRotaTypeSuccess(payload)));

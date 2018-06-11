@@ -20,6 +20,8 @@ export const getPlacements = () => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(getPlacementsSuccess(placements));
+
+			return placements;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -43,6 +45,8 @@ export const getPlacement = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(getPlacementSuccess(placement));
+
+			return placement;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -66,6 +70,8 @@ export const createPlacement = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(createPlacementSuccess(placement));
+
+			return placement;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -89,6 +95,8 @@ export const updatePlacement = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(updatePlacementSuccess(placement));
+
+			return placement;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -112,6 +120,8 @@ export const deletePlacement = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(deletePlacementSuccess(placement));
+
+			return placement;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));

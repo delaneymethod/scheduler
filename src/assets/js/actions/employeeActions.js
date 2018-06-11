@@ -20,6 +20,8 @@ export const getEmployees = () => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(getEmployeesSuccess(employees));
+
+			return employees;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -43,6 +45,8 @@ export const getEmployee = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(getEmployeeSuccess(employee));
+
+			return employee;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -66,6 +70,8 @@ export const createEmployee = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(createEmployeeSuccess(employee));
+
+			return employee;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -89,6 +95,8 @@ export const updateEmployee = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(updateEmployeeSuccess(employee));
+
+			return employee;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -112,6 +120,8 @@ export const deleteEmployee = payload => (dispatch) => {
 			dispatch(ajaxLoading(false));
 
 			dispatch(deleteEmployeeSuccess(employee));
+
+			return employee;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));

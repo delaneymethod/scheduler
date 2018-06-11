@@ -4,7 +4,7 @@ import { Label, Input, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks } from 'react-form-with-constraints';
 
 const propTypes = {
-	fieldValue: PropTypes.string,
+	fieldValue: PropTypes.number,
 	valueMissing: PropTypes.string,
 	fieldPlaceholder: PropTypes.string,
 	fieldName: PropTypes.string.isRequired,
@@ -15,7 +15,7 @@ const propTypes = {
 
 const defaultProps = {
 	fieldName: '',
-	fieldValue: '',
+	fieldValue: 0,
 	fieldLabel: '',
 	valueMissing: '',
 	fieldRequired: false,
@@ -23,7 +23,7 @@ const defaultProps = {
 	handleChange: () => {},
 };
 
-const TextField = ({
+const NumberField = ({
 	fieldName,
 	fieldValue,
 	fieldLabel,
@@ -34,15 +34,18 @@ const TextField = ({
 }) => (
 	<FormGroup>
 		<Label for={fieldName}>{fieldLabel} {(fieldRequired) ? (<span className="text-danger">&#42;</span>) : null}</Label>
-		<Input type="text" name={fieldName} id={fieldName} value={fieldValue} placeholder={fieldPlaceholder} onChange={handleChange} required={fieldRequired} />
+		<Input type="number" name={fieldName} id={fieldName} value={fieldValue} placeholder={fieldPlaceholder} onChange={handleChange} required={fieldRequired} min="0" />
 		<FieldFeedbacks for={fieldName} show="all">
+			{(fieldName === 'budget') ? (
+				<div className="info">- &pound;{fieldValue.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}</div>
+			) : null}
 			<FieldFeedback when="valueMissing">- {valueMissing}</FieldFeedback>
 		</FieldFeedbacks>
 	</FormGroup>
 );
 
-TextField.propTypes = propTypes;
+NumberField.propTypes = propTypes;
 
-TextField.defaultProps = defaultProps;
+NumberField.defaultProps = defaultProps;
 
-export default TextField;
+export default NumberField;

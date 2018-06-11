@@ -17,6 +17,7 @@ const propTypes = {
 	fieldValue: PropTypes.string.isRequired,
 	fieldLabel: PropTypes.string.isRequired,
 	handleChange: PropTypes.func.isRequired,
+	fieldRequired: PropTypes.bool.isRequired,
 };
 
 const defaultProps = {
@@ -24,6 +25,7 @@ const defaultProps = {
 	fieldName: '',
 	fieldValue: '',
 	fieldLabel: '',
+	fieldRequired: false,
 	handleChange: () => {},
 	showPasswordCommon: null,
 	showPasswordStrength: null,
@@ -58,11 +60,11 @@ class PasswordField extends Component {
 
 	render = () => (
 		<FormGroup>
-			<Label for={this.props.fieldName}>{this.props.fieldLabel}</Label>
+			<Label for={this.props.fieldName}>{this.props.fieldLabel} {(this.props.fieldRequired) ? (<span className="text-danger">&#42;</span>) : null}</Label>
 			<div className="input-group">
-				<Input type="password" name={this.props.fieldName} id={this.props.fieldName} value={this.props.fieldValue} placeholder="e.g. y1Fwc]_C" autoComplete="off" onChange={this.props.handleChange} required pattern={`.{${this.props.minLength},}`} />
+				<Input type="password" name={this.props.fieldName} id={this.props.fieldName} value={this.props.fieldValue} placeholder="e.g. y1Fwc]_C" autoComplete="off" onChange={this.props.handleChange} required={this.props.fieldRequired} pattern={`.{${this.props.minLength},}`} />
 				<div className="input-group-append">
-					<Button color="muted" title="Toggle Value" className="input-group-text" onClick={this.handleToggle} tabIndex="-1"><i className="fa fa-eye-slash text-primary" id={this.props.fieldName.concat('-fa')} aria-hidden="true"></i></Button>
+					<Button color="muted" title="Toggle Value" className="input-group-text" onClick={this.handleToggle} tabIndex="-1"><i className="fa fa-fw fa-eye-slash text-primary" id={this.props.fieldName.concat('-fa')} aria-hidden="true"></i></Button>
 				</div>
 			</div>
 			{(this.props.showPasswordStrength && this.props.fieldName === 'password' && this.props.fieldValue.length >= this.props.minLength) ? (

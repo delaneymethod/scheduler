@@ -12,7 +12,7 @@ const mockStore = configureMockStore(middlewares);
 describe('Week Actions', () => {
 	let store;
 
-	it('should create UPDATE_WEEK action on updateWeek', () => {
+	it('should create SWITCH_WEEK action on updateWeek', () => {
 		store = mockStore({ week: {} });
 
 		const payload = {
@@ -22,9 +22,9 @@ describe('Week Actions', () => {
 
 		const expectedActions = [{
 			week: payload,
-			type: types.UPDATE_WEEK,
+			type: types.SWITCH_WEEK,
 		}];
 
-		return store.dispatch(actions.updateWeek(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
+		return store.dispatch(actions.switchWeek(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
 	});
 });

@@ -24,13 +24,38 @@ const store = configureStore();
 
 /* Listen for state changes, saving a maximum once per second. */
 store.subscribe(throttle(() => {
-	const { week, user, authenticated } = store.getState();
-
-	saveState('week', week);
+	const {
+		week,
+		user,
+		rota,
+		rotas,
+		roles,
+		shifts,
+		rotaType,
+		rotaTypes,
+		employees,
+		authenticated,
+	} = store.getState();
 
 	saveState('user', user);
 
+	saveState('roles', roles);
+
+	saveState('employees', employees);
+
 	saveState('authenticated', authenticated);
+
+	saveState('week', (rotaTypes.length === 0) ? {} : week);
+
+	saveState('rota', (rotaTypes.length === 0) ? {} : rota);
+
+	saveState('rotas', (rotaTypes.length === 0) ? [] : rotas);
+
+	saveState('shifts', (rotaTypes.length === 0) ? [] : shifts);
+
+	saveState('rotaType', (rotaTypes.length === 0) ? {} : rotaType);
+
+	saveState('rotaTypes', (rotaTypes.length === 0) ? [] : rotaTypes);
 }, 1000));
 
 ReactDOM.render(

@@ -6,14 +6,14 @@ const persistedState = getStates();
 
 const combinedState = Object.assign(initialState, persistedState);
 
-const weekReducer = (state = combinedState.week, action) => {
+const rotaTypeReducer = (state = combinedState.rotaType, action) => {
 	switch (action.type) {
-		case types.SWITCH_WEEK:
-			return action.week;
+		case types.SWITCH_ROTA_TYPE:
+			return action.rotaType;
 
 		default:
 			return state;
 	}
 };
 
-export default weekReducer;
+export default rotaTypeReducer;
