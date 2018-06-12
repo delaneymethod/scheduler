@@ -31,6 +31,24 @@ export const getShifts = payload => (dispatch) => {
 		});
 };
 
+export const copyShifts = payload => (dispatch) => {
+	dispatch(ajaxLoading(true));
+
+	return api.copyShifts(payload)
+		.then((rota) => {
+			dispatch(ajaxLoading(false));
+
+			/* The response is a rota object but we have already updated the store */
+			return rota;
+		})
+		.catch((error) => {
+			dispatch(ajaxLoading(false));
+
+			/* Bubble the error back up the rabbit hole */
+			return Promise.reject(error);
+		});
+};
+
 /* GET SPECIFIC SHIFT */
 export const getShiftSuccess = shift => ({
 	type: types.GET_SHIFT,

@@ -11,6 +11,9 @@ const shiftsReducer = (state = combinedState.shifts, action) => {
 		case types.GET_SHIFTS:
 			return action.shifts;
 
+		case types.COPY_SHIFTS:
+			return state;
+
 		case types.GET_SHIFT:
 		case types.UPDATE_SHIFT:
 			return [

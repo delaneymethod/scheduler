@@ -1,6 +1,6 @@
 import shiftsReducer from '../../../src/assets/js/reducers/shiftsReducer';
 
-import { GET_SHIFT, GET_SHIFTS, CREATE_SHIFT, UPDATE_SHIFT, DELETE_SHIFT } from '../../../src/assets/js/actions/actionTypes';
+import { GET_SHIFT, GET_SHIFTS, COPY_SHIFTS, CREATE_SHIFT, UPDATE_SHIFT, DELETE_SHIFT } from '../../../src/assets/js/actions/actionTypes';
 
 const findShift = (shifts, id) => (shifts.length ? shifts.find(shift => shift.id === id) : null);
 
@@ -42,6 +42,15 @@ describe('Shifts Reducer', () => {
 	it('should handle GET_SHIFTS', () => {
 		const action = {
 			type: GET_SHIFTS,
+			shifts: mockShifts,
+		};
+
+		expect(shiftsReducer(mockShifts, action)).toEqual(mockShifts);
+	});
+
+	it('should handle COPY_SHIFTS', () => {
+		const action = {
+			type: COPY_SHIFTS,
 			shifts: mockShifts,
 		};
 

@@ -111,6 +111,8 @@ export const switchAccount = account => request('POST', '/accounts/switch', 200,
 /* SHIFTS */
 export const getShifts = rota => request('GET', `/shifts?rotaId=${rota.rotaId}`);
 
+export const copyShifts = rota => request('POST', `/rotas/${rota.rotaId}/copy-shifts`, 201);
+
 export const getShift = shift => request('GET', `/shifts/${shift.shiftId}`);
 
 export const createShift = shift => request('POST', '/shifts', 201, shift);

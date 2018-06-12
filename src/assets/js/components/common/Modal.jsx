@@ -39,7 +39,7 @@ class Modal extends Component {
 				</ModalBody>
 				{(!isEmpty(this.props.buttonLabel)) ? (
 					<ModalFooter className="text-sm-center text-md-right">
-						<Button color="secondary" className="btn-block-sm-only" onClick={this.props.onClose}>{this.props.buttonLabel}</Button>
+						<Button color="secondary" title={this.props.buttonLabel} className="btn-block-sm-only" onClick={this.props.onClose}>{this.props.buttonLabel}</Button>
 					</ModalFooter>
 				) : null}
 			</ModalCore>

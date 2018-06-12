@@ -516,6 +516,18 @@ describe('API', () => {
 		return api.getShifts(payload).then(data => expect(data.shifts).toEqual([]));
 	});
 
+	it('should copy shifts', () => {
+		mock.onGet('/rotas/1/copy-shifts').reply(200, {
+			rota: {},
+		});
+
+		const payload = {
+			rotaId: '1',
+		};
+
+		return api.copyShifts(payload).then(data => expect(data.rota).toEqual({})).catch(data => console.log(data));
+	});
+
 	it('should get shift', () => {
 		mock.onGet('/shifts/3').reply(200, {
 			shifts: [{

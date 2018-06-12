@@ -24,6 +24,7 @@ export const UPDATE_EMPLOYEE = 'UPDATE_EMPLOYEE';
 export const DELETE_EMPLOYEE = 'DELETE_EMPLOYEE';
 
 export const GET_SHIFTS = 'GET_SHIFTS';
+export const COPY_SHIFTS = 'COPY_SHIFTS';
 
 export const GET_SHIFT = 'GET_SHIFT';
 export const CREATE_SHIFT = 'CREATE_SHIFT';

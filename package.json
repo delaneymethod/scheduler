@@ -102,6 +102,7 @@
 		"prop-types": "^15.6.1",
 		"react": "^16.4.0",
 		"react-block-ui": "^1.1.1",
+		"react-confirm": "^0.1.17",
 		"react-datepicker": "^1.5.0",
 		"react-dom": "^16.4.0",
 		"react-form-with-constraints": "^0.8.0",
