@@ -64,14 +64,14 @@ describe('Shift Actions', () => {
 		return store.dispatch(actions.getShifts({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
 
-	it('should create AJAX_LOADING actions on copyShifts', () => {
+	it('should create GET_ROTA and AJAX_LOADING actions on copyShifts', () => {
 		moxios.wait(() => {
 			const request = moxios.requests.mostRecent();
 
 			request.respondWith({
-				status: 200,
+				status: 201,
 				response: {
-					data: [],
+					data: {},
 				},
 			});
 		});
@@ -84,6 +84,9 @@ describe('Shift Actions', () => {
 		}, {
 			status: false,
 			type: types.AJAX_LOADING,
+		}, {
+			rota: {},
+			type: types.GET_ROTA,
 		}];
 
 		const payload = {
@@ -103,7 +106,7 @@ describe('Shift Actions', () => {
 			});
 		});
 
-		store = mockStore({ shifts: [] });
+		store = mockStore({ rota: [] });
 
 		return store.dispatch(actions.copyShifts({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});

@@ -172,7 +172,7 @@ describe('Authentication Actions', () => {
 		return store.dispatch(actions.register(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
 	});
 
-	it('should catch error on register', () => {
+	it('should catch 409 error on register', () => {
 		moxios.wait(() => {
 			const request = moxios.requests.mostRecent();
 
@@ -207,6 +207,45 @@ describe('Authentication Actions', () => {
 			businessName: 'Gig Grafter',
 			password: 'passwordMustBe10',
 			email: 'barry@giggrafter.com',
+		};
+
+		return store.dispatch(actions.register(payload)).catch(error => expect(error).toEqual(expectedError));
+	});
+
+	it('should catch 400 error on register', () => {
+		moxios.wait(() => {
+			const request = moxios.requests.mostRecent();
+
+			request.respondWith({
+				status: 400,
+				response: {
+					error: {
+						code: 409,
+						type: 'Conflict',
+						message: 'A 404 status code indicates that the requested resource was not found at the URL given, and the server has no idea how long for.',
+						hints: {
+							summary: 'Email address already exists.',
+						},
+					},
+				},
+			});
+		});
+
+		store = mockStore({});
+
+		const payload = {
+			lastName: 'Lynch',
+			firstName: 'Barry',
+			businessName: 'Gig Grafter',
+			password: 'passwordMustBe10',
+			email: 'barry@giggrafter.com',
+		};
+
+		const expectedError = {
+			data: {
+				title: '409 Conflict',
+				message: '<p>A 404 status code indicates that the requested resource was not found at the URL given, and the server has no idea how long for.</p><p class="pb-0 mb-0">Email address already exists.</p>',
+			},
 		};
 
 		return store.dispatch(actions.register(payload)).catch(error => expect(error).toEqual(expectedError));

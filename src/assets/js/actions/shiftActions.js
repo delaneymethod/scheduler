@@ -1,6 +1,11 @@
 import * as api from '../api';
 import * as types from './actionTypes';
 
+export const getRotaSuccess = rota => ({
+	type: types.GET_ROTA,
+	rota,
+});
+
 export const getShiftsSuccess = shifts => ({
 	type: types.GET_SHIFTS,
 	shifts,
@@ -37,6 +42,8 @@ export const copyShifts = payload => (dispatch) => {
 	return api.copyShifts(payload)
 		.then((rota) => {
 			dispatch(ajaxLoading(false));
+
+			dispatch(getRotaSuccess(rota));
 
 			/* The response is a rota object but we have already updated the store */
 			return rota;

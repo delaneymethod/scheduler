@@ -510,22 +510,22 @@ describe('API', () => {
 		});
 
 		const payload = {
-			rotaId: '1',
+			rotaId: 1,
 		};
 
 		return api.getShifts(payload).then(data => expect(data.shifts).toEqual([]));
 	});
 
 	it('should copy shifts', () => {
-		mock.onGet('/rotas/1/copy-shifts').reply(200, {
+		mock.onPost('/rotas/2/copy-shifts').reply(201, {
 			rota: {},
 		});
 
 		const payload = {
-			rotaId: '1',
+			rotaId: 2,
 		};
 
-		return api.copyShifts(payload).then(data => expect(data.rota).toEqual({})).catch(data => console.log(data));
+		return api.copyShifts(payload).then(data => expect(data.rota).toEqual({}));
 	});
 
 	it('should get shift', () => {
