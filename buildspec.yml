@@ -13,12 +13,6 @@ artifacts:
     - public/**/*
     - src/**/*
     - package.json
-    - .eslintrc
     - webpack.config.js
     - jest.config.js
-    - #.npmignore
-	- .gitignore
-	- .gitattributes
-	- .eslintignore
-	- .babelrc
   discard-paths: yes
