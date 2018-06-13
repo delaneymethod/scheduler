@@ -16,7 +16,7 @@ artifacts:
     - .eslintrc
     - webpack.config.js
     - jest.config.js
-    - .npmignore
+    - #.npmignore
 	- .gitignore
 	- .gitattributes
 	- .eslintignore
