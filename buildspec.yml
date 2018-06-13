@@ -1,15 +1,15 @@
 version: 0.2
 
 phases:
+  install:
+    commands:
+      - printenv
+      - npm install
   build:
     commands:
-      - # Build command 1
-      - # Build command 2
-      - # ...
-
+      - npm run prod
 artifacts:
   files:
-  	- __tests__
     - public/**/*
     - src/**/*
     - package.json
@@ -21,3 +21,4 @@ artifacts:
 	- .gitattributes
 	- .eslintignore
 	- .babelrc
+  discard-paths: yes
