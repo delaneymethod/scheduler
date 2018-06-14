@@ -5,7 +5,7 @@ phases:
     commands:
       - printenv
       - npm install
-      - npm install -g eslint
+      - npm install -g eslint-config-airbnb
   build:
     commands:
       - echo List current dir...
