@@ -5,7 +5,6 @@ phases:
     commands:
       - printenv
       - npm install
-      - npm install -g eslint
   build:
     commands:
       - npm run prod
