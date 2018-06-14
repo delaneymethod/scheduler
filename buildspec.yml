@@ -7,7 +7,12 @@ phases:
       - npm install
   build:
     commands:
-      - ls -l
+      - echo List current dir...
+      - ls -lah
+      - echo List current dir.*
+      - ls -lah .*
+      - echo List root dir...
+      - ls -lah /
       - npm run prod
 artifacts:
   files:
