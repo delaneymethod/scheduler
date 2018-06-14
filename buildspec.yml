@@ -5,13 +5,8 @@ phases:
     commands:
       - printenv
       - npm install
-      - npm install -g eslint-config-airbnb
   build:
     commands:
-      - echo List current dir...
-      - ls -lah
-      - echo List codebuild dir
-      - ls -lah /codebuild/output/src*/src
       - npm run prod
 artifacts:
   files:
@@ -19,5 +14,4 @@ artifacts:
     - src/**/*
     - package.json
     - webpack.config.js
-    - jest.config.js
   discard-paths: yes
