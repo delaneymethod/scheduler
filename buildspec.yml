@@ -8,7 +8,7 @@ phases:
       - npm install
   build:
     commands:
-      - ls -lah /codebuild/output/src*/src
+      - ls -lah /codebuild/output/src*/src/src/assets/js
       - npm run prod
 artifacts:
   files:
