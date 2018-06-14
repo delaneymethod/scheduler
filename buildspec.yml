@@ -4,7 +4,7 @@ phases:
   install:
     commands:
       - printenv
-      - npm install -g
+      - npm install
   build:
     commands:
       - echo List current dir...
