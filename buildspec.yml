@@ -12,7 +12,6 @@ phases:
       - echo DockerBuild started on `date`
       - echo Building the Docker image... 
       - docker build -t gigfrontend .
-      - ls -l   build
       - docker tag gigfrontend:latest $REPOSITORY_URI:latest
       - echo Build completed on `date`
       - echo Pushing the Docker images...
