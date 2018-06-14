@@ -9,11 +9,10 @@ phases:
     commands:
       - echo List current dir...
       - ls -lah
-      - echo List current dir.*
-      - ls -lah .*
-      - echo List root dir...
-      - ls -lah /
-      - npm run prod
+      - echo List codebuild dir
+      - ls -lah /codebuild
+      - echo List codebuild dir
+      - ls -Rlah /codebuild
 artifacts:
   files:
     - public/**/*
