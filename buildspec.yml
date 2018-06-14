@@ -4,13 +4,14 @@ phases:
   install:
     commands:
       - printenv
-      - npm install
+      - npm install -g
   build:
     commands:
       - echo List current dir...
       - ls -lah
       - echo List codebuild dir
-      - ls -lah /codebuild
+      - ls -lah /codebuild/output
+      npm run prod
 artifacts:
   files:
     - public/**/*
