@@ -5,16 +5,14 @@ import { Modal, Button, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 
 const propTypes = {
 	show: PropTypes.bool.isRequired,
-	message: PropTypes.string.isRequired,
-	options: PropTypes.object.isRequired,
-	dismiss: PropTypes.func.isRequired,
 	cancel: PropTypes.func.isRequired,
+	dismiss: PropTypes.func.isRequired,
 	proceed: PropTypes.func.isRequired,
+	options: PropTypes.object.isRequired,
 };
 
 const defaultProps = {
 	show: false,
-	message: '',
 	options: {},
 	cancel: () => {},
 	dismiss: () => {},
@@ -24,7 +22,6 @@ const defaultProps = {
 const ConfirmDialog = ({
 	show,
 	cancel,
-	message,
 	options,
 	dismiss,
 	proceed,
@@ -32,7 +29,7 @@ const ConfirmDialog = ({
 	<Modal backdrop="static" keyboard={false} centered={true} isOpen={show} toggle={dismiss} className={options.className}>
 		<ModalHeader toggle={dismiss}>{options.title}</ModalHeader>
 		<ModalBody className="p-4 p-sm-4 p-md-5 p-lg-5 p-xl-5">
-			<div dangerouslySetInnerHTML={{ __html: message }} />
+			<div dangerouslySetInnerHTML={{ __html: options.message }} />
 		</ModalBody>
 		<ModalFooter className="text-center">
 			<Button color="primary" title={options.labels.proceed} className="pl-5 pr-5 ml-auto" onClick={() => proceed(options.values.proceed)}>{options.labels.proceed}</Button>

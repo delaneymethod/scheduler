@@ -1,3 +1,13 @@
+[draggable] {
+	user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	/* Required to make elements draggable in old WebKit */
+	-khtml-user-drag: element;
+	-webkit-user-drag: element;
+}
+
 .rota-table {
 	max-height: 100vh;
 	// font-size: 0.75rem;
@@ -121,16 +131,18 @@
 		display: inline-block;
 
 		@include media-breakpoint-up(xl) {
-			width: 50%;
+			width: 40%;
 		}
 	}
 
 	.btn-wrap {
+		width: 100%;
 		margin-top: 0.3rem;
 		margin-left: -4px;
 		text-align: center;
 
 		@include media-breakpoint-up(xl) {
+			width: 60%;
 			margin-top: 0;
 			text-align: right;
 		}
@@ -145,11 +157,10 @@
 	
 .cell-employee {
 	width: 20% !important;
-
+	
 	&__avatar {
 		width: 20%;
 		overflow: hidden;
-		border-radius: 100%;
 
 		img {
 			width: 100%;

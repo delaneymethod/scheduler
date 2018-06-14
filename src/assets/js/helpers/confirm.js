@@ -4,6 +4,6 @@ import ConfirmDialog from '../components/common/ConfirmDialog';
 
 const configureConfirm = createConfirmation(ConfirmDialog);
 
-const confirm = (message, options = {}) => configureConfirm({ message, options });
+const confirm = options => configureConfirm({ options });
 
 export default confirm;

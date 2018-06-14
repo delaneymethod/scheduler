@@ -24,6 +24,17 @@ export default {
 			LOGOUT: {
 				TITLE: 'Logout',
 			},
+			EMPLOYEES: {
+				DELETE: {
+					TITLE: 'Delete Employee',
+				},
+				UPDATE: {
+					TITLE: 'Update Employee',
+				},
+				CREATE: {
+					TITLE: 'Create Employee',
+				},
+			},
 			SHIFTS: {
 				DELETE: {
 					TITLE: 'Delete Shift',
@@ -38,11 +49,9 @@ export default {
 			ROTAS: {
 				DELETE: {
 					TITLE: 'Delete Rota',
-					MESSAGE: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta velit in lectus efficitur hendrerit. Quisque cursus arcu sollicitudin rhoncus molestie. Donec at rhoncus enim, ut rhoncus lacus. Sed eget felis est.',
 				},
 				UPDATE: {
 					TITLE: 'Update Rota',
-					MESSAGE: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta velit in lectus efficitur hendrerit. Quisque cursus arcu sollicitudin rhoncus molestie. Donec at rhoncus enim, ut rhoncus lacus. Sed eget felis est.',
 				},
 				CREATE: {
 					TITLE: 'Create Rota',

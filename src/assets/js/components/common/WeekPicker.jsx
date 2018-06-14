@@ -1,8 +1,7 @@
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import sortBy from 'lodash/sortBy';
-import isEmpty from 'lodash/isEmpty';
 import { connect } from 'react-redux';
+import { sortBy, isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import DatePicker from 'react-datepicker';
 import { bindActionCreators } from 'redux';
@@ -58,6 +57,8 @@ class WeekPicker extends Component {
 		this.handleCreateRota = this.handleCreateRota.bind(this);
 
 		this.handleSwitchRota = this.handleSwitchRota.bind(this);
+
+		this.handleSwitchOrCreateRota = this.handleSwitchOrCreateRota.bind(this);
 	}
 
 	getInitialState = () => ({
@@ -76,10 +77,12 @@ class WeekPicker extends Component {
 		const { actions } = this.props;
 
 		if (isEmpty(this.props.week)) {
-			/* Get the current rota start date and create and range based off that */
-			week.endDate = moment(this.props.rota.startDate).endOf('isoWeek');
+			const { rota } = this.props;
 
-			week.startDate = moment(this.props.rota.startDate).startOf('isoWeek');
+			/* Get the current rota start date and create and range based off that */
+			week.endDate = moment(rota.startDate).endOf('isoWeek');
+
+			week.startDate = moment(rota.startDate).startOf('isoWeek');
 		} else {
 			/* Since the dates have come from the store/sessionStorage (and stored as strings), we need to convert them back again! */
 			week = this.handleConvert(this.props.week);
@@ -100,8 +103,10 @@ class WeekPicker extends Component {
 		});
 
 		if (this.props.rotas.length > 0) {
+			const { rotas } = this.props;
+
 			/* Now sort the rotas and pick the first one so we can enable / disable the previous button. */
-			const earliestRota = sortBy(this.props.rotas, 'startDate').shift();
+			const earliestRota = sortBy(rotas, 'startDate').shift();
 
 			const earliestRotaStartDate = moment(earliestRota.startDate);
 
@@ -111,10 +116,10 @@ class WeekPicker extends Component {
 			 * This should never happen - user is viewing the current week but there are no rota for the current week and then current week start date is after the earliest rota start date.
 			 * Rotas can be deleted via the API so the frontend needs to check. Like I said this "should" never happen!!
 			 */
-			const currentRota = this.props.rotas.filter(rota => moment(rota.startDate).format('YYYY-MM-DD') === week.startDate.format('YYYY-MM-DD')).shift();
+			const currentRota = rotas.filter(rota => moment(rota.startDate).format('YYYY-MM-DD') === week.startDate.format('YYYY-MM-DD')).shift();
 
 			/* So if there are no rotas for the current week, let create a new rota! Something bad has happening if this logic is ever ran but its our fail safe so we always have a rota for the current week! */
-			if (isEmpty(currentRota) && (week.startDate.isAfter(this.state.earliestRotaStartDate) || week.startDate.isSame(this.state.earliestRotaStartDate))) {
+			if (isEmpty(currentRota) && (week.startDate.isAfter(earliestRotaStartDate) || week.startDate.isSame(earliestRotaStartDate))) {
 				this.handleCreateRota(week.startDate);
 			}
 		}
@@ -158,6 +163,9 @@ class WeekPicker extends Component {
 
 			if (!inline) {
 				this.handleToggle();
+
+				/* We need to check if the selected week has a rota? */
+				this.handleSwitchOrCreateRota(week.startDate);
 			}
 		});
 	};
@@ -179,40 +187,7 @@ class WeekPicker extends Component {
 
 		console.log('Called WeekPicker handleCreateRota createRota');
 		actions.createRota(payload)
-			.then((rota) => {
-				/* Grab previous week start date to customise the next modal */
-				const previousWeekDate = moment(this.props.week.startDate).subtract(7, 'days');
-
-				/* So here we check if the user wants to copy the previous weeks rota shifts into the new rota we just created */
-				const message = `<p>There was <strong>no Rota</strong> for week beginning ${moment(nextStartDate).format('dddd, Do MMMM')}, so we created one for you.</p><p>Would you like to <strong>copy the shifts</strong> from ${moment(previousWeekDate).format('dddd, Do MMMM')} into this Rota?</p>`;
-
-				const options = {
-					labels: {
-						cancel: 'No',
-						proceed: 'Yes',
-					},
-					values: {
-						cancel: false,
-						process: true,
-					},
-					title: 'Copy Rota Shifts',
-					className: 'modal-dialog',
-				};
-
-				/* If the user has clicked cancel, we switch rotas and leave it at that! */
-				/* If the user has clicked proceed, we copy the shifts, switch rotas and then we redirect to the shifts view */
-				confirm(message, options)
-					.then((result) => {
-						console.log('Called WeekPicker handleCreateRota copyShifts');
-						actions.copyShifts(rota)
-							.then(() => this.handleSwitchRota(rota).then(() => this.props.history.push(routes.DASHBOARD.SHIFTS.URI)))
-							.catch((error) => {
-								this.setState({ error });
-
-								this.handleModal();
-							});
-					}, result => this.handleSwitchRota(rota));
-			})
+			.then(rota => this.handleSwitchRota(rota))
 			.catch((error) => {
 				this.setState({ error });
 
@@ -228,47 +203,81 @@ class WeekPicker extends Component {
 		actions.switchRota(rota);
 	};
 
-	/* eslint-disable no-mixed-operators */
-	handleNext = () => {
-		/* Now we can continue... Because we know the start date is always the first day of the week, we can simplily add 7 days to it to get next week's start date */
-		const nextWeekDate = moment(this.props.week.startDate).add(7, 'days');
+	handleSwitchOrCreateRota = (weekStartDate) => {
+		const { actions, history } = this.props;
 
-		/* Extra flag to keep the calendar closed */
-		nextWeekDate.inline = true;
+		/* Find the rota for the week start date */
+		const matchingRota = this.props.rotas.filter(rota => moment(rota.startDate).format('YYYY-MM-DD') === weekStartDate.format('YYYY-MM-DD')).shift();
 
-		this.handleChange(nextWeekDate);
+		/* If we don't have a rota that matches the start date of the week, then lets create a new rota but only if the start date is after the earliest rota start date. (FYI, If the dates where the same, we'd have a rota...) */
+		if (isEmpty(matchingRota)) {
+			if (weekStartDate.isAfter(this.state.earliestRotaStartDate)) {
+				/* Check if the user wants to copy the previous current rota shifts into the new rota we just created */
+				const message = `<p>There was no Rota for week beginning ${moment(weekStartDate).format('dddd, Do MMMM')}, so we created one for you.</p><p>Would you like to copy the shifts from the Rota week beginning ${moment(this.props.rota.startDate).format('dddd, Do MMMM')} into the new Rota?</p>`;
 
-		const nextRota = this.props.rotas.filter(rota => moment(rota.startDate).format('YYYY-MM-DD') === nextWeekDate.format('YYYY-MM-DD')).shift();
+				const options = {
+					message,
+					labels: {
+						cancel: 'No',
+						proceed: 'Yes',
+					},
+					values: {
+						cancel: false,
+						process: true,
+					},
+					title: 'Copy Rota Shifts',
+					className: 'modal-dialog',
+				};
 
-		/* If we don't have a rota that matches the start date of the week, then lets create a new rota but only if the start date is after the earliest rota start date */
-		if (isEmpty(nextRota)) {
-			if (nextWeekDate.isAfter(this.state.earliestRotaStartDate)) {
-				this.handleCreateRota(nextWeekDate);
+				/* If the user has clicked the proceed button, we copy the shifts from current rota and then switch to the new rota (copy shifts also create a rota) and then redirect to the shifts view */
+				/* If the user has clicked the cancel button, we create the rota and which switches to the new rota */
+				confirm(options)
+					.then((result) => {
+						console.log('Called WeekPicker handleSwitchOrCreateRota copyShifts');
+						actions.copyShifts(this.props.rota)
+							.then(rota => this.handleSwitchRota(rota))
+							.then(() => history.push(routes.DASHBOARD.SHIFTS.URI))
+							.catch((error) => {
+								this.setState({ error });
+
+								this.handleModal();
+							});
+					}, result => this.handleCreateRota(weekStartDate));
 			}
 		} else {
-			this.handleSwitchRota(nextRota);
+			this.handleSwitchRota(matchingRota);
 		}
 	};
 
-	handlePrevious = () => {
-		/* Because we know the start date is always the first day of the week, we can simplily subtract 1 day from it to get last week's start date */
-		const previousWeekDate = moment(this.props.week.startDate).subtract(7, 'days');
+	/* eslint-disable no-mixed-operators */
+	handleNext = () => {
+		const { actions } = this.props;
+
+		/* Now we can continue... Because we know the start date is always the first day of the week, we can simplily add 7 days to it to get next week's start date */
+		const nextStartDate = moment(this.props.week.startDate).add(7, 'days');
 
 		/* Extra flag to keep the calendar closed */
-		previousWeekDate.inline = true;
+		nextStartDate.inline = true;
 
-		this.handleChange(previousWeekDate);
+		this.handleChange(nextStartDate);
 
-		const previousRota = this.props.rotas.filter(rota => moment(rota.startDate).format('YYYY-MM-DD') === previousWeekDate.format('YYYY-MM-DD')).shift();
+		/* We need to check if the selected week has a rota? */
+		this.handleSwitchOrCreateRota(nextStartDate);
+	};
 
-		/* If we don't have a rota that matches the start date of the week, then lets create a new rota, but again only if the week start date is after the earliest rota start date */
-		if (isEmpty(previousRota)) {
-			if (previousWeekDate.isAfter(this.state.earliestRotaStartDate) || previousWeekDate.isSame(this.state.earliestRotaStartDate)) {
-				this.handleCreateRota(previousWeekDate);
-			}
-		} else {
-			this.handleSwitchRota(previousRota);
-		}
+	handlePrevious = () => {
+		const { actions } = this.props;
+
+		/* Because we know the start date is always the first day of the week, we can simplily subtract 1 day from it to get last week's start date */
+		const previousStartDate = moment(this.props.week.startDate).subtract(7, 'days');
+
+		/* Extra flag to keep the calendar closed */
+		previousStartDate.inline = true;
+
+		this.handleChange(previousStartDate);
+
+		/* We need to check if the selected week has a rota? */
+		this.handleSwitchOrCreateRota(previousStartDate);
 	};
 	/* eslint-enable no-mixed-operators */
 

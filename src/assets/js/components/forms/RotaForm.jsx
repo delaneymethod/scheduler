@@ -1,9 +1,8 @@
 import moment from 'moment';
 import Select from 'react-select';
 import PropTypes from 'prop-types';
-import sortBy from 'lodash/sortBy';
-import isEmpty from 'lodash/isEmpty';
 import { connect } from 'react-redux';
+import { sortBy, isEmpty } from 'lodash';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
 import { Row, Col, Label, Input, Button, FormGroup } from 'reactstrap';
@@ -82,7 +81,7 @@ class RotaForm extends Component {
 		const startDates = [];
 
 		/* Sets the default value to fix validation issues if user doesnt pick any dates */
-		let selectedStartDate;
+		/* let selectedStartDate; */
 
 		const startDateOptions = [];
 
@@ -93,6 +92,7 @@ class RotaForm extends Component {
 		const startDate = now.clone().day(1);
 
 		/* If the current day of the week is also the start day of the week, then use the current day (1 = Monday, 2 = Tuesday ... ), otherwise step forward 7 days to next week */
+		/*
 		if (startDate.day() === now.day()) {
 			selectedStartDate = this.handleCreateOption(startDate.format('dddd, Do MMMM YYYY'));
 
@@ -100,6 +100,12 @@ class RotaForm extends Component {
 		} else {
 			selectedStartDate = this.handleCreateOption(startDate.add(7, 'days').format('dddd, Do MMMM YYYY'));
 		}
+		*/
+
+		/* Business Rule to allow creation of rota for current week regardless of the day of the week. E.g Start of the week is Monday 11th but today is Wednesday 13th. */
+		const selectedStartDate = this.handleCreateOption(startDate.format('dddd, Do MMMM YYYY'));
+
+		startDates.push(now.format('dddd, Do MMMM YYYY'));
 
 		/* Add all our start dates to an array and create a options list */
 		if (startDate.isAfter(now, 'day')) {
@@ -214,7 +220,7 @@ class RotaForm extends Component {
 							};
 
 							/* Now we create a new rota */
-							console.log('Called RotaForm handleSubmit createRota', payload);
+							console.log('Called RotaForm handleSubmit createRota');
 							actions.createRota(payload)
 								.then((rota) => {
 									/* Set the current rota */
@@ -231,9 +237,9 @@ class RotaForm extends Component {
 												actions.getShifts(firstRota)
 													.then(() => {
 														/* Then we use the new rotas start date to set the current week start and end dates */
-														const weekStartDate = moment(startDate, 'YYYY-MM-DD');
+														const weekStartDate = moment(startDate, 'YYYY-MM-DD').startOf('isoWeek');
 
-														const weekEndDate = moment(startDate, 'YYYY-MM-DD').add(7, 'days');
+														const weekEndDate = moment(startDate, 'YYYY-MM-DD').endOf('isoWeek');
 
 														payload = {
 															endDate: weekEndDate,
@@ -280,8 +286,8 @@ class RotaForm extends Component {
 			{this.errorMessage()}
 			{this.successMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
-				<TextField fieldName="rotaName" fieldLabel="Rota Name" fieldValue={this.state.rotaName} fieldPlaceholder="e.g. Kitchen" handleChange={this.handleChange} valueMissing="Please provide a valid rota name." tabIndex="1" fieldRequired />
-				<NumberField fieldName="budget" fieldLabel="Budget" fieldValue={this.state.budget} fieldPlaceholder="e.g. 1000" handleChange={this.handleChangeBudget} valueMissing="Please provide a valid budget." tabIndex="2" fieldRequired />
+				<TextField fieldName="rotaName" fieldLabel="Rota Name" fieldValue={this.state.rotaName} fieldPlaceholder="e.g. Kitchen" handleChange={this.handleChange} valueMissing="Please provide a valid rota name." tabIndex="1" fieldRequired={true} />
+				<NumberField fieldName="budget" fieldLabel="Budget" fieldValue={this.state.budget} fieldPlaceholder="e.g. 1000" handleChange={this.handleChangeBudget} valueMissing="Please provide a valid budget." tabIndex="2" fieldRequired={true} />
 				<FormGroup>
 					<Label for="startDate">Select Start Date <span className="text-danger">&#42;</span></Label>
 					<Select name="startDate" id="startDate" className="select-autocomplete-container" classNamePrefix="select-autocomplete" onChange={this.handleChangeStartDate} value={this.state.selectedStartDate} options={this.state.startDateOptions} tabIndex="3" required={true} />

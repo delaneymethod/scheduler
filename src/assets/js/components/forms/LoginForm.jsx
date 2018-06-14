@@ -48,37 +48,6 @@ class LoginForm extends Component {
 		password: '',
 	});
 
-	/* FIXME - Deprecated in newer versions of React */
-	componentWillReceiveProps = (nextProps) => {
-		const {
-			user,
-			actions,
-			history,
-			authenticated,
-		} = nextProps;
-
-		/* Used to update the user info in the store after the login action has completed */
-		if (!isEmpty(user)) {
-			/* The tokens subject contains the users Id */
-			const token = jwtDecode(user.token);
-
-			user.userId = token.sub;
-
-			/* Use the first account as the selected account */
-			const [account] = user.accounts;
-
-			user.account = account;
-
-			/* Update the user state and then reload (go to the dashboard) */
-			console.log('Called Login componentWillReceieveProps updateUser');
-			actions.updateUser(user);
-		}
-
-		if (authenticated) {
-			history.push(routes.DASHBOARD.HOME.URI);
-		}
-	};
-
 	handleChange = async (event) => {
 		const target = event.currentTarget;
 
@@ -107,7 +76,26 @@ class LoginForm extends Component {
 			};
 
 			console.log('Called Login handleSubmit login');
-			actions.login(payload).catch(error => this.setState({ error }));
+			actions.login(payload)
+				.then((user) => {
+					/* eslint-disable no-param-reassign */
+
+					/* The tokens subject contains the users Id */
+					const token = jwtDecode(user.token);
+
+					user.userId = token.sub;
+
+					/* Use the first account as the selected account */
+					const [account] = user.accounts;
+
+					user.account = account;
+					/* eslint-enable no-param-reassign */
+
+					/* Update the user state and then go to the dashboard */
+					console.log('Called Login handleSubmit updateUser');
+					actions.updateUser(user).then(() => history.push(routes.DASHBOARD.HOME.URI));
+				})
+				.catch(error => this.setState({ error }));
 		}
 	};
 
@@ -117,8 +105,8 @@ class LoginForm extends Component {
 		<Fragment>
 			{this.errorMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
-				<EmailField fieldValue={this.state.email} handleChange={this.handleChange} tabIndex="1" />
-				<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChange} tabIndex="2" />
+				<EmailField fieldValue={this.state.email} handleChange={this.handleChange} tabIndex="1" fieldRequired={true} />
+				<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChange} tabIndex="2" fieldRequired={true} />
 				<Button type="submit" color="primary" className="mt-4" title={routes.LOGIN.TITLE} tabIndex="3" block>{routes.LOGIN.TITLE}</Button>
 				<a href={routes.FORGOTTEN_YOUR_PASSWORD.URI} title={routes.FORGOTTEN_YOUR_PASSWORD.TITLE} className="panel-page__forgot">{routes.FORGOTTEN_YOUR_PASSWORD.TITLE}</a>
 			</FormWithConstraints>

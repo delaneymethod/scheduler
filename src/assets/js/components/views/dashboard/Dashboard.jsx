@@ -25,6 +25,8 @@ import { getRotas, switchRota } from '../../../actions/rotaActions';
 
 import { getRotaTypes, switchRotaType } from '../../../actions/rotaTypeActions';
 
+let timer;
+
 const routes = constants.APP.ROUTES;
 
 const propTypes = {
@@ -65,7 +67,12 @@ class Dashboard extends Component {
 
 		this.handleCreateRota = this.handleCreateRota.bind(this);
 
-		this.handleFetchData();
+		if (timer) {
+			clearTimeout(timer);
+		}
+
+		/* Lets wait 1 second before fetching data - prevents any race conditions */
+		timer = setTimeout(() => this.handleFetchData(), 1000);
 	}
 
 	getInitialState = () => ({

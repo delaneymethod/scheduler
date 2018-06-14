@@ -1,5 +1,5 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { Label, Input, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks } from 'react-form-with-constraints';
 
@@ -23,26 +23,32 @@ const defaultProps = {
 	handleChange: () => {},
 };
 
-const NumberField = ({
-	fieldName,
-	fieldValue,
-	fieldLabel,
-	valueMissing,
-	handleChange,
-	fieldRequired,
-	fieldPlaceholder,
-}) => (
-	<FormGroup>
-		<Label for={fieldName}>{fieldLabel} {(fieldRequired) ? (<span className="text-danger">&#42;</span>) : null}</Label>
-		<Input type="number" name={fieldName} id={fieldName} value={fieldValue} placeholder={fieldPlaceholder} onChange={handleChange} required={fieldRequired} min="0" />
-		<FieldFeedbacks for={fieldName} show="all">
-			{(fieldName === 'budget') ? (
-				<div className="info">- &pound;{fieldValue.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}</div>
-			) : null}
-			<FieldFeedback when="valueMissing">- {valueMissing}</FieldFeedback>
-		</FieldFeedbacks>
-	</FormGroup>
-);
+class NumberField extends Component {
+	constructor(props) {
+		super(props);
+
+		this.handleClick = this.handleClick.bind(this);
+	}
+
+	handleClick = (event) => {
+		const target = event.currentTarget;
+
+		target.select(0, target.value.length);
+	};
+
+	render = () => (
+		<FormGroup>
+			<Label for={this.props.fieldName}>{this.props.fieldLabel} {(this.props.fieldRequired) ? (<span className="text-danger">&#42;</span>) : null}</Label>
+			<Input type="number" name={this.props.fieldName} id={this.props.fieldName} value={this.props.fieldValue} placeholder={this.props.fieldPlaceholder} onClick={this.handleClick} onChange={this.props.handleChange} required={this.props.fieldRequired} min="0" />
+			<FieldFeedbacks for={this.props.fieldName} show="all">
+				{(this.props.fieldName === 'budget' || this.props.fieldName === 'hourlyRate') ? (
+					<div className="info">- &pound;{this.props.fieldValue.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}</div>
+				) : null}
+				<FieldFeedback when="valueMissing">- {this.props.valueMissing}</FieldFeedback>
+			</FieldFeedbacks>
+		</FormGroup>
+	);
+}
 
 NumberField.propTypes = propTypes;
 

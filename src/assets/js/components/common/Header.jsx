@@ -88,7 +88,7 @@ class Header extends Component {
 				<header className="pt-3 pl-0 pr-0 pb-3">
 					<nav className="p-0 m-0 d-flex flex-md-row flex-column align-items-center">
 						<h1 className="pt-1 pl-1 pr-1 pb-1"><a className="d-block" href={routes.HOME.URI} title={constants.APP.TITLE}>{constants.APP.TITLE}<span>.</span></a></h1>
-						<WeekPicker />
+						<WeekPicker history={this.props.history} />
 						<Navbar className="p-0 m-0" color="dark" dark expand="xl">
 							<button type="button" className="btn btn-nav btn-action btn-navigation-popover navbar-toggler border-0 text-white" aria-label="Toggle Navigation"><i className="fa fa-fw fa-navicon" aria-hidden="true"></i></button>
 							<div className="collapse navbar-collapse" id="navigation-list">

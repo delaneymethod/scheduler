@@ -9,7 +9,7 @@
 		"test": "./node_modules/.bin/jest --coverage",
 		"dev": "cross-env NODE_ENV='development' webpack --progress=true --watch --cache=false --display-error-details=true --mode=development",
 		"hot": "cross-env NODE_ENV='development' webpack-dev-server --progress=true --watch --open --hot=true --display-error-details=true --mode=development",
-		"prod": "npm run test && npm run production",
+		"prod": "npm run production",
 		"production": "cross-env NODE_ENV='production' webpack --progress=false --hide-modules --mode production"
 	},
 	"keywords": [
@@ -101,6 +101,7 @@
 		"moment": "^2.22.2",
 		"prop-types": "^15.6.1",
 		"react": "^16.4.0",
+		"react-avatar": "^3.0.2",
 		"react-block-ui": "^1.1.1",
 		"react-confirm": "^0.1.17",
 		"react-datepicker": "^1.5.0",

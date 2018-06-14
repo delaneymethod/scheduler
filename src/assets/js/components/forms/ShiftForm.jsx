@@ -13,9 +13,7 @@ import Alert from '../common/Alert';
 
 import constants from '../../helpers/constants';
 
-import { createRole } from '../../actions/roleActions';
-
-import { createPlacement } from '../../actions/placementActions';
+import { createPlacement, updatePlacement } from '../../actions/placementActions';
 
 import { createShift, updateShift, deleteShift } from '../../actions/shiftActions';
 
@@ -24,6 +22,8 @@ const routes = constants.APP.ROUTES;
 const propTypes = {
 	editMode: PropTypes.bool,
 	shiftId: PropTypes.string,
+	startDate: PropTypes.string,
+	employeeId: PropTypes.string,
 	week: PropTypes.object.isRequired,
 	rota: PropTypes.object.isRequired,
 	roles: PropTypes.array.isRequired,
@@ -39,6 +39,8 @@ const defaultProps = {
 	shiftId: null,
 	employees: [],
 	editMode: false,
+	startDate: null,
+	employeeId: null,
 };
 
 class ShiftForm extends Component {
@@ -62,8 +64,6 @@ class ShiftForm extends Component {
 		this.handleChangeTime = this.handleChangeTime.bind(this);
 
 		this.handleChangeRoleName = this.handleChangeRoleName.bind(this);
-
-		this.handleCreateRoleName = this.handleCreateRoleName.bind(this);
 
 		this.handleChangeStartDate = this.handleChangeStartDate.bind(this);
 
@@ -102,13 +102,9 @@ class ShiftForm extends Component {
 			hours = 24 * 2;
 		}
 
-		const startDates = [];
-
-		const startDateOptions = [];
-
+		/* Set default start and end times, to nearest time intervals */
 		const start = moment().startOf('day');
 
-		/* Set default start and end times, to nearest time intervals */
 		const remainder = this.timeInterval - (moment().minute() % this.timeInterval);
 
 		const startTime = moment().add(remainder, 'minutes').format('HH:mm A');
@@ -117,13 +113,13 @@ class ShiftForm extends Component {
 
 		this.setState({ startTime, endTime });
 
-		/* Build our start and end time ranges in time interval segments */
 		for (let i = 0; i < hours; i += 1) {
 			const time = moment(start).add(this.timeInterval * i, 'minutes').format('HH:mm A');
 
 			this.times.push(time);
 		}
 
+		/* Create our roles list */
 		if (this.props.roles.length > 0) {
 			const roleOptions = [];
 
@@ -144,9 +140,20 @@ class ShiftForm extends Component {
 		}
 
 		/* Sets the default value to fix validation issues if user doesnt pick any dates */
-		const selectedStartDate = this.handleCreateStartDateOption(moment(this.props.week.startDate).format('dddd, Do MMMM YYYY'));
+		let selectedStartDate;
+
+		/* Because the shift was passed a start date as a prop, (shift form was opened via employee view), we need to use the start date prop instead of the current week start date */
+		if (!isEmpty(this.props.startDate)) {
+			selectedStartDate = this.handleCreateStartDateOption(moment(this.props.startDate, 'YYYY-MM-DD').format('dddd, Do MMMM YYYY'));
+		} else {
+			selectedStartDate = this.handleCreateStartDateOption(moment(this.props.week.startDate).format('dddd, Do MMMM YYYY'));
+		}
 
 		/* Our range will be the current week */
+		const startDates = [];
+
+		const startDateOptions = [];
+
 		startDates.unshift(moment(this.props.week.startDate).format('dddd, Do MMMM YYYY'));
 
 		const firstDay = moment(this.props.week.startDate).startOf('day');
@@ -220,31 +227,6 @@ class ShiftForm extends Component {
 		this.setState({ selectedRole: newRole });
 
 		await this.form.validateFields('roleName');
-	};
-
-	handleCreateRoleName = (roleName) => {
-		this.setState({ error: {} });
-
-		const payload = {
-			roleName,
-		};
-
-		const { actions } = this.props;
-
-		const { roleOptions } = this.state;
-
-		const newRole = this.handleCreateRoleOption(roleName);
-
-		console.log('Called ShiftForm handleCreateRoleName createRole');
-		actions.createRole(payload)
-			.then(() => {
-				this.setState({
-					selectedRole: newRole,
-					roleName: newRole.label,
-					roleOptions: [...roleOptions, newRole],
-				});
-			})
-			.catch(error => this.setState({ error }));
 	};
 
 	handleDelete = async event => console.log('FIXME - Delete Shift');
@@ -344,10 +326,9 @@ class ShiftForm extends Component {
 				</FormGroup>
 				<FormGroup>
 					<Label for="roleName">Role</Label>
-					<CreatableSelect name="roleName" id="roleName" className="select-autocomplete-container" classNamePrefix="select-autocomplete" onChange={this.handleChangeRoleName} onCreateOption={this.handleCreateRoleName} value={this.state.selectedRole} options={this.state.roleOptions} tabIndex="2" isClearable required />
-					<div className="info">- Please select or create a role by typing and pressing enter.</div>
+					<CreatableSelect name="roleName" id="roleName" className="select-autocomplete-container" classNamePrefix="select-autocomplete" onChange={this.handleChangeRoleName} value={this.state.selectedRole} options={this.state.roleOptions} tabIndex="2" isClearable required />
 					<FieldFeedbacks for="roleName" show="all">
-						<FieldFeedback when="*">- Please select or create a role.</FieldFeedback>
+						<FieldFeedback when="*">- Please select or type in a role.</FieldFeedback>
 					</FieldFeedbacks>
 				</FormGroup>
 				<Row>
@@ -404,7 +385,7 @@ class ShiftForm extends Component {
 				{(this.props.employees.length > 0) ? (
 					<FormGroup>
 						<Label for="employeeId">Assign Employee</Label>
-						<Input type="select" name="employeeId" id="employeeId" className="custom-select custom-select-xl" onChange={this.handleChange} tabIndex="7">
+						<Input type="select" name="employeeId" id="employeeId" className="custom-select custom-select-xl" value={(!isEmpty(this.props.employeeId)) ? this.props.employeeId : ''} onChange={this.handleChange} tabIndex="7">
 							<option value="" label="" />
 							{this.props.employees.map(({ employee }, index) => <option key={index} value={employee.employeeId} label={`${employee.firstName} ${employee.surname}`} />)}
 						</Input>
@@ -432,16 +413,20 @@ const mapStateToProps = (state, props) => ({
 	rota: state.rota,
 	roles: state.roles,
 	shifts: state.shifts,
+	shiftId: props.shiftId,
+	editMode: props.editMode,
+	startDate: props.startDate,
 	employees: state.employees,
+	employeeId: props.employeeId,
 });
 
 const mapDispatchToProps = dispatch => ({
 	actions: bindActionCreators({
-		createRole,
 		createShift,
 		updateShift,
 		deleteShift,
 		createPlacement,
+		updatePlacement,
 	}, dispatch),
 });
 
