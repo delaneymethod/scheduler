@@ -11,8 +11,6 @@ phases:
       - ls -lah
       - echo List codebuild dir
       - ls -lah /codebuild
-      - echo List codebuild dir
-      - ls -Rlah /codebuild
 artifacts:
   files:
     - public/**/*
