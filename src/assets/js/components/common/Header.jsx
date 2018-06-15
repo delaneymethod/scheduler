@@ -99,7 +99,6 @@ class Header extends Component {
 								</ul>
 							</div>
 							<ul className="actions profile-toggle ml-auto">
-								<NavItem className="nav-item pr-3 ml-0"><a href="" title="Publish" className="btn btn-nav btn-primary pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 border-0">Publish</a></NavItem>
 								<li className="nav-item ml-0">
 									<button type="button" className="btn btn-nav btn-user btn-profile-popover ml-r border-0" aria-label="Toggle Profile Options">Hello, {this.props.user.firstName}<i className="pl-2 fa fa-fw fa-chevron-down" aria-hidden="true"></i></button>
 									<div className="d-none" id="profile-list">
