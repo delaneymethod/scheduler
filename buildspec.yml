@@ -10,8 +10,5 @@ phases:
     commands:
       - npm run prod
       - ls -lah public
-      - ~/.local/bin/aws s3 cp public/* s3://clientsidetest/
-artifacts:
-  files:
-    - public/**/*
-    - package.json
+      - ~/.local/bin/aws s3 cp -r public/. s3://clientsidetest/
+
