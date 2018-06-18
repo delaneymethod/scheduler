@@ -9,3 +9,8 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 RUN npm install
+
+RUN apt-get update -y
+RUN apt-get install -y software-properties-common
+RUN apt-get update && apt-get install -y python-pip libpython-dev
+RUN pip install awscli --upgrade --user
