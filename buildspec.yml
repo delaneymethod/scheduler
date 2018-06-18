@@ -10,5 +10,7 @@ phases:
     commands:
       - npm run prod
       - ls -lah public
-      - ~/.local/bin/aws s3 cp --recursive public/. s3://clientsidetest/
-
+artifacts:
+  files:
+    - public/**/*
+  discard-paths: yes
