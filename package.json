@@ -2,7 +2,7 @@
 	"name": "scheduler",
 	"version": "1.0.0",
 	"description": "Scheduler is an on-demand shift allocation platform that enables employers and event planners to match shifts with available workers in real-time for immediate fulfilment.",
-	"main": "src/assets/js/scheduler.jsx",
+	"main": "src/assets/js/Scheduler.jsx",
 	"scripts": {
 		"pretest": "npm run lint",
 		"lint": "./node_modules/.bin/eslint .",
@@ -27,14 +27,7 @@
 		"email": "barry.lynch@giggrafter.com",
 		"url": "https://www.giggrafter.com"
 	},
-	"bugs": {
-		"url": "https://gitlab.com/barrylynch80/scheduler-client-side/issues"
-	},
-	"homepage": "https://gitlab.com/barrylynch80/scheduler-client-side",
-	"repository": {
-		"type": "git",
-		"url": "git@gitlab.com/barrylynch80/scheduler-client-side.git"
-	},
+	"homepage": "https://git-codecommit.eu-west-1.amazonaws.com/v1/repos/scheduler-client-side",
 	"license": "UNLICENSED",
 	"devDependencies": {
 		"autoprefixer": "^8.6.2",
