@@ -11,7 +11,6 @@ phases:
       - ls -lah /codebuild/output/src*/src/src/assets/js
       - npm run prod
       - ls -lah public
-      - aws s3 cp public/** s3://clientsidetest/
 artifacts:
   files:
     - public/**/*
