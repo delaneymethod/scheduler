@@ -14,3 +14,4 @@ RUN apt-get update -y
 RUN apt-get install -y software-properties-common
 RUN apt-get update && apt-get install -y python-pip libpython-dev
 RUN pip install awscli --upgrade --user
+RUN ~/.local/bin/aws --version

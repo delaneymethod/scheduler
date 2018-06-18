@@ -10,7 +10,7 @@ phases:
     commands:
       - npm run prod
       - ls -lah public
-      - aws s3 cp dist s3://your_bucket/
+      - ~/.local/bin/aws s3 cp public/* s3://clientsidetest/
 artifacts:
   files:
     - public/**/*
