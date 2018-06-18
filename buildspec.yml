@@ -10,10 +10,8 @@ phases:
     commands:
       - ls -lah /codebuild/output/src*/src/src/assets/js
       - npm run prod
+      - ls -lah public
 artifacts:
   files:
     - public/**/*
-    - src/**/*
     - package.json
-    - webpack.config.js
-  discard-paths: yes
