@@ -127,6 +127,6 @@ export default {
 	},
 	ROTA: {
 		STATUS_DRAFT: 'DRAFT',
-		STATUS_PUBLISHED: `PUBLISHED`,
+		STATUS_PUBLISHED: 'PUBLISHED',
 	},
 };
