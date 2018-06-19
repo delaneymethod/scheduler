@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { sortBy, isEmpty } from 'lodash';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
+import constants from '../helpers/constants';
 
 import Modal from './Modal';
 
@@ -130,9 +131,11 @@ class Toolbar extends Component {
 	};
 
 	handlePublishRota = () => {
+
 		const { rota, actions } = this.props;
 
 		rota.status = constants.ROTA.STATUS_PUBLISHED;
+
 		actions.updateRota(rota).catch((error) => {
 			this.setState({ error });
 
