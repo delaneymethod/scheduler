@@ -13,5 +13,4 @@ phases:
 artifacts:
   files:
     - public/**/*
-  discard-paths: yes
-  base-directory: /
+
