@@ -68,6 +68,7 @@ class RotaForm extends Component {
 		error: {},
 		rotaName: '',
 		startDate: '',
+		status: constants.ROTA.STATUS_DRAFT,
 		created: false,
 		updated: false,
 		deleted: false,
