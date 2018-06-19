@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { sortBy, isEmpty } from 'lodash';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
-import constants from '../helpers/constants';
+import constants from '../../helpers/constants';
 
 import Modal from './Modal';
 
@@ -21,6 +21,7 @@ import { getRotas, switchRota, updateRota } from '../../actions/rotaActions';
 import { getRotaTypes, switchRotaType } from '../../actions/rotaTypeActions';
 
 const propTypes = {
+	rota: PropTypes.object.isRequired,
 	rotas: PropTypes.array.isRequired,
 	account: PropTypes.object.isRequired,
 	rotaType: PropTypes.object.isRequired,
@@ -28,6 +29,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+	rota: {},
 	rotas: [],
 	account: {},
 	rotaType: {},
@@ -131,12 +133,25 @@ class Toolbar extends Component {
 	};
 
 	handlePublishRota = () => {
+		const { rota, rotaType: { rotaTypeId }, actions } = this.props;
 
-		const { rota, actions } = this.props;
+		let { startDate } = rota;
 
-		rota.status = constants.ROTA.STATUS_PUBLISHED;
+		const { rotaId, budget } = rota;
 
-		actions.updateRota(rota).catch((error) => {
+		const status = constants.ROTA.STATUS_PUBLISHED;
+
+		startDate = moment(startDate).format('YYYY-MM-DD');
+
+		const payload = {
+			rotaId,
+			budget,
+			status,
+			startDate,
+			rotaTypeId,
+		};
+
+		actions.updateRota(payload).catch((error) => {
 			this.setState({ error });
 
 			this.handleModal();
@@ -188,6 +203,7 @@ Toolbar.propTypes = propTypes;
 Toolbar.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
+	rota: state.rota,
 	rotas: state.rotas,
 	rotaType: state.rotaType,
 	rotaTypes: state.rotaTypes,

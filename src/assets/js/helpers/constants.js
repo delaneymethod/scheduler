@@ -119,10 +119,10 @@ export default {
 		},
 	},
 	API: {
-		HOST: '//schedulerlbtest-844744214.eu-west-1.elb.amazonaws.com/v1',
+		HOST: '//localhost:8000/v1',
 	},
 	ROTA: {
 		STATUS_DRAFT: 'DRAFT',
-		STATUS_PUBLISHED: `PUBLISHED`,
+		STATUS_PUBLISHED: 'PUBLISHED',
 	},
 };
