@@ -47,11 +47,11 @@ store.subscribe(throttle(() => {
 
 	saveState('week', (rotaTypes.length === 0) ? {} : week);
 
-	saveState('rota', (rotaTypes.length === 0) ? {} : rota);
+	saveState('rota', (rotaTypes.length === 0 || rotas.length === 0) ? {} : rota);
 
 	saveState('rotas', (rotaTypes.length === 0) ? [] : rotas);
 
-	saveState('shifts', (rotaTypes.length === 0) ? [] : shifts);
+	saveState('shifts', (rotaTypes.length === 0 || rotas.length === 0) ? [] : shifts);
 
 	saveState('rotaType', (rotaTypes.length === 0) ? {} : rotaType);
 

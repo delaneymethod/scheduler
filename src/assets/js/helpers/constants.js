@@ -57,6 +57,10 @@ export default {
 					TITLE: 'Create Rota',
 					MESSAGE: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta velit in lectus efficitur hendrerit. Quisque cursus arcu sollicitudin rhoncus molestie. Donec at rhoncus enim, ut rhoncus lacus. Sed eget felis est.',
 				},
+				STATUSES: {
+					DRAFT: 'DRAFT',
+					PUBLISHED: 'PUBLISHED',
+				},
 			},
 			REGISTER: {
 				TITLE: 'Register',
@@ -119,6 +123,6 @@ export default {
 		},
 	},
 	API: {
-		HOST: '//schedulerlbtest-844744214.eu-west-1.elb.amazonaws.com/v1',
+		HOST: 'https://testapi.giggrafter.com/v1',
 	},
 };

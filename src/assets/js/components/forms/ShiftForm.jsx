@@ -15,7 +15,7 @@ import constants from '../../helpers/constants';
 
 import { createPlacement, updatePlacement } from '../../actions/placementActions';
 
-import { createShift, updateShift, deleteShift } from '../../actions/shiftActions';
+import { getShifts, createShift, updateShift, deleteShift } from '../../actions/shiftActions';
 
 const routes = constants.APP.ROUTES;
 
@@ -119,6 +119,11 @@ class ShiftForm extends Component {
 			this.times.push(time);
 		}
 
+		/* Added 23:59 PM to the list as a midnight option */
+		const midnight = moment(start).endOf('day').format('HH:mm A');
+
+		this.times.push(midnight);
+
 		/* Create our roles list */
 		if (this.props.roles.length > 0) {
 			const roleOptions = [];
@@ -137,6 +142,11 @@ class ShiftForm extends Component {
 			});
 
 			this.setState({ roleOptions, selectedRole, roleName: selectedRole.label });
+		}
+
+		/* If employee id was passed in as a prop, make sure we also update the state... */
+		if (!isEmpty(this.props.employeeId)) {
+			this.setState({ employeeId: this.props.employeeId });
 		}
 
 		/* Sets the default value to fix validation issues if user doesnt pick any dates */
@@ -258,8 +268,12 @@ class ShiftForm extends Component {
 					numberOfPositions,
 				} = this.state;
 
-				/* We need to make sure our start and end values are in the format like 2018-06-05 18:50:00 */
-				endTime = `${startDate} ${moment(endTime, 'HH:mm A').format('HH:mm:ss')}`;
+				/* We need to make sure our start and end values are in the format like 2018-06-05 18:50:00 and if its a closing shift, force the end time to be midnight */
+				if (isClosingShift) {
+					endTime = `${startDate} 23:59:00`;
+				} else {
+					endTime = `${startDate} ${moment(endTime, 'HH:mm A').format('HH:mm:ss')}`;
+				}
 
 				startTime = `${startDate} ${moment(startTime, 'HH:mm A').format('HH:mm:ss')}`;
 
@@ -285,7 +299,16 @@ class ShiftForm extends Component {
 
 							console.log('Called ShiftForm handleSubmit createPlacement');
 							actions.createPlacement(payload)
-								.then(() => this.setState({ created: true }))
+								.then(() => {
+									payload = {
+										rotaId,
+									};
+
+									console.log('Called ShiftForm handleSubmit getShifts');
+									actions.getShifts(payload)
+										.then(() => this.setState({ created: true }))
+										.catch(error => this.setState({ error }));
+								})
 								.catch(error => this.setState({ error }));
 						} else {
 							this.setState({ created: true });
@@ -385,7 +408,7 @@ class ShiftForm extends Component {
 				{(this.props.employees.length > 0) ? (
 					<FormGroup>
 						<Label for="employeeId">Assign Employee</Label>
-						<Input type="select" name="employeeId" id="employeeId" className="custom-select custom-select-xl" value={(!isEmpty(this.props.employeeId)) ? this.props.employeeId : ''} onChange={this.handleChange} tabIndex="7">
+						<Input type="select" name="employeeId" id="employeeId" className="custom-select custom-select-xl" value={this.state.employeeId} onChange={this.handleChange} tabIndex="7">
 							<option value="" label="" />
 							{this.props.employees.map(({ employee }, index) => <option key={index} value={employee.employeeId} label={`${employee.firstName} ${employee.surname}`} />)}
 						</Input>
@@ -422,6 +445,7 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = dispatch => ({
 	actions: bindActionCreators({
+		getShifts,
 		createShift,
 		updateShift,
 		deleteShift,

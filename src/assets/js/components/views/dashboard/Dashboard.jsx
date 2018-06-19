@@ -1,7 +1,7 @@
 import sortBy from 'lodash/sortBy';
 import PropTypes from 'prop-types';
-import isEmpty from 'lodash/isEmpty';
 import { connect } from 'react-redux';
+import { delay, isEmpty } from 'lodash';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
 
@@ -24,8 +24,6 @@ import { getEmployees } from '../../../actions/employeeActions';
 import { getRotas, switchRota } from '../../../actions/rotaActions';
 
 import { getRotaTypes, switchRotaType } from '../../../actions/rotaTypeActions';
-
-let timer;
 
 const routes = constants.APP.ROUTES;
 
@@ -66,13 +64,6 @@ class Dashboard extends Component {
 		this.handleFetchData = this.handleFetchData.bind(this);
 
 		this.handleCreateRota = this.handleCreateRota.bind(this);
-
-		if (timer) {
-			clearTimeout(timer);
-		}
-
-		/* Lets wait 1 second before fetching data - prevents any race conditions */
-		timer = setTimeout(() => this.handleFetchData(), 1000);
 	}
 
 	getInitialState = () => ({
@@ -89,21 +80,24 @@ class Dashboard extends Component {
 		meta.description.setAttribute('content', routes.DASHBOARD.HOME.META.DESCRIPTION);
 		meta.keywords.setAttribute('content', routes.DASHBOARD.HOME.META.KEYWORDS);
 		meta.author.setAttribute('content', constants.APP.AUTHOR);
+
+		/* Lets wait 1.3 seconds before fetching data - prevents any race conditions */
+		delay(() => this.handleFetchData(), 1300);
 	};
 
 	handleFetchData = () => {
 		const { actions } = this.props;
 
 		/* Grab all roles, employees, rota types, rotas and finally all shifts in this order. */
-		console.log('Called Dashboard componentDidMount getRoles');
+		console.log('Called Dashboard handleFetchData getRoles');
 		actions.getRoles().then(() => {
 			this.setState({ isModalOpen: false });
 
-			console.log('Called Dashboard componentDidMount getEmployees');
+			console.log('Called Dashboard handleFetchData getEmployees');
 			actions.getEmployees().then(() => {
 				this.setState({ isModalOpen: false });
 
-				console.log('Called Dashboard componentDidMount getRotaTypes');
+				console.log('Called Dashboard handleFetchData getRotaTypes');
 				actions.getRotaTypes().then(() => {
 					this.setState({ isModalOpen: false });
 
@@ -112,9 +106,9 @@ class Dashboard extends Component {
 						/* We only want to get the first rota type rotas so we have some data by default */
 						const rotaType = this.props.rotaTypes.slice(0).shift();
 
-						console.log('Called Dashboard componentDidMount switchRotaType');
+						console.log('Called Dashboard handleFetchData switchRotaType');
 						actions.switchRotaType(rotaType).then(() => {
-							console.log('Called Dashboard componentDidMount getRotas');
+							console.log('Called Dashboard handleFetchData getRotas');
 							actions.getRotas(rotaType).then(() => {
 								this.setState({ isModalOpen: false });
 
@@ -131,9 +125,9 @@ class Dashboard extends Component {
 									}
 
 									/* Set the current rota */
-									console.log('Called Dashboard componentDidMount switchRota');
+									console.log('Called Dashboard handleFetchData switchRota');
 									actions.switchRota(rota).then(() => {
-										console.log('Called Dashboard componentDidMount getShifts');
+										console.log('Called Dashboard handleFetchData getShifts');
 										actions.getShifts(rota).catch((error) => {
 											this.setState({ error });
 
@@ -149,7 +143,7 @@ class Dashboard extends Component {
 						});
 					} else {
 						/* This will trigger the store to update rotas, current rota, current rota type and current week to be cleared of any values */
-						console.log('Called Dashboard componentDidMount switchRotaType but to clear all rotas, the current rota and the current rota type');
+						console.log('Called Dashboard handleFetchData switchRotaType but to clear all rotas, the current rota and the current rota type');
 						actions.switchRotaType({});
 
 						this.handleCreateRota();

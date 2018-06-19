@@ -102,6 +102,7 @@ class WeekPicker extends Component {
 			this.handleHighlight(week);
 		});
 
+		/* We have rotas but there are no rota for the current week! */
 		if (this.props.rotas.length > 0) {
 			const { rotas } = this.props;
 
@@ -113,7 +114,7 @@ class WeekPicker extends Component {
 			this.setState({ earliestRotaStartDate });
 
 			/**
-			 * This should never happen - user is viewing the current week but there are no rota for the current week and then current week start date is after the earliest rota start date.
+			 * Again, this should never happen - user is viewing the current week but there are no rota for the current week and then current week start date is after the earliest rota start date.
 			 * Rotas can be deleted via the API so the frontend needs to check. Like I said this "should" never happen!!
 			 */
 			const currentRota = rotas.filter(rota => moment(rota.startDate).format('YYYY-MM-DD') === week.startDate.format('YYYY-MM-DD')).shift();

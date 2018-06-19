@@ -58,14 +58,14 @@ class RegisterForm extends Component {
 		const { actions } = this.props;
 
 		console.log('Called RegisterForm componentDidMount getSubscriptionLevels');
-		actions.getSubscriptionLevels().catch(error => this.setState({ error }));
-	};
-
-	componentWillReceiveProps = (nextProps) => {
-		/* Used to set a default the subscription level id value after the getSubscriptionLevels action has completed */
-		if (nextProps.subscriptionLevels.length > 0) {
-			this.setState({ subscriptionLevelId: nextProps.subscriptionLevels.map(({ subscriptionLevelId }) => subscriptionLevelId).toString() });
-		}
+		actions.getSubscriptionLevels()
+			.then((subscriptionLevels) => {
+				/* Used to set a default the subscription level id value after the getSubscriptionLevels action has completed */
+				if (subscriptionLevels.length > 0) {
+					this.setState({ subscriptionLevelId: subscriptionLevels.map(({ subscriptionLevelId }) => subscriptionLevelId).toString() });
+				}
+			})
+			.catch(error => this.setState({ error }));
 	};
 
 	handleChange = async (event) => {
