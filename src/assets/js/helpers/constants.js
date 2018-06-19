@@ -125,4 +125,8 @@ export default {
 	API: {
 		HOST: 'https://testapi.giggrafter.com/v1',
 	},
+	ROTA: {
+		STATUS_DRAFT: 'DRAFT',
+		STATUS_PUBLISHED: `PUBLISHED`,
+	},
 };

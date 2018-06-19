@@ -130,9 +130,9 @@ class Toolbar extends Component {
 	};
 
 	handlePublishRota = () => {
-		const { actions } = this.props;
-		const { rota } = this.props;
+		const { rota, actions } = this.props;
 
+		rota.status = constants.ROTA.STATUS_PUBLISHED;
 		actions.updateRota(rota).catch((error) => {
 			this.setState({ error });
 
