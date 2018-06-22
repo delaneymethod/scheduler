@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React, { Fragment, Component } from 'react';
 
-import Header from '../../../common/Header';
+import Header from '../../common/Header';
 
-import constants from '../../../../helpers/constants';
+import constants from '../../../helpers/constants';
 
 const routes = constants.APP.ROUTES;
 

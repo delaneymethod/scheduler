@@ -31,6 +31,56 @@ export const getEmployees = () => (dispatch) => {
 		});
 };
 
+/* ORDER EMPLOYEES */
+export const orderEmployeesSuccess = employees => ({
+	type: types.ORDER_EMPLOYEES,
+	employees,
+});
+
+export const orderEmployees = payload => (dispatch) => {
+	dispatch(ajaxLoading(true));
+
+	return api.orderEmployees(payload)
+		.then((employees) => {
+			dispatch(ajaxLoading(false));
+
+			dispatch(orderEmployeesSuccess(employees));
+
+			return employees;
+		})
+		.catch((error) => {
+			dispatch(ajaxLoading(false));
+
+			/* Bubble the error back up the rabbit hole */
+			return Promise.reject(error);
+		});
+};
+
+/* UPLOAD EMPLOYEES */
+export const uploadEmployeesSuccess = employees => ({
+	type: types.UPLOAD_EMPLOYEES,
+	employees,
+});
+
+export const uploadEmployees = payload => (dispatch) => {
+	dispatch(ajaxLoading(true));
+
+	return api.uploadEmployees(payload)
+		.then((employees) => {
+			dispatch(ajaxLoading(false));
+
+			dispatch(uploadEmployeesSuccess(employees));
+
+			return employees;
+		})
+		.catch((error) => {
+			dispatch(ajaxLoading(false));
+
+			/* Bubble the error back up the rabbit hole */
+			return Promise.reject(error);
+		});
+};
+
 /* GET SPECIFIC EMPLOYEE */
 export const getEmployeeSuccess = employee => ({
 	type: types.GET_EMPLOYEE,

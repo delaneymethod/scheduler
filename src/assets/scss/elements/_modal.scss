@@ -7,14 +7,27 @@
 		width: 100%;
 		font-size: 1.3rem;
 		text-align: center;
-
+	
 		@include media-breakpoint-up(md) {
 			text-align: left;
 		}
 	}
 
 	.close {
-		display: none;
+		margin: 0;
+		opacity: 1;
+		padding: 0 10px;
+		font-weight: bold;
+		color: $secondary;
+		font-size: 1.3rem;
+		line-height: 1.5;
+		text-align: center;
+		border-radius: 4px;
+		background-color: #ffffff;
+		
+		&:hover {
+			color: $dark;
+		}
 	}
 }
 
@@ -38,11 +51,33 @@
 .modal-dialog-error {
 	.modal-header {
 		background-color: $danger;
+
+		.close {
+			color: $danger;
+			
+			&:hover {
+				color: $dark;
+			}
+		}
 	}
 }
 
 .modal-dialog-success {
 	.modal-header {
 		background-color: $success;
+	}
+	
+	.close {
+		color: $success;
+	}
+}
+
+.modal-dialog-warning {
+	.modal-header {
+		background-color: $warning;
+	}
+	
+	.close {
+		color: $warning;
 	}
 }

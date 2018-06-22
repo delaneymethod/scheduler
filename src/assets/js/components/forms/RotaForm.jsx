@@ -1,5 +1,4 @@
 import moment from 'moment';
-import Select from 'react-select';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { sortBy, isEmpty } from 'lodash';
@@ -11,8 +10,6 @@ import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-w
 import Alert from '../common/Alert';
 
 import TextField from '../fields/TextField';
-
-import NumberField from '../fields/NumberField';
 
 import constants from '../../helpers/constants';
 
@@ -26,13 +23,16 @@ import { createRotaType, updateRotaType, deleteRotaType, switchRotaType } from '
 
 const routes = constants.APP.ROUTES;
 
+const { STATUSES } = routes.ROTAS;
+
 const propTypes = {
-	onClose: PropTypes.func,
 	title: PropTypes.string,
 	message: PropTypes.string,
+	handleClose: PropTypes.func,
 	week: PropTypes.object.isRequired,
 	rotas: PropTypes.array.isRequired,
 	rotaTypes: PropTypes.array.isRequired,
+	handleSuccessNotification: PropTypes.func,
 };
 
 const defaultProps = {
@@ -41,7 +41,8 @@ const defaultProps = {
 	rotas: [],
 	message: '',
 	rotaTypes: [],
-	onClose: () => {},
+	handleClose: () => {},
+	handleSuccessNotification: () => {},
 };
 
 class RotaForm extends Component {
@@ -55,12 +56,6 @@ class RotaForm extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 
 		this.handleChange = this.handleChange.bind(this);
-
-		this.handleChangeBudget = this.handleChangeBudget.bind(this);
-
-		this.handleCreateOption = this.handleCreateOption.bind(this);
-
-		this.handleChangeStartDate = this.handleChangeStartDate.bind(this);
 	}
 
 	getInitialState = () => ({
@@ -68,69 +63,36 @@ class RotaForm extends Component {
 		error: {},
 		rotaName: '',
 		startDate: '',
-		status: constants.ROTA.STATUS_DRAFT,
-		created: false,
-		updated: false,
-		deleted: false,
-		startDateOptions: [],
-		selectedStartDate: '',
+		startDates: [],
 	});
 
 	componentDidMount = () => {
-		const now = moment();
-
 		const startDates = [];
 
-		/* Sets the default value to fix validation issues if user doesnt pick any dates */
-		/* let selectedStartDate; */
+		/* Get the start date of the week... */
+		const startDate = moment().day(1);
 
-		const startDateOptions = [];
+		/* Update the state with a default start date */
+		this.setState({ startDate: startDate.format('YYYY-MM-DD') });
 
-		/* Lets create and range big to cover a years worth - surely customers wont be creating rotas for up to a year away...? */
-		const end = moment().add(360, 'days');
+		/* Add the start of the week to the list of start dates */
+		startDates.push(startDate.toDate());
 
-		/* Get the start day of the week... */
-		const startDate = now.clone().day(1);
+		/* Create a range big to cover 1 years worth of dates - surely customers wont be creating rotas up to 1 year away? */
+		const endDate = moment().add(1, 'year');
 
-		/* If the current day of the week is also the start day of the week, then use the current day (1 = Monday, 2 = Tuesday ... ), otherwise step forward 7 days to next week */
-		/*
-		if (startDate.day() === now.day()) {
-			selectedStartDate = this.handleCreateOption(startDate.format('dddd, Do MMMM YYYY'));
-
-			startDates.push(now.format('dddd, Do MMMM YYYY'));
-		} else {
-			selectedStartDate = this.handleCreateOption(startDate.add(7, 'days').format('dddd, Do MMMM YYYY'));
-		}
-		*/
-
-		/* Business Rule to allow creation of rota for current week regardless of the day of the week. E.g Start of the week is Monday 11th but today is Wednesday 13th. */
-		const selectedStartDate = this.handleCreateOption(startDate.format('dddd, Do MMMM YYYY'));
-
-		startDates.push(now.format('dddd, Do MMMM YYYY'));
-
-		/* Add all our start dates to an array and create a options list */
-		if (startDate.isAfter(now, 'day')) {
-			startDates.push(startDate.format('dddd, Do MMMM YYYY'));
-		}
-
-		while (startDate.isBefore(end)) {
+		/* Loop over our range of dates and add each start date of the week to the list of start dates */
+		while (startDate.isBefore(endDate)) {
 			startDate.add(7, 'days');
 
-			startDates.push(startDate.format('dddd, Do MMMM YYYY'));
+			startDates.push(startDate.toDate());
 		}
 
-		startDates.forEach((date) => {
-			const startDateOption = this.handleCreateOption(date);
-
-			startDateOptions.push(startDateOption);
-		});
-
-		this.setState({ startDateOptions, selectedStartDate, startDate: selectedStartDate.value });
+		/* Update the state again with the list of start dates */
+		this.setState({ startDates });
 	};
 
 	handleChange = async (event) => {
-		this.setState({ created: false, updated: false, deleted: false });
-
 		const target = event.currentTarget;
 
 		this.setState({
@@ -140,52 +102,12 @@ class RotaForm extends Component {
 		await this.form.validateFields(target);
 	};
 
-	handleChangeBudget = async (event) => {
-		this.setState({ created: false, updated: false, deleted: false });
-
-		const target = event.currentTarget;
-
-		target.value = (!target.value) ? 0 : target.value;
-
-		const budget = parseInt(target.value, 10);
-
-		this.setState({
-			[target.name]: budget,
-		});
-
-		await this.form.validateFields(target);
-	};
-
-	handleChangeStartDate = async (startDate) => {
-		this.setState({ created: false, updated: false, deleted: false });
-
-		if (isEmpty(startDate)) {
-			this.setState({ startDate: '' });
-		} else {
-			this.setState({ startDate: startDate.value });
-		}
-
-		this.setState({ selectedStartDate: startDate });
-
-		await this.form.validateFields('startDate');
-	};
-
-	handleCreateOption = label => ({
-		label,
-		value: moment(label, 'dddd, Do MMMM YYYY').format('YYYY-MM-DD'),
-	});
-
-	handleDelete = async event => console.log('FIXME - Delete Rota');
+	handleDelete = event => console.log('FIXME - Delete Rota');
 
 	handleSubmit = async (event) => {
 		event.preventDefault();
 
-		this.setState({
-			error: {},
-			created: false,
-			updated: false,
-			deleted: false,
-		});
+		this.setState({ error: {} });
 
 		const { actions } = this.props;
 
@@ -210,12 +132,15 @@ class RotaForm extends Component {
 						/* Set the current rota type */
 						console.log('Called RotaForm handleSubmit switchRotaType');
 						actions.switchRotaType(rotaType).then(() => {
+							const status = STATUSES.DRAFT;
+
 							const { rotaTypeId } = rotaType;
 
 							const { budget, startDate } = this.state;
 
 							payload = {
 								budget,
+								status,
 								startDate,
 								rotaTypeId,
 							};
@@ -249,7 +174,15 @@ class RotaForm extends Component {
 
 														/* Set the current week */
 														console.log('Called RotaForm handleSubmit switchWeek');
-														actions.switchWeek(payload).then(() => this.setState({ budget: 0, rotaName: '', created: true }));
+														actions.switchWeek(payload).then(() => {
+															/* Close the modal */
+															this.props.handleClose();
+
+															const message = '<p>Rota created successfully</p>';
+
+															/* Pass a message back up the rabbit hole to the parent component */
+															this.props.handleSuccessNotification(message);
+														});
 													})
 													.catch(error => this.setState({ error }));
 											})
@@ -266,32 +199,19 @@ class RotaForm extends Component {
 
 	errorMessage = () => (this.state.error.data ? <Alert color="danger" title={this.state.error.data.title} message={this.state.error.data.message} /> : null);
 
-	successMessage = () => {
-		const { created, updated, deleted } = this.state;
-
-		if (created) {
-			return (<Alert color="success" message="Rota was created successfully." />);
-		} else if (updated) {
-			return (<Alert color="success" message="Rota was updated successfully." />);
-		} else if (deleted) {
-			return (<Alert color="success" message="Rota was deleted successfully." />);
-		}
-
-		return null;
-	};
-
 	render = () => (
 		<Fragment>
 			{(!isEmpty(this.props.title)) ? (<h2 className="text-center text-uppercase">{this.props.title}</h2>) : null}
-			{(!isEmpty(this.props.message)) ? (<p className="lead mb-4 pl-4 pr-4 text-center">{this.props.message}</p>) : null}
+			{(!isEmpty(this.props.message)) ? (<p className="lead mt-3 mb-4 pl-4 pr-4 text-center">{this.props.message}</p>) : null}
 			{this.errorMessage()}
-			{this.successMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 				<TextField fieldName="rotaName" fieldLabel="Rota Name" fieldValue={this.state.rotaName} fieldPlaceholder="e.g. Kitchen" handleChange={this.handleChange} valueMissing="Please provide a valid rota name." tabIndex="1" fieldRequired={true} />
-				<NumberField fieldName="budget" fieldLabel="Budget" fieldValue={this.state.budget} fieldPlaceholder="e.g. 1000" handleChange={this.handleChangeBudget} valueMissing="Please provide a valid budget." tabIndex="2" fieldRequired={true} />
+				<TextField fieldName="budget" fieldLabel="Budget" fieldValue={this.state.budget} fieldPlaceholder="e.g. 1000" handleChange={this.handleChange} valueMissing="Please provide a valid budget." tabIndex="2" fieldRequired={true} />
 				<FormGroup>
 					<Label for="startDate">Select Start Date <span className="text-danger">&#42;</span></Label>
-					<Select name="startDate" id="startDate" className="select-autocomplete-container" classNamePrefix="select-autocomplete" onChange={this.handleChangeStartDate} value={this.state.selectedStartDate} options={this.state.startDateOptions} tabIndex="3" required={true} />
+					<Input type="select" name="startDate" id="startDate" className="custom-select custom-select-xl" value={this.state.startDate} onChange={this.handleChange} tabIndex="3" required={true}>
+						{this.state.startDates.map((startDate, index) => <option key={index} value={moment(startDate).format('YYYY-MM-DD')} label={moment(startDate).format('dddd, Do MMMM YYYY')} />)}
+					</Input>
 					<FieldFeedbacks for="startDate" show="all">
 						<FieldFeedback when="*">- Please provide a valid start date.</FieldFeedback>
 					</FieldFeedbacks>

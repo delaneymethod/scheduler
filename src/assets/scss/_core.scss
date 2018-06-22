@@ -37,6 +37,10 @@ html {
 	}
 }
 
+.bg-gray-500 {
+	background-color: $gray-500 !important;
+}
+
 .error {
 	color: $danger;
 	margin-top: 0.5rem;

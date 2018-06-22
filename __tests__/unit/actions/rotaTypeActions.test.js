@@ -55,7 +55,7 @@ describe('Rota Type Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ rotaTypeTypes: [] });
 
 		return store.dispatch(actions.getRotaTypes({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -100,7 +100,7 @@ describe('Rota Type Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ rotaTypeTypes: [] });
 
 		return store.dispatch(actions.getRotaType({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -145,7 +145,7 @@ describe('Rota Type Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ rotaTypeTypes: [] });
 
 		return store.dispatch(actions.createRotaType({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -190,7 +190,7 @@ describe('Rota Type Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ rotaTypeTypes: [] });
 
 		return store.dispatch(actions.updateRotaType({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -235,7 +235,7 @@ describe('Rota Type Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ rotaTypeTypes: [] });
 
 		return store.dispatch(actions.deleteRotaType({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});

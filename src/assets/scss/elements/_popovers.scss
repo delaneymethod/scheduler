@@ -1,4 +1,5 @@
 .popover {
+	z-index: 1011;
 	box-shadow: 0 0 calculateRem(10px) 0 rgba(0, 0, 0, 0.5);
 	-moz-box-shadow: 0 0 calculateRem(10px) 0 rgba(0, 0, 0, 0.5);
 	-webkit-box-shadow: 0 0 calculateRem(10px) 0 rgba(0, 0, 0, 0.5);
@@ -18,7 +19,7 @@
 			margin: 0;
 			float: none;
 			padding: 0 !important;
-			width: calculateRem(150px);
+			min-width: calculateRem(150px);
 	
 			&:not(:last-child) {
 				margin-bottom: 0.5rem;
@@ -32,7 +33,11 @@
 				width: 100%;
 			}
 		}
-	
+		
+		input {
+			min-width: calculateRem(200px);
+		}
+		
 		.btn-sm {
 			// font-size: 0.75rem;
 		}
@@ -46,18 +51,21 @@
 }
 
 .cell-popover {
-	a:not(.btn) {
-		display: block;
+	a:not(.btn),
+	button:not(.btn) {
+		cursor: pointer;
+		text-decoration: none;
 		color: $body-color-light;
-		text-transform: uppercase;
-		padding: $table-cell-padding;
-
+		min-width: calculateRem(150px);
+		background-color: $dark;
+		
 		&:last-child {
 			background-color: darken($dark, 10%);
 		}
-
-		i {
-			margin-right: calculateRem(2px);
+		
+		&:hover {
+			text-decoration: none;
+			background-color: darken($dark, 20%);
 		}
 	}
 }

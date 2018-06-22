@@ -221,6 +221,19 @@ describe('API', () => {
 		return api.getEmployees().then(data => expect(data.employees).toEqual([]));
 	});
 
+	it('should order employees', () => {
+		mock.onPut('/employees/order?rotaTypeId=1').reply(200, {
+			employees: [],
+		});
+
+		const payload = {
+			rotaTypeId: 1,
+			objectIdList: ['3', '1', '2'],
+		};
+
+		return api.orderEmployees(payload).then(data => expect(data.employees).toEqual([]));
+	});
+
 	it('should get employee', () => {
 		mock.onGet('/employees/3').reply(200, {
 			employees: [{

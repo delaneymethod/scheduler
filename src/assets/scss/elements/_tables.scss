@@ -31,6 +31,10 @@
 		background-color: $gray-600;
 		font-weight: $font-weight-semi;
 		vertical-align: middle !important;
+		
+		&.sortable {
+			/* cursor: pointer; */
+		}
 	}
 
 	tbody {
@@ -51,7 +55,23 @@
 	tfoot th {
 		padding: 0;
 	}
+	
+	.drag-handler {
+		cursor: move;
+	}
 
+	.cell-non-draggable {
+		cursor: no-drop;
+	}
+
+	tr.draggable-row-ghost {
+		opacity: 0.3;
+		
+		td {
+			background-color: $success;
+		}
+	}
+	
 	.cell-draggable {
 		padding: 0;
 		position: relative;
@@ -82,6 +102,23 @@
 				background-color: $gray-200;
 			}
 		}
+	}
+}
+
+.sort-direction {
+	width: 0;
+	height: 0;
+	display: inline-block;
+	margin: 0 0 calculateRem(2px) calculateRem(5px);
+	border-left: calculateRem(5px) solid transparent;
+	border-right: calculateRem(5px) solid transparent;
+
+	&.asc {
+		border-bottom: calculateRem(5px) solid #000000;
+	}
+
+	&.desc {
+		border-top: calculateRem(5px) solid #000000;
 	}
 }
 
@@ -184,9 +221,6 @@
 			}
 		}
 	}
-}
-
-.cell-non-draggable {
 }
 
 .shift-block {

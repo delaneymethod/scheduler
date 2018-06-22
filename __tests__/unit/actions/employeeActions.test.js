@@ -55,9 +55,57 @@ describe('Employee Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ employees: [] });
 
 		return store.dispatch(actions.getEmployees({})).catch(error => expect(store.getActions()).not.toBeNull());
+	});
+
+	it('should create ORDER_EMPLOYEES and AJAX_LOADING actions on orderEmployees', () => {
+		moxios.wait(() => {
+			const request = moxios.requests.mostRecent();
+
+			request.respondWith({
+				status: 200,
+				response: {
+					data: [],
+				},
+			});
+		});
+
+		store = mockStore({ employees: [] });
+
+		const expectedActions = [{
+			status: true,
+			type: types.AJAX_LOADING,
+		}, {
+			status: false,
+			type: types.AJAX_LOADING,
+		}, {
+			employees: [],
+			type: types.ORDER_EMPLOYEES,
+		}];
+
+		const payload = {
+			rotaTypeId: 1,
+			objectIdList: ['3', '1', '2'],
+		};
+
+		return store.dispatch(actions.orderEmployees(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
+	});
+
+	it('should catch error on failed orderEmployees', () => {
+		moxios.wait(() => {
+			const request = moxios.requests.mostRecent();
+
+			request.respondWith({
+				status: 400,
+				response: {},
+			});
+		});
+
+		store = mockStore({ employees: [] });
+
+		return store.dispatch(actions.orderEmployees({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
 
 	it('should create GET_EMPLOYEE and AJAX_LOADING actions on getEmployee', () => {
@@ -100,7 +148,7 @@ describe('Employee Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ employees: [] });
 
 		return store.dispatch(actions.getEmployee({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -145,7 +193,7 @@ describe('Employee Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ employees: [] });
 
 		return store.dispatch(actions.createEmployee({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -190,7 +238,7 @@ describe('Employee Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ employees: [] });
 
 		return store.dispatch(actions.updateEmployee({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -235,7 +283,7 @@ describe('Employee Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ employees: [] });
 
 		return store.dispatch(actions.deleteEmployee({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});

@@ -12,10 +12,10 @@ import Register from './views/Register';
 import NotFoundPage from './views/NotFoundPage';
 import ForgottenYourPassword from './views/ForgottenYourPassword';
 
-import Dashboard from './views/dashboard/Dashboard';
+import Shifts from './views/dashboard/Shifts';
 import Overview from './views/dashboard/Overview';
-import Shifts from './views/dashboard/shifts/Shifts';
-import Employees from './views/dashboard/employees/Employees';
+import Dashboard from './views/dashboard/Dashboard';
+import Employees from './views/dashboard/Employees';
 
 const routes = constants.APP.ROUTES;
 

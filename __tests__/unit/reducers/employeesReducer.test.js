@@ -1,6 +1,6 @@
 import employeesReducer from '../../../src/assets/js/reducers/employeesReducer';
 
-import { GET_EMPLOYEE, GET_EMPLOYEES, CREATE_EMPLOYEE, UPDATE_EMPLOYEE, DELETE_EMPLOYEE } from '../../../src/assets/js/actions/actionTypes';
+import { GET_EMPLOYEE, GET_EMPLOYEES, CREATE_EMPLOYEE, UPDATE_EMPLOYEE, DELETE_EMPLOYEE, ORDER_EMPLOYEES } from '../../../src/assets/js/actions/actionTypes';
 
 const findEmployee = (employees, id) => (employees.length ? employees.find(employee => employee.id === id) : null);
 
@@ -40,6 +40,15 @@ describe('Employees Reducer', () => {
 	it('should handle GET_EMPLOYEES', () => {
 		const action = {
 			type: GET_EMPLOYEES,
+			employees: mockEmployees,
+		};
+
+		expect(employeesReducer(mockEmployees, action)).toEqual(mockEmployees);
+	});
+
+	it('should handle ORDER_EMPLOYEES', () => {
+		const action = {
+			type: ORDER_EMPLOYEES,
 			employees: mockEmployees,
 		};
 

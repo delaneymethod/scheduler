@@ -1,15 +1,15 @@
 import moment from 'moment';
-import Select from 'react-select';
 import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
-import CreatableSelect from 'react-select/lib/Creatable';
 import { Row, Col, Label, Input, Button, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 
 import Alert from '../common/Alert';
+
+import confirm from '../../helpers/confirm';
 
 import constants from '../../helpers/constants';
 
@@ -23,12 +23,15 @@ const propTypes = {
 	editMode: PropTypes.bool,
 	shiftId: PropTypes.string,
 	startDate: PropTypes.string,
+	handleClose: PropTypes.func,
 	employeeId: PropTypes.string,
+	placementId: PropTypes.string,
 	week: PropTypes.object.isRequired,
 	rota: PropTypes.object.isRequired,
 	roles: PropTypes.array.isRequired,
 	shifts: PropTypes.array.isRequired,
 	employees: PropTypes.array.isRequired,
+	handleSuccessNotification: PropTypes.func,
 };
 
 const defaultProps = {
@@ -41,6 +44,9 @@ const defaultProps = {
 	editMode: false,
 	startDate: null,
 	employeeId: null,
+	placementId: null,
+	handleClose: () => {},
+	handleSuccessNotification: () => {},
 };
 
 class ShiftForm extends Component {
@@ -62,35 +68,44 @@ class ShiftForm extends Component {
 		this.handleChange = this.handleChange.bind(this);
 
 		this.handleChangeTime = this.handleChangeTime.bind(this);
-
-		this.handleChangeRoleName = this.handleChangeRoleName.bind(this);
-
-		this.handleChangeStartDate = this.handleChangeStartDate.bind(this);
-
-		this.handleCreateRoleOption = this.handleCreateRoleOption.bind(this);
-
-		this.handleCreateStartDateOption = this.handleCreateStartDateOption.bind(this);
 	}
 
 	getInitialState = () => ({
 		error: {},
+		shift: {},
+		shiftId: '',
 		endTime: '',
 		roleName: '',
-		startTime: '',
 		startDate: '',
+		startTime: '',
+		startDates: [],
 		employeeId: '',
-		created: false,
-		updated: false,
-		deleted: false,
-		roleOptions: [],
-		selectedRole: '',
+		placementId: '',
 		numberOfPositions: 1,
-		startDateOptions: [],
 		isClosingShift: false,
-		selectedStartDate: '',
 	});
 
 	componentDidMount = () => {
+		/* If employee id was passed in as a prop, make sure we also update the state... */
+		if (!isEmpty(this.props.employeeId)) {
+			this.setState({ employeeId: this.props.employeeId });
+		}
+
+		/* If placement id was passed in as a prop, make sure we also update the state... Used when editing a shift */
+		if (!isEmpty(this.props.placementId)) {
+			this.setState({ placementId: this.props.placementId });
+		}
+
+		/* If shift id was passed in as a prop, make sure we also update the state... Used when editing a shift */
+		if (!isEmpty(this.props.shiftId)) {
+			this.setState({ shiftId: this.props.shiftId });
+		}
+
+		/* Sets the default value to fix validation issues if user doesnt pick any role */
+		if (this.props.roles.length > 0) {
+			this.setState({ roleName: this.props.roles[0].roleName });
+		}
+
 		/* 24 hours * 60 mins in an hour */
 		let hours = 24 * 60;
 
@@ -107,9 +122,9 @@ class ShiftForm extends Component {
 
 		const remainder = this.timeInterval - (moment().minute() % this.timeInterval);
 
-		const startTime = moment().add(remainder, 'minutes').format('HH:mm A');
+		let startTime = moment().add(remainder, 'minutes').format('HH:mm A');
 
-		const endTime = moment().add(1, 'hour').add(remainder, 'minutes').format('HH:mm A');
+		let endTime = moment().add(1, 'hour').add(remainder, 'minutes').format('HH:mm A');
 
 		this.setState({ startTime, endTime });
 
@@ -124,65 +139,62 @@ class ShiftForm extends Component {
 
 		this.times.push(midnight);
 
-		/* Create our roles list */
-		if (this.props.roles.length > 0) {
-			const roleOptions = [];
-
-			let selectedRole = '';
-
-			this.props.roles.forEach((role, index) => {
-				const roleOption = this.handleCreateRoleOption(role.roleName);
-
-				/* Sets the default value to fix validation issues if user doesnt pick any roles */
-				if (index === 0) {
-					selectedRole = roleOption;
-				}
-
-				roleOptions.push(roleOption);
-			});
-
-			this.setState({ roleOptions, selectedRole, roleName: selectedRole.label });
-		}
-
-		/* If employee id was passed in as a prop, make sure we also update the state... */
-		if (!isEmpty(this.props.employeeId)) {
-			this.setState({ employeeId: this.props.employeeId });
-		}
-
 		/* Sets the default value to fix validation issues if user doesnt pick any dates */
-		let selectedStartDate;
+		let startDate;
 
 		/* Because the shift was passed a start date as a prop, (shift form was opened via employee view), we need to use the start date prop instead of the current week start date */
 		if (!isEmpty(this.props.startDate)) {
-			selectedStartDate = this.handleCreateStartDateOption(moment(this.props.startDate, 'YYYY-MM-DD').format('dddd, Do MMMM YYYY'));
+			startDate = moment(this.props.startDate).format('YYYY-MM-DD');
 		} else {
-			selectedStartDate = this.handleCreateStartDateOption(moment(this.props.week.startDate).format('dddd, Do MMMM YYYY'));
+			startDate = moment(this.props.week.startDate).format('YYYY-MM-DD');
 		}
 
 		/* Our range will be the current week */
 		const startDates = [];
 
-		const startDateOptions = [];
+		/* Add the first date of the week to the range */
+		startDates.unshift(moment(this.props.week.startDate).toDate());
 
-		startDates.unshift(moment(this.props.week.startDate).format('dddd, Do MMMM YYYY'));
-
+		/* Add every date between the start and end of the week */
 		const firstDay = moment(this.props.week.startDate).startOf('day');
 
 		const lastDay = moment(this.props.week.endDate).startOf('day');
 
 		while (firstDay.add(1, 'days').diff(lastDay) < 0) {
-			startDates.push(firstDay.clone().format('dddd, Do MMMM YYYY'));
+			startDates.push(firstDay.toDate());
 		}
 
-		startDates.push(moment(this.props.week.endDate).format('dddd, Do MMMM YYYY'));
+		/* Finally add the end of the week date */
+		startDates.push(moment(this.props.week.endDate).toDate());
 
-		startDates.forEach((date) => {
-			const startDateOption = this.handleCreateStartDateOption(date);
+		this.setState({ startDate, startDates });
 
-			startDateOptions.push(startDateOption);
-		});
+		/* If we are in edit mode, we basically need to overwrite most of the above except for the shift id, placement id, employee id */
+		if (this.props.editMode) {
+			const shift = this.props.shifts.filter(data => data.shiftId === this.props.shiftId).shift();
 
-		this.setState({ startDateOptions, selectedStartDate, startDate: selectedStartDate.value });
+			/* Override role name */
+			const { roleName } = shift.role;
+
+			const { isClosingShift, numberOfPositions } = shift;
+
+			endTime = moment(shift.endTime).utc().format('HH:mm A');
+
+			startTime = moment(shift.startTime).utc().format('HH:mm A');
+
+			/* We already have the start date passed in as a prop, but lets set it again, just to be safe */
+			startDate = moment(shift.startTime).utc().format('YYYY-MM-DD');
+
+			/* Update the state with all the edit shift details */
+			this.setState({
+				endTime,
+				roleName,
+				startTime,
+				startDate,
+				isClosingShift,
+				numberOfPositions,
+			});
+		}
 	};
 
 	handleChange = async (event) => {
@@ -205,113 +217,197 @@ class ShiftForm extends Component {
 		await this.form.validateFields('startTime', 'endTime');
 	};
 
-	handleChangeStartDate = async (startDate) => {
-		if (isEmpty(startDate)) {
-			this.setState({ startDate: '' });
-		} else {
-			this.setState({ startDate: startDate.value });
-		}
+	handleGetShifts = () => {
+		const { actions, rota: { rotaId } } = this.props;
 
-		this.setState({ selectedStartDate: startDate });
+		const payload = {
+			rotaId,
+		};
 
-		await this.form.validateFields('startDate');
+		console.log('Called ShiftForm handleGetShifts getShifts');
+		actions.getShifts(payload).catch(error => this.setState({ error }));
 	};
 
-	handleCreateStartDateOption = label => ({
-		label,
-		value: moment(label, 'dddd, Do MMMM YYYY').format('YYYY-MM-DD'),
-	});
+	handleDelete = (event) => {
+		/* Check if the user wants to delete the shift */
+		let message = '<p>Please confirm that you wish to delete the <strong>Shift</strong>?</p><p class="text-warning"><i class="pr-3 fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>Caution: This action cannot be undone.</p>';
 
-	handleCreateRoleOption = label => ({
-		label,
-		value: label.toLowerCase().replace(/\W/g, '-'),
-	});
+		const options = {
+			message,
+			labels: {
+				cancel: 'Cancel',
+				proceed: 'Delete',
+			},
+			values: {
+				cancel: false,
+				process: true,
+			},
+			colors: {
+				proceed: 'danger',
+			},
+			title: 'Shifts',
+			className: 'modal-dialog',
+		};
 
-	handleChangeRoleName = async (newRole) => {
-		if (isEmpty(newRole)) {
-			this.setState({ roleName: '' });
-		} else {
-			this.setState({ roleName: newRole.label });
-		}
+		/* If the user has clicked the proceed button, we delete the shift */
+		/* If the user has clicked the cancel button, we do nothing */
+		confirm(options)
+			.then((result) => {
+				const { actions, shiftId } = this.props;
 
-		this.setState({ selectedRole: newRole });
+				const payload = {
+					shiftId,
+				};
 
-		await this.form.validateFields('roleName');
+				console.log('Called ShiftForm handleDelete deleteShifts');
+				actions.deleteShift(payload)
+					.then(() => {
+						/* Close the modal */
+						this.props.handleClose(event, '', moment());
+
+						message = '<p>Shift deleted successfully</p>';
+
+						/* Pass a message back up the rabbit hole to the parent component */
+						this.props.handleSuccessNotification(message);
+
+						this.handleGetShifts();
+					})
+					.catch(error => this.setState({ error }));
+			}, (result) => {
+				/* We do nothing */
+			});
 	};
-
-	handleDelete = async event => console.log('FIXME - Delete Shift');
 
 	handleSubmit = async (event) => {
 		event.preventDefault();
 
-		const { actions } = this.props;
-
-		const { rotaId } = this.props.rota;
+		const { shifts, actions, rota: { rotaId } } = this.props;
 
 		this.setState({ error: {} });
 
 		await this.form.validateFields();
 
 		if (this.form.isValid()) {
-			let payload;
+			let { endTime, startTime } = this.state;
+
+			const {
+				shiftId,
+				roleName,
+				startDate,
+				employeeId,
+				placementId,
+				isClosingShift,
+				numberOfPositions,
+			} = this.state;
+
+			/* We need to make sure our start and end values are in the format like 2018-06-05 18:50:00 and if its a closing shift, force the end time to be midnight */
+			if (isClosingShift) {
+				endTime = `${startDate} 23:59:00`;
+			} else {
+				endTime = `${startDate} ${moment(endTime, 'HH:mm A').format('HH:mm:ss')}`;
+			}
+
+			startTime = `${startDate} ${moment(startTime, 'HH:mm A').format('HH:mm:ss')}`;
+
+			let payload = {
+				rotaId,
+				shiftId,
+				endTime,
+				roleName,
+				startTime,
+				isClosingShift,
+				numberOfPositions,
+			};
 
 			if (this.props.editMode) {
-				console.log('FIXME - Update Shift');
-			} else {
-				let { endTime, startTime } = this.state;
+				/* Keep track of old shifts before updating so we can do checks on the employee/placement */
+				const oldShifts = shifts;
 
-				const {
-					roleName,
-					startDate,
-					employeeId,
-					isClosingShift,
-					numberOfPositions,
-				} = this.state;
+				console.log('Called ShiftForm handleSubmit updateShift');
+				actions.updateShift(payload)
+					.then(() => {
+						/* Get the edit shift again based on shift id. Updated shift doesnt have placments included */
+						const oldShift = oldShifts.filter(data => data.shiftId === shiftId).shift();
 
-				/* We need to make sure our start and end values are in the format like 2018-06-05 18:50:00 and if its a closing shift, force the end time to be midnight */
-				if (isClosingShift) {
-					endTime = `${startDate} 23:59:00`;
-				} else {
-					endTime = `${startDate} ${moment(endTime, 'HH:mm A').format('HH:mm:ss')}`;
-				}
+						/* Get the matching placement (based on the employee id) */
+						const oldPlacement = oldShift.placements.filter(data => data.employee.employeeId === employeeId).shift();
 
-				startTime = `${startDate} ${moment(startTime, 'HH:mm A').format('HH:mm:ss')}`;
-
-				payload = {
-					rotaId,
-					endTime,
-					roleName,
-					startTime,
-					isClosingShift,
-					numberOfPositions,
-				};
-
-				console.log('Called ShiftForm handleSubmit createShift');
-				actions.createShift(payload)
-					.then((shift) => {
-						const { shiftId } = shift;
-
-						if (!isEmpty(employeeId)) {
+						/**
+						 * If the placement is empty, this means that no matching placement was found for the employee id, so we need to update the placement.
+						 * If there was a match, the shift belongs to same employee id.
+						 */
+						if (isEmpty(oldPlacement)) {
 							payload = {
 								shiftId,
 								employeeId,
+								placementId,
+							};
+
+							/**
+							 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
+							 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
+							 */
+							console.log('Called ShiftForm handleSubmit updatePlacement');
+							actions.updatePlacement(payload)
+								/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+								.then(() => {
+									/* Close the modal */
+									this.props.handleClose(event, '', moment());
+
+									const message = '<p>Shift updated successfully</p>';
+
+									/* Pass a message back up the rabbit hole to the parent component */
+									this.props.handleSuccessNotification(message);
+
+									this.handleGetShifts();
+								})
+								.catch(error => this.setState({ error }));
+						} else {
+							/* Close the modal */
+							this.props.handleClose(event, '', moment());
+
+							const message = '<p>Shift updated successfully</p>';
+
+							/* Pass a message back up the rabbit hole to the parent component */
+							this.props.handleSuccessNotification(message);
+
+							/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+							this.handleGetShifts();
+						}
+					})
+					.catch(error => this.setState({ error }));
+			} else {
+				console.log('Called ShiftForm handleSubmit createShift');
+				actions.createShift(payload)
+					.then((shift) => {
+						if (!isEmpty(employeeId)) {
+							payload = {
+								employeeId,
+								shiftId: shift.shiftId,
 							};
 
 							console.log('Called ShiftForm handleSubmit createPlacement');
 							actions.createPlacement(payload)
 								.then(() => {
-									payload = {
-										rotaId,
-									};
+									/* Close the modal */
+									this.props.handleClose(event, '', moment());
 
-									console.log('Called ShiftForm handleSubmit getShifts');
-									actions.getShifts(payload)
-										.then(() => this.setState({ created: true }))
-										.catch(error => this.setState({ error }));
+									const message = '<p>Shift created successfully</p>';
+
+									/* Pass a message back up the rabbit hole to the parent component */
+									this.props.handleSuccessNotification(message);
+
+									this.handleGetShifts();
 								})
 								.catch(error => this.setState({ error }));
 						} else {
-							this.setState({ created: true });
+							/* Close the modal */
+							this.props.handleClose(event, '', moment());
+
+							const message = '<p>Shift created successfully</p>';
+
+							/* Pass a message back up the rabbit hole to the parent component */
+							this.props.handleSuccessNotification(message);
 						}
 					})
 					.catch(error => this.setState({ error }));
@@ -321,35 +417,24 @@ class ShiftForm extends Component {
 
 	errorMessage = () => (this.state.error.data ? <Alert color="danger" title={this.state.error.data.title} message={this.state.error.data.message} /> : null);
 
-	successMessage = () => {
-		const { created, updated, deleted } = this.state;
-
-		if (created) {
-			return (<Alert color="success" message="Shift was created successfully." />);
-		} else if (updated) {
-			return (<Alert color="success" message="Shift was updated successfully." />);
-		} else if (deleted) {
-			return (<Alert color="success" message="Shift was deleted successfully." />);
-		}
-
-		return null;
-	};
-
 	render = () => (
 		<Fragment>
 			{this.errorMessage()}
-			{this.successMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 				<FormGroup>
 					<Label for="startDate">Select Date <span className="text-danger">&#42;</span></Label>
-					<Select name="startDate" id="startDate" className="select-autocomplete-container" classNamePrefix="select-autocomplete" onChange={this.handleChangeStartDate} value={this.state.selectedStartDate} options={this.state.startDateOptions} tabIndex="1" required />
+					<Input type="select" name="startDate" id="startDate" className="custom-select custom-select-xl" value={this.state.startDate} onChange={this.handleChange} tabIndex="1" required={true}>
+						{this.state.startDates.map((startDate, index) => <option key={index} value={moment(startDate).format('YYYY-MM-DD')} label={moment(startDate).format('dddd, Do MMMM YYYY')} />)}
+					</Input>
 					<FieldFeedbacks for="startDate" show="all">
 						<FieldFeedback when="*">- Please provide a valid start date.</FieldFeedback>
 					</FieldFeedbacks>
 				</FormGroup>
 				<FormGroup>
 					<Label for="roleName">Role</Label>
-					<CreatableSelect name="roleName" id="roleName" className="select-autocomplete-container" classNamePrefix="select-autocomplete" onChange={this.handleChangeRoleName} value={this.state.selectedRole} options={this.state.roleOptions} tabIndex="2" isClearable required />
+					<Input type="select" name="roleName" id="roleName" className="custom-select custom-select-xl" value={this.state.roleName} onChange={this.handleChange} tabIndex="2" required={true}>
+						{this.props.roles.map((role, index) => <option key={index} value={role.roleName} label={role.roleName} />)}
+					</Input>
 					<FieldFeedbacks for="roleName" show="all">
 						<FieldFeedback when="*">- Please select or type in a role.</FieldFeedback>
 					</FieldFeedbacks>
@@ -410,7 +495,7 @@ class ShiftForm extends Component {
 						<Label for="employeeId">Assign Employee</Label>
 						<Input type="select" name="employeeId" id="employeeId" className="custom-select custom-select-xl" value={this.state.employeeId} onChange={this.handleChange} tabIndex="7">
 							<option value="" label="" />
-							{this.props.employees.map(({ employee }, index) => <option key={index} value={employee.employeeId} label={`${employee.firstName} ${employee.surname}`} />)}
+							{this.props.employees.map(({ employee }, index) => <option key={index} value={employee.employeeId} label={`${employee.firstName} ${employee.lastName}`} />)}
 						</Input>
 						<FieldFeedbacks for="employeeId" show="all">
 							<FieldFeedback when="*">- Please select an employee.</FieldFeedback>
@@ -418,7 +503,10 @@ class ShiftForm extends Component {
 					</FormGroup>
 				) : null}
 				{(this.props.editMode) ? (
-					<Button type="submit" color="primary" className="mt-4" title={routes.SHIFTS.UPDATE.TITLE} tabIndex="8" block>{routes.SHIFTS.UPDATE.TITLE}</Button>
+					<Fragment>
+						<Button type="submit" color="primary" className="mt-4" title={routes.SHIFTS.UPDATE.TITLE} tabIndex="8" block>{routes.SHIFTS.UPDATE.TITLE}</Button>
+						<Button type="button" className="mt-4 text-danger btn btn-outline-danger" title={routes.SHIFTS.DELETE.TITLE} tabIndex="9" block onClick={this.handleDelete}>{routes.SHIFTS.DELETE.TITLE}</Button>
+					</Fragment>
 				) : (
 					<Button type="submit" color="primary" className="mt-4" title={routes.SHIFTS.CREATE.TITLE} tabIndex="8" block>{routes.SHIFTS.CREATE.TITLE}</Button>
 				)}
@@ -441,6 +529,7 @@ const mapStateToProps = (state, props) => ({
 	startDate: props.startDate,
 	employees: state.employees,
 	employeeId: props.employeeId,
+	placementId: props.placementId,
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -29,7 +29,7 @@ describe('Shift Actions', () => {
 			});
 		});
 
-		store = mockStore({ shifts: {} });
+		store = mockStore({ shifts: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -76,7 +76,7 @@ describe('Shift Actions', () => {
 			});
 		});
 
-		store = mockStore({ shifts: {} });
+		store = mockStore({ shifts: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -121,7 +121,7 @@ describe('Shift Actions', () => {
 			});
 		});
 
-		store = mockStore({ shifts: {} });
+		store = mockStore({ shifts: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -166,7 +166,7 @@ describe('Shift Actions', () => {
 			});
 		});
 
-		store = mockStore({ shifts: {} });
+		store = mockStore({ shifts: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -196,7 +196,7 @@ describe('Shift Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ shifts: [] });
 
 		return store.dispatch(actions.createShift({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -211,7 +211,7 @@ describe('Shift Actions', () => {
 			});
 		});
 
-		store = mockStore({ shifts: {} });
+		store = mockStore({ shifts: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -241,7 +241,7 @@ describe('Shift Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ shifts: [] });
 
 		return store.dispatch(actions.updateShift({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -256,7 +256,7 @@ describe('Shift Actions', () => {
 			});
 		});
 
-		store = mockStore({ shifts: {} });
+		store = mockStore({ shifts: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -286,7 +286,7 @@ describe('Shift Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ shifts: [] });
 
 		return store.dispatch(actions.deleteShift({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});

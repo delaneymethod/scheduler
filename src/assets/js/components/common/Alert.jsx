@@ -5,6 +5,7 @@ import { Alert as AlertCore } from 'reactstrap';
 
 const propTypes = {
 	title: PropTypes.any,
+	className: PropTypes.string,
 	color: PropTypes.string.isRequired,
 	message: PropTypes.string.isRequired,
 };
@@ -13,10 +14,16 @@ const defaultProps = {
 	color: '',
 	title: null,
 	message: '',
+	className: '',
 };
 
-const Alert = ({ color, title, message }) => (
-	<AlertCore color={color}>
+const Alert = ({
+	color,
+	title,
+	message,
+	className,
+}) => (
+	<AlertCore color={color} className={className}>
 		{(!isEmpty(title)) ? (
 			<h5>{title}</h5>
 		) : null}

@@ -74,7 +74,7 @@ describe('Role Actions', () => {
 			});
 		});
 
-		store = mockStore({ roles: {} });
+		store = mockStore({ roles: [] });
 
 		const expectedActions = [{
 			status: true,

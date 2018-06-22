@@ -20,10 +20,12 @@ label {
 	color: $body-color !important;
 	// font-weight: $font-weight-semi;
 	border: calculateRem(1px) solid $gray-600;
+	line-height: calculateRem(44px);
+}
 
-	@include media-breakpoint-up(lg) {
-		line-height: calculateRem(44px);
-	}
+.form-control-md,
+.form-control-sm {
+	line-height: calculateRem(24px);
 }
 
 .custom-select,
@@ -36,4 +38,53 @@ select.form-control:not([size]):not([multiple]) {
 .custom-select-xl {
 	height: $custom-select-height-xl;
 	font-size: $custom-select-font-size-xl;
+}
+
+.uploader {
+	width: 100%;
+	display: flex;
+	cursor: pointer;
+	position: relative;
+	align-items: center;
+	justify-content: center;
+	height: calculateRem(300px);
+	outline-offset: calculateRem(10px);
+	background-color: rgba(0, 0, 0, 0.1);
+	outline: calculateRem(2px) dashed #cccccc;
+	
+	input { 
+		display: none; 
+	}
+	
+	& img,
+	& .icon { 
+		pointer-events: none; 
+	}
+	
+	&, .icon {
+		transition: all 100ms ease-in;
+	}
+	
+	.icon {
+		clear: both;
+		color: #eeeeee;
+		font-size: 5em;
+		display: block;
+	}
+	
+	img {
+		top: 50%;
+		left: 50%;
+		opacity: 0;
+		z-index: -1;
+		max-width: 100%;
+		max-height: 100%;
+		position: absolute;
+		transition: all 300ms ease-in;
+		transform: translate(-50%, -50%);
+		
+		&.loaded {
+			opacity: 1;
+		}
+	}
 }

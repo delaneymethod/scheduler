@@ -114,8 +114,7 @@ class RegisterForm extends Component {
 				lastName,
 				firstName,
 				businessName,
-				/* FIXME - rename subscriptionLevel to subscriptionLevelId once backend has been updated */
-				subscriptionLevel: subscriptionLevelId,
+				subscriptionLevelId,
 			};
 
 			console.log('Called RegisterForm handleSubmit register');

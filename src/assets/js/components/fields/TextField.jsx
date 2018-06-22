@@ -4,7 +4,7 @@ import { Label, Input, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks } from 'react-form-with-constraints';
 
 const propTypes = {
-	fieldValue: PropTypes.string,
+	fieldValue: PropTypes.any,
 	valueMissing: PropTypes.string,
 	fieldPlaceholder: PropTypes.string,
 	fieldName: PropTypes.string.isRequired,

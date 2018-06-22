@@ -11,6 +11,10 @@ const employeesReducer = (state = combinedState.employees, action) => {
 		case types.GET_EMPLOYEES:
 			return action.employees;
 
+		case types.ORDER_EMPLOYEES:
+		case types.UPLOAD_EMPLOYEES:
+			return state;
+
 		case types.GET_EMPLOYEE:
 		case types.UPDATE_EMPLOYEE:
 			return [

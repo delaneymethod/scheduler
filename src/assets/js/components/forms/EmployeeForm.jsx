@@ -11,8 +11,6 @@ import TextField from '../fields/TextField';
 
 import EmailField from '../fields/EmailField';
 
-import NumberField from '../fields/NumberField';
-
 import constants from '../../helpers/constants';
 
 import { createEmployee, updateEmployee, deleteEmployee } from '../../actions/employeeActions';
@@ -21,14 +19,18 @@ const routes = constants.APP.ROUTES;
 
 const propTypes = {
 	editMode: PropTypes.bool,
+	handleClose: PropTypes.func,
 	employeeId: PropTypes.string,
 	employees: PropTypes.array.isRequired,
+	handleSuccessNotification: PropTypes.func,
 };
 
 const defaultProps = {
 	employees: [],
 	editMode: false,
 	employeeId: null,
+	handleClose: () => {},
+	handleSuccessNotification: () => {},
 };
 
 class EmployeeForm extends Component {
@@ -42,20 +44,17 @@ class EmployeeForm extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 
 		this.handleChange = this.handleChange.bind(this);
-
-		this.handleChangeHourlyRate = this.handleChangeHourlyRate.bind(this);
 	}
 
 	getInitialState = () => ({
 		error: {},
 		email: '',
+		salary: 0,
+		mobile: '',
 		lastName: '',
 		firstName: '',
 		hourlyRate: 0,
-		created: false,
-		updated: false,
-		deleted: false,
-		contactNumber: '',
+		weeklyContractHours: 0.0,
 	});
 
 	handleChange = async (event) => {
@@ -63,22 +62,6 @@ class EmployeeForm extends Component {
 
 		this.setState({
 			[target.name]: target.value,
-		});
-
-		await this.form.validateFields(target);
-	};
-
-	handleChangeHourlyRate = async (event) => {
-		this.setState({ created: false, updated: false, deleted: false });
-
-		const target = event.currentTarget;
-
-		target.value = (!target.value) ? 0 : target.value;
-
-		const hourlyRate = parseInt(target.value, 10);
-
-		this.setState({
-			[target.name]: hourlyRate,
 		});
 
 		await this.form.validateFields(target);
@@ -101,13 +84,36 @@ class EmployeeForm extends Component {
 			if (this.props.editMode) {
 				console.log('FIXME - Update Employee');
 			} else {
+				const {
+					email,
+					salary,
+					mobile,
+					lastName,
+					firstName,
+					hourlyRate,
+					weeklyContractHours,
+				} = this.state;
+
 				payload = {
+					email,
+					salary,
+					mobile,
+					lastName,
+					firstName,
+					hourlyRate,
+					weeklyContractHours,
 				};
 
 				console.log('Called EmployeeForm handleSubmit createEmployee');
 				actions.createEmployee(payload)
-					.then((employee) => {
-						console.log('Employee:', employee);
+					.then(() => {
+						/* Close the modal */
+						this.props.handleClose();
+
+						const message = '<p>Employee created successfully</p>';
+
+						/* Pass a message back up the rabbit hole to the parent component */
+						this.props.handleSuccessNotification(message);
 					})
 					.catch(error => this.setState({ error }));
 			}
@@ -116,30 +122,17 @@ class EmployeeForm extends Component {
 
 	errorMessage = () => (this.state.error.data ? <Alert color="danger" title={this.state.error.data.title} message={this.state.error.data.message} /> : null);
 
-	successMessage = () => {
-		const { created, updated, deleted } = this.state;
-
-		if (created) {
-			return (<Alert color="success" message="Employee was created successfully." />);
-		} else if (updated) {
-			return (<Alert color="success" message="Employee was updated successfully." />);
-		} else if (deleted) {
-			return (<Alert color="success" message="Employee was deleted successfully." />);
-		}
-
-		return null;
-	};
-
 	render = () => (
 		<Fragment>
 			{this.errorMessage()}
-			{this.successMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 				<TextField fieldName="firstName" fieldLabel="First Name" fieldValue={this.state.firstName} fieldPlaceholder="e.g. Barry" handleChange={this.handleChange} valueMissing="Please provide a valid first name." tabIndex="1" fieldRequired={true} />
 				<TextField fieldName="lastName" fieldLabel="Last Name" fieldValue={this.state.lastName} fieldPlaceholder="e.g. Lynch" handleChange={this.handleChange} valueMissing="Please provide a valid last name." tabIndex="2" fieldRequired={true} />
 				<EmailField fieldValue={this.state.email} handleChange={this.handleChange} tabIndex="3" fieldRequired={true} />
-				<TextField fieldName="contactNumber" fieldLabel="Contact Number" fieldValue={this.state.contactNumber} fieldPlaceholder="e.g. 077..." handleChange={this.handleChange} valueMissing="Please provide a valid contact number." tabIndex="4" fieldRequired={true} />
-				<NumberField fieldName="hourlyRate" fieldLabel="Hourly Rate" fieldValue={this.state.hourlyRate} fieldPlaceholder="e.g. 7.50" handleChange={this.handleChangeHourlyRate} valueMissing="Please provide a valid hourly rate." tabIndex="5" fieldRequired={true} />
+				<TextField fieldName="mobile" fieldLabel="Mobile" fieldValue={this.state.mobile} fieldPlaceholder="e.g. 077..." handleChange={this.handleChange} valueMissing="Please provide a valid mobile number." tabIndex="4" fieldRequired={true} />
+				<TextField fieldName="hourlyRate" fieldLabel="Hourly Rate" fieldValue={this.state.hourlyRate} fieldPlaceholder="e.g. 7.83" handleChange={this.handleChange} valueMissing="Please provide a valid hourly rate." tabIndex="5" fieldRequired={true} />
+				<TextField fieldName="salary" fieldLabel="Salary" fieldValue={this.state.salary} fieldPlaceholder="e.g. 7.83" handleChange={this.handleChange} valueMissing="Please provide a valid salary." tabIndex="6" fieldRequired={false} />
+				<TextField fieldName="weeklyContractHours" fieldLabel="Weekly Contract Hours" fieldValue={this.state.weeklyContractHours} fieldPlaceholder="e.g. 37.5" handleChange={this.handleChange} valueMissing="Please provide a valid weekly contract hours." tabIndex="7" fieldRequired={false} />
 				{(this.props.editMode) ? (
 					<Button type="submit" color="primary" className="mt-4" title={routes.EMPLOYEES.UPDATE.TITLE} tabIndex="8" block>{routes.EMPLOYEES.UPDATE.TITLE}</Button>
 				) : (

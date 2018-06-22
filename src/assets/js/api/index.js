@@ -19,7 +19,7 @@ const requestHeaders = () => ({
 });
 
 /* Cancellable request */
-const request = (method, url, expectedStatus = 200, data = null) => {
+const request = (method, url, expectedStatus = 200, payload = null) => {
 	/*
 	if (axiosCall) {
 		axiosCall.cancel();
@@ -27,6 +27,17 @@ const request = (method, url, expectedStatus = 200, data = null) => {
 
 	axiosCall = CancelToken.source();
 	*/
+
+	let data = payload;
+
+	/* If we are uploading a file, we need to use FormData() to attach the file and set the correct content type */
+	if (typeof data !== 'undefined' && data !== null && typeof data.file !== 'undefined' && data.file !== null) {
+		const { file } = data;
+
+		data = new FormData();
+
+		data.append('file', file);
+	}
 
 	const headers = requestHeaders();
 
@@ -86,6 +97,10 @@ export const getSubscriptionLevels = () => request('GET', '/subscription-levels'
 
 /* EMPLOYEES */
 export const getEmployees = () => request('GET', '/employees');
+
+export const orderEmployees = payload => request('PUT', `/employees/order?rotaTypeId=${payload.rotaTypeId}`, 200, payload);
+
+export const uploadEmployees = payload => request('POST', '/employees/load', 200, payload);
 
 export const getEmployee = employee => request('GET', `/employees/${employee.employeeId}`);
 

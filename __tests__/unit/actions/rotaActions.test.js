@@ -74,7 +74,7 @@ describe('Rota Actions', () => {
 			});
 		});
 
-		store = mockStore({ rotas: {} });
+		store = mockStore({ rotas: [] });
 
 		const expectedActions = [{
 			status: true,

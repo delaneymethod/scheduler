@@ -1,12 +1,10 @@
-import $ from 'jquery';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import { Col, Row } from 'reactstrap';
 import { connect } from 'react-redux';
 import { sortBy, isEmpty } from 'lodash';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
-import constants from '../../helpers/constants';
+import { Col, Row, Popover, PopoverBody, PopoverHeader } from 'reactstrap';
 
 import Modal from './Modal';
 
@@ -14,16 +12,23 @@ import RotaForm from '../forms/RotaForm';
 
 import ShiftForm from '../forms/ShiftForm';
 
+import constants from '../../helpers/constants';
+
 import { switchWeek } from '../../actions/weekActions';
+
+import { getShifts } from '../../actions/shiftActions';
 
 import { getRotas, switchRota, updateRota } from '../../actions/rotaActions';
 
 import { getRotaTypes, switchRotaType } from '../../actions/rotaTypeActions';
 
+const routes = constants.APP.ROUTES;
+
+const { STATUSES } = routes.ROTAS;
+
 const propTypes = {
 	rota: PropTypes.object.isRequired,
 	rotas: PropTypes.array.isRequired,
-	account: PropTypes.object.isRequired,
 	rotaType: PropTypes.object.isRequired,
 	rotaTypes: PropTypes.array.isRequired,
 };
@@ -31,7 +36,6 @@ const propTypes = {
 const defaultProps = {
 	rota: {},
 	rotas: [],
-	account: {},
 	rotaType: {},
 	rotaTypes: [],
 };
@@ -48,9 +52,13 @@ class Toolbar extends Component {
 
 		this.handleCreateShift = this.handleCreateShift.bind(this);
 
+		this.handlePublishRota = this.handlePublishRota.bind(this);
+
+		this.handleRotaTypeMenu = this.handleRotaTypeMenu.bind(this);
+
 		this.handleSwitchRotaType = this.handleSwitchRotaType.bind(this);
 
-		this.handlePublishRota = this.handlePublishRota.bind(this);
+		this.handleSuccessNotification = this.handleSuccessNotification.bind(this);
 	}
 
 	getInitialState = () => ({
@@ -58,27 +66,8 @@ class Toolbar extends Component {
 		isRotaModalOpen: false,
 		isErrorModalOpen: false,
 		isShiftModalOpen: false,
+		isRotaTypeMenuPopoverOpen: false,
 	});
-
-	componentDidMount = () => {
-		const { actions } = this.props;
-
-		$('.btn-rotas-popover').popover({
-			html: true,
-			trigger: 'focus',
-			placement: 'bottom',
-			content: () => $('#rotas-list').html(),
-		});
-
-		/* Bit hacky and not the "React Way" but because we are using Popovers, event handlers are not binded! */
-		$(document).on('shown.bs.popover', () => {
-			$('.create-rota, .switch-rota-type').bind('click');
-
-			$('.create-rota').on('click', event => this.handleCreateRota());
-
-			$('.switch-rota-type').on('click', event => this.handleSwitchRotaType(event));
-		});
-	};
 
 	handleSwitchRotaType = (event) => {
 		const { actions } = this.props;
@@ -86,9 +75,11 @@ class Toolbar extends Component {
 		const target = event.currentTarget;
 
 		if (this.props.rotaTypes.length > 0) {
-			const rotaType = this.props.rotaTypes.find(type => type.rotaTypeId === target.id);
+			const rotaType = this.props.rotaTypes.find(data => data.rotaTypeId === target.id);
 
 			if (!isEmpty(rotaType)) {
+				this.setState(this.getInitialState());
+
 				/* Switch rota type and fetch all rotas for this type, grab latest rota and update current week */
 				console.log('Called Toolbar handleSwitchRotaType switchRotaType');
 				actions.switchRotaType(rotaType).then(() => {
@@ -113,7 +104,7 @@ class Toolbar extends Component {
 
 							const weekEndDate = moment(rota.startDate).endOf('isoWeek');
 
-							const payload = {
+							let payload = {
 								endDate: weekEndDate,
 								startDate: weekStartDate,
 							};
@@ -121,6 +112,20 @@ class Toolbar extends Component {
 							/* Set the current week */
 							console.log('Called Toolbar handleSwitchRotaType switchWeek');
 							actions.switchWeek(payload);
+
+							/* Get shifts for current rota */
+							const { rotaId } = rota;
+
+							payload = {
+								rotaId,
+							};
+
+							console.log('Called Toolbar handleSwitchRotaType getShifts');
+							actions.getShifts(payload).catch((error) => {
+								this.setState({ error });
+
+								this.handleModal();
+							});
 						})
 						.catch((error) => {
 							this.setState({ error });
@@ -139,7 +144,7 @@ class Toolbar extends Component {
 
 		const { rotaId, budget } = rota;
 
-		const status = constants.ROTA.STATUS_PUBLISHED;
+		const status = STATUSES.PUBLISHED;
 
 		startDate = moment(startDate).format('YYYY-MM-DD');
 
@@ -164,28 +169,34 @@ class Toolbar extends Component {
 
 	handleCreateShift = () => this.setState({ isShiftModalOpen: !this.state.isShiftModalOpen });
 
+	handleRotaTypeMenu = () => this.setState({ isRotaModalOpen: false, isRotaTypeMenuPopoverOpen: !this.state.isRotaTypeMenuPopoverOpen });
+
+	handleSuccessNotification = message => console.log('handleSuccess - show success notification with message:', message);
+
 	render = () => (
 		<Fragment>
 			<Row>
-				<Col className="pt-3 pb-0 pt-sm-3 pb-ms-3 text-center text-sm-left" xs="12" sm="6" md="6" lg="6" xl="6">
-					<button type="button" className="btn btn-rotas-popover text-dark border-0" aria-label="Toggle Rotas">{this.props.account.name}, {this.props.rotaType.rotaTypeName}<i className="pl-2 fa fa-chevron-down" aria-hidden="true"></i></button>
-					<div className="d-none" id="rotas-list">
-						<ul className="popover-menu">
-							{(this.props.rotaTypes.length > 0) ? this.props.rotaTypes.map((rotaType, index) => <li key={index}><button type="button" title={rotaType.rotaTypeName} className="btn btn-action btn-nav border-0 switch-rota-type" id={rotaType.rotaTypeId}>{rotaType.rotaTypeName}</button></li>) : null}
-							<li>
-								<button type="button" title="Add New Rota" className="btn btn-primary btn-nav border-0 create-rota">Add New Rota</button>
-								<Modal title="Rotas" className="modal-dialog" buttonLabel="Cancel" show={this.state.isRotaModalOpen} onClose={this.handleCreateRota}>
-									<RotaForm />
-								</Modal>
-							</li>
-						</ul>
-					</div>
+				<Col className="pt-3 pb-0 pt-sm-3 pb-ms-3 text-center text-md-left" xs="12" sm="12" md="6" lg="6" xl="6">
+					<button type="button" className="btn btn-rotas-popover text-dark border-0" id="rotaTypeMenu" title="Toggle Rotas" aria-label="Toggle Rotas" onClick={this.handleRotaTypeMenu}>{this.props.rotaType.rotaTypeName}<i className="pl-2 fa fa-chevron-down" aria-hidden="true"></i></button>
+					<Popover placement="bottom" isOpen={this.state.isRotaTypeMenuPopoverOpen} target="rotaTypeMenu" toggle={this.handleRotaTypeMenu}>
+						<PopoverBody>
+							<ul className="popover-menu">
+								{(this.props.rotaTypes.length > 0) ? this.props.rotaTypes.map((rotaType, index) => <li key={index}><button type="button" title={rotaType.rotaTypeName} className="btn btn-action btn-nav border-0" id={rotaType.rotaTypeId} onClick={this.handleSwitchRotaType}>{rotaType.rotaTypeName}</button></li>) : null}
+								<li>
+									<button type="button" title="Add New Rota" className="btn btn-primary btn-nav border-0" onClick={this.handleCreateRota}>Add New Rota</button>
+									<Modal title="Rotas" className="modal-dialog" buttonLabel="Cancel" show={this.state.isRotaModalOpen} onClose={this.handleCreateRota}>
+										<RotaForm handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateRota} />
+									</Modal>
+								</li>
+							</ul>
+						</PopoverBody>
+					</Popover>
 				</Col>
 				<Col className="pt-3 pb-3 pt-sm-3 pb-ms-3 text-center text-sm-right" xs="12" sm="6" md="6" lg="6" xl="6">
-					<button type="button" title="Add New Shift" className="btn btn-secondary pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 border-0" onClick={this.handleCreateShift}><i className="pr-2 fa fa-plus" aria-hidden="true"></i>Add New Shift</button>
-					<button type="button" title="Publish Rota" className="btn btn-nav btn-primary pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 border-0" onClick={this.handlePublishRota}>Publish</button>
+					<button type="button" title="Create Shift" className="btn btn-secondary pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 border-0" onClick={this.handleCreateShift}><i className="pr-2 fa fa-plus" aria-hidden="true"></i>Create Shift</button>
+					{(this.props.rota.status === STATUSES.DRAFT) ? (<button type="button" title="Publish Rota" className="btn btn-nav btn-primary pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 ml-3 border-0" onClick={this.handlePublishRota}>Publish</button>) : (<button type="button" title={this.props.rota.status} className="btn btn-link pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 ml-3 border-0">{this.props.rota.status}</button>)}
 					<Modal title="Shifts" className="modal-dialog" buttonLabel="Cancel" show={this.state.isShiftModalOpen} onClose={this.handleCreateShift}>
-						<ShiftForm />
+						<ShiftForm handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateShift} />
 					</Modal>
 				</Col>
 			</Row>
@@ -207,17 +218,17 @@ const mapStateToProps = (state, props) => ({
 	rotas: state.rotas,
 	rotaType: state.rotaType,
 	rotaTypes: state.rotaTypes,
-	account: state.user.account,
 });
 
 const mapDispatchToProps = dispatch => ({
 	actions: bindActionCreators({
 		getRotas,
+		getShifts,
 		switchWeek,
 		switchRota,
+		updateRota,
 		getRotaTypes,
 		switchRotaType,
-		updateRota,
 	}, dispatch),
 });
 

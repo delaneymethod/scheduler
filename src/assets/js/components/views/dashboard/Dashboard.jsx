@@ -1,8 +1,7 @@
-import sortBy from 'lodash/sortBy';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { delay, isEmpty } from 'lodash';
 import { bindActionCreators } from 'redux';
+import { delay, sortBy, isEmpty } from 'lodash';
 import React, { Fragment, Component } from 'react';
 
 import Modal from '../../common/Modal';
@@ -64,6 +63,8 @@ class Dashboard extends Component {
 		this.handleFetchData = this.handleFetchData.bind(this);
 
 		this.handleCreateRota = this.handleCreateRota.bind(this);
+
+		this.handleSuccessNotification = this.handleSuccessNotification.bind(this);
 	}
 
 	getInitialState = () => ({
@@ -81,7 +82,7 @@ class Dashboard extends Component {
 		meta.keywords.setAttribute('content', routes.DASHBOARD.HOME.META.KEYWORDS);
 		meta.author.setAttribute('content', constants.APP.AUTHOR);
 
-		/* Lets wait 1.3 seconds before fetching data - prevents any race conditions */
+		/* Wait 1.3 seconds before fetching data - prevents any race conditions */
 		delay(() => this.handleFetchData(), 1300);
 	};
 
@@ -169,6 +170,8 @@ class Dashboard extends Component {
 
 	handleCreateRota = () => this.setState({ isRotaModalOpen: !this.state.isRotaModalOpen });
 
+	handleSuccessNotification = message => console.log('handleSuccess - show success notification with message:', message);
+
 	render = () => (
 		<Fragment>
 			<Header history={this.props.history} />
@@ -178,7 +181,7 @@ class Dashboard extends Component {
 				</Modal>
 			) : null}
 			<Modal isStatic={true} className="modal-dialog" show={this.state.isRotaModalOpen} onClose={this.handleCreateRota}>
-				<RotaForm title="Create First Rota" message={routes.ROTAS.CREATE.MESSAGE} onClose={this.handleCreateRota} />
+				<RotaForm title="Create First Rota" message={routes.ROTAS.CREATE.MESSAGE} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateRota} />
 			</Modal>
 		</Fragment>
 	);

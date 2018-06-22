@@ -226,6 +226,9 @@ class WeekPicker extends Component {
 						cancel: false,
 						process: true,
 					},
+					colors: {
+						proceed: 'primary',
+					},
 					title: 'Copy Rota Shifts',
 					className: 'modal-dialog',
 				};

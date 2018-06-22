@@ -37,6 +37,8 @@ store.subscribe(throttle(() => {
 		authenticated,
 	} = store.getState();
 
+	saveState('week', week);
+
 	saveState('user', user);
 
 	saveState('roles', roles);
@@ -44,8 +46,6 @@ store.subscribe(throttle(() => {
 	saveState('employees', employees);
 
 	saveState('authenticated', authenticated);
-
-	saveState('week', (rotaTypes.length === 0) ? {} : week);
 
 	saveState('rota', (rotaTypes.length === 0 || rotas.length === 0) ? {} : rota);
 

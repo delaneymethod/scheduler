@@ -29,7 +29,7 @@ describe('Placement Actions', () => {
 			});
 		});
 
-		store = mockStore({ placements: {} });
+		store = mockStore({ placements: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -55,7 +55,7 @@ describe('Placement Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ placements: [] });
 
 		return store.dispatch(actions.getPlacements({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -70,7 +70,7 @@ describe('Placement Actions', () => {
 			});
 		});
 
-		store = mockStore({ placements: {} });
+		store = mockStore({ placements: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -100,7 +100,7 @@ describe('Placement Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ placements: [] });
 
 		return store.dispatch(actions.getPlacement({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -115,7 +115,7 @@ describe('Placement Actions', () => {
 			});
 		});
 
-		store = mockStore({ placements: {} });
+		store = mockStore({ placements: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -145,7 +145,7 @@ describe('Placement Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ placements: [] });
 
 		return store.dispatch(actions.createPlacement({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -160,7 +160,7 @@ describe('Placement Actions', () => {
 			});
 		});
 
-		store = mockStore({ placements: {} });
+		store = mockStore({ placements: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -190,7 +190,7 @@ describe('Placement Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ placements: [] });
 
 		return store.dispatch(actions.updatePlacement({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
@@ -205,7 +205,7 @@ describe('Placement Actions', () => {
 			});
 		});
 
-		store = mockStore({ placements: {} });
+		store = mockStore({ placements: [] });
 
 		const expectedActions = [{
 			status: true,
@@ -235,7 +235,7 @@ describe('Placement Actions', () => {
 			});
 		});
 
-		store = mockStore({ accounts: [] });
+		store = mockStore({ placements: [] });
 
 		return store.dispatch(actions.deletePlacement({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
