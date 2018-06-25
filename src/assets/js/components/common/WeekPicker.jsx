@@ -14,7 +14,7 @@ import constants from '../../helpers/constants';
 
 import { switchWeek } from '../../actions/weekActions';
 
-import { copyShifts } from '../../actions/shiftActions';
+import { getShifts, copyShifts } from '../../actions/shiftActions';
 
 import { createRota, switchRota } from '../../actions/rotaActions';
 
@@ -201,7 +201,22 @@ class WeekPicker extends Component {
 
 		/* Set the current rota */
 		console.log('Called WeekPicker handleSwitchRota switchRota');
-		actions.switchRota(rota);
+		actions.switchRota(rota)
+			.then(() => {
+				const { rota: { rotaId } } = this.props;
+
+				const payload = {
+					rotaId,
+				};
+
+				/* Any time we switch rotas, we need to get a fresh list of shifts for that rota */
+				console.log('Called WeekPicker handleSwitchRota getShifts');
+				actions.getShifts(payload).catch((error) => {
+					this.setState({ error });
+
+					this.handleModal();
+				});
+			});
 	};
 
 	handleSwitchOrCreateRota = (weekStartDate) => {
@@ -353,6 +368,7 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = dispatch => ({
 	actions: bindActionCreators({
+		getShifts,
 		copyShifts,
 		createRota,
 		switchRota,
