@@ -8,22 +8,37 @@
 	-webkit-user-drag: element;
 }
 
-.rota-table {
-	max-height: 100vh;
-	// font-size: 0.75rem;
-	border-collapse: separate;
-	min-width: calculateRem(1000px);
-	border-spacing: calculateRem(5px);
+.live__scroll {
+	padding: 0;
+	width: 100%;
+	margin-bottom: 20px;
+	margin-left: 0px;
+	margin-right: 0px;
+	overflow-x: inherit;
+	overflow-y: hidden;
+	white-space: nowrap;
 	
-	tfoot tr,
-	thead tr {
-		width: 100%;
+	.row {
+		display: block;
 	}
 
+	.live__scroll--box {
+		float: none;
+		display: inline-block;
+	}
+}
+
+.rota-table {
+	margin: 0;
+	padding: 0;
+	border: 2px solid white;
+	width: 100%;
+	// font-size: 0.75rem;
+	border-spacing: calculateRem(5px);
+	
 	td,
 	th {
-		border-top: none !important;
-		border-bottom: none !important;
+		border: 3px solid white;
 	}
 
 	th {
@@ -43,25 +58,21 @@
 	}
 
 	tbody td {
+		height: auto;
+		min-height: 80px;
 		background-color: $gray-500;
 	}
 
-	tbody td,
-	tfoot th,
-	thead th {
-		width: 10%;
-	}
-
-	tfoot th {
-		padding: 0;
-	}
-	
 	.drag-handler {
 		cursor: move;
 	}
 
 	.cell-non-draggable {
 		cursor: no-drop;
+		
+		.shift-block {
+			cursor: not-allowed !important;
+		}
 	}
 
 	tr.draggable-row-ghost {
@@ -73,14 +84,17 @@
 	}
 	
 	.cell-draggable {
-		padding: 0;
 		position: relative;
-
+		
 		&:hover {
 			.add-shift-block {
 				opacity: 1;
 			}
 		}
+	}
+	
+	.cell-draggable.over {
+		// border: 1px solid black;
 	}
 
 	&__footer-cell {
@@ -154,72 +168,10 @@
 		font-weight: $font-weight-normal;
 	}
 }
-
-.table-config {
-	text-align: center;
-	vertical-align: middle;
-
-	@include media-breakpoint-up(xl) {
-		text-align: left !important;
-	}
-
-	div {
-		width: 100%;
-		display: inline-block;
-
-		@include media-breakpoint-up(xl) {
-			width: 40%;
-		}
-	}
-
-	.btn-wrap {
-		width: 100%;
-		margin-top: 0.3rem;
-		margin-left: -4px;
-		text-align: center;
-
-		@include media-breakpoint-up(xl) {
-			width: 60%;
-			margin-top: 0;
-			text-align: right;
-		}
-	}
-
-	.btn {
-		&:first-child {
-			margin-left: 0.5em;
-		}
-	}
-}
 	
-.cell-employee {
-	width: 20% !important;
-	
-	&__avatar {
-		width: 20%;
-		overflow: hidden;
-
-		img {
-			width: 100%;
-		}
-	}
-
-	&__details {
-		padding-left: $table-cell-padding;
-
-		&-name {
-			overflow: hidden;
-			white-space: nowrap;
-			text-overflow: ellipsis;
-		}
-
-		&-attr {
-			color: lighten($dark, 50%);
-
-			.complete {
-				color: $primary;
-			}
-		}
+.draggable-row {
+	.complete {
+		color: $primary;
 	}
 }
 
@@ -227,6 +179,8 @@
 	border: 0;
 	z-index: 1;
 	width: 100%;
+	// min-height: 69px;
+	display: block;
 	text-align: left;
 	position: relative;
 	color: $body-color-light;
@@ -237,6 +191,10 @@
 		border-bottom: calculateRem(2px) solid darken($secondary, 10%);
 	}
 
+	&:last-child {
+		margin-bottom: 0 !important;
+	}
+	
 	&__data-row {
 		width: 100%;
 		display: block;
@@ -249,7 +207,7 @@
 }
 
 .add-shift-block {
-	border: 0;
+	border: 1px;
 	opacity: 0;
 	z-index: 0;
 	width: 100%;
@@ -259,6 +217,7 @@
 	background-color: transparent;
 
 	&:hover {
+		border: 1px dashed $secondary;
 		cursor: pointer;
 	}
 }

@@ -86,45 +86,33 @@ class Toolbar extends Component {
 					console.log('Called Toolbar handleSwitchRotaType getRotas');
 					actions.getRotas(rotaType)
 						.then(() => {
-							let rota;
+							const rotas = sortBy(this.props.rotas, 'startDate');
 
-							if (this.props.rotas.length > 1) {
-								const rotas = sortBy(this.props.rotas, 'startDate');
-
-								rota = rotas.slice(0).shift();
-							} else {
-								rota = this.props.rotas.slice(0).shift();
-							}
+							const rota = rotas[0];
 
 							console.log('Called Toolbar handleSwitchRotaType switchRota');
-							actions.switchRota(rota);
+							actions.switchRota(rota).then(() => {
+								/* Then we use the rotas start date to set the current week start and end dates */
+								const weekStartDate = moment(rota.startDate).startOf('isoWeek');
 
-							/* Then we use the rotas start date to set the current week start and end dates */
-							const weekStartDate = moment(rota.startDate).startOf('isoWeek');
+								const weekEndDate = moment(rota.startDate).endOf('isoWeek');
 
-							const weekEndDate = moment(rota.startDate).endOf('isoWeek');
+								const payload = {
+									endDate: weekEndDate,
+									startDate: weekStartDate,
+								};
 
-							let payload = {
-								endDate: weekEndDate,
-								startDate: weekStartDate,
-							};
+								/* Set the current week */
+								console.log('Called Toolbar handleSwitchRotaType switchWeek');
+								actions.switchWeek(payload).then(() => {
+									/* Get shifts for current rota */
+									console.log('Called Toolbar handleSwitchRotaType getShifts');
+									actions.getShifts(rota).catch((error) => {
+										this.setState({ error });
 
-							/* Set the current week */
-							console.log('Called Toolbar handleSwitchRotaType switchWeek');
-							actions.switchWeek(payload);
-
-							/* Get shifts for current rota */
-							const { rotaId } = rota;
-
-							payload = {
-								rotaId,
-							};
-
-							console.log('Called Toolbar handleSwitchRotaType getShifts');
-							actions.getShifts(payload).catch((error) => {
-								this.setState({ error });
-
-								this.handleModal();
+										this.handleModal();
+									});
+								});
 							});
 						})
 						.catch((error) => {
@@ -169,37 +157,39 @@ class Toolbar extends Component {
 
 	handleCreateShift = () => this.setState({ isShiftModalOpen: !this.state.isShiftModalOpen });
 
-	handleRotaTypeMenu = () => this.setState({ isRotaModalOpen: false, isRotaTypeMenuPopoverOpen: !this.state.isRotaTypeMenuPopoverOpen });
+	handleRotaTypeMenu = () => this.setState({ isRotaTypeMenuPopoverOpen: !this.state.isRotaTypeMenuPopoverOpen });
 
 	handleSuccessNotification = message => console.log('handleSuccess - show success notification with message:', message);
 
 	render = () => (
 		<Fragment>
 			<Row>
-				<Col className="pt-3 pb-0 pt-sm-3 pb-ms-3 text-center text-md-left" xs="12" sm="12" md="6" lg="6" xl="6">
+				<Col className="pt-3 pb-0 pt-sm-3 pb-ms-3 text-center text-sm-left" xs="12" sm="3" md="6" lg="6" xl="6">
 					<button type="button" className="btn btn-rotas-popover text-dark border-0" id="rotaTypeMenu" title="Toggle Rotas" aria-label="Toggle Rotas" onClick={this.handleRotaTypeMenu}>{this.props.rotaType.rotaTypeName}<i className="pl-2 fa fa-chevron-down" aria-hidden="true"></i></button>
 					<Popover placement="bottom" isOpen={this.state.isRotaTypeMenuPopoverOpen} target="rotaTypeMenu" toggle={this.handleRotaTypeMenu}>
 						<PopoverBody>
 							<ul className="popover-menu">
 								{(this.props.rotaTypes.length > 0) ? this.props.rotaTypes.map((rotaType, index) => <li key={index}><button type="button" title={rotaType.rotaTypeName} className="btn btn-action btn-nav border-0" id={rotaType.rotaTypeId} onClick={this.handleSwitchRotaType}>{rotaType.rotaTypeName}</button></li>) : null}
-								<li>
-									<button type="button" title="Add New Rota" className="btn btn-primary btn-nav border-0" onClick={this.handleCreateRota}>Add New Rota</button>
-									<Modal title="Rotas" className="modal-dialog" buttonLabel="Cancel" show={this.state.isRotaModalOpen} onClose={this.handleCreateRota}>
-										<RotaForm handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateRota} />
-									</Modal>
-								</li>
+								<li><button type="button" title="Add New Rota" className="btn btn-primary btn-nav border-0" onClick={this.handleCreateRota}>Add New Rota</button></li>
 							</ul>
 						</PopoverBody>
 					</Popover>
 				</Col>
-				<Col className="pt-3 pb-3 pt-sm-3 pb-ms-3 text-center text-sm-right" xs="12" sm="6" md="6" lg="6" xl="6">
+				<Col className="pt-3 pb-3 pt-sm-3 pb-ms-3 text-center text-sm-right" xs="12" sm="9" md="6" lg="6" xl="6">
 					<button type="button" title="Create Shift" className="btn btn-secondary pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 border-0" onClick={this.handleCreateShift}><i className="pr-2 fa fa-plus" aria-hidden="true"></i>Create Shift</button>
-					{(this.props.rota.status === STATUSES.DRAFT) ? (<button type="button" title="Publish Rota" className="btn btn-nav btn-primary pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 ml-3 border-0" onClick={this.handlePublishRota}>Publish</button>) : (<button type="button" title={this.props.rota.status} className="btn btn-link pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 ml-3 border-0">{this.props.rota.status}</button>)}
-					<Modal title="Shifts" className="modal-dialog" buttonLabel="Cancel" show={this.state.isShiftModalOpen} onClose={this.handleCreateShift}>
-						<ShiftForm handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateShift} />
-					</Modal>
+					{(this.props.rota.status === STATUSES.DRAFT) ? (
+						<button type="button" title="Publish Rota" className="btn btn-nav btn-primary pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 ml-3 border-0" onClick={this.handlePublishRota}>Publish</button>
+					) : (
+						<button type="button" title={this.props.rota.status} className="btn btn-rotas-popover text-dark pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 ml-3 border-0" disabled>{this.props.rota.status}</button>
+					)}
 				</Col>
 			</Row>
+			<Modal title="Rotas" className="modal-dialog" show={this.state.isRotaModalOpen} onClose={this.handleCreateRota}>
+				<RotaForm handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateRota} />
+			</Modal>
+			<Modal title="Shifts" className="modal-dialog" show={this.state.isShiftModalOpen} onClose={this.handleCreateShift}>
+				<ShiftForm handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateShift} />
+			</Modal>
 			{(this.state.error.data) ? (
 				<Modal title={this.state.error.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isErrorModalOpen} onClose={this.handleModal}>
 					<div dangerouslySetInnerHTML={{ __html: this.state.error.data.message }} />

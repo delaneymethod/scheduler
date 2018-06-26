@@ -5,4 +5,8 @@ export const updateUserSuccess = user => ({
 	user,
 });
 
-export const updateUser = payload => dispatch => Promise.resolve(dispatch(updateUserSuccess(payload)));
+export const updateUser = payload => (dispatch) => {
+	dispatch(updateUserSuccess(payload));
+
+	return Promise.resolve(true);
+};

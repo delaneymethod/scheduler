@@ -107,7 +107,7 @@ class Header extends Component {
 								</li>
 							</ul>
 						</Navbar>
-						<Modal title="Switch Account" className="modal-dialog" buttonLabel="Cancel" show={this.state.isModalOpen} onClose={this.handleModal}>
+						<Modal title="Switch Account" className="modal-dialog" show={this.state.isModalOpen} onClose={this.handleModal}>
 							<SwitchAccount />
 						</Modal>
 					</nav>

@@ -137,4 +137,8 @@ export const switchRotaSuccess = rota => ({
 	rota,
 });
 
-export const switchRota = payload => dispatch => Promise.resolve(dispatch(switchRotaSuccess(payload)));
+export const switchRota = payload => (dispatch) => {
+	dispatch(switchRotaSuccess(payload));
+
+	return Promise.resolve(true);
+};

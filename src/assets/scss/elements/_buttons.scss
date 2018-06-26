@@ -22,11 +22,23 @@
 
 .btn-rotas-popover {
 	color: $dark;
+	opacity: 1 !important;
 	background-color: $white;
 	
 	&:hover {
 		color: $white !important;
 		background-color: darken($dark, 10%);
+	}
+	
+	&:disabled {
+		opacity: 1 !important;
+		color: $dark !important;
+			
+		&:hover {
+			opacity: 1 !important;
+			color: $dark !important;
+			background-color: $white !important;
+		}
 	}
 }
 

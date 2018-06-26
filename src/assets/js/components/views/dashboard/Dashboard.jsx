@@ -91,79 +91,82 @@ class Dashboard extends Component {
 
 		/* Grab all roles, employees, rota types, rotas and finally all shifts in this order. */
 		console.log('Called Dashboard handleFetchData getRoles');
-		actions.getRoles().then(() => {
-			this.setState({ isModalOpen: false });
-
-			console.log('Called Dashboard handleFetchData getEmployees');
-			actions.getEmployees().then(() => {
+		actions.getRoles()
+			.then(() => {
 				this.setState({ isModalOpen: false });
 
-				console.log('Called Dashboard handleFetchData getRotaTypes');
-				actions.getRotaTypes().then(() => {
-					this.setState({ isModalOpen: false });
+				console.log('Called Dashboard handleFetchData getEmployees');
+				actions.getEmployees()
+					.then(() => {
+						this.setState({ isModalOpen: false });
 
-					if (this.props.rotaTypes.length > 0) {
-						/* Set the current rota type */
-						/* We only want to get the first rota type rotas so we have some data by default */
-						const rotaType = this.props.rotaTypes.slice(0).shift();
-
-						console.log('Called Dashboard handleFetchData switchRotaType');
-						actions.switchRotaType(rotaType).then(() => {
-							console.log('Called Dashboard handleFetchData getRotas');
-							actions.getRotas(rotaType).then(() => {
+						console.log('Called Dashboard handleFetchData getRotaTypes');
+						actions.getRotaTypes()
+							.then(() => {
 								this.setState({ isModalOpen: false });
 
-								/* We only want to get the first rotas shifts too, sorted based on start date, again so we have some data by default */
-								if (this.props.rotas.length > 0) {
-									let rota;
+								if (!isEmpty(this.props.rotaTypes)) {
+									/**
+									 * Set the current rota type.
+									 *
+									 * We only want to get the first rota type rotas so we have some data by default,
+									 * but use the current/previously selected rota type if one was set.
+									 */
+									const rotaType = (!isEmpty(this.props.rotaType)) ? this.props.rotaType : this.props.rotaTypes[0];
 
-									if (this.props.rotas.length > 1) {
-										const rotas = sortBy(this.props.rotas, 'startDate');
+									console.log('Called Dashboard handleFetchData switchRotaType');
+									actions.switchRotaType(rotaType).then(() => {
+										console.log('Called Dashboard handleFetchData getRotas');
+										actions.getRotas(rotaType)
+											.then(() => {
+												this.setState({ isModalOpen: false });
 
-										rota = rotas.slice(0).shift();
-									} else {
-										rota = this.props.rotas.slice(0).shift();
-									}
+												/* We only want to get the first rotas shifts too, sorted based on start date, again so we have some data by default */
+												if (!isEmpty(this.props.rotas)) {
+													/* Set the current rota */
+													/* We only want to get the first rota so we have some data by default */
+													const rotas = sortBy(this.props.rotas, 'startDate');
 
-									/* Set the current rota */
-									console.log('Called Dashboard handleFetchData switchRota');
-									actions.switchRota(rota).then(() => {
-										console.log('Called Dashboard handleFetchData getShifts');
-										actions.getShifts(rota).catch((error) => {
-											this.setState({ error });
+													const rota = (!isEmpty(this.props.rota)) ? this.props.rota : rotas[0];
 
-											this.handleModal();
-										});
+													console.log('Called Dashboard handleFetchData switchRota');
+													actions.switchRota(rota).then(() => {
+														console.log('Called Dashboard handleFetchData getShifts');
+														actions.getShifts(rota).catch((error) => {
+															this.setState({ error });
+
+															this.handleModal();
+														});
+													});
+												}
+											}).catch((error) => {
+												this.setState({ error });
+
+												this.handleModal();
+											});
 									});
+								} else {
+									/* This will trigger the store to update rotas, current rota, current rota type and current week to be cleared of any values */
+									console.log('Called Dashboard handleFetchData switchRotaType but to clear all rotas, the current rota and the current rota type');
+									actions.switchRotaType({});
+
+									this.handleCreateRota();
 								}
 							}).catch((error) => {
 								this.setState({ error });
 
 								this.handleModal();
 							});
-						});
-					} else {
-						/* This will trigger the store to update rotas, current rota, current rota type and current week to be cleared of any values */
-						console.log('Called Dashboard handleFetchData switchRotaType but to clear all rotas, the current rota and the current rota type');
-						actions.switchRotaType({});
+					}).catch((error) => {
+						this.setState({ error });
 
-						this.handleCreateRota();
-					}
-				}).catch((error) => {
-					this.setState({ error });
-
-					this.handleModal();
-				});
+						this.handleModal();
+					});
 			}).catch((error) => {
 				this.setState({ error });
 
 				this.handleModal();
 			});
-		}).catch((error) => {
-			this.setState({ error });
-
-			this.handleModal();
-		});
 	};
 
 	handleModal = () => this.setState({ isErrorModalOpen: !this.state.isErrorModalOpen });
@@ -180,7 +183,7 @@ class Dashboard extends Component {
 					<div dangerouslySetInnerHTML={{ __html: this.state.error.data.message }} />
 				</Modal>
 			) : null}
-			<Modal isStatic={true} className="modal-dialog" show={this.state.isRotaModalOpen} onClose={this.handleCreateRota}>
+			<Modal className="modal-dialog" show={this.state.isRotaModalOpen} onClose={this.handleCreateRota}>
 				<RotaForm title="Create First Rota" message={routes.ROTAS.CREATE.MESSAGE} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateRota} />
 			</Modal>
 		</Fragment>

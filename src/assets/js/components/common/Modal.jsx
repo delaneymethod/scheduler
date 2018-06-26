@@ -7,9 +7,7 @@ const propTypes = {
 	show: PropTypes.bool,
 	title: PropTypes.string,
 	children: PropTypes.node,
-	isStatic: PropTypes.bool,
 	className: PropTypes.string,
-	buttonLabel: PropTypes.string,
 	onClose: PropTypes.func.isRequired,
 };
 
@@ -18,8 +16,6 @@ const defaultProps = {
 	show: false,
 	className: '',
 	children: null,
-	isStatic: false,
-	buttonLabel: null,
 	onClose: () => {},
 };
 
@@ -30,7 +26,7 @@ class Modal extends Component {
 		}
 
 		return (
-			<ModalCore backdrop={(this.props.isStatic) ? 'static' : true} keyboard={this.props.isStatic} centered={true} isOpen={this.props.show} toggle={this.props.onClose} className={this.props.className}>
+			<ModalCore backdrop="static" keyboard={true} centered={true} isOpen={this.props.show} toggle={this.props.onClose} className={this.props.className}>
 				{(!isEmpty(this.props.title)) ? (
 					<ModalHeader toggle={this.props.onClose}>{this.props.title}</ModalHeader>
 				) : null}

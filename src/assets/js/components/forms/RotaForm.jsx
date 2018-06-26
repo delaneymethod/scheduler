@@ -153,12 +153,12 @@ class RotaForm extends Component {
 									console.log('Called RotaForm handleSubmit switchRota');
 									actions.switchRota(rota).then(() => {
 										/* Lets make sure we pull the latest list of rotas from the API and update the store */
+										console.log('Called RotaForm handleSubmit getRotas');
 										actions.getRotas(rotaType)
-											.then(rotas => sortBy(rotas, 'startDate'))
-											.then((rotas) => {
+											.then(() => {
 												/* Lets also make sure we pull the latest list of shifts from the API and update the store */
 												console.log('Called RotaForm handleSubmit getShifts');
-												actions.getShifts(this.props.rota)
+												actions.getShifts(rota)
 													.then(() => {
 														/* Then we use the new rotas start date to set the current week start and end dates */
 														const weekStartDate = moment(startDate, 'YYYY-MM-DD').startOf('isoWeek');

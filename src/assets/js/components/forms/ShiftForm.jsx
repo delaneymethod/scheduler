@@ -229,8 +229,12 @@ class ShiftForm extends Component {
 	};
 
 	handleDelete = (event) => {
+		const shift = this.props.shifts.filter(data => data.shiftId === this.props.shiftId).shift();
+
+		const accountEmployee = this.props.employees.filter(data => data.employee.employeeId === this.props.employeeId).shift();
+
 		/* Check if the user wants to delete the shift */
-		let message = '<p>Please confirm that you wish to delete the <strong>Shift</strong>?</p><p class="text-warning"><i class="pr-3 fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>Caution: This action cannot be undone.</p>';
+		let message = `<div class="text-center"><p>Please confirm that you wish to delete the Shift?</p><ul class="list-unstyled font-weight-bold"><li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li><li>Role: ${shift.role.roleName}</li><li>Date: ${moment(shift.startTime).utc().format('YYYY-MM-DD')}</li><li>Time: ${moment(shift.startTime).utc().format('HH:mm a')} - ${(shift.isClosingShift) ? 'Closing' : moment(shift.endTime).utc().format('HH:mm a')}</li></ul><p class="text-warning"><i class="pr-3 fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
 
 		const options = {
 			message,
@@ -288,7 +292,7 @@ class ShiftForm extends Component {
 		await this.form.validateFields();
 
 		if (this.form.isValid()) {
-			let { endTime, startTime } = this.state;
+			let { endTime, startTime, isClosingShift } = this.state;
 
 			const {
 				shiftId,
@@ -296,18 +300,21 @@ class ShiftForm extends Component {
 				startDate,
 				employeeId,
 				placementId,
-				isClosingShift,
 				numberOfPositions,
 			} = this.state;
 
 			/* We need to make sure our start and end values are in the format like 2018-06-05 18:50:00 and if its a closing shift, force the end time to be midnight */
-			if (isClosingShift) {
-				endTime = `${startDate} 23:59:00`;
-			} else {
-				endTime = `${startDate} ${moment(endTime, 'HH:mm A').format('HH:mm:ss')}`;
-			}
+			endTime = `${startDate} ${moment(endTime, 'HH:mm A').format('HH:mm:ss')}`;
 
 			startTime = `${startDate} ${moment(startTime, 'HH:mm A').format('HH:mm:ss')}`;
+
+			/* Makes sure we are working with proper booleans and not boolean strings */
+			isClosingShift = (isClosingShift === 'true');
+
+			if (isClosingShift) {
+				console.log('h1');
+				endTime = `${startDate} 23:59:00`;
+			}
 
 			let payload = {
 				rotaId,

@@ -6,4 +6,8 @@ export const switchWeekSuccess = week => ({
 	week,
 });
 
-export const switchWeek = payload => dispatch => Promise.resolve(dispatch(switchWeekSuccess(payload)));
+export const switchWeek = payload => (dispatch) => {
+	dispatch(switchWeekSuccess(payload));
+
+	return Promise.resolve(true);
+};
