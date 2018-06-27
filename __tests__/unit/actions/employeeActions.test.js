@@ -108,6 +108,53 @@ describe('Employee Actions', () => {
 		return store.dispatch(actions.orderEmployees({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
 
+	it('should create UPLOAD_EMPLOYEES and AJAX_LOADING actions on uploadEmployees', () => {
+		moxios.wait(() => {
+			const request = moxios.requests.mostRecent();
+
+			request.respondWith({
+				status: 200,
+				response: {
+					data: [],
+				},
+			});
+		});
+
+		store = mockStore({ employees: [] });
+
+		const expectedActions = [{
+			status: true,
+			type: types.AJAX_LOADING,
+		}, {
+			status: false,
+			type: types.AJAX_LOADING,
+		}, {
+			employees: [],
+			type: types.UPLOAD_EMPLOYEES,
+		}];
+
+		const payload = {
+			file: 'filename.csv',
+		};
+
+		return store.dispatch(actions.uploadEmployees(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
+	});
+
+	it('should catch error on failed uploadEmployees', () => {
+		moxios.wait(() => {
+			const request = moxios.requests.mostRecent();
+
+			request.respondWith({
+				status: 400,
+				response: {},
+			});
+		});
+
+		store = mockStore({ employees: [] });
+
+		return store.dispatch(actions.uploadEmployees({})).catch(error => expect(store.getActions()).not.toBeNull());
+	});
+
 	it('should create GET_EMPLOYEE and AJAX_LOADING actions on getEmployee', () => {
 		moxios.wait(() => {
 			const request = moxios.requests.mostRecent();

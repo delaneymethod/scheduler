@@ -234,6 +234,18 @@ describe('API', () => {
 		return api.orderEmployees(payload).then(data => expect(data.employees).toEqual([]));
 	});
 
+	it('should upload employees', () => {
+		mock.onPost('/employees/load').reply(200, {
+			employees: [],
+		});
+
+		const payload = {
+			file: 'filename.csv',
+		};
+
+		return api.uploadEmployees(payload).then(data => expect(data.employees).toEqual([]));
+	});
+
 	it('should get employee', () => {
 		mock.onGet('/employees/3').reply(200, {
 			employees: [{
