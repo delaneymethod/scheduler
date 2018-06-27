@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
-import { Form, Label, Input, FormGroup } from 'reactstrap';
+import { Form, Label, Input, FormGroup, Popover, PopoverBody, PopoverHeader } from 'reactstrap';
 
 import Modal from './Modal';
 
@@ -12,9 +12,12 @@ import { updateUser } from '../../actions/userActions';
 
 import { switchAccount } from '../../actions/accountActions';
 
+import truncateText from '../../helpers/stringManipulations';
+
 const routes = constants.APP.ROUTES;
 
 const propTypes = {
+	inline: PropTypes.bool.isRequired,
 	account: PropTypes.object.isRequired,
 	accounts: PropTypes.array.isRequired,
 };
@@ -22,6 +25,7 @@ const propTypes = {
 const defaultProps = {
 	account: {},
 	accounts: [],
+	inline: false,
 };
 
 class SwitchAccount extends Component {
@@ -32,18 +36,19 @@ class SwitchAccount extends Component {
 
 		this.handleModal = this.handleModal.bind(this);
 
-		this.handleChange = this.handleChange.bind(this);
+		this.handleSwitchAccount = this.handleSwitchAccount.bind(this);
+
+		this.handleSwitchAccountMenu = this.handleSwitchAccountMenu.bind(this);
 	}
 
 	getInitialState = () => ({
 		error: {},
-		isModalOpen: false,
+		isErrorModalOpen: false,
+		isSwitchAccountMenuPopoverOpen: false,
 	});
 
-	handleChange = (event) => {
+	handleSwitchAccount = (event, accountId) => {
 		const { actions } = this.props;
-
-		const accountId = event.target.value;
 
 		if (accountId !== this.props.account.id) {
 			console.log('Called SwitchAccount handleChange switchAccount');
@@ -62,20 +67,47 @@ class SwitchAccount extends Component {
 		}
 	};
 
-	handleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
+	handleModal = () => this.setState({ isErrorModalOpen: !this.state.isErrorModalOpen });
+
+	handleSwitchAccountMenu = () => this.setState({ isSwitchAccountMenuPopoverOpen: !this.state.isSwitchAccountMenuPopoverOpen });
 
 	render = () => (
 		<Fragment>
-			<Form>
-				<FormGroup>
-					<Label for="accountId">Account</Label>
-					<Input type="select" name="accountId" id="accountId" className="custom-select custom-select-md custom-select-lg custom-select-xl" onChange={this.handleChange} defaultValue={this.props.account.id}>
-						{this.props.accounts.map((account, index) => <option key={index} value={account.id} label={account.name} />)}
-					</Input>
-				</FormGroup>
-			</Form>
+			{(this.props.inline) ? (
+				<Fragment>
+					{(this.props.accounts.length > 1) ? (
+						<Fragment>
+							<button type="button" className="btn btn-nav btn-action ml-r border-0" id="switchAccountMenu" title="Switch Account Menu" aria-label="Switch Account Menu" onClick={this.handleSwitchAccountMenu}>
+								<span className="d-inline-block d-sm-none d-md-inline-block d-lg-none">{truncateText(this.props.account.name)}<i className="pl-2 fa fa-fw fa-chevron-down" aria-hidden="true"></i></span>
+								<span className="d-none d-sm-inline-block d-md-none d-lg-inline-block">{this.props.account.name}<i className="pl-2 fa fa-fw fa-chevron-down" aria-hidden="true"></i></span>
+							</button>
+							<Popover placement="bottom" isOpen={this.state.isSwitchAccountMenuPopoverOpen} target="switchAccountMenu" toggle={this.handleSwitchAccountMenu}>
+								<PopoverBody>
+									<ul className="popover-menu">
+										{this.props.accounts.map((account, index) => <li key={index}><button type="button" title={`Switch to ${account.name}`} aria-label={`Switch to ${account.name}`} className="btn btn-action btn-nav border-0" onClick={event => this.handleSwitchAccount(event, account.id)}>{this.props.account.name}</button></li>)}
+									</ul>
+								</PopoverBody>
+							</Popover>
+						</Fragment>
+					) : (
+						<button type="button" className="btn btn-nav btn-user ml-r border-0" title={this.props.account.name} aria-label={this.props.account.name}>
+							<span className="d-inline-block d-sm-none d-md-inline-block d-lg-none">{truncateText(this.props.account.name)}</span>
+							<span className="d-none d-sm-inline-block d-md-none d-lg-inline-block">{this.props.account.name}</span>
+						</button>
+					)}
+				</Fragment>
+			) : (
+				<Form>
+					<FormGroup>
+						<Label for="accountId">Account</Label>
+						<Input type="select" name="accountId" id="accountId" className="custom-select custom-select-md custom-select-lg custom-select-xl" onChange={this.handleChange} defaultValue={this.props.account.id}>
+							{this.props.accounts.map((account, index) => <option key={index} value={account.id} label={account.name} />)}
+						</Input>
+					</FormGroup>
+				</Form>
+			)}
 			{(this.state.error.data) ? (
-				<Modal title={this.state.error.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isModalOpen} onClose={this.handleModal}>
+				<Modal title={this.state.error.data.title} className="modal-dialog-error" show={this.state.isErrorModalOpen} onClose={this.handleModal}>
 					<div dangerouslySetInnerHTML={{ __html: this.state.error.data.message }} />
 				</Modal>
 			) : null}

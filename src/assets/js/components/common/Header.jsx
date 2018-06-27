@@ -4,8 +4,6 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { Col, Row, Navbar, NavItem, Popover, PopoverBody, PopoverHeader } from 'reactstrap';
 
-import Modal from './Modal';
-
 import WeekPicker from './WeekPicker';
 
 import SwitchAccount from './SwitchAccount';
@@ -32,8 +30,6 @@ class Header extends Component {
 
 		this.state = this.getInitialState();
 
-		this.handleModal = this.handleModal.bind(this);
-
 		this.handleLogout = this.handleLogout.bind(this);
 
 		this.handleProfileMenu = this.handleProfileMenu.bind(this);
@@ -42,7 +38,6 @@ class Header extends Component {
 	}
 
 	getInitialState = () => ({
-		isModalOpen: false,
 		shiftsIsActive: false,
 		overviewIsActive: false,
 		employeesIsActive: false,
@@ -60,8 +55,6 @@ class Header extends Component {
 		});
 	};
 
-	handleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
-
 	handleLogout = () => this.props.actions.logout().then(() => this.props.history.push(routes.LOGIN.URI));
 
 	handleProfileMenu = () => this.setState({ isProfileMenuPopoverOpen: !this.state.isProfileMenuPopoverOpen });
@@ -72,44 +65,51 @@ class Header extends Component {
 		<Row>
 			<Col className="bg-dark" xs="12" sm="12" md="12" lg="12" xl="12">
 				<header className="pt-3 pl-0 pr-0 pb-3">
-					<nav className="p-0 m-0 d-flex flex-md-row flex-column align-items-center">
-						<h1 className="pt-1 pl-1 pr-1 pb-1"><a className="d-block" href={routes.HOME.URI} title={constants.APP.TITLE}>{constants.APP.TITLE}<span>.</span></a></h1>
-						<WeekPicker history={this.props.history} />
-						<Navbar className="p-0 m-0" color="dark" dark expand="xl">
-							<button type="button" className="btn btn-nav btn-action navbar-toggler border-0 text-white" id="navigationMenu" title="Navigation" aria-label="Navigation" onClick={this.handleNavigationMenu}><i className="fa fa-fw fa-navicon" aria-hidden="true"></i></button>
-							<div className="collapse navbar-collapse">
-								<ul className="actions popover-menu">
-									<NavItem className={`pr-3 ml-0 ${(this.state.employeesIsActive) ? 'active' : ''}`}><a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a></NavItem>
-									<NavItem className={`pr-3 ml-0 ${(this.state.shiftsIsActive) ? 'active' : ''}`}><a href={dashboard.SHIFTS.URI} title={dashboard.SHIFTS.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-th" aria-hidden="true"></i>{dashboard.SHIFTS.TITLE}</a></NavItem>
-									<NavItem className={`pr-3 ml-0 ${(this.state.overviewIsActive) ? 'active' : ''}`}><a href={dashboard.OVERVIEW.URI} title={dashboard.OVERVIEW.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-bar-chart" aria-hidden="true"></i>{dashboard.OVERVIEW.TITLE}</a></NavItem>
-								</ul>
-							</div>
-							<Popover placement="bottom" isOpen={this.state.isNavigationMenuPopoverOpen} target="navigationMenu" toggle={this.handleNavigationMenu}>
-								<PopoverBody>
-									<ul className="actions popover-menu">
-										<NavItem className={`pr-3 ml-0 ${(this.state.employeesIsActive) ? 'active' : ''}`}><a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a></NavItem>
-										<NavItem className={`pr-3 ml-0 ${(this.state.shiftsIsActive) ? 'active' : ''}`}><a href={dashboard.SHIFTS.URI} title={dashboard.SHIFTS.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-th" aria-hidden="true"></i>{dashboard.SHIFTS.TITLE}</a></NavItem>
-										<NavItem className={`pr-3 ml-0 ${(this.state.overviewIsActive) ? 'active' : ''}`}><a href={dashboard.OVERVIEW.URI} title={dashboard.OVERVIEW.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-bar-chart" aria-hidden="true"></i>{dashboard.OVERVIEW.TITLE}</a></NavItem>
-									</ul>
-								</PopoverBody>
-							</Popover>
-							<ul className="actions profile-toggle ml-auto">
-								<li className="nav-item ml-0">
-									<button type="button" className="btn btn-nav btn-user ml-r border-0" id="profileMenu" title="Profile Menu" aria-label="Profile Menu" onClick={this.handleProfileMenu}>Hello, {this.props.user.firstName}<i className="pl-2 fa fa-fw fa-chevron-down" aria-hidden="true"></i></button>
-									<Popover placement="bottom" isOpen={this.state.isProfileMenuPopoverOpen} target="profileMenu" toggle={this.handleProfileMenu}>
+					<nav className="p-0 m-0">
+						<Row>
+							<Col className="d-flex justify-content-center justify-content-lg-start" xs="12" sm="12" md="12" lg="2" xl="2">
+								<h1 className="m-0 p-0 align-self-center text-lg-left"><a className="d-block" href={routes.HOME.URI} title={constants.APP.TITLE}>{constants.APP.TITLE}<span>.</span></a></h1>
+							</Col>
+							<Col className="ml-lg-0 mr-lg-0 pl-lg-0 pr-lg-0 mt-3 mt-lg-0" xs="12" sm="12" md="5" lg="3" xl="2">
+								<WeekPicker history={this.props.history} />
+							</Col>
+							<Col className="mt-3 mt-lg-0" xs="12" sm="12" md="7" lg="7" xl="8">
+								<Navbar className="row p-0 m-0" color="dark" dark expand="xl">
+									<button type="button" className="col-12 col-sm-12 col-md-2 btn btn-nav btn-action navbar-toggler pl-3 pr-3 border-0 text-white font-weight-normal" id="navigationMenu" title="Navigation" aria-label="Navigation" onClick={this.handleNavigationMenu}><i className="fa fa-fw fa-navicon" aria-hidden="true"></i></button>
+									<Popover placement="bottom" isOpen={this.state.isNavigationMenuPopoverOpen} target="navigationMenu" toggle={this.handleNavigationMenu}>
 										<PopoverBody>
-											<ul className="popover-menu">
-												<li><button type="button" title="Switch Account" className="btn btn-action btn-nav border-0" onClick={this.handleModal}>Switch Account</button></li>
-												<li><button type="button" title={routes.LOGOUT.TITLE} className="btn btn-action btn-nav border-0" onClick={this.handleLogout}>{routes.LOGOUT.TITLE}</button></li>
+											<ul className="actions popover-menu">
+												<NavItem className={`pr-3 ml-0 ${(this.state.employeesIsActive) ? 'active' : ''}`}><a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a></NavItem>
+												<NavItem className={`pr-3 ml-0 ${(this.state.shiftsIsActive) ? 'active' : ''}`}><a href={dashboard.SHIFTS.URI} title={dashboard.SHIFTS.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-th" aria-hidden="true"></i>{dashboard.SHIFTS.TITLE}</a></NavItem>
+												<NavItem className={`pr-3 ml-0 ${(this.state.overviewIsActive) ? 'active' : ''}`}><a href={dashboard.OVERVIEW.URI} title={dashboard.OVERVIEW.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-bar-chart" aria-hidden="true"></i>{dashboard.OVERVIEW.TITLE}</a></NavItem>
 											</ul>
 										</PopoverBody>
 									</Popover>
-								</li>
-							</ul>
-						</Navbar>
-						<Modal title="Switch Account" className="modal-dialog" show={this.state.isModalOpen} onClose={this.handleModal}>
-							<SwitchAccount />
-						</Modal>
+									<div className="collapse navbar-collapse m-0 p-0 col-lg-6 col-xl-6">
+										<ul className="actions popover-menu">
+											<NavItem className={`pr-3 ml-0 ${(this.state.employeesIsActive) ? 'active' : ''}`}><a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a></NavItem>
+											<NavItem className={`pr-3 ml-0 ${(this.state.shiftsIsActive) ? 'active' : ''}`}><a href={dashboard.SHIFTS.URI} title={dashboard.SHIFTS.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-th" aria-hidden="true"></i>{dashboard.SHIFTS.TITLE}</a></NavItem>
+											<NavItem className={`pr-3 ml-0 ${(this.state.overviewIsActive) ? 'active' : ''}`}><a href={dashboard.OVERVIEW.URI} title={dashboard.OVERVIEW.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-bar-chart" aria-hidden="true"></i>{dashboard.OVERVIEW.TITLE}</a></NavItem>
+										</ul>
+									</div>
+									<ul className="d-flex justify-content-end mt-3 mt-md-0 actions profile-toggle col-12 col-sm-12 col-md-10 col-lg-6 col-xl-6">
+										<li className="nav-item col-6 col-md-auto mr-sm-3 pl-0 pl-sm-3 p-md-0">
+											<SwitchAccount inline />
+										</li>
+										<li className="nav-item col-6 col-md-auto p-0 text-right">
+											<button type="button" className="btn btn-nav btn-user border-0" id="profileMenu" title="Profile Menu" aria-label="Profile Menu" onClick={this.handleProfileMenu}>Hello, {this.props.user.firstName}<i className="pl-2 fa fa-fw fa-chevron-down" aria-hidden="true"></i></button>
+											<Popover placement="bottom" isOpen={this.state.isProfileMenuPopoverOpen} target="profileMenu" toggle={this.handleProfileMenu}>
+												<PopoverBody>
+													<ul className="popover-menu">
+														<li><button type="button" title={routes.LOGOUT.TITLE} className="btn btn-action btn-nav border-0" onClick={this.handleLogout}><i className="pr-2 fa fa-fw fa-sign-out" aria-hidden="true"></i>{routes.LOGOUT.TITLE}</button></li>
+													</ul>
+												</PopoverBody>
+											</Popover>
+										</li>
+									</ul>
+								</Navbar>
+							</Col>
+						</Row>
 					</nav>
 				</header>
 			</Col>

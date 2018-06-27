@@ -49,31 +49,14 @@ header {
 				color: $primary;
 			}
 		}
-
-		@include media-breakpoint-up(md) {
-			margin-top: 0.5rem;
-		}
-		
-		@include media-breakpoint-down(sm) {
-			margin-top: 0;
-			margin-bottom: 1rem;
-		}
 	}
 
 	.week-toggle {
-		overflow: hidden;
 		// font-size: 0.75rem;
 		border-radius: $border-radius;
 		background-color: $body-color-light;
 		
-		@include media-breakpoint-down(sm) {
-			margin: 0;
-			text-align: center;
-			margin-bottom: 1rem;
-		}
-
 		.btn-toggle {
-			padding: 0 0.75rem;
 			background-color: transparent;
 			line-height: calculateRem(44px);
 	
@@ -84,24 +67,11 @@ header {
 		}
 
 		.btn-week-picker {
-			padding: 0 1.25rem;
 			line-height: calculateRem(43px);
 		}
 	}
 	
 	.navbar {
-		flex-grow: 1;
-
-		@include media-breakpoint-down(sm) {
-			width: 100%;
-		}
-
-		.navbar-menu-toggle {
-			@include media-breakpoint-down(sm) {
-				margin: 0;
-			}
-		}
-
 		.actions {
 			@extend %clearfix;
 			@extend %clearlist;
