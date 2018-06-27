@@ -1,9 +1,9 @@
 import jwtDecode from 'jwt-decode';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
-import isEmpty from 'lodash/isEmpty';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { isEmpty, debounce } from 'lodash';
 import React, { Fragment, Component } from 'react';
 import { FormWithConstraints } from 'react-form-with-constraints';
 
@@ -35,7 +35,11 @@ class LoginForm extends Component {
 	constructor(props) {
 		super(props);
 
+		this.form = null;
+
 		this.state = this.getInitialState();
+
+		this.handleBlur = this.handleBlur.bind(this);
 
 		this.handleChange = this.handleChange.bind(this);
 
@@ -48,15 +52,20 @@ class LoginForm extends Component {
 		password: '',
 	});
 
-	handleChange = async (event) => {
+	componentDidMount = () => {
+		/* We debounce this call to wait 1000ms (we do not want the leading (or "immediate") flag passed because we want to wait until the user has finished typing before running validation */
+		this.handleValidateFields = debounce(this.handleValidateFields.bind(this), 1000);
+	};
+
+	handleChange = (event) => {
 		const target = event.currentTarget;
 
 		this.setState({
 			[target.name]: target.value,
 		});
-
-		await this.form.validateFields(target);
 	};
+
+	handleBlur = async event => this.handleValidateFields(event.currentTarget);
 
 	handleSubmit = async (event) => {
 		event.preventDefault();
@@ -75,11 +84,10 @@ class LoginForm extends Component {
 				password,
 			};
 
+			/* eslint-disable no-param-reassign */
 			console.log('Called Login handleSubmit login');
 			actions.login(payload)
 				.then((user) => {
-					/* eslint-disable no-param-reassign */
-
 					/* The tokens subject contains the users Id */
 					const token = jwtDecode(user.token);
 
@@ -89,26 +97,35 @@ class LoginForm extends Component {
 					const [account] = user.accounts;
 
 					user.account = account;
-					/* eslint-enable no-param-reassign */
-
 					/* Update the user state and then go to the dashboard */
 					console.log('Called Login handleSubmit updateUser');
+
 					actions.updateUser(user).then(() => history.push(routes.DASHBOARD.HOME.URI));
 				})
-				.catch(error => this.setState({ error }));
+				.catch((error) => {
+					/* Set a more friendlier error message if its a 401 */
+					if (error.data.code === 401) {
+						error.data.message = routes.LOGIN.MESSAGES.FAILED;
+					}
+
+					this.setState({ error });
+				});
+			/* eslint-enable no-param-reassign */
 		}
 	};
 
-	errorMessage = () => (this.state.error.data ? <Alert color="danger" title={this.state.error.data.title} message={this.state.error.data.message} /> : null);
+	handleValidateFields = target => ((this.form && target) ? this.form.validateFields(target) : null);
+
+	errorMessage = () => (this.state.error.data ? <Alert color="danger" message={this.state.error.data.message} /> : null);
 
 	render = () => (
 		<Fragment>
 			{this.errorMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
-				<EmailField fieldValue={this.state.email} handleChange={this.handleChange} tabIndex="1" fieldRequired={true} />
-				<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChange} tabIndex="2" fieldRequired={true} />
+				<EmailField fieldValue={this.state.email} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={1} fieldRequired={true} />
+				<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={2} fieldRequired={true} />
 				<Button type="submit" color="primary" className="mt-4" title={routes.LOGIN.TITLE} tabIndex="3" block>{routes.LOGIN.TITLE}</Button>
-				<a href={routes.FORGOTTEN_YOUR_PASSWORD.URI} title={routes.FORGOTTEN_YOUR_PASSWORD.TITLE} className="panel-page__forgot">{routes.FORGOTTEN_YOUR_PASSWORD.TITLE}</a>
+				<a href={routes.FORGOTTEN_YOUR_PASSWORD.URI} title={routes.FORGOTTEN_YOUR_PASSWORD.TITLE} className="panel-page__forgot" tabIndex="-1">{routes.FORGOTTEN_YOUR_PASSWORD.TITLE}</a>
 			</FormWithConstraints>
 		</Fragment>
 	);

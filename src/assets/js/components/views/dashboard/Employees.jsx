@@ -1,6 +1,7 @@
 import moment from 'moment';
-import Orderable from 'sortablejs';
 import Avatar from 'react-avatar';
+import jwtDecode from 'jwt-decode';
+import Orderable from 'sortablejs';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -38,6 +39,7 @@ const propTypes = {
 	week: PropTypes.object.isRequired,
 	rota: PropTypes.object.isRequired,
 	rotas: PropTypes.array.isRequired,
+	user: PropTypes.object.isRequired,
 	shifts: PropTypes.array.isRequired,
 	rotaType: PropTypes.object.isRequired,
 	employees: PropTypes.array.isRequired,
@@ -45,6 +47,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+	user: {},
 	week: {},
 	rota: {},
 	rotas: [],
@@ -60,7 +63,12 @@ class Employees extends Component {
 
 		const { history, authenticated } = this.props;
 
-		if (!authenticated) {
+		/* The tokens contains the expiry, so even though the users session storage still has authenticated as true, we need to make sure the token hasn't expired. */
+		const token = jwtDecode(this.props.user.token);
+
+		const tokenExpired = moment().isAfter(moment.unix(token.exp));
+
+		if (!authenticated || tokenExpired) {
 			history.push(routes.LOGIN.URI);
 		}
 
@@ -129,6 +137,10 @@ class Employees extends Component {
 	});
 
 	componentDidMount = () => {
+		if (isEmpty(this.props.week)) {
+			return;
+		}
+
 		document.title = `${constants.APP.TITLE}: ${routes.DASHBOARD.EMPLOYEES.TITLE} - ${routes.DASHBOARD.HOME.TITLE}`;
 
 		const meta = document.getElementsByTagName('meta');
@@ -145,6 +157,10 @@ class Employees extends Component {
 	};
 
 	componentDidUpdate = (prevProps, prevState) => {
+		if (isEmpty(this.props.week)) {
+			return;
+		}
+
 		/* If the current week, current rota, current rota type, employees or shifts had any changes, re/load the table */
 		if (prevProps.employees !== this.props.employees || prevProps.week !== this.props.week || prevProps.rota !== this.props.rota || prevProps.rotaType !== this.props.rotaType || prevProps.shifts !== this.props.shifts) {
 			this.handleFetchData();
@@ -639,160 +655,167 @@ class Employees extends Component {
 		return false;
 	};
 
-	render = () => (
-		<Fragment>
-			<Header history={this.props.history} />
-			<Toolbar />
-			{(!isEmpty(this.state.tableData)) ? (
-				<Fragment>
-					<div className="live__scroll u-disable-selection">
-						<table className="row rota-table p-0 mb-0 bg-light">
-							<thead>
-								<tr className="">
-									<th scope="col" width="336" height="60" className="pt-2 live__scroll--box sortable cell-employee text-uppercase text-left">
-										<div className="d-flex align-items-center p-0 m-0">
-											<div className="ml-2 mr-auto align-middle">Employees ({this.props.employees.length})</div>
-											{(this.props.employees.length > 0) ? (
-												<Fragment>
-													<div className="mr-2 align-middle"><button type="button" className="btn btn-dark btn-icon" id="filter" title="Filter by" aria-label="Filter by" onClick={this.handleFilter}><i className="fa fa-fw fa-filter" aria-hidden="true"></i></button></div>
-													<div className="mr-2 align-middle"><button type="button" className="btn btn-dark btn-icon" id="sortBy" title="Sort by" aria-label="Sort by" onClick={this.handleSortBy}><i className="fa fa-fw fa-sort" aria-hidden="true"></i></button></div>
-												</Fragment>
-											) : null}
-											<div className="mr-2 align-middle"><button type="button" className="btn btn-secondary btn-icon" title="Upload Employees" aria-label="Upload Employees" onClick={this.handleUploadEmployees}><i className="fa fa-fw fa-upload" aria-hidden="true"></i></button></div>
-											<div className="mr-2 align-middle"><button type="button" className="btn btn-secondary btn-icon" title="Add New Employee" aria-label="Add New Employee" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-user-plus" aria-hidden="true"></i></button></div>
-											<Popover placement="bottom" isOpen={this.state.isFilterPopoverOpen} target="filter" toggle={this.handleFilter}>
-												<PopoverBody>
-													<ul className="popover-menu">
-														<li><label className="pt-2 pb-1 m-0">Filter</label></li>
-													</ul>
-													<Form className="popover-menu">
-														<FormGroup className="pl-1 pr-1 pb-1 mb-0">
-															<Input type="text" name="employeeName" id="employeeName" value={this.state.employeeName} onChange={this.handleFilterEmployees} placeholder="By employee name..." autoComplete="off" tabIndex="-1" bsSize="sm" />
-														</FormGroup>
-													</Form>
-												</PopoverBody>
-											</Popover>
-											<Popover placement="bottom" isOpen={this.state.isSortByPopoverOpen} target="sortBy" toggle={this.handleSortBy}>
-												<PopoverBody>
-													<ul className="popover-menu">
-														<li><label className="pt-2 pb-1 m-0">Sort by</label></li>
-														<li><button type="button" title="Sort by First Name" className="btn btn-action btn-nav border-0" onClick={event => this.handleSortEmployees(event, 'firstName')}>First Name</button></li>
-														<li><button type="button" title="Sort by Last Name" className="btn btn-action btn-nav border-0" onClick={event => this.handleSortEmployees(event, 'lastName')}>Last Name</button></li>
-													</ul>
-												</PopoverBody>
-											</Popover>
-										</div>
-									</th>
-									{this.state.tableData.header.columns.map((column, index) => (
-										<th key={index} scope="col" width="195" height="60" className="align-middle p-3 live__scroll--box">
-											<div className="placement-status d-none">
-												<div className={`indicator ${column.placementStatus}`}></div>
-												<div className="count">{column.count}/{column.total}</div>
-											</div>
-											<div>{moment(column.weekDate).format('ddd Do')}</div>
-										</th>
-									))}
-									<th scope="col" width="185" height="60" className="align-middle p-3 live__scroll--box">Total</th>
-								</tr>
-							</thead>
-							<tbody id="tableBody">
-								{this.state.tableData.body.rows.length > 0 && this.state.tableData.body.rows.map((row, rowIndex) => (
-									<tr key={rowIndex} data-account-employee-id={row.accountEmployee.accountEmployeeId} className="draggable-row">
-										<td scope="row" width="336" className="p-0 live__scroll--box drag-handler">
+	render = () => {
+		console.log(this.props.rota);
+		if (isEmpty(this.props.rota)) {
+			return null;
+		}
+
+		return (
+			<Fragment>
+				<Header history={this.props.history} />
+				<Toolbar />
+				{(!isEmpty(this.state.tableData)) ? (
+					<Fragment>
+						<div className="live__scroll u-disable-selection">
+							<table className="row rota-table p-0 mb-0 bg-light">
+								<thead>
+									<tr className="">
+										<th scope="col" width="336" height="60" className="pt-2 live__scroll--box sortable cell-employee text-uppercase text-left">
 											<div className="d-flex align-items-center p-0 m-0">
-												<div className="mr-2 align-middle pt-2 pb-2 pl-2 pr-2">
-													<Avatar email={row.accountEmployee.employee.email} round={true} size="50" cache={false} />
+												<div className="ml-2 mr-auto align-middle">Employees ({this.props.employees.length})</div>
+												{(this.props.employees.length > 0) ? (
+													<Fragment>
+														<div className="mr-2 align-middle"><button type="button" className="btn btn-dark btn-icon" id="filter" title="Filter by" aria-label="Filter by" onClick={this.handleFilter}><i className="fa fa-fw fa-filter" aria-hidden="true"></i></button></div>
+														<div className="mr-2 align-middle"><button type="button" className="btn btn-dark btn-icon" id="sortBy" title="Sort by" aria-label="Sort by" onClick={this.handleSortBy}><i className="fa fa-fw fa-sort" aria-hidden="true"></i></button></div>
+													</Fragment>
+												) : null}
+												<div className="mr-2 align-middle"><button type="button" className="btn btn-secondary btn-icon" title="Upload Employees" aria-label="Upload Employees" onClick={this.handleUploadEmployees}><i className="fa fa-fw fa-upload" aria-hidden="true"></i></button></div>
+												<div className="mr-2 align-middle"><button type="button" className="btn btn-secondary btn-icon" title="Add New Employee" aria-label="Add New Employee" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-user-plus" aria-hidden="true"></i></button></div>
+												<Popover placement="bottom" isOpen={this.state.isFilterPopoverOpen} target="filter" toggle={this.handleFilter}>
+													<PopoverBody>
+														<ul className="popover-menu">
+															<li><label className="pt-2 pb-1 m-0">Filter</label></li>
+														</ul>
+														<Form className="popover-menu">
+															<FormGroup className="pl-1 pr-1 pb-1 mb-0">
+																<Input type="text" name="employeeName" id="employeeName" value={this.state.employeeName} onChange={this.handleFilterEmployees} placeholder="By employee name..." autoComplete="off" tabIndex="-1" bsSize="sm" />
+															</FormGroup>
+														</Form>
+													</PopoverBody>
+												</Popover>
+												<Popover placement="bottom" isOpen={this.state.isSortByPopoverOpen} target="sortBy" toggle={this.handleSortBy}>
+													<PopoverBody>
+														<ul className="popover-menu">
+															<li><label className="pt-2 pb-1 m-0">Sort by</label></li>
+															<li><button type="button" title="Sort by First Name" className="btn btn-action btn-nav border-0" onClick={event => this.handleSortEmployees(event, 'firstName')}>First Name</button></li>
+															<li><button type="button" title="Sort by Last Name" className="btn btn-action btn-nav border-0" onClick={event => this.handleSortEmployees(event, 'lastName')}>Last Name</button></li>
+														</ul>
+													</PopoverBody>
+												</Popover>
+											</div>
+										</th>
+										{this.state.tableData.header.columns.map((column, index) => (
+											<th key={index} scope="col" width="195" height="60" className="align-middle p-3 live__scroll--box">
+												<div className="placement-status d-none">
+													<div className={`indicator ${column.placementStatus}`}></div>
+													<div className="count">{column.count}/{column.total}</div>
 												</div>
-												<div className="mr-auto align-middle">
-													<div id="fullname" className="">{row.accountEmployee.employee.firstName} {row.accountEmployee.employee.lastName}</div>
-													<div className="align-middle">
-														<i className={`align-middle p-0 ml-0 fa fa-fw fa-gbp ${(row.accountEmployee.hourlyRate) || (row.accountEmployee.salary) ? 'complete' : ''}`} aria-hidden="true"></i>
-														<i className={`align-middle p-0 ml-1 fa fa-fw fa-envelope ${(row.accountEmployee.employee.email) ? 'complete' : ''}`} aria-hidden="true"></i>
-														<i className={`align-middle p-0 ml-1 fa fa-fw fa-phone ${(row.accountEmployee.employee.mobile) ? 'complete' : ''}`} aria-hidden="true"></i>
+												<div>{moment(column.weekDate).format('ddd Do')}</div>
+											</th>
+										))}
+										<th scope="col" width="185" height="60" className="align-middle p-3 live__scroll--box">Total</th>
+									</tr>
+								</thead>
+								<tbody id="tableBody">
+									{this.state.tableData.body.rows.length > 0 && this.state.tableData.body.rows.map((row, rowIndex) => (
+										<tr key={rowIndex} data-account-employee-id={row.accountEmployee.accountEmployeeId} className="draggable-row">
+											<td scope="row" width="336" className="p-0 live__scroll--box drag-handler">
+												<div className="d-flex align-items-center p-0 m-0">
+													<div className="mr-2 align-middle pt-2 pb-2 pl-2 pr-2">
+														<Avatar email={row.accountEmployee.employee.email} round={true} size="50" cache={false} />
+													</div>
+													<div className="mr-auto align-middle">
+														<div id="fullname" className="">{row.accountEmployee.employee.firstName} {row.accountEmployee.employee.lastName}</div>
+														<div className="align-middle">
+															<i className={`align-middle p-0 ml-0 fa fa-fw fa-gbp ${(row.accountEmployee.hourlyRate) || (row.accountEmployee.salary) ? 'complete' : ''}`} aria-hidden="true"></i>
+															<i className={`align-middle p-0 ml-1 fa fa-fw fa-envelope ${(row.accountEmployee.employee.email) ? 'complete' : ''}`} aria-hidden="true"></i>
+															<i className={`align-middle p-0 ml-1 fa fa-fw fa-phone ${(row.accountEmployee.employee.mobile) ? 'complete' : ''}`} aria-hidden="true"></i>
+														</div>
 													</div>
 												</div>
-											</div>
-										</td>
-										{row.columns.map((column, columnIndex) => ((column.draggable) ? (
-											<td key={columnIndex} width="195" className="p-0 live__scroll--box cell-non-draggable">
-												{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
-													<ShiftPlacementNonDraggable key={shiftPlacementIndex} shiftPlacement={shiftPlacement} />
-												)) : null}
 											</td>
-										) : (
-											<td key={columnIndex} width="195" className="p-0 live__scroll--box cell-draggable" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId} onDrop={event => this.handleDrop(event)} onDragOver={event => this.handleDragOver(event)} onDragLeave={event => this.handleDragLeave(event)} onDragEnd={event => this.handleDragEnd(event)} onDragEnter={event => this.handleDragEnter(event)}>
-												{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
-													<ShiftPlacementDraggable key={shiftPlacementIndex} shiftPlacement={shiftPlacement} id={`shift_${columnIndex}_${shiftPlacementIndex}`} />
-												)) : (
-													<button type="button" className="add-shift-block" onClick={event => this.handleCreateShift(event, column.accountEmployee.employee.employeeId, moment(column.weekDate).format('YYYY-MM-DD'))}><i className="fa fa-fw fa-plus" aria-hidden="true"></i></button>
-												)}
-											</td>
-										)))}
-										<td width="185" className="p-0 live__scroll--box text-center">
-											<div className="d-flex align-items-center pt-2 pb-2 pl-2 pr-2 text-center">
-												<div className="align-middle w-100">
-													<div className="">{row.hours.toFixed(2)} hrs</div>
-													<div>(&pound;{row.cost.toFixed(2)})</div>
+											{row.columns.map((column, columnIndex) => ((column.draggable) ? (
+												<td key={columnIndex} width="195" className="p-0 live__scroll--box cell-non-draggable">
+													{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
+														<ShiftPlacementNonDraggable key={shiftPlacementIndex} shiftPlacement={shiftPlacement} />
+													)) : null}
+												</td>
+											) : (
+												<td key={columnIndex} width="195" className="p-0 live__scroll--box cell-draggable" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId} onDrop={event => this.handleDrop(event)} onDragOver={event => this.handleDragOver(event)} onDragLeave={event => this.handleDragLeave(event)} onDragEnd={event => this.handleDragEnd(event)} onDragEnter={event => this.handleDragEnter(event)}>
+													{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
+														<ShiftPlacementDraggable key={shiftPlacementIndex} shiftPlacement={shiftPlacement} id={`shift_${columnIndex}_${shiftPlacementIndex}`} />
+													)) : (
+														<button type="button" className="add-shift-block" onClick={event => this.handleCreateShift(event, column.accountEmployee.employee.employeeId, moment(column.weekDate).format('YYYY-MM-DD'))}><i className="fa fa-fw fa-plus" aria-hidden="true"></i></button>
+													)}
+												</td>
+											)))}
+											<td width="185" className="p-0 live__scroll--box text-center">
+												<div className="d-flex align-items-center pt-2 pb-2 pl-2 pr-2 text-center">
+													<div className="align-middle w-100">
+														<div className="">{row.hours.toFixed(2)} hrs</div>
+														<div>(&pound;{row.cost.toFixed(2)})</div>
+													</div>
 												</div>
-											</div>
-										</td>
-									</tr>
-								))}
-							</tbody>
-							<tfoot>
-								<tr>
-									<th scope="col" width="336" className="live__scroll--box p-0 rota-table__footer-cell">
-										<div className="d-flex align-items-center">
-											<div className="flex-column">
-												<div className="flex-row">Total Hours</div>
-												<div className="flex-row">Total Shifts</div>
-											</div>
-											<div className="flex-column">
-												<div className="flex-row text-danger">Total Costs</div>
-												<div className="flex-row">Total Budget</div>
-											</div>
-										</div>
-									</th>
-									{this.state.tableData.footer.columns.map((column, columnIndex) => (
-										<th key={columnIndex} scope="col" width={(column.last) ? '185' : '195'} className="live__scroll--box p-0 rota-table__footer-cell">
+											</td>
+										</tr>
+									))}
+								</tbody>
+								<tfoot>
+									<tr>
+										<th scope="col" width="336" className="live__scroll--box p-0 rota-table__footer-cell">
 											<div className="d-flex align-items-center">
 												<div className="flex-column">
-													<div className="flex-row">{column.hours}</div>
-													<div className="flex-row">{column.shifts}</div>
+													<div className="flex-row">Total Hours</div>
+													<div className="flex-row">Total Shifts</div>
 												</div>
 												<div className="flex-column">
-													<div className="flex-row text-danger">&pound;{column.cost.toFixed(2)}</div>
-													{(column.last) ? (
-														<div className="flex-row">&pound;{this.props.rota.budget.toFixed(2)}</div>
-													) : (
-														<div className="flex-row">&nbsp;</div>
-													)}
+													<div className="flex-row text-danger">Total Costs</div>
+													<div className="flex-row">Total Budget</div>
 												</div>
 											</div>
 										</th>
-									))}
-								</tr>
-							</tfoot>
-						</table>
-					</div>
-				</Fragment>
-			) : null}
-			<Modal title="Shifts" className="modal-dialog" show={this.state.isShiftModalOpen} onClose={event => this.handleCreateShift(event, this.state.employeeId, moment(this.state.startDate).format('YYYY-MM-DD'))}>
-				<ShiftForm editMode={false} employeeId={this.state.employeeId} startDate={moment(this.state.startDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleCreateShift(event, this.state.employeeId, moment(this.state.startDate).format('YYYY-MM-DD'))} />
-			</Modal>
-			<Modal title="Employees" className="modal-dialog" show={this.state.isCreateEmployeeModalOpen} onClose={this.handleCreateEmployee}>
-				<EmployeeForm handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateEmployee} />
-			</Modal>
-			<Modal title="Employees" className="modal-dialog" show={this.state.isUploadEmployeesModalOpen} onClose={this.handleUploadEmployees}>
-				<UploadEmployeesForm handleInfoNotification={this.handleInfoNotification} handleClose={this.handleUploadEmployees} />
-			</Modal>
-			{(this.state.error.data) ? (
-				<Modal title={this.state.error.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isErrorModalOpen} onClose={this.handleModal}>
-					<div dangerouslySetInnerHTML={{ __html: this.state.error.data.message }} />
+										{this.state.tableData.footer.columns.map((column, columnIndex) => (
+											<th key={columnIndex} scope="col" width={(column.last) ? '185' : '195'} className="live__scroll--box p-0 rota-table__footer-cell">
+												<div className="d-flex align-items-center">
+													<div className="flex-column">
+														<div className="flex-row">{column.hours}</div>
+														<div className="flex-row">{column.shifts}</div>
+													</div>
+													<div className="flex-column">
+														<div className="flex-row text-danger">&pound;{column.cost.toFixed(2)}</div>
+														{(column.last) ? (
+															<div className="flex-row">&pound;{this.props.rota.budget.toFixed(2)}</div>
+														) : (
+															<div className="flex-row">&nbsp;</div>
+														)}
+													</div>
+												</div>
+											</th>
+										))}
+									</tr>
+								</tfoot>
+							</table>
+						</div>
+					</Fragment>
+				) : null}
+				<Modal title="Shifts" className="modal-dialog" show={this.state.isShiftModalOpen} onClose={event => this.handleCreateShift(event, this.state.employeeId, moment(this.state.startDate).format('YYYY-MM-DD'))}>
+					<ShiftForm editMode={false} employeeId={this.state.employeeId} startDate={moment(this.state.startDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleCreateShift(event, this.state.employeeId, moment(this.state.startDate).format('YYYY-MM-DD'))} />
 				</Modal>
-			) : null}
-		</Fragment>
-	);
+				<Modal title="Employees" className="modal-dialog" show={this.state.isCreateEmployeeModalOpen} onClose={this.handleCreateEmployee}>
+					<EmployeeForm handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateEmployee} />
+				</Modal>
+				<Modal title="Employees" className="modal-dialog" show={this.state.isUploadEmployeesModalOpen} onClose={this.handleUploadEmployees}>
+					<UploadEmployeesForm handleInfoNotification={this.handleInfoNotification} handleClose={this.handleUploadEmployees} />
+				</Modal>
+				{(this.state.error.data) ? (
+					<Modal title={this.state.error.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isErrorModalOpen} onClose={this.handleModal}>
+						<div dangerouslySetInnerHTML={{ __html: this.state.error.data.message }} />
+					</Modal>
+				) : null}
+			</Fragment>
+		);
+	};
 }
 
 Employees.propTypes = propTypes;
@@ -800,6 +823,7 @@ Employees.propTypes = propTypes;
 Employees.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
+	user: state.user,
 	week: state.week,
 	rota: state.rota,
 	rotas: state.rotas,

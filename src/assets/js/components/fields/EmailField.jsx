@@ -8,14 +8,18 @@ import { FieldFeedback, FieldFeedbacks } from 'react-form-with-constraints';
 import { addClass, removeClass } from '../../helpers/classes';
 
 const propTypes = {
+	handleBlur: PropTypes.func.isRequired,
 	fieldValue: PropTypes.string.isRequired,
 	handleChange: PropTypes.func.isRequired,
 	fieldRequired: PropTypes.bool.isRequired,
+	fieldTabIndex: PropTypes.number.isRequired,
 };
 
 const defaultProps = {
 	fieldValue: '',
+	fieldTabIndex: '-1',
 	fieldRequired: false,
+	handleBlur: () => {},
 	handleChange: () => {},
 };
 
@@ -56,7 +60,7 @@ class EmailField extends Component {
 	render = () => (
 		<FormGroup>
 			<Label for="email">Email Address {(this.props.fieldRequired) ? (<span className="text-danger">&#42;</span>) : null}</Label>
-			<Input type="email" name="email" id="email" value={this.props.fieldValue} ref="input" placeholder="e.g. hello@giggrafter.com" onBlur={this.handleBlur} onChange={this.props.handleChange} required={this.props.fieldRequired} />
+			<Input type="email" name="email" id="email" value={this.props.fieldValue} ref="input" placeholder="e.g. hello@giggrafter.com" tabIndex={this.props.fieldTabIndex} onChange={this.props.handleChange} onBlur={this.props.handleBlur} required={this.props.fieldRequired} />
 			<FieldFeedbacks for="email" show="all">
 				<FieldFeedback when="*">- Please provide a valid email address.</FieldFeedback>
 			</FieldFeedbacks>

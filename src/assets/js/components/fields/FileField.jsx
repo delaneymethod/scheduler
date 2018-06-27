@@ -12,6 +12,7 @@ const propTypes = {
 	fieldAccept: PropTypes.string,
 	valueMissing: PropTypes.string,
 	fieldPlaceholder: PropTypes.string,
+	handleBlur: PropTypes.func.isRequired,
 	baseColor: PropTypes.string.isRequired,
 	fieldName: PropTypes.string.isRequired,
 	fieldLabel: PropTypes.string.isRequired,
@@ -30,6 +31,7 @@ const defaultProps = {
 	baseColor: 'gray',
 	fieldRequired: false,
 	fieldPlaceholder: '',
+	handleBlur: () => {},
 	activeColor: '#ff0000',
 	handleChange: () => {},
 	overlayColor: 'rgba(255, 255, 255, 0.3)',
@@ -174,7 +176,7 @@ class FileField extends Component {
 				) : (
 					<div><i className="fa fa-fw fa-upload icon mx-auto text-dark" aria-hidden="true"></i><br />Drop a file or click to open the file picker.</div>
 				)}
-				<Input type="file" ref="input" name={this.props.fieldName} id={this.props.fieldName} onChange={this.handleFileChange} accept={this.props.fieldAccept} required={this.props.fieldRequired} />
+				<Input type="file" ref="input" name={this.props.fieldName} id={this.props.fieldName} onChange={this.handleFileChange} onBlur={this.props.handleBlur} accept={this.props.fieldAccept} required={this.props.fieldRequired} />
 			</Label>
 			<FieldFeedbacks for={this.props.fieldName} show="all">
 				<FieldFeedback when="valueMissing" className="mt-4">- {this.props.valueMissing}</FieldFeedback>

@@ -15,7 +15,10 @@ export default {
 			LOGIN: {
 				TITLE: 'Login',
 				URI: '/login',
-				MESSAGE: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta velit in lectus efficitur hendrerit. Quisque cursus arcu sollicitudin rhoncus molestie. Donec at rhoncus enim, ut rhoncus lacus. Sed eget felis est.',
+				MESSAGES: {
+					WELCOME: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta velit in lectus efficitur hendrerit. Quisque cursus arcu sollicitudin rhoncus molestie. Donec at rhoncus enim, ut rhoncus lacus. Sed eget felis est.',
+					FAILED: 'You entered an incorrect username or password. Please try again or if you have forgotten your password, click on the link below.',
+				},
 				META: {
 					DESCRIPTION: '',
 					KEYWORDS: '',
@@ -68,7 +71,9 @@ export default {
 			REGISTER: {
 				TITLE: 'Register',
 				URI: '/register',
-				MESSAGE: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta velit in lectus efficitur hendrerit. Quisque cursus arcu sollicitudin rhoncus molestie. Donec at rhoncus enim, ut rhoncus lacus. Sed eget felis est.',
+				MESSAGES: {
+					WELCOME: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta velit in lectus efficitur hendrerit. Quisque cursus arcu sollicitudin rhoncus molestie. Donec at rhoncus enim, ut rhoncus lacus. Sed eget felis est.',
+				},
 				META: {
 					DESCRIPTION: '',
 					KEYWORDS: '',
@@ -77,6 +82,9 @@ export default {
 			FORGOTTEN_YOUR_PASSWORD: {
 				TITLE: 'Forgotten your Password',
 				URI: '/forgotten-your-password',
+				MESSAGES: {
+					NOT_FOUND: 'Email address was not found.',
+				},
 				META: {
 					DESCRIPTION: '',
 					KEYWORDS: '',

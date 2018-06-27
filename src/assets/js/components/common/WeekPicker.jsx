@@ -21,6 +21,7 @@ import { createRota, switchRota } from '../../actions/rotaActions';
 const routes = constants.APP.ROUTES;
 
 const propTypes = {
+	user: PropTypes.object.isRequired,
 	rota: PropTypes.object.isRequired,
 	week: PropTypes.object.isRequired,
 	rotas: PropTypes.array.isRequired,
@@ -28,6 +29,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+	user: {},
 	rota: {},
 	week: {},
 	rotas: [],
@@ -72,6 +74,10 @@ class WeekPicker extends Component {
 	});
 
 	componentDidMount = () => {
+		if (isEmpty(this.props.user)) {
+			return;
+		}
+
 		let week = {};
 
 		const { actions } = this.props;
@@ -334,25 +340,31 @@ class WeekPicker extends Component {
 		this.setState({ highlightedDates });
 	};
 
-	render = () => (
-		<div className="row week-toggle text-dark p-0 m-0">
-			<button type="button" name="previous-week" className="col-2 col-sm-2 col-md-2 btn btn-toggle p-0 border-0 font-weight-normal text-dark" onClick={this.handlePrevious}><i className="fa fa-fw fa-caret-left" aria-hidden="true"></i></button>
-			<button type="button" name="current-week" className="col-8 col-sm-8 col-md-8 btn btn-toggle p-0 btn-week-picker text-dark font-weight-normal rounded-0 border-0" onClick={this.handleToggle}><strong>{moment(this.state.week.startDate).format('ddd')}</strong>, {moment(this.state.week.startDate).format('MMM')} {moment(this.state.week.startDate).format('D')} - <strong>{moment(this.state.week.endDate).format('ddd')}</strong>, {moment(this.state.week.endDate).format('MMM')} {moment(this.state.week.endDate).format('D')}</button>
-			<button type="button" name="next-week" className="col-2 col-sm-2 col-md-2 btn btn-toggle p-0 border-0 font-weight-normal text-dark" onClick={this.handleNext}><i className="fa fa-fw fa-caret-right" aria-hidden="true"></i></button>
-			{(this.state.isCalenderOpen) ? (
-				<DatePicker withPortal inline autoFocus fixedHeight locale="en-gb" tabIndex={-1} selected={this.state.week.startDate} onChange={this.handleChange} onClickOutside={this.handleToggle} highlightDates={this.state.highlightedDates}>
-					<div className="p-3 text-right">
-						<button type="button" title="Cancel" className="mt-2 btn btn-secondary" onClick={this.handleToggle}>Cancel</button>
-					</div>
-				</DatePicker>
-			) : null}
-			{(this.state.error.data) ? (
-				<Modal title={this.state.error.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isModalOpen} onClose={this.handleModal}>
-					<div dangerouslySetInnerHTML={{ __html: this.state.error.data.message }} />
-				</Modal>
-			) : null}
-		</div>
-	);
+	render = () => {
+		if (isEmpty(this.props.user)) {
+			return null;
+		}
+
+		return (
+			<div className="row week-toggle text-dark p-0 m-0">
+				<button type="button" name="previous-week" className="col-2 col-sm-2 col-md-2 btn btn-toggle p-0 border-0 font-weight-normal text-dark" onClick={this.handlePrevious}><i className="fa fa-fw fa-caret-left" aria-hidden="true"></i></button>
+				<button type="button" name="current-week" className="col-8 col-sm-8 col-md-8 btn btn-toggle p-0 btn-week-picker text-dark font-weight-normal rounded-0 border-0" onClick={this.handleToggle}><strong>{moment(this.state.week.startDate).format('ddd')}</strong>, {moment(this.state.week.startDate).format('MMM')} {moment(this.state.week.startDate).format('D')} - <strong>{moment(this.state.week.endDate).format('ddd')}</strong>, {moment(this.state.week.endDate).format('MMM')} {moment(this.state.week.endDate).format('D')}</button>
+				<button type="button" name="next-week" className="col-2 col-sm-2 col-md-2 btn btn-toggle p-0 border-0 font-weight-normal text-dark" onClick={this.handleNext}><i className="fa fa-fw fa-caret-right" aria-hidden="true"></i></button>
+				{(this.state.isCalenderOpen) ? (
+					<DatePicker withPortal inline autoFocus fixedHeight locale="en-gb" tabIndex={-1} selected={this.state.week.startDate} onChange={this.handleChange} onClickOutside={this.handleToggle} highlightDates={this.state.highlightedDates}>
+						<div className="p-3 text-right">
+							<button type="button" title="Cancel" className="mt-2 btn btn-secondary" onClick={this.handleToggle}>Cancel</button>
+						</div>
+					</DatePicker>
+				) : null}
+				{(this.state.error.data) ? (
+					<Modal title={this.state.error.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isModalOpen} onClose={this.handleModal}>
+						<div dangerouslySetInnerHTML={{ __html: this.state.error.data.message }} />
+					</Modal>
+				) : null}
+			</div>
+		);
+	};
 }
 
 WeekPicker.propTypes = propTypes;
@@ -360,6 +372,7 @@ WeekPicker.propTypes = propTypes;
 WeekPicker.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
+	user: state.user,
 	rota: state.rota,
 	week: state.week,
 	rotas: state.rotas,

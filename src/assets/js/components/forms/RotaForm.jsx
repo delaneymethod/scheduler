@@ -1,9 +1,9 @@
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { sortBy, isEmpty } from 'lodash';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
+import { sortBy, isEmpty, debounce } from 'lodash';
 import { Row, Col, Label, Input, Button, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 
@@ -49,7 +49,11 @@ class RotaForm extends Component {
 	constructor(props) {
 		super(props);
 
+		this.form = null;
+
 		this.state = this.getInitialState();
+
+		this.handleBlur = this.handleBlur.bind(this);
 
 		this.handleDelete = this.handleDelete.bind(this);
 
@@ -67,6 +71,9 @@ class RotaForm extends Component {
 	});
 
 	componentDidMount = () => {
+		/* We debounce this call to wait 1000ms (we do not want the leading (or "immediate") flag passed because we want to wait until the user has finished typing before running validation */
+		this.handleValidateFields = debounce(this.handleValidateFields.bind(this), 1000);
+
 		const startDates = [];
 
 		/* Get the start date of the week... */
@@ -98,9 +105,9 @@ class RotaForm extends Component {
 		this.setState({
 			[target.name]: target.value,
 		});
-
-		await this.form.validateFields(target);
 	};
+
+	handleBlur = async event => this.handleValidateFields(event.currentTarget);
 
 	handleDelete = event => console.log('FIXME - Delete Rota');
 
@@ -195,6 +202,8 @@ class RotaForm extends Component {
 		}
 	};
 
+	handleValidateFields = target => ((this.form && target) ? this.form.validateFields(target) : null);
+
 	errorMessage = () => (this.state.error.data ? <Alert color="danger" title={this.state.error.data.title} message={this.state.error.data.message} /> : null);
 
 	render = () => (
@@ -203,11 +212,11 @@ class RotaForm extends Component {
 			{(!isEmpty(this.props.message)) ? (<p className="lead mt-3 mb-4 pl-4 pr-4 text-center">{this.props.message}</p>) : null}
 			{this.errorMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
-				<TextField fieldName="rotaName" fieldLabel="Rota Name" fieldValue={this.state.rotaName} fieldPlaceholder="e.g. Kitchen" handleChange={this.handleChange} valueMissing="Please provide a valid rota name." tabIndex="1" fieldRequired={true} />
-				<TextField fieldName="budget" fieldLabel="Budget" fieldValue={this.state.budget} fieldPlaceholder="e.g. 1000" handleChange={this.handleChange} valueMissing="Please provide a valid budget." tabIndex="2" fieldRequired={true} />
+				<TextField fieldName="rotaName" fieldLabel="Rota Name" fieldValue={this.state.rotaName} fieldPlaceholder="e.g. Kitchen" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid rota name." fieldTabIndex={1} fieldRequired={true} />
+				<TextField fieldName="budget" fieldLabel="Budget" fieldValue={this.state.budget} fieldPlaceholder="e.g. 1000" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid budget." fieldTabIndex={2} fieldRequired={true} />
 				<FormGroup>
 					<Label for="startDate">Select Start Date <span className="text-danger">&#42;</span></Label>
-					<Input type="select" name="startDate" id="startDate" className="custom-select custom-select-xl" value={this.state.startDate} onChange={this.handleChange} tabIndex="3" required={true}>
+					<Input type="select" name="startDate" id="startDate" className="custom-select custom-select-xl" value={this.state.startDate} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="3" required={true}>
 						{this.state.startDates.map((startDate, index) => <option key={index} value={moment(startDate).format('YYYY-MM-DD')} label={moment(startDate).format('dddd, Do MMMM YYYY')} />)}
 					</Input>
 					<FieldFeedbacks for="startDate" show="all">

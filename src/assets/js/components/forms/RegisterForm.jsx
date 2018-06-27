@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import debounce from 'lodash/debounce';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
 import { Row, Col, Label, Input, Button, FormGroup } from 'reactstrap';
@@ -33,13 +34,17 @@ class RegisterForm extends Component {
 	constructor(props) {
 		super(props);
 
+		this.form = null;
+
 		this.state = this.getInitialState();
+
+		this.handleBlur = this.handleBlur.bind(this);
 
 		this.handleChange = this.handleChange.bind(this);
 
 		this.handleSubmit = this.handleSubmit.bind(this);
 
-		this.handleChangePassword = this.handleChangePassword.bind(this);
+		this.handleScrollToTop = this.handleScrollToTop.bind(this);
 	}
 
 	getInitialState = () => ({
@@ -55,6 +60,9 @@ class RegisterForm extends Component {
 	});
 
 	componentDidMount = () => {
+		/* We debounce this call to wait 1000ms (we do not want the leading (or "immediate") flag passed because we want to wait until the user has finished typing before running validation */
+		this.handleValidateFields = debounce(this.handleValidateFields.bind(this), 1000);
+
 		const { actions } = this.props;
 
 		console.log('Called RegisterForm componentDidMount getSubscriptionLevels');
@@ -74,20 +82,9 @@ class RegisterForm extends Component {
 		this.setState({
 			[target.name]: target.value,
 		});
-
-		await this.form.validateFields(target);
 	};
 
-	handleChangePassword = async (event) => {
-		const target = event.currentTarget;
-
-		this.setState({
-			[target.name]: target.value,
-		});
-
-		/* We want to validate the target field and the password confirmation field */
-		await this.form.validateFields(target, 'confirmPassword');
-	};
+	handleBlur = async event => this.handleValidateFields(event.currentTarget);
 
 	handleSubmit = async (event) => {
 		event.preventDefault();
@@ -119,15 +116,35 @@ class RegisterForm extends Component {
 
 			console.log('Called RegisterForm handleSubmit register');
 			actions.register(payload)
-				.then(() => this.setState(Object.assign(this.getInitialState(), {
-					email,
-					emailSent: true,
-				})))
+				.then(() => {
+					this.setState(Object.assign(this.getInitialState(), {
+						email,
+						emailSent: true,
+					}));
+
+					this.handleScrollToTop();
+				})
 				.catch(error => this.setState({ error }));
 		}
 	};
 
-	errorMessage = () => (this.state.error.data ? <Alert color="danger" title={this.state.error.data.title} message={this.state.error.data.message} /> : null);
+	handleScrollToTop = (event) => {
+		event.preventDefault();
+
+		const scrollToTop = window.setInterval(() => {
+			const pos = window.pageYOffset;
+
+			if (pos > 0) {
+				window.scrollTo(0, pos - 20);
+			} else {
+				window.clearInterval(scrollToTop);
+			}
+		}, 16);
+	};
+
+	handleValidateFields = target => ((this.form && target) ? this.form.validateFields(target) : null);
+
+	errorMessage = () => (this.state.error.data ? <Alert color="danger" message={this.state.error.data.message} /> : null);
 
 	successMessage = () => (this.state.emailSent ? <Alert color="success" message={`An email has been sent to <strong>${this.state.email}</strong>. Please follow the link in this email message to verify your account and complete registration.`} /> : null);
 
@@ -139,7 +156,7 @@ class RegisterForm extends Component {
 				{(this.props.subscriptionLevels.length > 0) ? (
 					<FormGroup>
 						<Label for="subscriptionLevelId">Subscription Type</Label>
-						<Input type="select" name="subscriptionLevelId" id="subscriptionLevelId" className="custom-select custom-select-xl" onChange={this.handleChange} tabIndex="1" required>
+						<Input type="select" name="subscriptionLevelId" id="subscriptionLevelId" className="custom-select custom-select-xl" onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="1" required>
 							{this.props.subscriptionLevels.map((subscriptionLevel, index) => <option key={index} value={subscriptionLevel.subscriptionLevelId} label={subscriptionLevel.subscriptionLevelName} />)}
 						</Input>
 						<FieldFeedbacks for="subscriptionLevelId" show="all">
@@ -147,19 +164,19 @@ class RegisterForm extends Component {
 						</FieldFeedbacks>
 					</FormGroup>
 				) : null}
-				<TextField fieldName="businessName" fieldLabel="Business Name" fieldValue={this.state.businessName} fieldPlaceholder="e.g. Gig Grafter.com" handleChange={this.handleChange} valueMissing="Please provide a valid business name." tabIndex="2" fieldRequired={true} />
+				<TextField fieldName="businessName" fieldLabel="Business Name" fieldValue={this.state.businessName} fieldPlaceholder="e.g. Gig Grafter.com" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid business name." fieldTabIndex={2} fieldRequired={true} />
 				<Row>
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
-						<TextField fieldName="firstName" fieldLabel="First Name" fieldValue={this.state.firstName} fieldPlaceholder="e.g. Barry" handleChange={this.handleChange} valueMissing="Please provide a valid first name." tabIndex="3" fieldRequired={true} />
+						<TextField fieldName="firstName" fieldLabel="First Name" fieldValue={this.state.firstName} fieldPlaceholder="e.g. Barry" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid first name." fieldTabIndex={3} fieldRequired={true} />
 					</Col>
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
-						<TextField fieldName="lastName" fieldLabel="Last Name" fieldValue={this.state.lastName} fieldPlaceholder="e.g. Lynch" handleChange={this.handleChange} valueMissing="Please provide a valid last name." tabIndex="4" fieldRequired={true} />
+						<TextField fieldName="lastName" fieldLabel="Last Name" fieldValue={this.state.lastName} fieldPlaceholder="e.g. Lynch" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid last name." fieldTabIndex={4} fieldRequired={true} />
 					</Col>
 				</Row>
-				<EmailField fieldValue={this.state.email} handleChange={this.handleChange} tabIndex="5" fieldRequired={true} />
-				<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChangePassword} tabIndex="6" showPasswordStrength showPasswordCommon fieldRequired={true} />
-				<PasswordField fieldLabel="Confirm Password" fieldName="confirmPassword" fieldValue={this.state.confirmPassword} handleChange={this.handleChange} tabIndex="7" fieldRequired={true} />
-				<Button type="submit" color="primary" className="mt-4" title={routes.REGISTER.TITLE} tabIndex="8" block>{routes.REGISTER.TITLE}</Button>
+				<EmailField fieldValue={this.state.email} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={5} fieldRequired={true} />
+				<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={6} showPasswordStrength showPasswordCommon fieldRequired={true} />
+				<PasswordField fieldLabel="Confirm Password" fieldName="confirmPassword" fieldValue={this.state.confirmPassword} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={7} fieldRequired={true} />
+				<Button type="submit" color="primary" className="mt-4" title={routes.REGISTER.TITLE} tabIndex="8" disabled={this.state.emailSent} block>{routes.REGISTER.TITLE}</Button>
 			</FormWithConstraints>
 		</Fragment>
 	);

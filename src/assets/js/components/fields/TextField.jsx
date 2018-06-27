@@ -7,10 +7,12 @@ const propTypes = {
 	fieldValue: PropTypes.any,
 	valueMissing: PropTypes.string,
 	fieldPlaceholder: PropTypes.string,
+	handleBlur: PropTypes.func.isRequired,
 	fieldName: PropTypes.string.isRequired,
 	fieldLabel: PropTypes.string.isRequired,
 	handleChange: PropTypes.func.isRequired,
 	fieldRequired: PropTypes.bool.isRequired,
+	fieldTabIndex: PropTypes.number.isRequired,
 };
 
 const defaultProps = {
@@ -18,6 +20,8 @@ const defaultProps = {
 	fieldValue: '',
 	fieldLabel: '',
 	valueMissing: '',
+	fieldTabIndex: '-1',
+	handleBlur: () => {},
 	fieldRequired: false,
 	fieldPlaceholder: '',
 	handleChange: () => {},
@@ -27,14 +31,16 @@ const TextField = ({
 	fieldName,
 	fieldValue,
 	fieldLabel,
+	handleBlur,
 	valueMissing,
 	handleChange,
 	fieldRequired,
+	fieldTabIndex,
 	fieldPlaceholder,
 }) => (
 	<FormGroup>
 		<Label for={fieldName}>{fieldLabel} {(fieldRequired) ? (<span className="text-danger">&#42;</span>) : null}</Label>
-		<Input type="text" name={fieldName} id={fieldName} value={fieldValue} placeholder={fieldPlaceholder} onChange={handleChange} required={fieldRequired} />
+		<Input type="text" name={fieldName} id={fieldName} value={fieldValue} placeholder={fieldPlaceholder} tabIndex={fieldTabIndex} onChange={handleChange} onBlur={handleBlur} required={fieldRequired} />
 		<FieldFeedbacks for={fieldName} show="all">
 			<FieldFeedback when="valueMissing">- {valueMissing}</FieldFeedback>
 		</FieldFeedbacks>

@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import isEmpty from 'lodash/isEmpty';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
@@ -18,10 +19,12 @@ const dashboard = routes.DASHBOARD;
 
 const propTypes = {
 	user: PropTypes.object.isRequired,
+	rota: PropTypes.object.isRequired,
 };
 
 const defaultProps = {
 	user: {},
+	rota: {},
 };
 
 class Header extends Component {
@@ -79,7 +82,9 @@ class Header extends Component {
 									<Popover placement="bottom" isOpen={this.state.isNavigationMenuPopoverOpen} target="navigationMenu" toggle={this.handleNavigationMenu}>
 										<PopoverBody>
 											<ul className="actions popover-menu">
-												<NavItem className={`pr-3 ml-0 ${(this.state.employeesIsActive) ? 'active' : ''}`}><a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a></NavItem>
+												{(!isEmpty(this.props.rota)) ? (
+													<NavItem className={`pr-3 ml-0 ${(this.state.employeesIsActive) ? 'active' : ''}`}><a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a></NavItem>
+												) : null}
 												<NavItem className={`pr-3 ml-0 ${(this.state.shiftsIsActive) ? 'active' : ''}`}><a href={dashboard.SHIFTS.URI} title={dashboard.SHIFTS.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-th" aria-hidden="true"></i>{dashboard.SHIFTS.TITLE}</a></NavItem>
 												<NavItem className={`pr-3 ml-0 ${(this.state.overviewIsActive) ? 'active' : ''}`}><a href={dashboard.OVERVIEW.URI} title={dashboard.OVERVIEW.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-bar-chart" aria-hidden="true"></i>{dashboard.OVERVIEW.TITLE}</a></NavItem>
 											</ul>
@@ -87,7 +92,13 @@ class Header extends Component {
 									</Popover>
 									<div className="collapse navbar-collapse m-0 p-0 col-lg-6 col-xl-6">
 										<ul className="actions popover-menu">
-											<NavItem className={`pr-3 ml-0 ${(this.state.employeesIsActive) ? 'active' : ''}`}><a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a></NavItem>
+											<NavItem className={`pr-3 ml-0 ${(this.state.employeesIsActive) ? 'active' : ''}`}>
+												{(!isEmpty(this.props.rota)) ? (
+													<a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a>
+												) : (
+													<a href="" title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0 disabled" aria-disabled="true"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a>
+												)}
+											</NavItem>
 											<NavItem className={`pr-3 ml-0 ${(this.state.shiftsIsActive) ? 'active' : ''}`}><a href={dashboard.SHIFTS.URI} title={dashboard.SHIFTS.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-th" aria-hidden="true"></i>{dashboard.SHIFTS.TITLE}</a></NavItem>
 											<NavItem className={`pr-3 ml-0 ${(this.state.overviewIsActive) ? 'active' : ''}`}><a href={dashboard.OVERVIEW.URI} title={dashboard.OVERVIEW.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-bar-chart" aria-hidden="true"></i>{dashboard.OVERVIEW.TITLE}</a></NavItem>
 										</ul>
@@ -123,6 +134,7 @@ Header.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
 	user: state.user,
+	rota: state.rota,
 });
 
 const mapDispatchToProps = dispatch => ({

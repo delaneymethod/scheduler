@@ -1,3 +1,5 @@
+import moment from 'moment';
+import jwtDecode from 'jwt-decode';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -29,18 +31,18 @@ const routes = constants.APP.ROUTES;
 const propTypes = {
 	rotas: PropTypes.array.isRequired,
 	roles: PropTypes.array.isRequired,
+	user: PropTypes.object.isRequired,
 	shifts: PropTypes.array.isRequired,
 	rotaTypes: PropTypes.array.isRequired,
-	account: PropTypes.object.isRequired,
 	employees: PropTypes.array.isRequired,
 	authenticated: PropTypes.bool.isRequired,
 };
 
 const defaultProps = {
+	user: {},
 	rotas: [],
 	roles: [],
 	shifts: [],
-	account: {},
 	rotaTypes: [],
 	employees: [],
 	authenticated: false,
@@ -52,7 +54,12 @@ class Dashboard extends Component {
 
 		const { history, authenticated } = this.props;
 
-		if (!authenticated) {
+		/* The tokens contains the expiry, so even though the users session storage still has authenticated as true, we need to make sure the token hasn't expired. */
+		const token = jwtDecode(this.props.user.token);
+
+		const tokenExpired = moment().isAfter(moment.unix(token.exp));
+
+		if (!authenticated || tokenExpired) {
 			history.push(routes.LOGIN.URI);
 		}
 
@@ -74,6 +81,10 @@ class Dashboard extends Component {
 	});
 
 	componentDidMount = () => {
+		if (isEmpty(this.props.user)) {
+			return;
+		}
+
 		document.title = `${constants.APP.TITLE}: ${routes.DASHBOARD.HOME.TITLE}`;
 
 		const meta = document.getElementsByTagName('meta');
@@ -195,12 +206,12 @@ Dashboard.propTypes = propTypes;
 Dashboard.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
+	user: state.user,
 	rotas: state.rotas,
 	roles: state.roles,
 	shifts: state.shifts,
 	rotaTypes: state.rotaTypes,
 	employees: state.employees,
-	account: state.user.account,
 	authenticated: state.authenticated,
 });
 

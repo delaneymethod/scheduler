@@ -1,7 +1,7 @@
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import isEmpty from 'lodash/isEmpty';
 import { connect } from 'react-redux';
+import { isEmpty, debounce } from 'lodash';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
 import { Row, Col, Label, Input, Button, FormGroup } from 'reactstrap';
@@ -53,6 +53,8 @@ class ShiftForm extends Component {
 	constructor(props) {
 		super(props);
 
+		this.form = null;
+
 		this.times = [];
 
 		this.timeInterval = 15;
@@ -60,6 +62,8 @@ class ShiftForm extends Component {
 		this.maxNumberOfPositions = 1;
 
 		this.state = this.getInitialState();
+
+		this.handleBlur = this.handleBlur.bind(this);
 
 		this.handleDelete = this.handleDelete.bind(this);
 
@@ -86,6 +90,9 @@ class ShiftForm extends Component {
 	});
 
 	componentDidMount = () => {
+		/* We debounce this call to wait 1000ms (we do not want the leading (or "immediate") flag passed because we want to wait until the user has finished typing before running validation */
+		this.handleValidateFields = debounce(this.handleValidateFields.bind(this), 1000);
+
 		/* If employee id was passed in as a prop, make sure we also update the state... */
 		if (!isEmpty(this.props.employeeId)) {
 			this.setState({ employeeId: this.props.employeeId });
@@ -203,8 +210,6 @@ class ShiftForm extends Component {
 		this.setState({
 			[target.name]: target.value,
 		});
-
-		await this.form.validateFields(target);
 	};
 
 	handleChangeTime = async (event) => {
@@ -216,6 +221,8 @@ class ShiftForm extends Component {
 
 		await this.form.validateFields('startTime', 'endTime');
 	};
+
+	handleBlur = async event => this.handleValidateFields(event.currentTarget);
 
 	handleGetShifts = () => {
 		const { actions, rota: { rotaId } } = this.props;
@@ -422,6 +429,8 @@ class ShiftForm extends Component {
 		}
 	};
 
+	handleValidateFields = target => ((this.form && target) ? this.form.validateFields(target) : null);
+
 	errorMessage = () => (this.state.error.data ? <Alert color="danger" title={this.state.error.data.title} message={this.state.error.data.message} /> : null);
 
 	render = () => (
@@ -430,7 +439,7 @@ class ShiftForm extends Component {
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 				<FormGroup>
 					<Label for="startDate">Select Date <span className="text-danger">&#42;</span></Label>
-					<Input type="select" name="startDate" id="startDate" className="custom-select custom-select-xl" value={this.state.startDate} onChange={this.handleChange} tabIndex="1" required={true}>
+					<Input type="select" name="startDate" id="startDate" className="custom-select custom-select-xl" value={this.state.startDate} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="1" required={true}>
 						{this.state.startDates.map((startDate, index) => <option key={index} value={moment(startDate).format('YYYY-MM-DD')} label={moment(startDate).format('dddd, Do MMMM YYYY')} />)}
 					</Input>
 					<FieldFeedbacks for="startDate" show="all">
@@ -439,7 +448,7 @@ class ShiftForm extends Component {
 				</FormGroup>
 				<FormGroup>
 					<Label for="roleName">Role</Label>
-					<Input type="select" name="roleName" id="roleName" className="custom-select custom-select-xl" value={this.state.roleName} onChange={this.handleChange} tabIndex="2" required={true}>
+					<Input type="select" name="roleName" id="roleName" className="custom-select custom-select-xl" value={this.state.roleName} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="2" required={true}>
 						{this.props.roles.map((role, index) => <option key={index} value={role.roleName} label={role.roleName} />)}
 					</Input>
 					<FieldFeedbacks for="roleName" show="all">
@@ -450,7 +459,7 @@ class ShiftForm extends Component {
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
 						<FormGroup>
 							<Label for="startTime">Start Time</Label>
-							<Input type="select" name="startTime" id="startTime" className="custom-select custom-select-xl" value={this.state.startTime} onChange={this.handleChangeTime} tabIndex="3" required>
+							<Input type="select" name="startTime" id="startTime" className="custom-select custom-select-xl" value={this.state.startTime} onChange={this.handleChangeTime} onBlur={this.handleBlur} tabIndex="3" required>
 								{this.times.map((time, index) => <option key={index} value={time} label={time} />)}
 							</Input>
 							<FieldFeedbacks for="startTime" show="all">
@@ -462,7 +471,7 @@ class ShiftForm extends Component {
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
 						<FormGroup>
 							<Label for="endTime">End Time</Label>
-							<Input type="select" name="endTime" id="endTime" className="custom-select custom-select-xl" value={this.state.endTime} onChange={this.handleChangeTime} tabIndex="4" required>
+							<Input type="select" name="endTime" id="endTime" className="custom-select custom-select-xl" value={this.state.endTime} onChange={this.handleChangeTime} onBlur={this.handleBlur} tabIndex="4" required>
 								{this.times.map((time, index) => <option key={index} value={time} label={time} />)}
 							</Input>
 							<FieldFeedbacks for="endTime" show="all">
@@ -476,7 +485,7 @@ class ShiftForm extends Component {
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
 						<FormGroup>
 							<Label for="numberOfPositions">Number Of Positions</Label>
-							<Input type="select" name="numberOfPositions" id="numberOfPositions" className="custom-select custom-select-xl" value={this.state.numberOfPositions} onChange={this.handleChange} tabIndex="5" required>
+							<Input type="select" name="numberOfPositions" id="numberOfPositions" className="custom-select custom-select-xl" value={this.state.numberOfPositions} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="5" required>
 								{Array.from({ length: this.maxNumberOfPositions }, (key, value) => value + 1).map((position, index) => <option key={index} value={position} label={position} />)}
 							</Input>
 							<FieldFeedbacks for="numberOfPositions" show="all">
@@ -487,7 +496,7 @@ class ShiftForm extends Component {
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
 						<FormGroup>
 							<Label for="isClosingShift">Is Closing Shift</Label>
-							<Input type="select" name="isClosingShift" id="isClosingShift" className="custom-select custom-select-xl" value={this.state.isClosingShift} onChange={this.handleChange} tabIndex="6" required>
+							<Input type="select" name="isClosingShift" id="isClosingShift" className="custom-select custom-select-xl" value={this.state.isClosingShift} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="6" required>
 								<option value="false" label="No" />
 								<option value="true" label="Yes" />
 							</Input>
@@ -500,7 +509,7 @@ class ShiftForm extends Component {
 				{(this.props.employees.length > 0) ? (
 					<FormGroup>
 						<Label for="employeeId">Assign Employee</Label>
-						<Input type="select" name="employeeId" id="employeeId" className="custom-select custom-select-xl" value={this.state.employeeId} onChange={this.handleChange} tabIndex="7">
+						<Input type="select" name="employeeId" id="employeeId" className="custom-select custom-select-xl" value={this.state.employeeId} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="7">
 							<option value="" label="" />
 							{this.props.employees.map(({ employee }, index) => <option key={index} value={employee.employeeId} label={`${employee.firstName} ${employee.lastName}`} />)}
 						</Input>
