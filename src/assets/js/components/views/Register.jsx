@@ -29,6 +29,10 @@ class Register extends Component {
 	}
 
 	componentDidMount = () => {
+		if (this.props.authenticated) {
+			return;
+		}
+
 		document.title = `${constants.APP.TITLE}: ${routes.LOGIN.TITLE}`;
 
 		document.title = `${constants.APP.TITLE}: ${routes.REGISTER.TITLE}`;
@@ -40,25 +44,31 @@ class Register extends Component {
 		meta.author.setAttribute('content', constants.APP.AUTHOR);
 	};
 
-	render = () => (
-		<Row className="d-flex flex-md-row flex-column register-page-container">
-			<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center bg-dark py-5">
-				<div className="panel-welcome">
-					<h1><a href={routes.HOME.URI} title={constants.APP.TITLE}><img src={constants.APP.LOGO} alt={constants.APP.TITLE} className="mb-4" /></a></h1>
-					<p className="h5 mb-0">{routes.REGISTER.MESSAGES.WELCOME}</p>
-				</div>
-			</Col>
-			<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center py-5">
-				<div className="panel-page">
-					<a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} className="panel-page__link float-right">Already a member? {routes.LOGIN.TITLE}</a>
-					<div className="card panel-page__content">
-						<h2 className="h5--title-card">{routes.REGISTER.TITLE}</h2>
-						<RegisterForm />
+	render = () => {
+		if (this.props.authenticated) {
+			return null;
+		}
+
+		return (
+			<Row className="d-flex flex-md-row flex-column register-page-container">
+				<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center bg-dark py-5">
+					<div className="panel-welcome">
+						<h1><a href={routes.HOME.URI} title={constants.APP.TITLE}><img src={constants.APP.LOGO} alt={constants.APP.TITLE} className="mb-4" /></a></h1>
+						<p className="h5 mb-0">{routes.REGISTER.MESSAGES.WELCOME}</p>
 					</div>
-				</div>
-			</Col>
-		</Row>
-	);
+				</Col>
+				<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center py-5">
+					<div className="panel-page">
+						<a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} className="panel-page__link float-right">Already a member? {routes.LOGIN.TITLE}</a>
+						<div className="card panel-page__content">
+							<h2 className="h5--title-card">{routes.REGISTER.TITLE}</h2>
+							<RegisterForm />
+						</div>
+					</div>
+				</Col>
+			</Row>
+		);
+	};
 }
 
 Register.propTypes = propTypes;

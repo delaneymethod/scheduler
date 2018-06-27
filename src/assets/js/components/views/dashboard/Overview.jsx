@@ -37,12 +37,16 @@ class Overview extends Component {
 	constructor(props) {
 		super(props);
 
+		let tokenExpired;
+
 		const { history, authenticated } = this.props;
 
-		/* The tokens contains the expiry, so even though the users session storage still has authenticated as true, we need to make sure the token hasn't expired. */
-		const token = jwtDecode(this.props.user.token);
+		if (!isEmpty(this.props.user)) {
+			/* The tokens contains the expiry, so even though the users session storage still has authenticated as true, we need to make sure the token hasn't expired. */
+			const token = jwtDecode(this.props.user.token);
 
-		const tokenExpired = moment().isAfter(moment.unix(token.exp));
+			tokenExpired = moment().isAfter(moment.unix(token.exp));
+		}
 
 		if (!authenticated || tokenExpired) {
 			history.push(routes.LOGIN.URI);

@@ -29,6 +29,10 @@ class ForgottenYourPassword extends Component {
 	}
 
 	componentDidMount = () => {
+		if (this.props.authenticated) {
+			return;
+		}
+
 		document.title = `${constants.APP.TITLE}: ${routes.FORGOTTEN_YOUR_PASSWORD.TITLE}`;
 
 		const meta = document.getElementsByTagName('meta');
@@ -38,25 +42,31 @@ class ForgottenYourPassword extends Component {
 		meta.author.setAttribute('content', constants.APP.AUTHOR);
 	};
 
-	render = () => (
-		<Row className="d-flex flex-md-row flex-column forgotten-your-password-page-container">
-			<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center bg-dark py-5">
-				<div className="panel-welcome">
-					<h1><a href={routes.HOME.URI} title={constants.APP.TITLE}><img src={constants.APP.LOGO} alt={constants.APP.TITLE} className="mb-4" /></a></h1>
-					<p className="h5 mb-0">{routes.LOGIN.MESSAGE}</p>
-				</div>
-			</Col>
-			<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center py-5">
-				<div className="panel-page">
-					<a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} className="panel-page__link">Back to {routes.LOGIN.TITLE}</a>
-					<div className="card panel-page__content">
-						<h2 className="h5--title-card">{routes.FORGOTTEN_YOUR_PASSWORD.TITLE}</h2>
-						<ForgottenYourPasswordForm />
+	render = () => {
+		if (this.props.authenticated) {
+			return null;
+		}
+
+		return (
+			<Row className="d-flex flex-md-row flex-column forgotten-your-password-page-container">
+				<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center bg-dark py-5">
+					<div className="panel-welcome">
+						<h1><a href={routes.HOME.URI} title={constants.APP.TITLE}><img src={constants.APP.LOGO} alt={constants.APP.TITLE} className="mb-4" /></a></h1>
+						<p className="h5 mb-0">{routes.LOGIN.MESSAGE}</p>
 					</div>
-				</div>
-			</Col>
-		</Row>
-	);
+				</Col>
+				<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center py-5">
+					<div className="panel-page">
+						<a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} className="panel-page__link">Back to {routes.LOGIN.TITLE}</a>
+						<div className="card panel-page__content">
+							<h2 className="h5--title-card">{routes.FORGOTTEN_YOUR_PASSWORD.TITLE}</h2>
+							<ForgottenYourPasswordForm />
+						</div>
+					</div>
+				</Col>
+			</Row>
+		);
+	};
 }
 
 ForgottenYourPassword.propTypes = propTypes;

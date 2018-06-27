@@ -92,6 +92,9 @@ export default {
 			},
 			PAGE_NOT_FOUND: {
 				TITLE: 'Page Not Found',
+				MESSAGES: {
+					WELCOME: "<p class=\"lead\">What does this mean?</p><p>We couldn't find the page you requested on our servers.</p><p>We're really sorry about that. It's our fault, not yours.</p><p>We'll work hard to get this page back online as soon as possible.</p><p>Perhaps you would like to go back or go to our homepage?</p>",
+				},
 				META: {
 					DESCRIPTION: '',
 					KEYWORDS: '',
