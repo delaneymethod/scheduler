@@ -9,220 +9,206 @@
 }
 
 .live__scroll {
-	padding: 0;
 	width: 100%;
-	margin-bottom: 20px;
-	margin-left: 0px;
-	margin-right: 0px;
-	overflow-x: inherit;
 	overflow-y: hidden;
 	white-space: nowrap;
-	
-	.row {
-		display: block;
-	}
-
-	.live__scroll--box {
-		float: none;
-		display: inline-block;
-	}
+	overflow-x: inherit;
+	background-color: $white;
+	border-radius: calculateRem(5px);
+	border: calculateRem(5px) solid $white;
 }
 
-.rota-table {
-	margin: 0;
-	padding: 0;
-	border: 2px solid white;
+.employees {
 	width: 100%;
-	// font-size: 0.75rem;
-	border-spacing: calculateRem(5px);
+	table-layout: fixed;
+	border-collapse: collapse;
 	
-	td,
-	th {
-		border: 3px solid white;
-	}
-
-	th {
-		text-align: center;
-		background-color: $gray-600;
-		font-weight: $font-weight-semi;
-		vertical-align: middle !important;
+	tr {
+		&:nth-child(even) {
+		}
 		
-		&.sortable {
-			/* cursor: pointer; */
+		th {
+			background-color: $gray-700;
+			font-weight: $font-weight-semi;
+			border: calculateRem(5px) solid $white;
+			
+			.sort-direction {
+				width: 0;
+				height: 0;
+				display: inline-block;
+				margin: 0 0 calculateRem(2px) calculateRem(5px);
+				border-left: calculateRem(5px) solid transparent;
+				border-right: calculateRem(5px) solid transparent;
+			
+				&.asc {
+					border-bottom: calculateRem(5px) solid #000000;
+				}
+			
+				&.desc {
+					border-top: calculateRem(5px) solid #000000;
+				}
+			}
+			
+			.placement-status {
+				* {
+					display: inline-block;
+					vertical-align: middle;
+				}
+			
+				.indicator {
+					margin-top: -2px;
+					width: calculateRem(10px);
+					height: calculateRem(10px);
+					border-radius: calculateRem(5px);
+			
+					&.todo {
+						color: $danger;
+						background-color: $danger;
+					}
+			
+					&.doing {
+						color: $info;
+						background-color: $info;
+					}
+			
+					&.done {
+						color: $success;
+						background-color: $success;
+					}
+				}
+			
+				.count {
+					color: $gray-900;
+					background-color: transparent;
+					font-weight: $font-weight-normal;
+				}
+			}
+			
+			.flex-column {
+				width: 50%;
+				background-color: transparent;
+				
+				.flex-row {
+					&:first-child {
+						background-color: $gray-100;
+					}
+	
+					&:last-child {
+						background-color: $gray-200;
+					}
+				}
+			}
+			
+			&.sortable {
+				/* cursor: pointer; */
+			}
+		}
+		
+		.column {
+			width: 195px;
+		}
+		
+		th.column.first {
+			width: 334px;
+		}
+		
+		th.column.last {
+			width: 180px;
+		}
+	
+		td {
+			background-color: $gray-400;
+			border: calculateRem(5px) solid $white;
+			
+			.complete {
+				color: $primary;
+			}
+
+			.shift {
+				border: 0;
+				z-index: 1;
+				width: 100%;
+				min-height: 57px;
+				position: relative;
+				color: $body-color-light;
+				background-color: $secondary;
+				
+				&:hover,
+				&:active {
+					cursor: move;
+				}
+
+				&:not(:only-child, :last-child) {
+					border-bottom: calculateRem(3px) solid darken($secondary, 10%);
+				}
+			}
+			
+			.shift-selected {
+				cursor: move;
+				background-color: $secondary !important;
+			}
+
+			.shift-invisible {
+				display: none !important;
+			}
+			
+			.add-shift {
+				border: 0;
+				opacity: 0;
+				z-index: 0;
+				color: $gray-900;
+				min-height: 67px;
+				position: relative;
+				background-color: transparent;
+				
+				&:hover {
+					cursor: pointer;
+				}
+			}
+		}
+		
+		.non-draggable-cell {
+			z-index: 1;
+			cursor: no-drop;
+			background-color: $gray-200;
+			
+			.shift {
+				cursor: not-allowed !important;
+			}
+		}
+	
+		.draggable-cell {
+			z-index: 1;
+			
+			&:hover {
+				z-index: 2;
+				
+				.add-shift {
+					opacity: 1;
+				}
+			}
+		}
+		
+		.cell-highlighted {
+			opacity: 0.3;
+			background-color: $success !important;
+		}
+
+		.drag-handler {
+			cursor: move;
 		}
 	}
-
-	tbody {
-		height: 100%;
-		overflow: auto;
-	}
-
-	tbody td {
-		height: auto;
-		min-height: 80px;
-		background-color: $gray-500;
-	}
-
-	.drag-handler {
-		cursor: move;
-	}
-
-	.cell-non-draggable {
-		cursor: no-drop;
-		
-		.shift-block {
-			cursor: not-allowed !important;
-		}
-	}
-
-	tr.draggable-row-ghost {
+	
+	.draggable-row-ghost {
 		opacity: 0.3;
 		
 		td {
+			border: 5px solid $white;
 			background-color: $success;
 		}
 	}
 	
-	.cell-draggable {
-		position: relative;
-		
-		&:hover {
-			.add-shift-block {
-				opacity: 1;
-			}
-		}
+	tfoot tr th {
+		background-color: $white;
 	}
-	
-	.cell-draggable.over {
-		// border: 1px solid black;
-	}
-
-	&__footer-cell {
-		text-align: center;
-		background-color: $white !important;
-
-		.flex-column {
-			width: 50%;
-		}
-
-		.flex-row {
-			padding: $table-cell-padding 0;
-
-			&:first-child {
-				background-color: $gray-100;
-			}
-
-			&:last-child {
-				background-color: $gray-200;
-			}
-		}
-	}
-}
-
-.sort-direction {
-	width: 0;
-	height: 0;
-	display: inline-block;
-	margin: 0 0 calculateRem(2px) calculateRem(5px);
-	border-left: calculateRem(5px) solid transparent;
-	border-right: calculateRem(5px) solid transparent;
-
-	&.asc {
-		border-bottom: calculateRem(5px) solid #000000;
-	}
-
-	&.desc {
-		border-top: calculateRem(5px) solid #000000;
-	}
-}
-
-.placement-status {
-	* {
-		display: inline-block;
-		vertical-align: middle;
-	}
-
-	.indicator {
-		margin-top: -2px;
-		background-color: #ff0000;
-		width: calculateRem(10px);
-		height: calculateRem(10px);
-		margin-right: calculateRem(1px);
-		border-radius: calculateRem(5px);
-
-		&.todo {
-			background-color: $danger;
-		}
-
-		&.doing {
-			background-color: $info;
-		}
-
-		&.done {
-			background-color: $success;
-		}
-	}
-
-	.count {
-		color: $gray-900;
-		font-weight: $font-weight-normal;
-	}
-}
-	
-.draggable-row {
-	.complete {
-		color: $primary;
-	}
-}
-
-.shift-block {
-	border: 0;
-	z-index: 1;
-	width: 100%;
-	// min-height: 69px;
-	display: block;
-	text-align: left;
-	position: relative;
-	color: $body-color-light;
-	background-color: $secondary;
-	padding: ($table-cell-padding * 1.5) $table-cell-padding;
-
-	&:not(:only-child, :last-child) {
-		border-bottom: calculateRem(2px) solid darken($secondary, 10%);
-	}
-
-	&:last-child {
-		margin-bottom: 0 !important;
-	}
-	
-	&__data-row {
-		width: 100%;
-		display: block;
-	}
-
-	&:hover,
-	&:active {
-		cursor: move;
-	}
-}
-
-.add-shift-block {
-	border: 1px;
-	opacity: 0;
-	z-index: 0;
-	width: 100%;
-	height: 100%;
-	color: $gray-900;
-	position: absolute;
-	background-color: transparent;
-
-	&:hover {
-		border: 1px dashed $secondary;
-		cursor: pointer;
-	}
-}
-
-.row-total {
-	text-align: center;
-	vertical-align: middle !important;
 }

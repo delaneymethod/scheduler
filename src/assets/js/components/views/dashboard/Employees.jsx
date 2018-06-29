@@ -1,3 +1,4 @@
+import 'element-closest';
 import moment from 'moment';
 import Avatar from 'react-avatar';
 import jwtDecode from 'jwt-decode';
@@ -21,17 +22,21 @@ import constants from '../../../helpers/constants';
 
 import EmployeeForm from '../../forms/EmployeeForm';
 
+import { addClass, removeClass } from '../../../helpers/classes';
+
 import UploadEmployeesForm from '../../forms/UploadEmployeesForm';
 
 import { updatePlacement } from '../../../actions/placementActions';
 
 import { getShifts, updateShift } from '../../../actions/shiftActions';
 
-import ShiftPlacementDraggable from '../../common/ShiftPlacementDraggable';
+import DraggableCellShiftButton from '../../common/DraggableCellShiftButton';
 
 import { getEmployees, orderEmployees } from '../../../actions/employeeActions';
 
-import ShiftPlacementNonDraggable from '../../common/ShiftPlacementNonDraggable';
+import DraggableCellAddShiftButton from '../../common/DraggableCellAddShiftButton';
+
+import NonDraggableCellShiftButton from '../../common/NonDraggableCellShiftButton';
 
 const routes = constants.APP.ROUTES;
 
@@ -76,6 +81,10 @@ class Employees extends Component {
 			history.push(routes.LOGIN.URI);
 		}
 
+		this.shift = null;
+
+		/* this.oldDraggableCell = null; */
+
 		this.state = this.getInitialState();
 
 		this.handleDrop = this.handleDrop.bind(this);
@@ -90,6 +99,8 @@ class Employees extends Component {
 
 		this.handleDragOver = this.handleDragOver.bind(this);
 
+		this.handleDragStart = this.handleDragStart.bind(this);
+
 		this.handleOrderable = this.handleOrderable.bind(this);
 
 		this.handleDragEnter = this.handleDragEnter.bind(this);
@@ -97,6 +108,8 @@ class Employees extends Component {
 		this.handleDragLeave = this.handleDragLeave.bind(this);
 
 		this.handleGetShifts = this.handleGetShifts.bind(this);
+
+		this.handleDragAndDrop = this.handleDragAndDrop.bind(this);
 
 		this.handleCreateShift = this.handleCreateShift.bind(this);
 
@@ -153,8 +166,8 @@ class Employees extends Component {
 		meta.keywords.setAttribute('content', routes.DASHBOARD.EMPLOYEES.META.KEYWORDS);
 		meta.author.setAttribute('content', constants.APP.AUTHOR);
 
-		/* We debounce this call to wait 300ms (we do not want the leading (or "immediate") flag passed because we want to wait until all the componentDidUpdate calls have finished before loading the table data again */
-		this.handleFetchData = debounce(this.handleFetchData.bind(this), 300);
+		/* We debounce this call to wait 100ms (we do not want the leading (or "immediate") flag passed because we want to wait until all the componentDidUpdate calls have finished before loading the table data again */
+		this.handleFetchData = debounce(this.handleFetchData.bind(this), 100);
 
 		/* We debounce this call to wait 1300ms (we do not want the leading (or "immediate") flag passed because we want to wait the user has finished ordering all rows before saving the order */
 		this.handleUpdateEmployeeOrder = debounce(this.handleUpdateEmployeeOrder.bind(this), 1300);
@@ -169,30 +182,6 @@ class Employees extends Component {
 		if (prevProps.employees !== this.props.employees || prevProps.week !== this.props.week || prevProps.rota !== this.props.rota || prevProps.rotaType !== this.props.rotaType || prevProps.shifts !== this.props.shifts) {
 			this.handleFetchData();
 		}
-	};
-
-	handleDragOver = (event) => {
-		event.preventDefault();
-
-		/* eslint-disable no-param-reassign */
-		event.dataTransfer.dropEffect = 'move';
-		/* eslint-enable no-param-reassign */
-
-		return false;
-	};
-
-	handleDragEnd = (event) => {
-		const cells = document.querySelectorAll('.cell-draggable');
-
-		Array.prototype.forEach.call(cells, cell => cell.classList.remove('over'));
-	};
-
-	handleDragEnter = (event) => {
-		event.target.classList.add('over');
-	};
-
-	handleDragLeave = (event) => {
-		event.target.classList.remove('over');
 	};
 
 	handleSortEmployees = (event, column) => {
@@ -443,8 +432,11 @@ class Employees extends Component {
 		/* Stick everything into the state */
 		this.setState({ tableData });
 
-		/* Order employees */
+		/* Add Orderable event listeners to table rows */
 		this.handleOrderable();
+
+		/* Adds drag and drop event listeners to table cells and shifts */
+		this.handleDragAndDrop();
 	};
 
 	handleFilterEmployees = (event) => {
@@ -485,7 +477,6 @@ class Employees extends Component {
 	};
 
 	handleOrderable = () => {
-		/* Third party Javascript library to allow sorting of data */
 		Orderable.create(document.getElementById('tableBody'), {
 			scroll: true,
 			animation: 150,
@@ -504,6 +495,8 @@ class Employees extends Component {
 				set: sortable => this.handleUpdateEmployeeOrder(sortable.toArray()),
 			},
 		});
+
+		console.log('Called Employees handleOrderable - orderable listeners ready');
 	};
 
 	handleUpdateEmployeeOrder = (ids) => {
@@ -630,34 +623,119 @@ class Employees extends Component {
 		});
 	};
 
+	/* eslint-disable no-param-reassign */
+	handleDragAndDrop = () => {
+		const shifts = document.querySelectorAll('.shift');
+
+		shifts.forEach((shift) => {
+			shift.addEventListener('dragend', this.handleDragEnd);
+			shift.addEventListener('dragstart', this.handleDragStart);
+		});
+
+		const draggableCells = document.querySelectorAll('.draggable-cell');
+
+		draggableCells.forEach((draggableCell) => {
+			draggableCell.addEventListener('drop', this.handleDrop);
+			draggableCell.addEventListener('dragover', this.handleDragOver);
+			draggableCell.addEventListener('dragenter', this.handleDragEnter);
+			draggableCell.addEventListener('dragleave', this.handleDragLeave);
+		});
+
+		console.log('Called Employees handleDragAndDrop - drag and drop listeners ready');
+	};
+
+	handleDragStart = (event) => {
+		const { target } = event;
+
+		this.shift = target;
+
+		/* this.oldDraggableCell = target.closest('.draggable-cell'); */
+
+		addClass(target, 'shift-selected');
+
+		/* Commented out due to non native drag and drop remove/append functionality below. See comments. */
+		/* Hide the shift in the current cell when the user has selected it and dragging... */
+		/* setTimeout(() => addClass(target, 'shift-invisible'), 0); */
+	};
+
+	handleDragEnd = (event) => {
+		const { target } = event;
+
+		removeClass(target, 'shift-selected');
+
+		removeClass(target, 'shift-invisible');
+	};
+
+	handleDragOver = event => event.preventDefault();
+
+	handleDragEnter = (event) => {
+		event.preventDefault();
+
+		const draggableCell = event.target.closest('.draggable-cell');
+
+		addClass(draggableCell, 'cell-highlighted');
+	};
+
+	handleDragLeave = (event) => {
+		const draggableCell = event.target.closest('.draggable-cell');
+
+		removeClass(draggableCell, 'cell-highlighted');
+	};
+
 	handleDrop = (event) => {
 		event.preventDefault();
+
 		event.stopPropagation();
 
-		const { currentTarget } = event;
+		const { shift } = this;
 
-		/* eslint-disable no-param-reassign */
-		event.target.style.opacity = '1.0';
-		/* eslint-enable no-param-reassign */
+		/* const { oldDraggableCell } = this; */
 
-		/* Get the draggable element */
-		const shift = document.getElementById(event.dataTransfer.getData('text'));
+		const selectedDraggableCell = event.target.closest('.draggable-cell');
 
-		/* Now lets grab the shifts info and the new table cell date and employee id, as we need to update the shift after dropping it */
 		const shiftId = shift.getAttribute('data-shift-id');
 
-		/* This is the date of the new table cell */
-		const date = event.currentTarget.getAttribute('data-date');
+		const date = selectedDraggableCell.getAttribute('data-date');
 
 		const placementId = shift.getAttribute('data-placement-id');
 
-		const employeeId = event.currentTarget.getAttribute('data-employee-id');
+		const employeeId = selectedDraggableCell.getAttribute('data-employee-id');
 
-		/* We wait for a result incase we have to stop the shift move */
+		/* These next 21 lines were commented out due to a removeChild issue after calling handleUpdateShift (removeChild() on node issue). */
+		/* Remove the add shift button from selected cell if it exists... */
+		/*
+		if (selectedDraggableCell.getElementsByClassName('add-shift').length > 0) {
+			selectedDraggableCell.getElementsByClassName('add-shift')[0].remove();
+		}
+		*/
+
+		/* Removes shift button from old cell */
+		/* oldDraggableCell.removeChild(shift); */
+
+		/* Moves selected shift button to new selected cell */
+		/* selectedDraggableCell.append(shift); */
+
+		/* Add our add shift button to the old cell if the cell has no shifts */
+		/*
+		if (oldDraggableCell.getElementsByClassName('add-shift').length === 0) {
+			// FIXME - adding the add shift button component into the old cell
+			oldDraggableCell.append(<DraggableCellAddShiftButton />);
+		}
+		*/
+
+		const allDraggableCells = document.querySelectorAll('.draggable-cell');
+
+		allDraggableCells.forEach(draggableCell => removeClass(draggableCell, 'cell-highlighted'));
+
 		this.handleUpdateShift(shiftId, placementId, employeeId, date);
+
+		this.shift = null;
+
+		/* this.oldDraggableCell = null; */
 
 		return false;
 	};
+	/* eslint-enable no-param-reassign */
 
 	render = () => {
 		if (isEmpty(this.props.rota)) {
@@ -670,66 +748,66 @@ class Employees extends Component {
 				<Toolbar />
 				{(!isEmpty(this.state.tableData)) ? (
 					<Fragment>
-						<div className="live__scroll u-disable-selection">
-							<table className="row rota-table p-0 mb-0 bg-light">
+						<div className="live__scroll border-0 mt-0 ml-0 mr-0 mb-3 p-0 u-disable-selection">
+							<table className="employees p-0 m-0">
 								<thead>
-									<tr className="">
-										<th scope="col" width="336" height="60" className="pt-2 live__scroll--box sortable cell-employee text-uppercase text-left">
+									<tr>
+										<th className="p-2 text-left column first sortable text-uppercase">
 											<div className="d-flex align-items-center p-0 m-0">
-												<div className="ml-2 mr-auto align-middle">Employees ({this.props.employees.length})</div>
+												<div className="d-inline-block p-0 mr-auto">Employees ({this.props.employees.length})</div>
 												{(this.props.employees.length > 0) ? (
 													<Fragment>
-														<div className="mr-2 align-middle"><button type="button" className="btn btn-dark btn-icon" id="filter" title="Filter by" aria-label="Filter by" onClick={this.handleFilter}><i className="fa fa-fw fa-filter" aria-hidden="true"></i></button></div>
-														<div className="mr-2 align-middle"><button type="button" className="btn btn-dark btn-icon" id="sortBy" title="Sort by" aria-label="Sort by" onClick={this.handleSortBy}><i className="fa fa-fw fa-sort" aria-hidden="true"></i></button></div>
+														<div className="d-inline-block p-0 mr-2"><button type="button" className="btn btn-dark btn-icon" id="filter" title="Filter by" aria-label="Filter by" onClick={this.handleFilter}><i className="fa fa-fw fa-filter" aria-hidden="true"></i></button></div>
+														<div className="d-inline-block p-0 mr-2"><button type="button" className="btn btn-dark btn-icon" id="sortBy" title="Sort by" aria-label="Sort by" onClick={this.handleSortBy}><i className="fa fa-fw fa-sort" aria-hidden="true"></i></button></div>
 													</Fragment>
 												) : null}
-												<div className="mr-2 align-middle"><button type="button" className="btn btn-secondary btn-icon" title="Upload Employees" aria-label="Upload Employees" onClick={this.handleUploadEmployees}><i className="fa fa-fw fa-upload" aria-hidden="true"></i></button></div>
-												<div className="mr-2 align-middle"><button type="button" className="btn btn-secondary btn-icon" title="Add New Employee" aria-label="Add New Employee" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-user-plus" aria-hidden="true"></i></button></div>
-												<Popover placement="bottom" isOpen={this.state.isFilterPopoverOpen} target="filter" toggle={this.handleFilter}>
-													<PopoverBody>
-														<ul className="popover-menu">
-															<li><label className="pt-2 pb-1 m-0">Filter</label></li>
-														</ul>
-														<Form className="popover-menu">
-															<FormGroup className="pl-1 pr-1 pb-1 mb-0">
-																<Input type="text" name="employeeName" id="employeeName" value={this.state.employeeName} onChange={this.handleFilterEmployees} placeholder="By employee name..." autoComplete="off" tabIndex="-1" bsSize="sm" />
-															</FormGroup>
-														</Form>
-													</PopoverBody>
-												</Popover>
-												<Popover placement="bottom" isOpen={this.state.isSortByPopoverOpen} target="sortBy" toggle={this.handleSortBy}>
-													<PopoverBody>
-														<ul className="popover-menu">
-															<li><label className="pt-2 pb-1 m-0">Sort by</label></li>
-															<li><button type="button" title="Sort by First Name" className="btn btn-action btn-nav border-0" onClick={event => this.handleSortEmployees(event, 'firstName')}>First Name</button></li>
-															<li><button type="button" title="Sort by Last Name" className="btn btn-action btn-nav border-0" onClick={event => this.handleSortEmployees(event, 'lastName')}>Last Name</button></li>
-														</ul>
-													</PopoverBody>
-												</Popover>
+												<div className="d-inline-block p-0 mr-2"><button type="button" className="btn btn-secondary btn-icon" title="Upload Employees" aria-label="Upload Employees" onClick={this.handleUploadEmployees}><i className="fa fa-fw fa-upload" aria-hidden="true"></i></button></div>
+												<div className="d-inline-block p-0 m-0"><button type="button" className="btn btn-secondary btn-icon" title="Add New Employee" aria-label="Add New Employee" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-user-plus" aria-hidden="true"></i></button></div>
 											</div>
+											<Popover placement="bottom" isOpen={this.state.isFilterPopoverOpen} target="filter" toggle={this.handleFilter}>
+												<PopoverBody>
+													<ul className="popover-menu">
+														<li><label className="pt-2 pb-1 m-0">Filter</label></li>
+													</ul>
+													<Form className="popover-menu">
+														<FormGroup className="pl-1 pr-1 pb-1 mb-0">
+															<Input type="text" name="employeeName" id="employeeName" value={this.state.employeeName} onChange={this.handleFilterEmployees} placeholder="By employee name..." autoComplete="off" tabIndex="-1" bsSize="sm" />
+														</FormGroup>
+													</Form>
+												</PopoverBody>
+											</Popover>
+											<Popover placement="bottom" isOpen={this.state.isSortByPopoverOpen} target="sortBy" toggle={this.handleSortBy}>
+												<PopoverBody>
+													<ul className="popover-menu">
+														<li><label className="pt-2 pb-1 m-0">Sort by</label></li>
+														<li><button type="button" title="Sort by First Name" className="btn btn-action btn-nav border-0" onClick={event => this.handleSortEmployees(event, 'firstName')}>First Name</button></li>
+														<li><button type="button" title="Sort by Last Name" className="btn btn-action btn-nav border-0" onClick={event => this.handleSortEmployees(event, 'lastName')}>Last Name</button></li>
+													</ul>
+												</PopoverBody>
+											</Popover>
 										</th>
 										{this.state.tableData.header.columns.map((column, index) => (
-											<th key={index} scope="col" width="195" height="60" className="align-middle p-3 live__scroll--box">
-												<div className="placement-status d-none">
-													<div className={`indicator ${column.placementStatus}`}></div>
-													<div className="count">{column.count}/{column.total}</div>
+											<th key={index} width="195" className="p-2 m-0 text-center column">
+												<div className="placement-status d-none1 p-0 m-0">
+													<div className={`mr-2 p-0 ml-0 mr-0 mb-0 indicator ${column.placementStatus}`}></div>
+													<div className="p-0 m-0 count">{column.count}/{column.total}</div>
 												</div>
-												<div>{moment(column.weekDate).format('ddd Do')}</div>
+												<div className="p-0 m-0">{moment(column.weekDate).format('ddd Do')}</div>
 											</th>
 										))}
-										<th scope="col" width="185" height="60" className="align-middle p-3 live__scroll--box">Total</th>
+										<th className="p-2 m-0 text-center column last">Total</th>
 									</tr>
 								</thead>
 								<tbody id="tableBody">
 									{this.state.tableData.body.rows.length > 0 && this.state.tableData.body.rows.map((row, rowIndex) => (
-										<tr key={rowIndex} data-account-employee-id={row.accountEmployee.accountEmployeeId} className="draggable-row">
-											<td scope="row" width="336" className="p-0 live__scroll--box drag-handler">
+										<tr key={rowIndex} className="draggable-row" data-account-employee-id={row.accountEmployee.accountEmployeeId}>
+											<td className="p-2 align-top text-left drag-handler p-0 m-0">
 												<div className="d-flex align-items-center p-0 m-0">
-													<div className="mr-2 align-middle pt-2 pb-2 pl-2 pr-2">
-														<Avatar email={row.accountEmployee.employee.email} round={true} size="50" cache={false} />
+													<div className="d-inline-block p-0 mt-0 ml-0 mr-2 mb-0">
+														<Avatar email={row.accountEmployee.employee.email} round={true} size="51" cache={false} />
 													</div>
-													<div className="mr-auto align-middle">
-														<div id="fullname" className="">{row.accountEmployee.employee.firstName} {row.accountEmployee.employee.lastName}</div>
+													<div className="d-inline-block pt-1 pl-0 pr-0 pb-0 m-0">
+														<div id="fullname">{row.accountEmployee.employee.firstName} {row.accountEmployee.employee.lastName}</div>
 														<div className="align-middle">
 															<i className={`align-middle p-0 ml-0 fa fa-fw fa-gbp ${(row.accountEmployee.hourlyRate) || (row.accountEmployee.salary) ? 'complete' : ''}`} aria-hidden="true"></i>
 															<i className={`align-middle p-0 ml-1 fa fa-fw fa-envelope ${(row.accountEmployee.employee.email) ? 'complete' : ''}`} aria-hidden="true"></i>
@@ -739,24 +817,24 @@ class Employees extends Component {
 												</div>
 											</td>
 											{row.columns.map((column, columnIndex) => ((column.draggable) ? (
-												<td key={columnIndex} width="195" className="p-0 live__scroll--box cell-non-draggable">
+												<td key={columnIndex} className="p-0 align-top non-draggable-cell">
 													{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
-														<ShiftPlacementNonDraggable key={shiftPlacementIndex} shiftPlacement={shiftPlacement} />
+														<NonDraggableCellShiftButton key={shiftPlacementIndex} name="Sean" shiftPlacement={shiftPlacement} />
 													)) : null}
 												</td>
 											) : (
-												<td key={columnIndex} width="195" className="p-0 live__scroll--box cell-draggable" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId} onDrop={event => this.handleDrop(event)} onDragOver={event => this.handleDragOver(event)} onDragLeave={event => this.handleDragLeave(event)} onDragEnd={event => this.handleDragEnd(event)} onDragEnter={event => this.handleDragEnter(event)}>
+												<td key={columnIndex} className="p-0 align-top draggable-cell" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId}>
 													{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
-														<ShiftPlacementDraggable key={shiftPlacementIndex} shiftPlacement={shiftPlacement} id={`shift_${columnIndex}_${shiftPlacementIndex}`} />
+														<DraggableCellShiftButton key={shiftPlacementIndex} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} />
 													)) : (
-														<button type="button" className="add-shift-block" onClick={event => this.handleCreateShift(event, column.accountEmployee.employee.employeeId, moment(column.weekDate).format('YYYY-MM-DD'))}><i className="fa fa-fw fa-plus" aria-hidden="true"></i></button>
+														<DraggableCellAddShiftButton handleCreateShift={event => this.handleCreateShift(event, column.accountEmployee.employee.employeeId, moment(column.weekDate).format('YYYY-MM-DD'))} />
 													)}
 												</td>
 											)))}
-											<td width="185" className="p-0 live__scroll--box text-center">
-												<div className="d-flex align-items-center pt-2 pb-2 pl-2 pr-2 text-center">
-													<div className="align-middle w-100">
-														<div className="">{row.hours.toFixed(2)} hrs</div>
+											<td className="p-2 align-top text-center">
+												<div className="d-flex align-items-center">
+													<div className="w-100">
+														<div>{row.hours.toFixed(2)} hrs</div>
 														<div>(&pound;{row.cost.toFixed(2)})</div>
 													</div>
 												</div>
@@ -766,31 +844,31 @@ class Employees extends Component {
 								</tbody>
 								<tfoot>
 									<tr>
-										<th scope="col" width="336" className="live__scroll--box p-0 rota-table__footer-cell">
+										<th className="text-center">
 											<div className="d-flex align-items-center">
 												<div className="flex-column">
-													<div className="flex-row">Total Hours</div>
-													<div className="flex-row">Total Shifts</div>
+													<div className="p-2 flex-row">Total Hours</div>
+													<div className="p-2 flex-row">Total Shifts</div>
 												</div>
 												<div className="flex-column">
-													<div className="flex-row text-danger">Total Costs</div>
-													<div className="flex-row">Total Budget</div>
+													<div className="p-2 flex-row text-danger">Total Costs</div>
+													<div className="p-2 flex-row">Total Budget</div>
 												</div>
 											</div>
 										</th>
 										{this.state.tableData.footer.columns.map((column, columnIndex) => (
-											<th key={columnIndex} scope="col" width={(column.last) ? '185' : '195'} className="live__scroll--box p-0 rota-table__footer-cell">
+											<th key={columnIndex} className="text-center">
 												<div className="d-flex align-items-center">
 													<div className="flex-column">
-														<div className="flex-row">{column.hours}</div>
-														<div className="flex-row">{column.shifts}</div>
+														<div className="p-2 flex-row">{column.hours}</div>
+														<div className="p-2 flex-row">{column.shifts}</div>
 													</div>
 													<div className="flex-column">
-														<div className="flex-row text-danger">&pound;{column.cost.toFixed(2)}</div>
+														<div className="p-2 flex-row text-danger">&pound;{column.cost.toFixed(2)}</div>
 														{(column.last) ? (
-															<div className="flex-row">&pound;{this.props.rota.budget.toFixed(2)}</div>
+															<div className="p-2 flex-row">&pound;{this.props.rota.budget.toFixed(2)}</div>
 														) : (
-															<div className="flex-row">&nbsp;</div>
+															<div className="p-2 flex-row">&nbsp;</div>
 														)}
 													</div>
 												</div>

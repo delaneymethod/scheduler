@@ -53,11 +53,12 @@
 .cell-popover {
 	a:not(.btn),
 	button:not(.btn) {
+		padding: 10px 0;
 		cursor: pointer;
 		text-decoration: none;
 		color: $body-color-light;
-		min-width: calculateRem(150px);
 		background-color: $dark;
+		min-width: calculateRem(150px);
 		
 		&:last-child {
 			background-color: darken($dark, 10%);
