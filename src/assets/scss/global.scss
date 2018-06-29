@@ -105,8 +105,11 @@ header {
 		}
 		
 		.profile-toggle {
-			@include media-breakpoint-down(sm) {
-				margin: 0;
+			display: block;
+			
+			@include media-breakpoint-up(sm) {
+				display: flex;
+				justify-content: flex-end;
 			}
 		}
 	}

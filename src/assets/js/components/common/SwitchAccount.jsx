@@ -81,7 +81,7 @@ class SwitchAccount extends Component {
 					<Fragment>
 						{(this.props.user.accounts.length > 1) ? (
 							<Fragment>
-								<button type="button" className="btn btn-nav btn-action ml-r border-0" id="switchAccountMenu" title="Switch Account Menu" aria-label="Switch Account Menu" onClick={this.handleSwitchAccountMenu}>
+								<button type="button" className="btn btn-nav btn-action ml-r border-0 col-12 col-sm-auto" id="switchAccountMenu" title="Switch Account Menu" aria-label="Switch Account Menu" onClick={this.handleSwitchAccountMenu}>
 									<span className="d-inline-block d-sm-none d-md-inline-block d-lg-none">{truncateText(this.props.user.account.name)}<i className="pl-2 fa fa-fw fa-chevron-down" aria-hidden="true"></i></span>
 									<span className="d-none d-sm-inline-block d-md-none d-lg-inline-block">{this.props.user.account.name}<i className="pl-2 fa fa-fw fa-chevron-down" aria-hidden="true"></i></span>
 								</button>
@@ -96,9 +96,9 @@ class SwitchAccount extends Component {
 						) : (
 							<Fragment>
 								{(this.props.user.account) ? (
-									<button type="button" className="btn btn-nav btn-user ml-r border-0" title={this.props.user.account.name} aria-label={this.props.user.account.name}>
-										<span className="d-inline-block d-sm-none d-md-inline-block d-lg-none">{truncateText(this.props.user.account.name)}</span>
-										<span className="d-none d-sm-inline-block d-md-none d-lg-inline-block">{this.props.user.account.name}</span>
+									<button type="button" className="btn btn-nav btn-user ml-r border-0 col-12 col-sm-auto" title={this.props.user.account.name} aria-label={this.props.user.account.name}>
+										<span className="d-none d-sm-none d-md-inline-block d-lg-none">{truncateText(this.props.user.account.name)}</span>
+										<span className="d-inline-block d-sm-inline-block d-md-none d-lg-inline-block">{this.props.user.account.name}</span>
 									</button>
 								) : null}
 							</Fragment>
