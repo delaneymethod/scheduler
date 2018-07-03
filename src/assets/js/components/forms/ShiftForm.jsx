@@ -13,6 +13,8 @@ import confirm from '../../helpers/confirm';
 
 import constants from '../../helpers/constants';
 
+import InputSelectField from '../fields/InputSelectField';
+
 import { createPlacement, updatePlacement } from '../../actions/placementActions';
 
 import { getShifts, createShift, updateShift, deleteShift } from '../../actions/shiftActions';
@@ -446,15 +448,7 @@ class ShiftForm extends Component {
 						<FieldFeedback when="*">- Please provide a valid start date.</FieldFeedback>
 					</FieldFeedbacks>
 				</FormGroup>
-				<FormGroup>
-					<Label for="roleName">Role</Label>
-					<Input type="select" name="roleName" id="roleName" className="custom-select custom-select-xl" value={this.state.roleName} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="2" required={true}>
-						{this.props.roles.map((role, index) => <option key={index} value={role.roleName} label={role.roleName} />)}
-					</Input>
-					<FieldFeedbacks for="roleName" show="all">
-						<FieldFeedback when="*">- Please select or type in a role.</FieldFeedback>
-					</FieldFeedbacks>
-				</FormGroup>
+				<InputSelectField fieldName="roleName" fieldLabel="Role Name" fieldValue={this.state.roleName} fieldPlaceholder="e.g Manager" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid role name." fieldTabIndex={2} fieldRequired={true} fieldToggleButtonLabel="Role" fieldOptions={this.props.roles} />
 				<Row>
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
 						<FormGroup>
