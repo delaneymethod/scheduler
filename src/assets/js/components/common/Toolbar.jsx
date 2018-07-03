@@ -188,7 +188,7 @@ class Toolbar extends Component {
 				<RotaForm handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateRota} />
 			</Modal>
 			<Modal title="Shifts" className="modal-dialog" show={this.state.isShiftModalOpen} onClose={this.handleCreateShift}>
-				<ShiftForm handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateShift} />
+				<ShiftForm startDate={moment().format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateShift} />
 			</Modal>
 			{(this.state.error.data) ? (
 				<Modal title={this.state.error.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isErrorModalOpen} onClose={this.handleModal}>

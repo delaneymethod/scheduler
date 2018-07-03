@@ -15,6 +15,8 @@ import constants from '../../helpers/constants';
 
 import InputSelectField from '../fields/InputSelectField';
 
+import { getRoles } from '../../actions/roleActions';
+
 import { createPlacement, updatePlacement } from '../../actions/placementActions';
 
 import { getShifts, createShift, updateShift, deleteShift } from '../../actions/shiftActions';
@@ -72,6 +74,10 @@ class ShiftForm extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 
 		this.handleChange = this.handleChange.bind(this);
+
+		this.handleGetRoles = this.handleGetRoles.bind(this);
+
+		this.handleGetShifts = this.handleGetShifts.bind(this);
 
 		this.handleChangeTime = this.handleChangeTime.bind(this);
 	}
@@ -237,6 +243,11 @@ class ShiftForm extends Component {
 		actions.getShifts(payload).catch(error => this.setState({ error }));
 	};
 
+	handleGetRoles = () => {
+		console.log('Called ShiftForm handleGetRoles getRoles');
+		this.props.actions.getRoles().catch(error => this.setState({ error }));
+	};
+
 	handleDelete = (event) => {
 		const shift = this.props.shifts.filter(data => data.shiftId === this.props.shiftId).shift();
 
@@ -391,6 +402,8 @@ class ShiftForm extends Component {
 							this.handleGetShifts();
 						}
 					})
+					/* The user can select or create a role so we need to get roles each time we update or create a shift */
+					.then(() => this.handleGetRoles())
 					.catch(error => this.setState({ error }));
 			} else {
 				console.log('Called ShiftForm handleSubmit createShift');
@@ -426,6 +439,8 @@ class ShiftForm extends Component {
 							this.props.handleSuccessNotification(message);
 						}
 					})
+					/* The user can select or create a role so we need to get roles each time we update or create a shift */
+					.then(() => this.handleGetRoles())
 					.catch(error => this.setState({ error }));
 			}
 		}
@@ -544,6 +559,7 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = dispatch => ({
 	actions: bindActionCreators({
+		getRoles,
 		getShifts,
 		createShift,
 		updateShift,
