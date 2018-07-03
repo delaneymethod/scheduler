@@ -34,7 +34,7 @@ class EmailField extends Component {
 		mailcheck.defaultSecondLevelDomains.push('giggrafter');
 	}
 
-	handleBlur = () => {
+	handleBlur = (event) => {
 		const { didYouMean, suggestion } = this.refs;
 
 		console.log('Called EmailField handleBlur mailcheck');
@@ -55,12 +55,15 @@ class EmailField extends Component {
 				suggestion.innerText = '';
 			},
 		});
+
+		/* This is the important part - passing the event back to the parent component so we can track it */
+		this.props.handleBlur(event);
 	};
 
 	render = () => (
 		<FormGroup>
 			<Label for="email">Email Address {(this.props.fieldRequired) ? (<span className="text-danger">&#42;</span>) : null}</Label>
-			<Input type="email" name="email" id="email" value={this.props.fieldValue} ref="input" placeholder="e.g. hello@giggrafter.com" tabIndex={this.props.fieldTabIndex} onChange={this.props.handleChange} onBlur={this.props.handleBlur} required={this.props.fieldRequired} />
+			<Input type="email" name="email" id="email" value={this.props.fieldValue} ref="input" placeholder="e.g. hello@giggrafter.com" tabIndex={this.props.fieldTabIndex} onChange={this.props.handleChange} onBlur={this.handleBlur} required={this.props.fieldRequired} />
 			<FieldFeedbacks for="email" show="all">
 				<FieldFeedback when="*">- Please provide a valid email address.</FieldFeedback>
 			</FieldFeedbacks>

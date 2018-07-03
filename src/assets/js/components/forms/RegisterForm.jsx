@@ -128,9 +128,7 @@ class RegisterForm extends Component {
 		}
 	};
 
-	handleScrollToTop = (event) => {
-		event.preventDefault();
-
+	handleScrollToTop = () => {
 		const scrollToTop = window.setInterval(() => {
 			const pos = window.pageYOffset;
 

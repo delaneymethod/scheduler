@@ -49,6 +49,8 @@ class ForgottenYourPasswordForm extends Component {
 	};
 
 	handleChange = async (event) => {
+		this.setState(Object.assign(this.getInitialState(), { error: {}, emailSent: false }));
+
 		const target = event.currentTarget;
 
 		this.setState({
@@ -76,7 +78,7 @@ class ForgottenYourPasswordForm extends Component {
 			console.log('Called ForgottenYourPasswordForm handleSubmit forgottenYourPassword');
 			actions.forgottenYourPassword(payload)
 				.then(() => {
-					this.setState(Object.assign(this.getInitialState(), { emailSent: true }));
+					this.setState(Object.assign(this.getInitialState(), { email: payload.email, emailSent: true }));
 
 					this.handleScrollToTop();
 				})
@@ -92,9 +94,7 @@ class ForgottenYourPasswordForm extends Component {
 		}
 	};
 
-	handleScrollToTop = (event) => {
-		event.preventDefault();
-
+	handleScrollToTop = () => {
 		const scrollToTop = window.setInterval(() => {
 			const pos = window.pageYOffset;
 

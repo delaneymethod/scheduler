@@ -163,7 +163,7 @@ describe('API', () => {
 	});
 
 	it('should return email sent on forgotton your password', () => {
-		mock.onPut('/passwords/forgot?email=barry.lynch@giggrafter.com').reply(200, {
+		mock.onPost('/passwords/forgot').reply(200, {
 			emailSent: true,
 		});
 

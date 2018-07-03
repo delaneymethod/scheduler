@@ -90,7 +90,7 @@ export const login = payload => request('POST', '/login', 200, payload);
 export const register = payload => request('POST', '/business-sign-up', 200, payload);
 
 /* FORGOTTEN YOUR PASSWORD */
-export const forgottenYourPassword = payload => request('PUT', `/passwords/forgot?email=${payload.email}`, 200, payload);
+export const forgottenYourPassword = payload => request('POST', '/passwords/forgot', 200, payload);
 
 /* SUBSCRIPTION LEVELS */
 export const getSubscriptionLevels = () => request('GET', '/subscription-levels');
