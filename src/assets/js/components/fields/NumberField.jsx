@@ -42,10 +42,19 @@ const NumberField = ({
 	<FormGroup>
 		<Label for={fieldName}>{fieldLabel} {(fieldRequired) ? (<span className="text-danger">&#42;</span>) : null}</Label>
 		{(fieldName === 'budget') ? (
-			<NumberFormat name={fieldName} id={fieldName} value={fieldValue} className="form-control" placeholder={fieldPlaceholder} tabIndex={fieldTabIndex} onValueChange={(values, event) => handleChange(event, values)} onBlur={handleBlur} required={fieldRequired} displayType={'input'} thousandSeparator={true} prefix={'£'} />
+			<NumberFormat name={fieldName} id={fieldName} value={fieldValue} className="form-control" placeholder={fieldPlaceholder} tabIndex={fieldTabIndex} onValueChange={(values, event) => handleChange(event, values)} onBlur={handleBlur} required={fieldRequired} displayType={'input'} allowEmptyFormatting={false} allowNegative={false} thousandSeparator={true} prefix={'£'} />
 		) : null}
 		{(fieldName === 'mobile') ? (
-			<NumberFormat name={fieldName} id={fieldName} value={fieldValue} className="form-control" placeholder={fieldPlaceholder} tabIndex={fieldTabIndex} onValueChange={handleChange} onBlur={handleBlur} required={fieldRequired} displayType={'input'} format="+44 ##-####-####" mask="_" />
+			<NumberFormat type="tel" name={fieldName} id={fieldName} value={fieldValue} className="form-control" placeholder={fieldPlaceholder} tabIndex={fieldTabIndex} onValueChange={(values, event) => handleChange(event, values)} onBlur={handleBlur} required={fieldRequired} displayType={'input'} allowEmptyFormatting={false} format="+44 (#) ###-###-####" mask="_" />
+		) : null}
+		{(fieldName === 'salary') ? (
+			<NumberFormat name={fieldName} id={fieldName} value={fieldValue} className="form-control" placeholder={fieldPlaceholder} tabIndex={fieldTabIndex} onValueChange={(values, event) => handleChange(event, values)} onBlur={handleBlur} required={fieldRequired} displayType={'input'} allowEmptyFormatting={false} allowNegative={false} thousandSeparator={true} prefix={'£'} />
+		) : null}
+		{(fieldName === 'hourlyRate') ? (
+			<NumberFormat name={fieldName} id={fieldName} value={fieldValue} className="form-control" placeholder={fieldPlaceholder} tabIndex={fieldTabIndex} onValueChange={(values, event) => handleChange(event, values)} onBlur={handleBlur} required={fieldRequired} displayType={'input'} allowEmptyFormatting={false} allowNegative={false} thousandSeparator={true} prefix={'£'} />
+		) : null}
+		{(fieldName === 'weeklyContractHours') ? (
+			<NumberFormat name={fieldName} id={fieldName} value={fieldValue} className="form-control" placeholder={fieldPlaceholder} tabIndex={fieldTabIndex} onValueChange={(values, event) => handleChange(event, values)} onBlur={handleBlur} required={fieldRequired} displayType={'input'} allowEmptyFormatting={false} allowNegative={false} fixedDecimalScale={true} decimalScale={1} />
 		) : null}
 		<FieldFeedbacks for={fieldName} show="all">
 			<FieldFeedback when="valueMissing">- {valueMissing}</FieldFeedback>

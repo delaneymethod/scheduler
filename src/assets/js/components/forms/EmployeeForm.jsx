@@ -12,6 +12,8 @@ import TextField from '../fields/TextField';
 
 import EmailField from '../fields/EmailField';
 
+import NumberField from '../fields/NumberField';
+
 import constants from '../../helpers/constants';
 
 import { createEmployee, updateEmployee, deleteEmployee } from '../../actions/employeeActions';
@@ -49,17 +51,25 @@ class EmployeeForm extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 
 		this.handleChange = this.handleChange.bind(this);
+
+		this.handleChangeMobile = this.handleChangeMobile.bind(this);
+
+		this.handleChangeSalary = this.handleChangeSalary.bind(this);
+
+		this.handleChangeHourlyRate = this.handleChangeHourlyRate.bind(this);
+
+		this.handleChangeWeeklyContractHours = this.handleChangeWeeklyContractHours.bind(this);
 	}
 
 	getInitialState = () => ({
 		error: {},
 		email: '',
-		salary: 0,
+		salary: '',
 		mobile: '',
 		lastName: '',
 		firstName: '',
-		hourlyRate: 0,
-		weeklyContractHours: 0.0,
+		hourlyRate: '',
+		weeklyContractHours: '',
 	});
 
 	componentDidMount = () => {
@@ -74,6 +84,14 @@ class EmployeeForm extends Component {
 			[target.name]: target.value,
 		});
 	};
+
+	handleChangeMobile = (event, values) => this.setState({ mobile: values.value });
+
+	handleChangeSalary = (event, values) => this.setState({ salary: values.floatValue });
+
+	handleChangeHourlyRate = (event, values) => this.setState({ hourlyRate: values.floatValue });
+
+	handleChangeWeeklyContractHours = (event, values) => this.setState({ weeklyContractHours: values.floatValue });
 
 	handleBlur = async event => this.handleValidateFields(event.currentTarget);
 
@@ -141,10 +159,10 @@ class EmployeeForm extends Component {
 				<TextField fieldName="firstName" fieldLabel="First Name" fieldValue={this.state.firstName} fieldPlaceholder="e.g. Barry" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid first name." fieldTabIndex={1} fieldRequired={true} />
 				<TextField fieldName="lastName" fieldLabel="Last Name" fieldValue={this.state.lastName} fieldPlaceholder="e.g. Lynch" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid last name." fieldTabIndex={2} fieldRequired={true} />
 				<EmailField fieldValue={this.state.email} handleChange={this.handleChange} fieldTabIndex={3} fieldRequired={true} />
-				<TextField fieldName="mobile" fieldLabel="Mobile" fieldValue={this.state.mobile} fieldPlaceholder="e.g. 077..." handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid mobile number." fieldTabIndex={4} fieldRequired={true} />
-				<TextField fieldName="hourlyRate" fieldLabel="Hourly Rate" fieldValue={this.state.hourlyRate} fieldPlaceholder="e.g. 7.83" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid hourly rate." fieldTabIndex={5} fieldRequired={true} />
-				<TextField fieldName="salary" fieldLabel="Salary" fieldValue={this.state.salary} fieldPlaceholder="e.g. 7.83" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid salary." fieldTabIndex={6} fieldRequired={false} />
-				<TextField fieldName="weeklyContractHours" fieldLabel="Weekly Contract Hours" fieldValue={this.state.weeklyContractHours} fieldPlaceholder="e.g. 37.5" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid weekly contract hours." fieldTabIndex={7} fieldRequired={false} />
+				<NumberField fieldName="mobile" fieldLabel="Mobile" fieldValue={this.state.mobile} fieldPlaceholder="e.g. +44 (0) 777-777-7777" handleChange={this.handleChangeMobile} handleBlur={this.handleBlur} valueMissing="Please provide a valid mobile number." fieldTabIndex={4} fieldRequired={true} />
+				<NumberField fieldName="hourlyRate" fieldLabel="Hourly Rate" fieldValue={this.state.hourlyRate} fieldPlaceholder="e.g. £7.83" handleChange={this.handleChangeHourlyRate} handleBlur={this.handleBlur} valueMissing="Please provide a valid hourly rate." fieldTabIndex={5} fieldRequired={true} />
+				<NumberField fieldName="salary" fieldLabel="Salary" fieldValue={this.state.salary} fieldPlaceholder="e.g. £7.83" handleChange={this.handleChangeSalary} handleBlur={this.handleBlur} valueMissing="Please provide a valid salary." fieldTabIndex={6} fieldRequired={false} />
+				<NumberField fieldName="weeklyContractHours" fieldLabel="Weekly Contract Hours" fieldValue={this.state.weeklyContractHours} fieldPlaceholder="e.g. 37.5" handleChange={this.handleChangeWeeklyContractHours} handleBlur={this.handleBlur} valueMissing="Please provide a valid weekly contract hours." fieldTabIndex={7} fieldRequired={false} />
 				{(this.props.editMode) ? (
 					<Button type="submit" color="primary" className="mt-4" title={routes.EMPLOYEES.UPDATE.TITLE} tabIndex="8" block>{routes.EMPLOYEES.UPDATE.TITLE}</Button>
 				) : (
