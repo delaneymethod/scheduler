@@ -48,7 +48,7 @@ class ForgottenYourPasswordForm extends Component {
 		this.handleValidateFields = debounce(this.handleValidateFields.bind(this), 1000);
 	};
 
-	handleChange = async (event) => {
+	handleChange = (event) => {
 		this.setState({ error: {}, emailSent: false });
 
 		const target = event.currentTarget;

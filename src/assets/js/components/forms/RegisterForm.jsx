@@ -76,7 +76,7 @@ class RegisterForm extends Component {
 			.catch(error => this.setState({ error }));
 	};
 
-	handleChange = async (event) => {
+	handleChange = (event) => {
 		const target = event.currentTarget;
 
 		this.setState({

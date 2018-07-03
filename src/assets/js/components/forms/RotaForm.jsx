@@ -11,6 +11,8 @@ import Alert from '../common/Alert';
 
 import TextField from '../fields/TextField';
 
+import NumberField from '../fields/NumberField';
+
 import constants from '../../helpers/constants';
 
 import { getShifts } from '../../actions/shiftActions';
@@ -60,11 +62,13 @@ class RotaForm extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 
 		this.handleChange = this.handleChange.bind(this);
+
+		this.handleChangeBudget = this.handleChangeBudget.bind(this);
 	}
 
 	getInitialState = () => ({
-		budget: 0,
 		error: {},
+		budget: '',
 		rotaName: '',
 		startDate: '',
 		startDates: [],
@@ -99,13 +103,15 @@ class RotaForm extends Component {
 		this.setState({ startDates });
 	};
 
-	handleChange = async (event) => {
+	handleChange = (event) => {
 		const target = event.currentTarget;
 
 		this.setState({
 			[target.name]: target.value,
 		});
 	};
+
+	handleChangeBudget = (event, values) => this.setState({ budget: values.floatValue });
 
 	handleBlur = async event => this.handleValidateFields(event.currentTarget);
 
@@ -213,7 +219,7 @@ class RotaForm extends Component {
 			{this.errorMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 				<TextField fieldName="rotaName" fieldLabel="Rota Name" fieldValue={this.state.rotaName} fieldPlaceholder="e.g. Kitchen" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid rota name." fieldTabIndex={1} fieldRequired={true} />
-				<TextField fieldName="budget" fieldLabel="Budget" fieldValue={this.state.budget} fieldPlaceholder="e.g. 1000" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid budget." fieldTabIndex={2} fieldRequired={true} />
+				<NumberField fieldName="budget" fieldLabel="Budget" fieldValue={this.state.budget} fieldPlaceholder="e.g. £2,000" handleChange={this.handleChangeBudget} handleBlur={this.handleBlur} valueMissing="Please provide a valid budget." fieldTabIndex={2} fieldRequired={true} />
 				<FormGroup>
 					<Label for="startDate">Select Start Date <span className="text-danger">&#42;</span></Label>
 					<Input type="select" name="startDate" id="startDate" className="custom-select custom-select-xl" value={this.state.startDate} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="3" required={true}>

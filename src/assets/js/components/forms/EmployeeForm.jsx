@@ -67,7 +67,7 @@ class EmployeeForm extends Component {
 		this.handleValidateFields = debounce(this.handleValidateFields.bind(this), 1000);
 	};
 
-	handleChange = async (event) => {
+	handleChange = (event) => {
 		const target = event.currentTarget;
 
 		this.setState({
@@ -77,7 +77,7 @@ class EmployeeForm extends Component {
 
 	handleBlur = async event => this.handleValidateFields(event.currentTarget);
 
-	handleDelete = async event => console.log('FIXME - Delete Employee');
+	handleDelete = event => console.log('FIXME - Delete Employee');
 
 	handleSubmit = async (event) => {
 		event.preventDefault();
