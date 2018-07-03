@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { Fragment, Component } from 'react';
 import { Label, Input, Button, FormGroup } from 'reactstrap';
 import { Async, FieldFeedback, FieldFeedbacks } from 'react-form-with-constraints';
 
@@ -71,17 +71,22 @@ class PasswordField extends Component {
 					<Button color="muted" title="Toggle Value" className="input-group-text" onClick={this.handleToggle}><i className="fa fa-fw fa-eye-slash text-primary" id={this.props.fieldName.concat('-fa')} aria-hidden="true"></i></Button>
 				</div>
 			</div>
-			{(this.props.showPasswordStrength && this.props.fieldName === 'password' && this.props.fieldValue.length >= this.props.minLength) ? (
+			{(this.props.showPasswordStrength && (this.props.fieldName === 'password' || this.props.fieldName === 'newPassword') && this.props.fieldValue.length >= this.props.minLength) ? (
 				<PasswordStrengthMeter password={this.props.fieldValue} />
 			) : null}
 			<FieldFeedbacks for={this.props.fieldName} show="all">
 				<FieldFeedback when="valueMissing">- Please provide a valid password.</FieldFeedback>
 				<FieldFeedback when="patternMismatch">- Password should be at least {this.props.minLength} characters long.</FieldFeedback>
 			</FieldFeedbacks>
-			{(this.props.showPasswordCommon && this.props.fieldName === 'password') ? (
-				<FieldFeedbacks for="password" show="all">
-					<Async promise={isPasswordCommon} then={commonPassword => (commonPassword ? <FieldFeedback warning>- Password is very common.</FieldFeedback> : null)} />
-				</FieldFeedbacks>
+			{(this.props.showPasswordCommon && (this.props.fieldName === 'password' || this.props.fieldName === 'newPassword')) ? (
+				<Fragment>
+					<FieldFeedbacks for="password" show="all">
+						<Async promise={isPasswordCommon} then={commonPassword => (commonPassword ? <FieldFeedback warning>- Password is very common.</FieldFeedback> : null)} />
+					</FieldFeedbacks>
+					<FieldFeedbacks for="newPassword" show="all">
+						<Async promise={isPasswordCommon} then={commonPassword => (commonPassword ? <FieldFeedback warning>- Password is very common.</FieldFeedback> : null)} />
+					</FieldFeedbacks>
+				</Fragment>
 			) : null}
 			{(this.props.fieldName === 'confirmPassword') ? (
 				<FieldFeedbacks for="confirmPassword" show="all">

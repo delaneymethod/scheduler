@@ -123,3 +123,29 @@ export const forgottenYourPassword = payload => (dispatch) => {
 			return Promise.reject(error);
 		});
 };
+
+export const resetYourPassword = payload => (dispatch) => {
+	dispatch(ajaxLoading(true));
+
+	return api.resetYourPassword(payload)
+		.then(() => dispatch(ajaxLoading(false)))
+		.catch((error) => {
+			dispatch(ajaxLoading(false));
+
+			/* Bubble the error back up the rabbit hole */
+			return Promise.reject(error);
+		});
+};
+
+export const updateYourPassword = payload => (dispatch) => {
+	dispatch(ajaxLoading(true));
+
+	return api.updateYourPassword(payload)
+		.then(() => dispatch(ajaxLoading(false)))
+		.catch((error) => {
+			dispatch(ajaxLoading(false));
+
+			/* Bubble the error back up the rabbit hole */
+			return Promise.reject(error);
+		});
+};

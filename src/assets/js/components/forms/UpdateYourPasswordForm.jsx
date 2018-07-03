@@ -10,17 +10,23 @@ import Alert from '../common/Alert';
 
 import EmailField from '../fields/EmailField';
 
+import PasswordField from '../fields/PasswordField';
+
 import constants from '../../helpers/constants';
 
-import { forgottenYourPassword } from '../../actions/authenticationActions';
+import { updateYourPassword } from '../../actions/authenticationActions';
 
 const routes = constants.APP.ROUTES;
 
-const propTypes = {};
+const propTypes = {
+	token: PropTypes.string.isRequired,
+};
 
-const defaultProps = {};
+const defaultProps = {
+	token: '',
+};
 
-class ForgottenYourPasswordForm extends Component {
+class UpdateYourPasswordForm extends Component {
 	constructor(props) {
 		super(props);
 
@@ -39,11 +45,17 @@ class ForgottenYourPasswordForm extends Component {
 
 	getInitialState = () => ({
 		error: {},
+		token: '',
 		email: '',
+		newPassword: '',
 		emailSent: false,
 	});
 
 	componentDidMount = () => {
+		const { token } = this.props;
+
+		this.setState({ token });
+
 		/* We debounce this call to wait 1000ms (we do not want the leading (or "immediate") flag passed because we want to wait until the user has finished typing before running validation */
 		this.handleValidateFields = debounce(this.handleValidateFields.bind(this), 1000);
 	};
@@ -70,22 +82,26 @@ class ForgottenYourPasswordForm extends Component {
 		await this.form.validateFields();
 
 		if (this.form.isValid()) {
+			const { email, token, newPassword } = this.state;
+
 			const payload = {
-				email: this.state.email,
+				email,
+				token,
+				newPassword,
 			};
 
 			/* eslint-disable no-param-reassign */
-			console.log('Called ForgottenYourPasswordForm handleSubmit forgottenYourPassword');
-			actions.forgottenYourPassword(payload)
+			console.log('Called UpdateYourPasswordForm handleSubmit updateYourPassword');
+			actions.updateYourPassword(payload)
 				.then(() => {
-					this.setState(Object.assign(this.getInitialState(), { email: payload.email, emailSent: true }));
+					this.setState(Object.assign(this.getInitialState(), { emailSent: true }));
 
 					this.handleScrollToTop();
 				})
 				.catch((error) => {
 					/* Set a more friendlier error message if its a 404 */
 					if (error.data.code === 404) {
-						error.data.message = routes.FORGOTTEN_YOUR_PASSWORD.MESSAGES.NOT_FOUND;
+						error.data.message = routes.UPDATE_YOUR_PASSWORD.MESSAGES.NOT_FOUND;
 					}
 
 					this.setState({ error });
@@ -110,7 +126,7 @@ class ForgottenYourPasswordForm extends Component {
 
 	errorMessage = () => (this.state.error.data ? <Alert color="danger" message={this.state.error.data.message} /> : null);
 
-	successMessage = () => (this.state.emailSent ? <Alert color="success" message={`An email has been sent to <strong>${this.state.email}</strong>. Please follow the link in this email message to set your password.`} /> : null);
+	successMessage = () => (this.state.emailSent ? <Alert color="success" message={'Password was updated successfully.'} /> : null);
 
 	render = () => (
 		<Fragment>
@@ -118,20 +134,23 @@ class ForgottenYourPasswordForm extends Component {
 			{this.successMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 				<EmailField fieldValue={this.state.email} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={1} fieldRequired={true} />
-				<Button type="submit" color="primary" className="mt-4" title={routes.FORGOTTEN_YOUR_PASSWORD.TITLE} tabIndex="2" disabled={this.state.emailSent} block>{routes.FORGOTTEN_YOUR_PASSWORD.TITLE}</Button>
+				<PasswordField fieldLabel="Password" fieldName="newPassword" fieldValue={this.state.newPassword} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={2} showPasswordStrength showPasswordCommon fieldRequired={true} />
+				<Button type="submit" color="primary" className="mt-4" title={routes.UPDATE_YOUR_PASSWORD.TITLE} tabIndex="3" disabled={this.state.emailSent} block>{routes.UPDATE_YOUR_PASSWORD.TITLE}</Button>
 			</FormWithConstraints>
 		</Fragment>
 	);
 }
 
-ForgottenYourPasswordForm.propTypes = propTypes;
+UpdateYourPasswordForm.propTypes = propTypes;
 
-ForgottenYourPasswordForm.defaultProps = defaultProps;
+UpdateYourPasswordForm.defaultProps = defaultProps;
 
-const mapStateToProps = (state, props) => ({});
-
-const mapDispatchToProps = dispatch => ({
-	actions: bindActionCreators({ forgottenYourPassword }, dispatch),
+const mapStateToProps = (state, props) => ({
+	token: props.token,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ForgottenYourPasswordForm);
+const mapDispatchToProps = dispatch => ({
+	actions: bindActionCreators({ updateYourPassword }, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateYourPasswordForm);

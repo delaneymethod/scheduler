@@ -10,6 +10,7 @@ import Home from './views/Home';
 import Login from './views/Login';
 import Register from './views/Register';
 import NotFoundPage from './views/NotFoundPage';
+import UpdateYourPassword from './views/UpdateYourPassword';
 import ForgottenYourPassword from './views/ForgottenYourPassword';
 
 import Shifts from './views/dashboard/Shifts';
@@ -25,6 +26,7 @@ const App = () => (
 			<Route exact path={routes.HOME.URI} component={Home} />
 			<Route exact path={routes.LOGIN.URI} component={Login} />
 			<Route exact path={routes.REGISTER.URI} component={Register} />
+			<Route exact path={`${routes.UPDATE_YOUR_PASSWORD.URI}/:token`} component={UpdateYourPassword} />
 			<Route exact path={routes.FORGOTTEN_YOUR_PASSWORD.URI} component={ForgottenYourPassword} />
 			<Route exact path={routes.DASHBOARD.HOME.URI} component={Dashboard} />
 			<Route exact path={routes.DASHBOARD.OVERVIEW.URI} component={Overview} />

@@ -174,6 +174,31 @@ describe('API', () => {
 		return api.forgottenYourPassword(payload).then(data => expect(data.emailSent).toEqual(true));
 	});
 
+	it('should return email sent on reset your password', () => {
+		mock.onPost('/passwords/reset').reply(200, {
+			emailSent: true,
+		});
+
+		const payload = {
+			email: 'barry.lynch@giggrafter.com',
+		};
+
+		return api.resetYourPassword(payload).then(data => expect(data.emailSent).toEqual(true));
+	});
+
+	it('should return password updated on update your password', () => {
+		mock.onPut('/passwords/1234567890').reply(200, {
+			emailSent: true,
+		});
+
+		const payload = {
+			token: '1234567890',
+			email: 'barry.lynch@giggrafter.com',
+		};
+
+		return api.updateYourPassword(payload).then(data => expect(data.emailSent).toEqual(true));
+	});
+
 	/*
 	it('should cancel duplicate requests', () => {
 		mock.onPost('/login').reply(200, {});

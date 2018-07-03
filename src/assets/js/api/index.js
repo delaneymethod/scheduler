@@ -92,6 +92,12 @@ export const register = payload => request('POST', '/business-sign-up', 200, pay
 /* FORGOTTEN YOUR PASSWORD */
 export const forgottenYourPassword = payload => request('POST', '/passwords/forgot', 200, payload);
 
+/* RESET YOUR PASSWORD */
+export const resetYourPassword = payload => request('POST', '/passwords/reset', 200, payload);
+
+/* UPDATE YOUR PASSWORD */
+export const updateYourPassword = payload => request('PUT', `/passwords/${payload.token}`, 200, payload);
+
 /* SUBSCRIPTION LEVELS */
 export const getSubscriptionLevels = () => request('GET', '/subscription-levels');
 

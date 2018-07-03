@@ -81,9 +81,23 @@ export default {
 			},
 			FORGOTTEN_YOUR_PASSWORD: {
 				TITLE: 'Forgotten your Password',
-				URI: '/forgotten-your-password',
+				URI: '/passwords/forgot',
 				MESSAGES: {
+					WELCOME: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta velit in lectus efficitur hendrerit. Quisque cursus arcu sollicitudin rhoncus molestie. Donec at rhoncus enim, ut rhoncus lacus. Sed eget felis est.',
 					NOT_FOUND: 'Email address was not found.',
+				},
+				META: {
+					DESCRIPTION: '',
+					KEYWORDS: '',
+				},
+			},
+			UPDATE_YOUR_PASSWORD: {
+				TITLE: 'Update your Password',
+				URI: '/passwords/update',
+				MESSAGES: {
+					WELCOME: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta velit in lectus efficitur hendrerit. Quisque cursus arcu sollicitudin rhoncus molestie. Donec at rhoncus enim, ut rhoncus lacus. Sed eget felis est.',
+					NOT_FOUND: 'Email address was not found.',
+					FAILED: 'Password was not updated.',
 				},
 				META: {
 					DESCRIPTION: '',

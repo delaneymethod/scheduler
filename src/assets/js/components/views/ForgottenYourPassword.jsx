@@ -52,7 +52,7 @@ class ForgottenYourPassword extends Component {
 				<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center bg-dark py-5">
 					<div className="panel-welcome">
 						<h1><a href={routes.HOME.URI} title={constants.APP.TITLE}><img src={constants.APP.LOGO} alt={constants.APP.TITLE} className="mb-4" /></a></h1>
-						<p className="h5 mb-0">{routes.LOGIN.MESSAGE}</p>
+						<p className="h5 mb-0">{routes.FORGOTTEN_YOUR_PASSWORD.MESSAGES.WELCOME}</p>
 					</div>
 				</Col>
 				<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center py-5">
@@ -60,7 +60,7 @@ class ForgottenYourPassword extends Component {
 						<a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} className="panel-page__link">Back to {routes.LOGIN.TITLE}</a>
 						<div className="card panel-page__content">
 							<h2 className="h5--title-card">{routes.FORGOTTEN_YOUR_PASSWORD.TITLE}</h2>
-							<ForgottenYourPasswordForm />
+							<ForgottenYourPasswordForm history={this.props.history} />
 						</div>
 					</div>
 				</Col>

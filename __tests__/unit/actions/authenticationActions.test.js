@@ -318,4 +318,136 @@ describe('Authentication Actions', () => {
 
 		return store.dispatch(actions.forgottenYourPassword(payload)).catch(error => expect(error).toEqual(expectedError));
 	});
+
+	it('should create AJAX_LOADING action on reset your password', () => {
+		moxios.wait(() => {
+			const request = moxios.requests.mostRecent();
+
+			request.respondWith({
+				status: 200,
+				response: {},
+			});
+		});
+
+		store = mockStore({});
+
+		const expectedActions = [{
+			status: true,
+			type: types.AJAX_LOADING,
+		}, {
+			status: false,
+			type: types.AJAX_LOADING,
+		}];
+
+		const payload = {
+			email: 'barry@giggrafter.com',
+		};
+
+		return store.dispatch(actions.resetYourPassword(payload))
+			.then(() => expect(store.getActions()).toEqual(expectedActions))
+			.catch(error => console.log(error));
+	});
+
+	it('should catch error on reset your password', () => {
+		moxios.wait(() => {
+			const request = moxios.requests.mostRecent();
+
+			request.respondWith({
+				status: 404,
+				response: {
+					error: {
+						code: 404,
+						type: 'Not Found',
+						message: 'A 404 status code indicates that the requested resource was not found at the URL given, and the server has no idea how long for.',
+						hints: {
+							summary: 'Email address was not found.',
+						},
+					},
+				},
+			});
+		});
+
+		store = mockStore({});
+
+		const expectedError = {
+			data: {
+				code: 404,
+				title: '404 Not Found',
+				message: '<p>A 404 status code indicates that the requested resource was not found at the URL given, and the server has no idea how long for.</p><p class="pb-0 mb-0">Email address was not found.</p>',
+			},
+		};
+
+		const payload = {
+			email: 'barry@giggraftercom',
+		};
+
+		return store.dispatch(actions.resetYourPassword(payload)).catch(error => expect(error).toEqual(expectedError));
+	});
+
+	it('should create AJAX_LOADING action on update your password', () => {
+		moxios.wait(() => {
+			const request = moxios.requests.mostRecent();
+
+			request.respondWith({
+				status: 200,
+				response: {},
+			});
+		});
+
+		store = mockStore({});
+
+		const expectedActions = [{
+			status: true,
+			type: types.AJAX_LOADING,
+		}, {
+			status: false,
+			type: types.AJAX_LOADING,
+		}];
+
+		const payload = {
+			token: '1234567890',
+			email: 'barry@giggrafter.com',
+		};
+
+		return store.dispatch(actions.updateYourPassword(payload))
+			.then(() => expect(store.getActions()).toEqual(expectedActions))
+			.catch(error => console.log(error));
+	});
+
+	it('should catch error on update your password', () => {
+		moxios.wait(() => {
+			const request = moxios.requests.mostRecent();
+
+			request.respondWith({
+				status: 404,
+				response: {
+					error: {
+						code: 404,
+						type: 'Not Found',
+						message: 'A 404 status code indicates that the requested resource was not found at the URL given, and the server has no idea how long for.',
+						hints: {
+							summary: 'Email address was not found.',
+						},
+					},
+				},
+			});
+		});
+
+		store = mockStore({});
+
+		const expectedError = {
+			data: {
+				code: 404,
+				title: '404 Not Found',
+				message: '<p>A 404 status code indicates that the requested resource was not found at the URL given, and the server has no idea how long for.</p><p class="pb-0 mb-0">Email address was not found.</p>',
+			},
+		};
+
+		const payload = {
+			token: '1234567890',
+			email: 'barry@giggraftercom',
+		};
+
+		return store.dispatch(actions.updateYourPassword(payload)).catch(error => expect(error).toEqual(expectedError));
+	});
 });

@@ -62,7 +62,7 @@ class Register extends Component {
 						<a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} className="panel-page__link float-right">Already a member? {routes.LOGIN.TITLE}</a>
 						<div className="card panel-page__content">
 							<h2 className="h5--title-card">{routes.REGISTER.TITLE}</h2>
-							<RegisterForm />
+							<RegisterForm history={this.props.history} />
 						</div>
 					</div>
 				</Col>
