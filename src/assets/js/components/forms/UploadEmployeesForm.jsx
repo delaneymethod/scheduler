@@ -73,10 +73,10 @@ class UploadEmployeesForm extends Component {
 
 					let message = '';
 
-					message += `<p>${response.loadedEmployees.length} Employees were uploaded successfully.</p>`;
+					message += `<p>${response.loadedEmployees.length} Employees were uploaded!</p>`;
 
 					if (response.failedEmployees.length > 0) {
-						message += `<p>${response.failedEmployees.length} Employees failed though:</p><ul>`;
+						message += `<p>${response.failedEmployees.length} Employees upload failed!</p><ul>`;
 
 						message += response.failedEmployees.map((failedEmployee, index) => `<li key="${index}">${failedEmployee.data[0]} ${failedEmployee.data[1]}: <i>${failedEmployee.reason}</i></li>`);
 

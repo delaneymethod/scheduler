@@ -33,8 +33,6 @@ class ForgottenYourPasswordForm extends Component {
 		this.handleChange = this.handleChange.bind(this);
 
 		this.handleSubmit = this.handleSubmit.bind(this);
-
-		this.handleScrollToTop = this.handleScrollToTop.bind(this);
 	}
 
 	getInitialState = () => ({
@@ -77,11 +75,7 @@ class ForgottenYourPasswordForm extends Component {
 			/* eslint-disable no-param-reassign */
 			console.log('Called ForgottenYourPasswordForm handleSubmit forgottenYourPassword');
 			actions.forgottenYourPassword(payload)
-				.then(() => {
-					this.setState(Object.assign(this.getInitialState(), { email: payload.email, emailSent: true }));
-
-					this.handleScrollToTop();
-				})
+				.then(() => this.setState(Object.assign(this.getInitialState(), { email: payload.email, emailSent: true })))
 				.catch((error) => {
 					/* Set a more friendlier error message if its a 404 */
 					if (error.data.code === 404) {
@@ -92,18 +86,6 @@ class ForgottenYourPasswordForm extends Component {
 				});
 			/* eslint-enable no-param-reassign */
 		}
-	};
-
-	handleScrollToTop = () => {
-		const scrollToTop = window.setInterval(() => {
-			const pos = window.pageYOffset;
-
-			if (pos > 0) {
-				window.scrollTo(0, pos - 20);
-			} else {
-				window.clearInterval(scrollToTop);
-			}
-		}, 16);
 	};
 
 	handleValidateFields = target => ((this.form && target) ? this.form.validateFields(target) : null);

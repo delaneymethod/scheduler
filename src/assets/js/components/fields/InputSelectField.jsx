@@ -16,6 +16,7 @@ const propTypes = {
 	fieldOptions: PropTypes.array.isRequired,
 	fieldToggleButtonLabel: PropTypes.string,
 	fieldTabIndex: PropTypes.number.isRequired,
+	fieldAutoComplete: PropTypes.string.isRequired,
 };
 
 const defaultProps = {
@@ -29,6 +30,7 @@ const defaultProps = {
 	fieldRequired: false,
 	fieldPlaceholder: '',
 	handleChange: () => {},
+	fieldAutoComplete: 'off',
 	fieldToggleButtonLabel: '',
 };
 
@@ -64,14 +66,14 @@ class InputSelectField extends Component {
 			<Label for={this.props.fieldName}>{this.props.fieldLabel} {(this.props.fieldRequired) ? (<span className="text-danger">&#42;</span>) : null}</Label>
 			<div className="input-group">
 				{(this.state.mode === 'input') ? (
-					<Input type="text" name={this.props.fieldName} id={this.props.fieldName} value={this.props.fieldValue} placeholder={this.props.fieldPlaceholder} tabIndex={this.props.fieldTabIndex} onChange={this.props.handleChange} onBlur={this.props.handleBlur} required={this.props.fieldRequired} />
+					<Input type="text" name={this.props.fieldName} id={this.props.fieldName} value={this.props.fieldValue} placeholder={this.props.fieldPlaceholder} tabIndex={this.props.fieldTabIndex} autoComplete={this.props.fieldAutoComplete} onChange={this.props.handleChange} onBlur={this.props.handleBlur} required={this.props.fieldRequired} />
 				) : (
 					<Input type="select" name={this.props.fieldName} id={this.props.fieldName} value={this.props.fieldValue} className="custom-select custom-select-xl" tabIndex={this.props.fieldTabIndex} onChange={this.props.handleChange} onBlur={this.props.handleBlur} required={this.props.fieldRequired}>
 						{(this.props.fieldName === 'roleName') ? this.props.fieldOptions.map((role, index) => <option key={index} value={role.roleName} label={role.roleName} />) : this.props.fieldOptions.map((option, index) => <option key={index} value={option} label={option} />)}
 					</Input>
 				)}
 				<div className="input-group-append">
-					<Button title={`${this.state.buttonLabel} ${this.props.fieldToggleButtonLabel}`} id="btn-toggle" className="input-group-text text-white border-0 bg-dark" onClick={this.handleToggle}>{this.state.buttonLabel} {this.props.fieldToggleButtonLabel}</Button>
+					<Button title={`${this.state.buttonLabel} ${this.props.fieldToggleButtonLabel}`} id="btn-toggle" className="input-group-text border-0 btn-toggle-fields" onClick={this.handleToggle}>{this.state.buttonLabel} {this.props.fieldToggleButtonLabel}</Button>
 				</div>
 			</div>
 			<FieldFeedbacks for={this.props.fieldName} show="all">

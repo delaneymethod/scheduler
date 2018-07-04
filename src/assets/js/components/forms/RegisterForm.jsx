@@ -14,6 +14,8 @@ import EmailField from '../fields/EmailField';
 
 import constants from '../../helpers/constants';
 
+import scrollToTop from '../../helpers/animations';
+
 import PasswordField from '../fields/PasswordField';
 
 import { register } from '../../actions/authenticationActions';
@@ -43,8 +45,6 @@ class RegisterForm extends Component {
 		this.handleChange = this.handleChange.bind(this);
 
 		this.handleSubmit = this.handleSubmit.bind(this);
-
-		this.handleScrollToTop = this.handleScrollToTop.bind(this);
 	}
 
 	getInitialState = () => ({
@@ -116,28 +116,11 @@ class RegisterForm extends Component {
 
 			console.log('Called RegisterForm handleSubmit register');
 			actions.register(payload)
-				.then(() => {
-					this.setState(Object.assign(this.getInitialState(), {
-						email,
-						emailSent: true,
-					}));
-
-					this.handleScrollToTop();
-				})
+				.then(() => this.setState(Object.assign(this.getInitialState(), { email, emailSent: true })))
 				.catch(error => this.setState({ error }));
+
+			scrollToTop();
 		}
-	};
-
-	handleScrollToTop = () => {
-		const scrollToTop = window.setInterval(() => {
-			const pos = window.pageYOffset;
-
-			if (pos > 0) {
-				window.scrollTo(0, pos - 20);
-			} else {
-				window.clearInterval(scrollToTop);
-			}
-		}, 16);
 	};
 
 	handleValidateFields = target => ((this.form && target) ? this.form.validateFields(target) : null);

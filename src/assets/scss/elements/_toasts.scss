@@ -1,0 +1,100 @@
+.#{$rt-namespace}__toast-container {
+	&--top-right {
+		top: 6.5em;
+			
+		@include media-breakpoint-down(lg) {
+			top: 6.5em;
+		}
+		
+		@include media-breakpoint-down(md) {
+			top: 10em;
+		}
+			
+		@include media-breakpoint-down(sm) {
+			top: 18.5em;
+		}
+        
+        @include media-breakpoint-down(xs) {
+			top: 23em;
+		}		
+	}
+	
+	.#{$rt-namespace}__toast {
+    	padding: 0;
+    	box-shadow: none;
+    	font-family: inherit;
+    	border-radius: calculateRem(4px);
+    	
+    	.#{$rt-namespace}__toast-body {
+	    }
+    	
+    	.toast-close-button,
+    	.#{$rt-namespace}__close-button {
+			opacity: 1;
+			border: none;
+			outline: none;
+			cursor: pointer;
+			line-height: 1.5;
+			color: $secondary;
+			font-size: 1.3rem;
+			font-weight: bold;
+			align-self: flex-start;
+			background-color: $white;
+			margin: calculateRem(5px);
+			padding: 0 calculateRem(10px);
+			border-radius: calculateRem(4px);
+			
+			&:focus,
+			&:hover, 
+			&--default {
+				color: $dark;
+			}
+		}
+		
+		.toast-close-button {
+			margin: calculateRem(15px);
+    	}
+	}
+	
+	.#{$rt-namespace}__toast--info {
+		.toast-close-button {
+			color: $rt-color-info;
+			margin: calculateRem(15px);
+		}
+	}
+	
+	.#{$rt-namespace}__toast--success {
+		.toast-close-button {
+			color: $rt-color-success;
+			margin: calculateRem(15px);
+		}
+	}
+	
+	.#{$rt-namespace}__toast--error {
+		.toast-close-button {
+			color: $rt-color-error;
+			margin: calculateRem(15px);
+		}
+	}
+	
+	.#{$rt-namespace}__toast--warning {
+		.toast-close-button {
+			color: $rt-color-warning;
+			margin: calculateRem(15px);
+		}
+	}
+}
+
+@media #{$rt-mobile} {
+    .#{$rt-namespace}__toast-container {
+		margin: 0;
+		top: auto;
+		left: auto;
+		padding: 0;
+		right: auto;
+		display: block !important;
+		width: calculateRem(368px);
+		bottom: calculateRem(15px);
+    }
+}
+

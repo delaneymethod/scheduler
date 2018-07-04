@@ -1,12 +1,21 @@
 import 'element-closest';
 import moment from 'moment';
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 import React, { Fragment, Component } from 'react';
 import { Popover, PopoverBody, PopoverHeader } from 'reactstrap';
 
 import Modal from './Modal';
 
 import ShiftForm from '../forms/ShiftForm';
+
+import constants from '../../helpers/constants';
+
+import CloseButton from '../common/CloseButton';
+
+import Notification from '../common/Notification';
+
+const notifications = constants.APP.NOTIFICATIONS;
 
 const propTypes = {
 	id: PropTypes.string.isRequired,
@@ -22,6 +31,8 @@ class ShiftPlacementDraggable extends Component {
 	constructor(props) {
 		super(props);
 
+		this.toastId = null;
+
 		this.state = this.getInitialState();
 
 		this.handleShiftMenu = this.handleShiftMenu.bind(this);
@@ -32,6 +43,7 @@ class ShiftPlacementDraggable extends Component {
 	}
 
 	getInitialState = () => ({
+		editMode: false,
 		isShiftModalOpen: false,
 		isShiftPopoverOpen: false,
 	});
@@ -44,7 +56,14 @@ class ShiftPlacementDraggable extends Component {
 
 	handleEditShift = () => this.setState({ editMode: true, isShiftModalOpen: !this.state.isShiftModalOpen });
 
-	handleSuccessNotification = message => console.log('handleSuccess - show success notification with message:', message);
+	handleSuccessNotification = (message) => {
+		if (!toast.isActive(this.toastId)) {
+			this.toastId = toast.success(<Notification icon="fa-check-circle" title="Success" message={message} />, {
+				closeButton: false,
+				autoClose: notifications.TIMEOUT,
+			});
+		}
+	};
 
 	render = () => (
 		<Fragment>
@@ -56,13 +75,13 @@ class ShiftPlacementDraggable extends Component {
 				<PopoverBody>
 					<div className="cell-popover">
 						<button type="button" title="Edit Shift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleEditShift}>Edit Shift</button>
-						<button type="button" title="Create Shift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleCreateShift}><i className="pr-2 fa fa-plus" aria-hidden="true"></i>Create Shift</button>
+						<button type="button" title="Create Shift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleCreateShift}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Create Shift</button>
 					</div>
 				</PopoverBody>
 			</Popover>
 			{(this.state.editMode) ? (
 				<Modal title="Shifts" className="modal-dialog" show={this.state.isShiftModalOpen} onClose={this.handleEditShift}>
-					<ShiftForm editMode={this.state.editMode} shiftId={this.props.shiftPlacement.shiftId} employeeId={this.props.shiftPlacement.employeeId} placementId={this.props.shiftPlacement.employeeId} startDate={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleEditShift} />
+					<ShiftForm editMode={true} shiftId={this.props.shiftPlacement.shiftId} employeeId={this.props.shiftPlacement.employeeId} placementId={this.props.shiftPlacement.employeeId} startDate={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleEditShift} />
 				</Modal>
 			) : (
 				<Modal title="Shifts" className="modal-dialog" show={this.state.isShiftModalOpen} onClose={this.handleCreateShift}>

@@ -13,6 +13,7 @@ const propTypes = {
 	handleChange: PropTypes.func.isRequired,
 	fieldRequired: PropTypes.bool.isRequired,
 	fieldTabIndex: PropTypes.number.isRequired,
+	fieldAutoComplete: PropTypes.string.isRequired,
 };
 
 const defaultProps = {
@@ -25,6 +26,7 @@ const defaultProps = {
 	fieldRequired: false,
 	fieldPlaceholder: '',
 	handleChange: () => {},
+	fieldAutoComplete: 'off',
 };
 
 const TextField = ({
@@ -37,10 +39,11 @@ const TextField = ({
 	fieldRequired,
 	fieldTabIndex,
 	fieldPlaceholder,
+	fieldAutoComplete,
 }) => (
 	<FormGroup>
 		<Label for={fieldName}>{fieldLabel} {(fieldRequired) ? (<span className="text-danger">&#42;</span>) : null}</Label>
-		<Input type="text" name={fieldName} id={fieldName} value={fieldValue} placeholder={fieldPlaceholder} tabIndex={fieldTabIndex} onChange={handleChange} onBlur={handleBlur} required={fieldRequired} />
+		<Input type="text" name={fieldName} id={fieldName} value={fieldValue} placeholder={fieldPlaceholder} tabIndex={fieldTabIndex} autoComplete={fieldAutoComplete} onChange={handleChange} onBlur={handleBlur} required={fieldRequired} />
 		<FieldFeedbacks for={fieldName} show="all">
 			<FieldFeedback when="valueMissing">- {valueMissing}</FieldFeedback>
 		</FieldFeedbacks>

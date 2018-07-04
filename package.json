@@ -107,6 +107,7 @@
 		"react-number-format": "^3.4.2",
 		"react-redux": "^5.0.7",
 		"react-router-dom": "^4.3.1",
+		"react-toastify": "^4.1.0",
 		"reactstrap": "^5.0.0",
 		"redux": "^3.7.2",
 		"redux-logger": "^3.0.6",

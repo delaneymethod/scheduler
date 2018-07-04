@@ -5,6 +5,7 @@ import jwtDecode from 'jwt-decode';
 import Orderable from 'sortablejs';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { toast } from 'react-toastify';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
 import { concat, isEmpty, includes, debounce } from 'lodash';
@@ -18,9 +19,13 @@ import Toolbar from '../../common/Toolbar';
 
 import ShiftForm from '../../forms/ShiftForm';
 
+import CloseButton from '../../common/CloseButton';
+
 import constants from '../../../helpers/constants';
 
 import EmployeeForm from '../../forms/EmployeeForm';
+
+import Notification from '../../common/Notification';
 
 import { addClass, removeClass } from '../../../helpers/classes';
 
@@ -39,6 +44,8 @@ import DraggableCellAddShiftButton from '../../common/DraggableCellAddShiftButto
 import NonDraggableCellShiftButton from '../../common/NonDraggableCellShiftButton';
 
 const routes = constants.APP.ROUTES;
+
+const notifications = constants.APP.NOTIFICATIONS;
 
 const propTypes = {
 	week: PropTypes.object.isRequired,
@@ -83,6 +90,8 @@ class Employees extends Component {
 
 		this.shift = null;
 
+		this.toastId = null;
+
 		/* this.oldDraggableCell = null; */
 
 		this.state = this.getInitialState();
@@ -115,6 +124,8 @@ class Employees extends Component {
 
 		this.handleUpdateShift = this.handleUpdateShift.bind(this);
 
+		this.handleEditEmployee = this.handleEditEmployee.bind(this);
+
 		this.handleSortEmployees = this.handleSortEmployees.bind(this);
 
 		this.handleSortDirection = this.handleSortDirection.bind(this);
@@ -142,6 +153,7 @@ class Employees extends Component {
 		error: {},
 		tableData: {},
 		employeeId: '',
+		editMode: false,
 		placementId: '',
 		employeeName: '',
 		startDate: moment(),
@@ -149,7 +161,7 @@ class Employees extends Component {
 		isShiftModalOpen: false,
 		isFilterPopoverOpen: false,
 		isSortByPopoverOpen: false,
-		isCreateEmployeeModalOpen: false,
+		isEmployeeModalOpen: false,
 		isUploadEmployeesModalOpen: false,
 	});
 
@@ -167,7 +179,7 @@ class Employees extends Component {
 		meta.author.setAttribute('content', constants.APP.AUTHOR);
 
 		/* We debounce this call to wait 100ms (we do not want the leading (or "immediate") flag passed because we want to wait until all the componentDidUpdate calls have finished before loading the table data again */
-		this.handleFetchData = debounce(this.handleFetchData.bind(this), 100);
+		this.handleFetchData = debounce(this.handleFetchData.bind(this), 10);
 
 		/* We debounce this call to wait 1300ms (we do not want the leading (or "immediate") flag passed because we want to wait the user has finished ordering all rows before saving the order */
 		this.handleUpdateEmployeeOrder = debounce(this.handleUpdateEmployeeOrder.bind(this), 1300);
@@ -250,15 +262,31 @@ class Employees extends Component {
 
 	handleFilter = () => this.setState({ isFilterPopoverOpen: !this.state.isFilterPopoverOpen });
 
-	handleInfoNotification = message => console.log('handleInfo - show info notification with message:', message);
+	handleInfoNotification = (message) => {
+		if (!toast.isActive(this.toastId)) {
+			this.toastId = toast.info(<Notification icon="fa-info-circle" title="Information" message={message} />, {
+				autoClose: false,
+				closeButton: <CloseButton />,
+			});
+		}
+	};
 
-	handleSuccessNotification = message => console.log('handleSuccess - show success notification with message:', message);
+	handleSuccessNotification = (message) => {
+		if (!toast.isActive(this.toastId)) {
+			this.toastId = toast.success(<Notification icon="fa-check-circle" title="Success" message={message} />, {
+				closeButton: false,
+				autoClose: notifications.TIMEOUT,
+			});
+		}
+	};
 
-	handleCreateEmployee = () => this.setState({ isCreateEmployeeModalOpen: !this.state.isCreateEmployeeModalOpen });
+	handleCreateEmployee = () => this.setState({ isEmployeeModalOpen: !this.state.isEmployeeModalOpen });
 
 	handleUploadEmployees = () => this.setState({ isUploadEmployeesModalOpen: !this.state.isUploadEmployeesModalOpen });
 
 	handleCreateShift = (event, employeeId, startDate) => this.setState({ startDate, employeeId, isShiftModalOpen: !this.state.isShiftModalOpen });
+
+	handleEditEmployee = (event, employeeId) => this.setState({ editMode: true, employeeId, isEmployeeModalOpen: !this.state.isEmployeeModalOpen });
 
 	handleFetchData = () => {
 		console.log('Called Employees handleFetchData');
@@ -655,7 +683,7 @@ class Employees extends Component {
 
 		/* Commented out due to non native drag and drop remove/append functionality below. See comments. */
 		/* Hide the shift in the current cell when the user has selected it and dragging... */
-		/* setTimeout(() => addClass(target, 'shift-invisible'), 0); */
+		setTimeout(() => addClass(target, 'shift-invisible'), 0);
 	};
 
 	handleDragEnd = (event) => {
@@ -801,10 +829,10 @@ class Employees extends Component {
 								<tbody id="tableBody">
 									{this.state.tableData.body.rows.length > 0 && this.state.tableData.body.rows.map((row, rowIndex) => (
 										<tr key={rowIndex} className="draggable-row" data-account-employee-id={row.accountEmployee.accountEmployeeId}>
-											<td className="p-2 align-top text-left drag-handler p-0 m-0">
+											<td className="p-2 align-top text-left drag-handler p-0 m-0" onClick={event => this.handleEditEmployee(event, row.accountEmployee.employee.employeeId)}>
 												<div className="d-flex align-items-center p-0 m-0">
 													<div className="d-inline-block p-0 mt-0 ml-0 mr-2 mb-0">
-														<Avatar email={row.accountEmployee.employee.email} round={true} size="51" cache={false} />
+														<Avatar name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="51" cache={true} />
 													</div>
 													<div className="d-inline-block pt-1 pl-0 pr-0 pb-0 m-0">
 														<div id="fullname">{row.accountEmployee.employee.firstName} {row.accountEmployee.employee.lastName}</div>
@@ -883,9 +911,15 @@ class Employees extends Component {
 				<Modal title="Shifts" className="modal-dialog" show={this.state.isShiftModalOpen} onClose={event => this.handleCreateShift(event, this.state.employeeId, moment(this.state.startDate).format('YYYY-MM-DD'))}>
 					<ShiftForm editMode={false} employeeId={this.state.employeeId} startDate={moment(this.state.startDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleCreateShift(event, this.state.employeeId, moment(this.state.startDate).format('YYYY-MM-DD'))} />
 				</Modal>
-				<Modal title="Employees" className="modal-dialog" show={this.state.isCreateEmployeeModalOpen} onClose={this.handleCreateEmployee}>
-					<EmployeeForm handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateEmployee} />
-				</Modal>
+				{(this.state.editMode) ? (
+					<Modal title="Employees" className="modal-dialog" show={this.state.isEmployeeModalOpen} onClose={this.handleEditEmployee}>
+						<EmployeeForm editMode={true} employeeId={this.state.employeeId} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleEditEmployee} />
+					</Modal>
+				) : (
+					<Modal title="Employees" className="modal-dialog" show={this.state.isEmployeeModalOpen} onClose={this.handleCreateEmployee}>
+						<EmployeeForm editMode={false} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateEmployee} />
+					</Modal>
+				)}
 				<Modal title="Employees" className="modal-dialog" show={this.state.isUploadEmployeesModalOpen} onClose={this.handleUploadEmployees}>
 					<UploadEmployeesForm handleInfoNotification={this.handleInfoNotification} handleClose={this.handleUploadEmployees} />
 				</Modal>

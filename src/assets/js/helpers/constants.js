@@ -131,9 +131,9 @@ export default {
 						KEYWORDS: '',
 					},
 				},
-				SHIFTS: {
-					TITLE: 'Shifts',
-					URI: '/dashboard/shifts',
+				ROLES: {
+					TITLE: 'Roles',
+					URI: '/dashboard/roles',
 					META: {
 						DESCRIPTION: '',
 						KEYWORDS: '',
@@ -148,6 +148,9 @@ export default {
 					},
 				},
 			},
+		},
+		NOTIFICATIONS: {
+			TIMEOUT: 3000,
 		},
 	},
 	API: {

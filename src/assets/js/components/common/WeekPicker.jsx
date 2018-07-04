@@ -1,7 +1,7 @@
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { sortBy, isEmpty } from 'lodash';
+import { orderBy, isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import DatePicker from 'react-datepicker';
 import { bindActionCreators } from 'redux';
@@ -110,10 +110,10 @@ class WeekPicker extends Component {
 
 		/* We have rotas but there are no rota for the current week! */
 		if (this.props.rotas.length > 0) {
-			const { rotas } = this.props;
-
 			/* Now sort the rotas and pick the first one so we can enable / disable the previous button. */
-			const earliestRota = sortBy(rotas, 'startDate').shift();
+			const rotas = orderBy(this.props.rotas, 'startDate', 'desc');
+
+			const earliestRota = rotas[0];
 
 			const earliestRotaStartDate = moment(earliestRota.startDate);
 

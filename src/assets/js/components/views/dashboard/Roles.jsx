@@ -33,7 +33,7 @@ const defaultProps = {
 	authenticated: false,
 };
 
-class Shifts extends Component {
+class Roles extends Component {
 	constructor(props) {
 		super(props);
 
@@ -58,12 +58,12 @@ class Shifts extends Component {
 			return;
 		}
 
-		document.title = `${constants.APP.TITLE}: ${routes.DASHBOARD.SHIFTS.TITLE} - ${routes.DASHBOARD.HOME.TITLE}`;
+		document.title = `${constants.APP.TITLE}: ${routes.DASHBOARD.ROLES.TITLE} - ${routes.DASHBOARD.HOME.TITLE}`;
 
 		const meta = document.getElementsByTagName('meta');
 
-		meta.description.setAttribute('content', routes.DASHBOARD.SHIFTS.META.DESCRIPTION);
-		meta.keywords.setAttribute('content', routes.DASHBOARD.SHIFTS.META.KEYWORDS);
+		meta.description.setAttribute('content', routes.DASHBOARD.ROLES.META.DESCRIPTION);
+		meta.keywords.setAttribute('content', routes.DASHBOARD.ROLES.META.KEYWORDS);
 		meta.author.setAttribute('content', constants.APP.AUTHOR);
 	};
 
@@ -74,9 +74,9 @@ class Shifts extends Component {
 	);
 }
 
-Shifts.propTypes = propTypes;
+Roles.propTypes = propTypes;
 
-Shifts.defaultProps = defaultProps;
+Roles.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
 	user: state.user,
@@ -91,4 +91,4 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = dispatch => ({});
 
-export default connect(mapStateToProps, mapDispatchToProps)(Shifts);
+export default connect(mapStateToProps, mapDispatchToProps)(Roles);

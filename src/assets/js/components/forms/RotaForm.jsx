@@ -2,8 +2,8 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { isEmpty, debounce } from 'lodash';
 import React, { Fragment, Component } from 'react';
-import { sortBy, isEmpty, debounce } from 'lodash';
 import { Row, Col, Label, Input, Button, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 
@@ -189,7 +189,7 @@ class RotaForm extends Component {
 															/* Close the modal */
 															this.props.handleClose();
 
-															const message = '<p>Rota created successfully</p>';
+															const message = '<p>Rota was created!</p>';
 
 															/* Pass a message back up the rabbit hole to the parent component */
 															this.props.handleSuccessNotification(message);
@@ -219,16 +219,22 @@ class RotaForm extends Component {
 			{this.errorMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 				<TextField fieldName="rotaName" fieldLabel="Rota Name" fieldValue={this.state.rotaName} fieldPlaceholder="e.g. Kitchen" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid rota name." fieldTabIndex={1} fieldRequired={true} />
-				<NumberField fieldName="budget" fieldLabel="Budget" fieldValue={this.state.budget} fieldPlaceholder="e.g. £2,000" handleChange={this.handleChangeBudget} handleBlur={this.handleBlur} valueMissing="Please provide a valid budget." fieldTabIndex={2} fieldRequired={true} />
-				<FormGroup>
-					<Label for="startDate">Select Start Date <span className="text-danger">&#42;</span></Label>
-					<Input type="select" name="startDate" id="startDate" className="custom-select custom-select-xl" value={this.state.startDate} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="3" required={true}>
-						{this.state.startDates.map((startDate, index) => <option key={index} value={moment(startDate).format('YYYY-MM-DD')} label={moment(startDate).format('dddd, Do MMMM YYYY')} />)}
-					</Input>
-					<FieldFeedbacks for="startDate" show="all">
-						<FieldFeedback when="*">- Please provide a valid start date.</FieldFeedback>
-					</FieldFeedbacks>
-				</FormGroup>
+				<Row>
+					<Col xs="12" sm="12" md="12" lg="6" xl="6">
+						<NumberField fieldName="budget" fieldLabel="Budget" fieldValue={this.state.budget} fieldPlaceholder="e.g. £2,000" handleChange={this.handleChangeBudget} handleBlur={this.handleBlur} valueMissing="Please provide a valid budget." fieldTabIndex={2} fieldRequired={true} />
+					</Col>
+					<Col xs="12" sm="12" md="12" lg="6" xl="6">
+						<FormGroup>
+							<Label for="startDate">Select Start Date <span className="text-danger">&#42;</span></Label>
+							<Input type="select" name="startDate" id="startDate" className="custom-select custom-select-xl" value={this.state.startDate} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="3" required={true}>
+								{this.state.startDates.map((startDate, index) => <option key={index} value={moment(startDate).format('YYYY-MM-DD')} label={moment(startDate).format('dddd, Do MMMM YYYY')} />)}
+							</Input>
+							<FieldFeedbacks for="startDate" show="all">
+								<FieldFeedback when="*">- Please provide a valid start date.</FieldFeedback>
+							</FieldFeedbacks>
+						</FormGroup>
+					</Col>
+				</Row>
 				{(this.props.editMode) ? (
 					<Button type="submit" color="primary" className="mt-4" title={routes.ROTAS.UPDATE.TITLE} tabIndex="4" block>{routes.ROTAS.UPDATE.TITLE}</Button>
 				) : (

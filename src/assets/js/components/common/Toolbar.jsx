@@ -1,7 +1,8 @@
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { sortBy, isEmpty } from 'lodash';
+import { toast } from 'react-toastify';
+import { orderBy, isEmpty } from 'lodash';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
 import { Col, Row, Popover, PopoverBody, PopoverHeader } from 'reactstrap';
@@ -14,6 +15,10 @@ import ShiftForm from '../forms/ShiftForm';
 
 import constants from '../../helpers/constants';
 
+import CloseButton from '../common/CloseButton';
+
+import Notification from '../common/Notification';
+
 import { switchWeek } from '../../actions/weekActions';
 
 import { getShifts } from '../../actions/shiftActions';
@@ -25,6 +30,8 @@ import { getRotaTypes, switchRotaType } from '../../actions/rotaTypeActions';
 const routes = constants.APP.ROUTES;
 
 const { STATUSES } = routes.ROTAS;
+
+const notifications = constants.APP.NOTIFICATIONS;
 
 const propTypes = {
 	rota: PropTypes.object.isRequired,
@@ -43,6 +50,8 @@ const defaultProps = {
 class Toolbar extends Component {
 	constructor(props) {
 		super(props);
+
+		this.toastId = null;
 
 		this.state = this.getInitialState();
 
@@ -86,7 +95,7 @@ class Toolbar extends Component {
 					console.log('Called Toolbar handleSwitchRotaType getRotas');
 					actions.getRotas(rotaType)
 						.then(() => {
-							const rotas = sortBy(this.props.rotas, 'startDate');
+							const rotas = orderBy(this.props.rotas, 'startDate', 'desc');
 
 							const rota = rotas[0];
 
@@ -159,13 +168,20 @@ class Toolbar extends Component {
 
 	handleRotaTypeMenu = () => this.setState({ isRotaTypeMenuPopoverOpen: !this.state.isRotaTypeMenuPopoverOpen });
 
-	handleSuccessNotification = message => console.log('handleSuccess - show success notification with message:', message);
+	handleSuccessNotification = (message) => {
+		if (!toast.isActive(this.toastId)) {
+			this.toastId = toast.success(<Notification icon="fa-check-circle" title="Success" message={message} />, {
+				closeButton: false,
+				autoClose: notifications.TIMEOUT,
+			});
+		}
+	};
 
 	render = () => (
 		<Fragment>
 			<Row>
 				<Col className="pt-3 pb-0 pt-sm-3 pb-ms-3 text-center text-sm-left" xs="12" sm="3" md="6" lg="6" xl="6">
-					<button type="button" className="btn btn-rotas-popover text-dark border-0 col-12 col-sm-auto" id="rotaTypeMenu" title="Toggle Rotas" aria-label="Toggle Rotas" onClick={this.handleRotaTypeMenu}>{this.props.rotaType.rotaTypeName}<i className="pl-2 fa fa-chevron-down" aria-hidden="true"></i></button>
+					<button type="button" className="btn btn-rotas-popover text-dark border-0 col-12 col-sm-auto" id="rotaTypeMenu" title="Toggle Rotas" aria-label="Toggle Rotas" onClick={this.handleRotaTypeMenu}>{this.props.rotaType.rotaTypeName}<i className="pl-2 fa fa-fw fa-chevron-down" aria-hidden="true"></i></button>
 					<Popover placement="bottom" isOpen={this.state.isRotaTypeMenuPopoverOpen} target="rotaTypeMenu" toggle={this.handleRotaTypeMenu}>
 						<PopoverBody>
 							<ul className="popover-menu">
@@ -176,7 +192,7 @@ class Toolbar extends Component {
 					</Popover>
 				</Col>
 				<Col className="pt-3 pb-3 pt-sm-3 pb-ms-3 text-center text-sm-right" xs="12" sm="9" md="6" lg="6" xl="6">
-					<button type="button" title="Create Shift" className="btn btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 border-0" onClick={this.handleCreateShift}><i className="pr-2 fa fa-plus" aria-hidden="true"></i>Create Shift</button>
+					<button type="button" title="Create Shift" className="btn btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 border-0" onClick={this.handleCreateShift}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Create Shift</button>
 					{(this.props.rota.status === STATUSES.DRAFT) ? (
 						<button type="button" title="Publish Rota" className="btn btn-nav btn-primary col-12 col-sm-auto pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 ml-sm-3 border-0" onClick={this.handlePublishRota}>Publish</button>
 					) : (

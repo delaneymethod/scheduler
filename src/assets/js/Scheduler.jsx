@@ -37,8 +37,6 @@ store.subscribe(throttle(() => {
 		authenticated,
 	} = store.getState();
 
-	saveState('week', week);
-
 	saveState('user', user);
 
 	saveState('roles', roles);
@@ -47,15 +45,17 @@ store.subscribe(throttle(() => {
 
 	saveState('authenticated', authenticated);
 
-	saveState('rota', (rotaTypes.length === 0 || rotas.length === 0) ? {} : rota);
-
 	saveState('rotas', (rotaTypes.length === 0) ? [] : rotas);
-
-	saveState('shifts', (rotaTypes.length === 0 || rotas.length === 0) ? [] : shifts);
 
 	saveState('rotaType', (rotaTypes.length === 0) ? {} : rotaType);
 
 	saveState('rotaTypes', (rotaTypes.length === 0) ? [] : rotaTypes);
+
+	saveState('rota', (rotaTypes.length === 0 || rotas.length === 0) ? {} : rota);
+
+	saveState('week', (rotaTypes.length === 0 || rotas.length === 0) ? {} : week);
+
+	saveState('shifts', (rotaTypes.length === 0 || rotas.length === 0) ? [] : shifts);
 }, 1000));
 
 ReactDOM.render(

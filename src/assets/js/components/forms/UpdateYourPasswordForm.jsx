@@ -39,8 +39,6 @@ class UpdateYourPasswordForm extends Component {
 		this.handleChange = this.handleChange.bind(this);
 
 		this.handleSubmit = this.handleSubmit.bind(this);
-
-		this.handleScrollToTop = this.handleScrollToTop.bind(this);
 	}
 
 	getInitialState = () => ({
@@ -93,11 +91,7 @@ class UpdateYourPasswordForm extends Component {
 			/* eslint-disable no-param-reassign */
 			console.log('Called UpdateYourPasswordForm handleSubmit updateYourPassword');
 			actions.updateYourPassword(payload)
-				.then(() => {
-					this.setState(Object.assign(this.getInitialState(), { emailSent: true }));
-
-					this.handleScrollToTop();
-				})
+				.then(() => this.setState(Object.assign(this.getInitialState(), { emailSent: true })))
 				.catch((error) => {
 					/* Set a more friendlier error message if its a 404 */
 					if (error.data.code === 404) {
@@ -108,18 +102,6 @@ class UpdateYourPasswordForm extends Component {
 				});
 			/* eslint-enable no-param-reassign */
 		}
-	};
-
-	handleScrollToTop = () => {
-		const scrollToTop = window.setInterval(() => {
-			const pos = window.pageYOffset;
-
-			if (pos > 0) {
-				window.scrollTo(0, pos - 20);
-			} else {
-				window.clearInterval(scrollToTop);
-			}
-		}, 16);
 	};
 
 	handleValidateFields = target => ((this.form && target) ? this.form.validateFields(target) : null);

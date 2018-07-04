@@ -114,3 +114,13 @@
 		color: #ffffff !important;
 	}
 }
+
+.btn-toggle-fields {
+	color: $dark;
+	background-color: #c8c8c8;
+	
+	&:hover {
+		color: $dark;
+		background-color: #b1b1b1;
+	}
+}

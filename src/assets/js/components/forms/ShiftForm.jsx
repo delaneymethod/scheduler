@@ -13,9 +13,9 @@ import confirm from '../../helpers/confirm';
 
 import constants from '../../helpers/constants';
 
-import InputSelectField from '../fields/InputSelectField';
-
 import { getRoles } from '../../actions/roleActions';
+
+import InputSelectField from '../fields/InputSelectField';
 
 import { createPlacement, updatePlacement } from '../../actions/placementActions';
 
@@ -185,7 +185,7 @@ class ShiftForm extends Component {
 		this.setState({ startDate, startDates });
 
 		/* If we are in edit mode, we basically need to overwrite most of the above except for the shift id, placement id, employee id */
-		if (this.props.editMode) {
+		if (this.props.editMode && !isEmpty(this.props.shiftId)) {
 			const shift = this.props.shifts.filter(data => data.shiftId === this.props.shiftId).shift();
 
 			/* Override role name */
@@ -249,9 +249,9 @@ class ShiftForm extends Component {
 	};
 
 	handleDelete = (event) => {
-		const shift = this.props.shifts.filter(data => data.shiftId === this.props.shiftId).shift();
+		const shift = this.props.shifts.filter(data => data.shiftId === this.state.shiftId).shift();
 
-		const accountEmployee = this.props.employees.filter(data => data.employee.employeeId === this.props.employeeId).shift();
+		const accountEmployee = this.props.employees.filter(data => data.employee.employeeId === this.state.employeeId).shift();
 
 		/* Check if the user wants to delete the shift */
 		let message = `<div class="text-center"><p>Please confirm that you wish to delete the Shift?</p><ul class="list-unstyled font-weight-bold"><li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li><li>Role: ${shift.role.roleName}</li><li>Date: ${moment(shift.startTime).utc().format('YYYY-MM-DD')}</li><li>Time: ${moment(shift.startTime).utc().format('HH:mm a')} - ${(shift.isClosingShift) ? 'Closing' : moment(shift.endTime).utc().format('HH:mm a')}</li></ul><p class="text-warning"><i class="pr-3 fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
@@ -277,7 +277,9 @@ class ShiftForm extends Component {
 		/* If the user has clicked the cancel button, we do nothing */
 		confirm(options)
 			.then((result) => {
-				const { actions, shiftId } = this.props;
+				const { actions } = this.props;
+
+				const { shiftId } = this.state;
 
 				const payload = {
 					shiftId,
@@ -289,13 +291,12 @@ class ShiftForm extends Component {
 						/* Close the modal */
 						this.props.handleClose(event, '', moment());
 
-						message = '<p>Shift deleted successfully</p>';
+						message = '<p>Shift was deleted!</p>';
 
 						/* Pass a message back up the rabbit hole to the parent component */
 						this.props.handleSuccessNotification(message);
-
-						this.handleGetShifts();
 					})
+					.then(() => this.handleGetShifts())
 					.catch(error => this.setState({ error }));
 			}, (result) => {
 				/* We do nothing */
@@ -332,7 +333,6 @@ class ShiftForm extends Component {
 			isClosingShift = (isClosingShift === 'true');
 
 			if (isClosingShift) {
-				console.log('h1');
 				endTime = `${startDate} 23:59:00`;
 			}
 
@@ -381,19 +381,19 @@ class ShiftForm extends Component {
 									/* Close the modal */
 									this.props.handleClose(event, '', moment());
 
-									const message = '<p>Shift updated successfully</p>';
+									const message = '<p>Shift was updated!</p>';
 
 									/* Pass a message back up the rabbit hole to the parent component */
 									this.props.handleSuccessNotification(message);
-
-									this.handleGetShifts();
 								})
+								/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+								.then(() => this.handleGetShifts())
 								.catch(error => this.setState({ error }));
 						} else {
 							/* Close the modal */
 							this.props.handleClose(event, '', moment());
 
-							const message = '<p>Shift updated successfully</p>';
+							const message = '<p>Shift was updated!</p>';
 
 							/* Pass a message back up the rabbit hole to the parent component */
 							this.props.handleSuccessNotification(message);
@@ -421,22 +421,23 @@ class ShiftForm extends Component {
 									/* Close the modal */
 									this.props.handleClose(event, '', moment());
 
-									const message = '<p>Shift created successfully</p>';
+									const message = '<p>Shift was created!</p>';
 
 									/* Pass a message back up the rabbit hole to the parent component */
 									this.props.handleSuccessNotification(message);
-
-									this.handleGetShifts();
 								})
+								.then(() => this.handleGetShifts())
 								.catch(error => this.setState({ error }));
 						} else {
 							/* Close the modal */
 							this.props.handleClose(event, '', moment());
 
-							const message = '<p>Shift created successfully</p>';
+							const message = '<p>Shift was created!</p>';
 
 							/* Pass a message back up the rabbit hole to the parent component */
 							this.props.handleSuccessNotification(message);
+
+							this.handleGetShifts();
 						}
 					})
 					/* The user can select or create a role so we need to get roles each time we update or create a shift */

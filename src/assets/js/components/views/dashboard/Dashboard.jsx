@@ -2,8 +2,9 @@ import moment from 'moment';
 import jwtDecode from 'jwt-decode';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { toast } from 'react-toastify';
 import { bindActionCreators } from 'redux';
-import { delay, sortBy, isEmpty } from 'lodash';
+import { delay, isEmpty, orderBy } from 'lodash';
 import React, { Fragment, Component } from 'react';
 
 import Modal from '../../common/Modal';
@@ -12,13 +13,19 @@ import Header from '../../common/Header';
 
 import RotaForm from '../../forms/RotaForm';
 
+import CloseButton from '../../common/CloseButton';
+
 import constants from '../../../helpers/constants';
+
+import Notification from '../../common/Notification';
 
 import { getRoles } from '../../../actions/roleActions';
 
 import { getShifts } from '../../../actions/shiftActions';
 
 import { saveState } from '../../../store/persistedState';
+
+import { switchWeek } from '../../../actions/weekActions';
 
 import { getEmployees } from '../../../actions/employeeActions';
 
@@ -27,6 +34,8 @@ import { getRotas, switchRota } from '../../../actions/rotaActions';
 import { getRotaTypes, switchRotaType } from '../../../actions/rotaTypeActions';
 
 const routes = constants.APP.ROUTES;
+
+const notifications = constants.APP.NOTIFICATIONS;
 
 const propTypes = {
 	rotas: PropTypes.array.isRequired,
@@ -66,6 +75,8 @@ class Dashboard extends Component {
 		if (!authenticated || tokenExpired) {
 			history.push(routes.LOGIN.URI);
 		}
+
+		this.toastId = null;
 
 		this.state = this.getInitialState();
 
@@ -140,17 +151,32 @@ class Dashboard extends Component {
 												if (!isEmpty(this.props.rotas)) {
 													/* Set the current rota */
 													/* We only want to get the first rota so we have some data by default */
-													const rotas = sortBy(this.props.rotas, 'startDate');
+													const rotas = orderBy(this.props.rotas, 'startDate', 'desc');
 
-													const rota = (!isEmpty(this.props.rota)) ? this.props.rota : rotas[0];
+													const rota = rotas[0];
 
 													console.log('Called Dashboard handleFetchData switchRota');
 													actions.switchRota(rota).then(() => {
-														console.log('Called Dashboard handleFetchData getShifts');
-														actions.getShifts(rota).catch((error) => {
-															this.setState({ error });
+														/* Then we use the rotas start date to set the current week start and end dates */
+														const weekStartDate = moment(rota.startDate).startOf('isoWeek');
 
-															this.handleModal();
+														const weekEndDate = moment(rota.startDate).endOf('isoWeek');
+
+														const payload = {
+															endDate: weekEndDate,
+															startDate: weekStartDate,
+														};
+
+														/* Set the current week */
+														console.log('Called Dashboard handleFetchData switchWeek');
+														actions.switchWeek(payload).then(() => {
+															/* Get shifts for current rota */
+															console.log('Called Dashboard handleFetchData getShifts');
+															actions.getShifts(rota).catch((error) => {
+																this.setState({ error });
+
+																this.handleModal();
+															});
 														});
 													});
 												}
@@ -188,7 +214,14 @@ class Dashboard extends Component {
 
 	handleCreateRota = () => this.setState({ isRotaModalOpen: !this.state.isRotaModalOpen });
 
-	handleSuccessNotification = message => console.log('handleSuccess - show success notification with message:', message);
+	handleSuccessNotification = (message) => {
+		if (!toast.isActive(this.toastId)) {
+			this.toastId = toast.success(<Notification icon="fa-check-circle" title="Success" message={message} />, {
+				closeButton: false,
+				autoClose: notifications.TIMEOUT,
+			});
+		}
+	};
 
 	render = () => (
 		<Fragment>
@@ -224,6 +257,7 @@ const mapDispatchToProps = dispatch => ({
 		getRotas,
 		getRoles,
 		getShifts,
+		switchWeek,
 		switchRota,
 		getRotaTypes,
 		getEmployees,

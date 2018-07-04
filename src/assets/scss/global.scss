@@ -8,6 +8,8 @@
 
 @import '~react-datepicker/src/stylesheets/datepicker';
 
+@import '~react-toastify/scss/main';
+
 @import 'core';
 
 @import 'fonts';
@@ -25,6 +27,8 @@
 @import 'elements/popovers';
 
 @import 'elements/tables';
+
+@import 'elements/toasts';
 
 @import 'elements/modal';
 
