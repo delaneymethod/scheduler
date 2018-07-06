@@ -170,9 +170,8 @@ class Toolbar extends Component {
 					console.log('Called Toolbar handleSwitchRotaType getRotas');
 					actions.getRotas(rotaType)
 						.then(() => {
-							const rotas = orderBy(this.props.rotas, 'startDate', 'desc');
-
-							const rota = rotas[0];
+							/* We only want to get the rota matching the current week so we have some data by default */
+							const rota = this.props.rotas.filter(data => moment(data.startDate).format('YYYY-MM-DD') === moment(this.props.week.startDate).format('YYYY-MM-DD')).shift();
 
 							console.log('Called Toolbar handleSwitchRotaType switchRota');
 							actions.switchRota(rota).then(() => {
