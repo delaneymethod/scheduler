@@ -56,11 +56,11 @@ header {
 	}
 
 	.week-toggle {
-		// font-size: 0.75rem;
 		border-radius: $border-radius;
 		background-color: $body-color-light;
 		
 		.btn-toggle {
+			font-size: 0.80rem;
 			background-color: transparent;
 			line-height: calculateRem(44px);
 	

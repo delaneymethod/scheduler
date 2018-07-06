@@ -19,6 +19,8 @@ import CloseButton from '../common/CloseButton';
 
 import Notification from '../common/Notification';
 
+import AssignShiftForm from '../forms/AssignShiftForm';
+
 import { switchWeek } from '../../actions/weekActions';
 
 import { getShifts } from '../../actions/shiftActions';
@@ -31,18 +33,24 @@ const routes = constants.APP.ROUTES;
 
 const { STATUSES } = routes.ROTAS;
 
+const dashboard = routes.DASHBOARD;
+
 const notifications = constants.APP.NOTIFICATIONS;
 
 const propTypes = {
+	week: PropTypes.object.isRequired,
 	rota: PropTypes.object.isRequired,
 	rotas: PropTypes.array.isRequired,
+	shifts: PropTypes.array.isRequired,
 	rotaType: PropTypes.object.isRequired,
 	rotaTypes: PropTypes.array.isRequired,
 };
 
 const defaultProps = {
+	week: {},
 	rota: {},
 	rotas: [],
+	shifts: [],
 	rotaType: {},
 	rotaTypes: [],
 };
@@ -61,6 +69,8 @@ class Toolbar extends Component {
 
 		this.handleCreateShift = this.handleCreateShift.bind(this);
 
+		this.handleAssignShift = this.handleAssignShift.bind(this);
+
 		this.handlePublishRota = this.handlePublishRota.bind(this);
 
 		this.handleRotaTypeMenu = this.handleRotaTypeMenu.bind(this);
@@ -68,15 +78,80 @@ class Toolbar extends Component {
 		this.handleSwitchRotaType = this.handleSwitchRotaType.bind(this);
 
 		this.handleSuccessNotification = this.handleSuccessNotification.bind(this);
+
+		this.handleSwitchFromAssignShiftToCreateShift = this.handleSwitchFromAssignShiftToCreateShift.bind(this);
 	}
 
 	getInitialState = () => ({
 		error: {},
+		startDate: '',
+		rolesIsActive: false,
 		isRotaModalOpen: false,
-		isErrorModalOpen: false,
 		isShiftModalOpen: false,
+		isErrorModalOpen: false,
+		overviewIsActive: false,
+		employeesIsActive: false,
+		enableShiftButton: false,
+		isAssignShiftModalOpen: false,
+		hasRotaUnassignedShifts: false,
 		isRotaTypeMenuPopoverOpen: false,
 	});
+
+	componentDidMount = () => {
+		const { pathname } = this.props.history.location;
+
+		this.setState({
+			rolesIsActive: (pathname === dashboard.ROLES.URI),
+			overviewIsActive: (pathname === dashboard.OVERVIEW.URI),
+			employeesIsActive: (pathname === dashboard.EMPLOYEES.URI),
+		});
+	};
+
+	componentDidUpdate = (prevProps, prevState) => {
+		if (isEmpty(this.props.week)) {
+			return;
+		}
+
+		/* If the current week/rota or shifts have changes, re/check the shift button state and update label to reflect available actions */
+		if (prevProps.week !== this.props.week || prevProps.shifts !== this.props.shifts || prevProps.rota !== this.props.rota) {
+			const currentStartDate = moment().startOf('isoWeek').format('YYYY-MM-DD');
+
+			const weekStartDate = moment(this.props.week.startDate).format('YYYY-MM-DD');
+
+			const rotaStartDate = moment(this.props.rota.startDate).format('YYYY-MM-DD');
+
+			/* By default hide the shift button */
+			let enableShiftButton = false;
+
+			/* By default if no unassigned shifts, show the create shift button */
+			let hasUnassignedShifts = false;
+
+			/* Enable the shift button if the current week start date is equal to the current rota start date */
+			if (weekStartDate === rotaStartDate) {
+				enableShiftButton = true;
+			}
+
+			/* Loop over all shifts and get the unassigned ones */
+			let unassignedShifts = this.props.shifts.filter(data => (data.placements === null || data.placements.length === 0));
+
+			/* Filter all unassigned shifts and return those that have not yet pasted. E.g if date was 6th July and an unassigned shifts start date was 5th July, it would not be returned... */
+			unassignedShifts = unassignedShifts.filter(data => moment(data.startTime).isSameOrAfter(moment().format('YYYY-MM-DD')));
+
+			/* If we have unassigned shifts, show the assign shift button */
+			if (unassignedShifts.length > 0) {
+				hasUnassignedShifts = true;
+			}
+
+			/* However if the current rota/week start date is not in the current week e.g today/this week (not the week that the user is viewing) then disabled the shift button again (we also change the label to reflect the approiate action, although this doesnt really matter TBH as button is disabled) */
+			if (moment(weekStartDate).isBefore(moment(currentStartDate))) {
+				enableShiftButton = false;
+
+				hasUnassignedShifts = false;
+			}
+
+			this.setState({ enableShiftButton, hasUnassignedShifts });
+		}
+	};
 
 	handleSwitchRotaType = (event) => {
 		const { actions } = this.props;
@@ -164,9 +239,13 @@ class Toolbar extends Component {
 
 	handleCreateRota = () => this.setState({ isRotaModalOpen: !this.state.isRotaModalOpen });
 
-	handleCreateShift = () => this.setState({ isShiftModalOpen: !this.state.isShiftModalOpen });
+	handleCreateShift = (event, startDate) => this.setState({ startDate, isShiftModalOpen: !this.state.isShiftModalOpen });
+
+	handleAssignShift = (event, startDate) => this.setState({ startDate, isAssignShiftModalOpen: !this.state.isAssignShiftModalOpen });
 
 	handleRotaTypeMenu = () => this.setState({ isRotaTypeMenuPopoverOpen: !this.state.isRotaTypeMenuPopoverOpen });
+
+	handleSwitchFromAssignShiftToCreateShift = () => this.setState({ isShiftModalOpen: true, isAssignShiftModalOpen: false });
 
 	handleSuccessNotification = (message) => {
 		if (!toast.isActive(this.toastId)) {
@@ -192,7 +271,17 @@ class Toolbar extends Component {
 					</Popover>
 				</Col>
 				<Col className="pt-3 pb-3 pt-sm-3 pb-ms-3 text-center text-sm-right" xs="12" sm="9" md="6" lg="6" xl="6">
-					<button type="button" title="Create Shift" className="btn btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 border-0" onClick={this.handleCreateShift}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Create Shift</button>
+					{(this.state.employeesIsActive || this.state.overviewIsActive) ? (
+						<Fragment>
+							{(this.state.hasUnassignedShifts) ? (
+								<button type="button" title="Assign Shift" className="btn btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 border-0" disabled={!this.state.enableShiftButton} onClick={event => this.handleAssignShift(event, '')}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Assign Shift</button>
+							) : (
+								<button type="button" title="Create Shift" className="btn btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 border-0" disabled={!this.state.enableShiftButton} onClick={event => this.handleCreateShift(event, moment().format('YYYY-MM-DD'))}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Create Shift</button>
+							)}
+						</Fragment>
+					) : (
+						<button type="button" title="Create Shift" className="btn btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 border-0" disabled={!this.state.enableShiftButton} onClick={this.handleCreateShift}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Create Shift</button>
+					)}
 					{(this.props.rota.status === STATUSES.DRAFT) ? (
 						<button type="button" title="Publish Rota" className="btn btn-nav btn-primary col-12 col-sm-auto pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 ml-sm-3 border-0" onClick={this.handlePublishRota}>Publish</button>
 					) : (
@@ -200,11 +289,14 @@ class Toolbar extends Component {
 					)}
 				</Col>
 			</Row>
-			<Modal title="Rotas" className="modal-dialog" show={this.state.isRotaModalOpen} onClose={this.handleCreateRota}>
+			<Modal title="Create Rota" className="modal-dialog" show={this.state.isRotaModalOpen} onClose={this.handleCreateRota}>
 				<RotaForm handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateRota} />
 			</Modal>
-			<Modal title="Shifts" className="modal-dialog" show={this.state.isShiftModalOpen} onClose={this.handleCreateShift}>
-				<ShiftForm startDate={moment().format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateShift} />
+			<Modal title="Create Shift" className="modal-dialog" show={this.state.isShiftModalOpen} onClose={event => this.handleCreateShift(event, this.state.startDate)}>
+				<ShiftForm startDate={this.state.startDate} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleCreateShift(event, this.state.startDate)} />
+			</Modal>
+			<Modal title="Assign Shift" className="modal-dialog" show={this.state.isAssignShiftModalOpen} onClose={event => this.handleAssignShift(event, this.state.startDate)}>
+				<AssignShiftForm startDate={this.state.startDate} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleAssignShift(event, this.state.startDate)} handleSwitchFromAssignShiftToCreateShift={this.handleSwitchFromAssignShiftToCreateShift} />
 			</Modal>
 			{(this.state.error.data) ? (
 				<Modal title={this.state.error.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isErrorModalOpen} onClose={this.handleModal}>
@@ -220,8 +312,10 @@ Toolbar.propTypes = propTypes;
 Toolbar.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
+	week: state.week,
 	rota: state.rota,
 	rotas: state.rotas,
+	shifts: state.shifts,
 	rotaType: state.rotaType,
 	rotaTypes: state.rotaTypes,
 });

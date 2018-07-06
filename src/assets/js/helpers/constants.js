@@ -51,6 +51,9 @@ export default {
 				CREATE: {
 					TITLE: 'Create Shift',
 				},
+				ASSIGN: {
+					TITLE: 'Assign Shift',
+				},
 			},
 			ROTAS: {
 				DELETE: {

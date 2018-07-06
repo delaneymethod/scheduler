@@ -45,8 +45,9 @@ class UpdateYourPasswordForm extends Component {
 		error: {},
 		token: '',
 		email: '',
-		newPassword: '',
+		password: '',
 		emailSent: false,
+		confirmPassword: '',
 	});
 
 	componentDidMount = () => {
@@ -80,12 +81,12 @@ class UpdateYourPasswordForm extends Component {
 		await this.form.validateFields();
 
 		if (this.form.isValid()) {
-			const { email, token, newPassword } = this.state;
+			const { email, token, password } = this.state;
 
 			const payload = {
 				email,
 				token,
-				newPassword,
+				password,
 			};
 
 			/* eslint-disable no-param-reassign */
@@ -116,7 +117,8 @@ class UpdateYourPasswordForm extends Component {
 			{this.successMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 				<EmailField fieldValue={this.state.email} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={1} fieldRequired={true} />
-				<PasswordField fieldLabel="Password" fieldName="newPassword" fieldValue={this.state.newPassword} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={2} showPasswordStrength showPasswordCommon fieldRequired={true} />
+				<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={2} showPasswordStrength showPasswordCommon fieldRequired={true} />
+				<PasswordField fieldLabel="Confirm Password" fieldName="confirmPassword" fieldValue={this.state.confirmPassword} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={3} fieldRequired={true} />
 				<Button type="submit" color="primary" className="mt-4" title={routes.UPDATE_YOUR_PASSWORD.TITLE} tabIndex="3" disabled={this.state.emailSent} block>{routes.UPDATE_YOUR_PASSWORD.TITLE}</Button>
 			</FormWithConstraints>
 		</Fragment>

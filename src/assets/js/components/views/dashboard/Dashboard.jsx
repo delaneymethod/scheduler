@@ -38,6 +38,7 @@ const routes = constants.APP.ROUTES;
 const notifications = constants.APP.NOTIFICATIONS;
 
 const propTypes = {
+	week: PropTypes.object.isRequired,
 	rotas: PropTypes.array.isRequired,
 	roles: PropTypes.array.isRequired,
 	user: PropTypes.object.isRequired,
@@ -48,6 +49,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+	week: {},
 	user: {},
 	rotas: [],
 	roles: [],
@@ -149,15 +151,12 @@ class Dashboard extends Component {
 
 												/* We only want to get the first rotas shifts too, sorted based on start date, again so we have some data by default */
 												if (!isEmpty(this.props.rotas)) {
-													/* Set the current rota */
-													/* We only want to get the first rota so we have some data by default */
-													const rotas = orderBy(this.props.rotas, 'startDate', 'desc');
-
-													const rota = rotas[0];
+													/* We only want to get the rota matching the current week so we have some data by default */
+													const rota = this.props.rotas.filter(data => moment(data.startDate).format('YYYY-MM-DD') === moment(this.props.week.startDate).format('YYYY-MM-DD')).shift();
 
 													console.log('Called Dashboard handleFetchData switchRota');
 													actions.switchRota(rota).then(() => {
-														/* Then we use the rotas start date to set the current week start and end dates */
+														/* Then we use the current week/rota start date to set the current week start and end dates */
 														const weekStartDate = moment(rota.startDate).startOf('isoWeek');
 
 														const weekEndDate = moment(rota.startDate).endOf('isoWeek');
@@ -243,6 +242,7 @@ Dashboard.propTypes = propTypes;
 Dashboard.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
+	week: state.week,
 	user: state.user,
 	rotas: state.rotas,
 	roles: state.roles,

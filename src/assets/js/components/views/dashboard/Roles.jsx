@@ -7,6 +7,8 @@ import React, { Fragment, Component } from 'react';
 
 import Header from '../../common/Header';
 
+import Toolbar from '../../common/Toolbar';
+
 import constants from '../../../helpers/constants';
 
 const routes = constants.APP.ROUTES;
@@ -70,6 +72,7 @@ class Roles extends Component {
 	render = () => (
 		<Fragment>
 			<Header history={this.props.history} />
+			<Toolbar history={this.props.history} />
 		</Fragment>
 	);
 }

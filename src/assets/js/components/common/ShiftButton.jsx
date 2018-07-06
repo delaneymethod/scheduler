@@ -27,7 +27,7 @@ const defaultProps = {
 	shiftPlacement: {},
 };
 
-class ShiftPlacementDraggable extends Component {
+class ShiftPlacement extends Component {
 	constructor(props) {
 		super(props);
 
@@ -69,7 +69,7 @@ class ShiftPlacementDraggable extends Component {
 		<Fragment>
 			<button className="p-2 mb-2 d-block text-left shift" draggable="true" id={this.props.id} data-shift-id={this.props.shiftPlacement.shiftId} data-placement-id={this.props.shiftPlacement.placementId} title="Click to toggle Shift options" aria-label="Click to toggle Shift options" onClick={this.handleShiftMenu}>
 				<div className="shift__data-row d-block w-100"><strong>{this.props.shiftPlacement.roleName}</strong> {(!this.props.shiftPlacement.isClosingShift) ? `(${this.props.shiftPlacement.hours} hrs)` : null}</div>
-				<div className="shift__data-row d-block w-100">{moment(this.props.shiftPlacement.startTime).utc().format('HH:mm a')} - {(this.props.shiftPlacement.isClosingShift) ? 'Closing' : moment(this.props.shiftPlacement.endTime).utc().format('HH:mm a')}</div>
+				<div className="shift__data-row d-block w-100">{moment(this.props.shiftPlacement.startTime).format('HH:mm a')} - {(this.props.shiftPlacement.isClosingShift) ? 'Closing' : moment(this.props.shiftPlacement.endTime).format('HH:mm a')}</div>
 			</button>
 			<Popover placement="right" isOpen={this.state.isShiftPopoverOpen} target={this.props.id} toggle={this.handleShiftMenu}>
 				<PopoverBody>
@@ -80,11 +80,11 @@ class ShiftPlacementDraggable extends Component {
 				</PopoverBody>
 			</Popover>
 			{(this.state.editMode) ? (
-				<Modal title="Shifts" className="modal-dialog" show={this.state.isShiftModalOpen} onClose={this.handleEditShift}>
+				<Modal title="Edit Shift" className="modal-dialog" show={this.state.isShiftModalOpen} onClose={this.handleEditShift}>
 					<ShiftForm editMode={true} shiftId={this.props.shiftPlacement.shiftId} employeeId={this.props.shiftPlacement.employeeId} placementId={this.props.shiftPlacement.employeeId} startDate={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleEditShift} />
 				</Modal>
 			) : (
-				<Modal title="Shifts" className="modal-dialog" show={this.state.isShiftModalOpen} onClose={this.handleCreateShift}>
+				<Modal title="Create Shift" className="modal-dialog" show={this.state.isShiftModalOpen} onClose={this.handleCreateShift}>
 					<ShiftForm editMode={false} employeeId={this.props.shiftPlacement.employeeId} startDate={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateShift} />
 				</Modal>
 			)}
@@ -92,8 +92,8 @@ class ShiftPlacementDraggable extends Component {
 	);
 }
 
-ShiftPlacementDraggable.propTypes = propTypes;
+ShiftPlacement.propTypes = propTypes;
 
-ShiftPlacementDraggable.defaultProps = defaultProps;
+ShiftPlacement.defaultProps = defaultProps;
 
-export default ShiftPlacementDraggable;
+export default ShiftPlacement;

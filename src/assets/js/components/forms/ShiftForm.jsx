@@ -27,7 +27,6 @@ const propTypes = {
 	editMode: PropTypes.bool,
 	shiftId: PropTypes.string,
 	startDate: PropTypes.string,
-	handleClose: PropTypes.func,
 	employeeId: PropTypes.string,
 	placementId: PropTypes.string,
 	week: PropTypes.object.isRequired,
@@ -35,7 +34,8 @@ const propTypes = {
 	roles: PropTypes.array.isRequired,
 	shifts: PropTypes.array.isRequired,
 	employees: PropTypes.array.isRequired,
-	handleSuccessNotification: PropTypes.func,
+	handleClose: PropTypes.func.isRequired,
+	handleSuccessNotification: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -193,12 +193,12 @@ class ShiftForm extends Component {
 
 			const { isClosingShift, numberOfPositions } = shift;
 
-			endTime = moment(shift.endTime).utc().format('HH:mm A');
+			endTime = moment(shift.endTime).format('HH:mm A');
 
-			startTime = moment(shift.startTime).utc().format('HH:mm A');
+			startTime = moment(shift.startTime).format('HH:mm A');
 
 			/* We already have the start date passed in as a prop, but lets set it again, just to be safe */
-			startDate = moment(shift.startTime).utc().format('YYYY-MM-DD');
+			startDate = moment(shift.startTime).format('YYYY-MM-DD');
 
 			/* Update the state with all the edit shift details */
 			this.setState({
@@ -254,7 +254,7 @@ class ShiftForm extends Component {
 		const accountEmployee = this.props.employees.filter(data => data.employee.employeeId === this.state.employeeId).shift();
 
 		/* Check if the user wants to delete the shift */
-		let message = `<div class="text-center"><p>Please confirm that you wish to delete the Shift?</p><ul class="list-unstyled font-weight-bold"><li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li><li>Role: ${shift.role.roleName}</li><li>Date: ${moment(shift.startTime).utc().format('YYYY-MM-DD')}</li><li>Time: ${moment(shift.startTime).utc().format('HH:mm a')} - ${(shift.isClosingShift) ? 'Closing' : moment(shift.endTime).utc().format('HH:mm a')}</li></ul><p class="text-warning"><i class="pr-3 fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
+		let message = `<div class="text-center"><p>Please confirm that you wish to delete the Shift?</p><ul class="list-unstyled font-weight-bold"><li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li><li>Role: ${shift.role.roleName}</li><li>Date: ${moment(shift.startTime).format('YYYY-MM-DD')}</li><li>Time: ${moment(shift.startTime).format('HH:mm a')} - ${(shift.isClosingShift) ? 'Closing' : moment(shift.endTime).format('HH:mm a')}</li></ul><p class="text-warning"><i class="pr-3 fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
 
 		const options = {
 			message,
@@ -269,8 +269,8 @@ class ShiftForm extends Component {
 			colors: {
 				proceed: 'danger',
 			},
-			title: 'Shifts',
-			className: 'modal-dialog',
+			title: 'Delete Shift',
+			className: 'modal-dialog-warning',
 		};
 
 		/* If the user has clicked the proceed button, we delete the shift */
@@ -456,12 +456,12 @@ class ShiftForm extends Component {
 			{this.errorMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 				<FormGroup>
-					<Label for="startDate">Select Date <span className="text-danger">&#42;</span></Label>
+					<Label for="startDate">Date <span className="text-danger">&#42;</span></Label>
 					<Input type="select" name="startDate" id="startDate" className="custom-select custom-select-xl" value={this.state.startDate} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="1" required={true}>
 						{this.state.startDates.map((startDate, index) => <option key={index} value={moment(startDate).format('YYYY-MM-DD')} label={moment(startDate).format('dddd, Do MMMM YYYY')} />)}
 					</Input>
 					<FieldFeedbacks for="startDate" show="all">
-						<FieldFeedback when="*">- Please provide a valid start date.</FieldFeedback>
+						<FieldFeedback when="*">- Please select a start date.</FieldFeedback>
 					</FieldFeedbacks>
 				</FormGroup>
 				<InputSelectField fieldName="roleName" fieldLabel="Role Name" fieldValue={this.state.roleName} fieldPlaceholder="e.g Manager" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid role name." fieldTabIndex={2} fieldRequired={true} fieldToggleButtonLabel="Role" fieldOptions={this.props.roles} />

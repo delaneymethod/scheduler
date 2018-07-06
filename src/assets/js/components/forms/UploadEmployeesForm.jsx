@@ -16,8 +16,8 @@ import { getEmployees, uploadEmployees } from '../../actions/employeeActions';
 const routes = constants.APP.ROUTES;
 
 const propTypes = {
-	handleClose: PropTypes.func,
-	handleInfoNoification: PropTypes.func,
+	handleClose: PropTypes.func.isRequired,
+	handleInfoNoification: PropTypes.func.isRequired,
 };
 
 const defaultProps = {

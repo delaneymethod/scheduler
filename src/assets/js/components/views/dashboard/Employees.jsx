@@ -19,6 +19,8 @@ import Toolbar from '../../common/Toolbar';
 
 import ShiftForm from '../../forms/ShiftForm';
 
+import ShiftButton from '../../common/ShiftButton';
+
 import CloseButton from '../../common/CloseButton';
 
 import constants from '../../../helpers/constants';
@@ -26,6 +28,12 @@ import constants from '../../../helpers/constants';
 import EmployeeForm from '../../forms/EmployeeForm';
 
 import Notification from '../../common/Notification';
+
+import AssignShiftForm from '../../forms/AssignShiftForm';
+
+import CreateShiftButton from '../../common/CreateShiftButton';
+
+import AssignShiftButton from '../../common/AssignShiftButton';
 
 import { addClass, removeClass } from '../../../helpers/classes';
 
@@ -35,13 +43,7 @@ import { updatePlacement } from '../../../actions/placementActions';
 
 import { getShifts, updateShift } from '../../../actions/shiftActions';
 
-import DraggableCellShiftButton from '../../common/DraggableCellShiftButton';
-
 import { getEmployees, orderEmployees } from '../../../actions/employeeActions';
-
-import DraggableCellAddShiftButton from '../../common/DraggableCellAddShiftButton';
-
-import NonDraggableCellShiftButton from '../../common/NonDraggableCellShiftButton';
 
 const routes = constants.APP.ROUTES;
 
@@ -122,6 +124,8 @@ class Employees extends Component {
 
 		this.handleCreateShift = this.handleCreateShift.bind(this);
 
+		this.handleAssignShift = this.handleAssignShift.bind(this);
+
 		this.handleUpdateShift = this.handleUpdateShift.bind(this);
 
 		this.handleEditEmployee = this.handleEditEmployee.bind(this);
@@ -143,6 +147,8 @@ class Employees extends Component {
 		this.handleSuccessNotification = this.handleSuccessNotification.bind(this);
 
 		this.handleUpdateEmployeeOrder = this.handleUpdateEmployeeOrder.bind(this);
+
+		this.handleSwitchFromAssignShiftToCreateShift = this.handleSwitchFromAssignShiftToCreateShift.bind(this);
 	}
 
 	getInitialState = () => ({
@@ -162,6 +168,7 @@ class Employees extends Component {
 		isFilterPopoverOpen: false,
 		isSortByPopoverOpen: false,
 		isEmployeeModalOpen: false,
+		isAssignShiftModalOpen: false,
 		isUploadEmployeesModalOpen: false,
 	});
 
@@ -284,6 +291,8 @@ class Employees extends Component {
 
 	handleUploadEmployees = () => this.setState({ isUploadEmployeesModalOpen: !this.state.isUploadEmployeesModalOpen });
 
+	handleAssignShift = (event, employeeId, startDate) => this.setState({ startDate, employeeId, isAssignShiftModalOpen: !this.state.isAssignShiftModalOpen });
+
 	handleCreateShift = (event, employeeId, startDate) => this.setState({ startDate, employeeId, isShiftModalOpen: !this.state.isShiftModalOpen });
 
 	handleEditEmployee = (event, employeeId) => this.setState({ editMode: true, employeeId, isEmployeeModalOpen: !this.state.isEmployeeModalOpen });
@@ -319,10 +328,15 @@ class Employees extends Component {
 
 		/* Loop over each day in the week and build our table header and footer data */
 		weekDates.forEach((weekDate) => {
-			/* FIXME - Hook up */
+			/* Loop over all the shifts and get current date shifts */
+			const shifts = this.props.shifts.filter(data => moment(data.startTime).format('YYYY-MM-DD') === moment(weekDate).format('YYYY-MM-DD'));
+
+			/* Loop over all shifts for current date and total up the number of positions available */
+			const total = shifts.map(data => data.numberOfPositions).reduce((prev, next) => prev + next, 0);
+
 			tableData.header.columns.push({
 				count: 0,
-				total: 0,
+				total,
 				weekDate,
 				placementStatus: 'todo',
 			});
@@ -345,7 +359,7 @@ class Employees extends Component {
 		});
 
 		/* Loop over each employee and build our table body data */
-		employees.forEach((accountEmployee) => {
+		employees.forEach((accountEmployee, accountEmployeeIndex) => {
 			/* Each row holds employee info */
 			const row = {};
 
@@ -424,8 +438,10 @@ class Employees extends Component {
 							/* Add shift/placement column */
 							shiftsPlacements.push(shiftPlacement);
 
-							/* This is where we total up the total cost, hours and shifts per row/employee and assign to the current date to finish our footer info. */
+							/* This is where we total up the count of placements filled for our header info */
+							tableData.header.columns[weekDateIndex].count = parseInt(tableData.header.columns[weekDateIndex].count, 10) + 1;
 
+							/* This is where we total up the total cost, hours and shifts per row/employee and assign to the current date to finish our footer info. */
 							tableData.footer.columns[weekDateIndex].shifts = parseInt(tableData.footer.columns[weekDateIndex].shifts, 10) + 1;
 
 							tableData.footer.columns[weekDateIndex].cost = parseFloat(tableData.footer.columns[weekDateIndex].cost) + parseFloat(cost);
@@ -442,15 +458,34 @@ class Employees extends Component {
 					}
 				});
 
+				const today = moment(weekDate).isSame(moment(), 'day');
+
 				/* If the current week date value is in the past, e.g. today is Wednesday but the week date is Monday, we dont want users being able to drag shifts in to Monday. */
 				const draggable = moment(weekDate).isBefore(moment(), 'day');
 
+				if (tableData.header.columns[weekDateIndex].count === 0) {
+					tableData.header.columns[weekDateIndex].placementStatus = 'todo';
+				} else if (tableData.header.columns[weekDateIndex].count > 0 && tableData.header.columns[weekDateIndex].count < tableData.header.columns[weekDateIndex].total) {
+					tableData.header.columns[weekDateIndex].placementStatus = 'doing';
+				} else {
+					tableData.header.columns[weekDateIndex].placementStatus = 'done';
+				}
+
+				tableData.header.columns[weekDateIndex].today = today;
+
+				tableData.header.columns[weekDateIndex].draggable = draggable;
+
+				/* Loop over all shifts and get the unassigned ones for current week date */
+				const unassignedShifts = this.props.shifts.filter(data => (moment(data.startTime).format('YYYY-MM-DD') === moment(weekDate).format('YYYY-MM-DD')) && (data.placements === null || data.placements.length === 0));
+
 				/* This is our column structure so we can drag and drop */
 				row.columns.push({
+					today,
 					weekDate,
 					draggable,
 					accountEmployee,
 					shiftsPlacements,
+					unassignedShifts,
 				});
 			});
 
@@ -578,9 +613,9 @@ class Employees extends Component {
 		} = shift;
 
 		/* We need to make sure our new start and end values are in the correct format like 2018-06-05 18:50:00 and in UTC */
-		endTime = `${date} ${moment(endTime).utc().format('HH:mm:ss')}`;
+		endTime = `${date} ${moment(endTime).format('HH:mm:ss')}`;
 
-		startTime = `${date} ${moment(startTime).utc().format('HH:mm:ss')}`;
+		startTime = `${date} ${moment(startTime).format('HH:mm:ss')}`;
 
 		/* Put together our payload */
 		let payload = {
@@ -765,6 +800,8 @@ class Employees extends Component {
 	};
 	/* eslint-enable no-param-reassign */
 
+	handleSwitchFromAssignShiftToCreateShift = () => this.setState({ isShiftModalOpen: true, isAssignShiftModalOpen: false });
+
 	render = () => {
 		if (isEmpty(this.props.rota)) {
 			return null;
@@ -773,7 +810,7 @@ class Employees extends Component {
 		return (
 			<Fragment>
 				<Header history={this.props.history} />
-				<Toolbar />
+				<Toolbar history={this.props.history} />
 				{(!isEmpty(this.state.tableData)) ? (
 					<Fragment>
 						<div className="live__scroll border-0 mt-0 ml-0 mr-0 mb-3 p-0 u-disable-selection">
@@ -815,8 +852,8 @@ class Employees extends Component {
 											</Popover>
 										</th>
 										{this.state.tableData.header.columns.map((column, index) => (
-											<th key={index} width="195" className="p-2 m-0 text-center column">
-												<div className="placement-status d-none1 p-0 m-0">
+											<th key={index} width="195" className={`p-2 m-0 text-center column${((column.draggable) ? ' non-draggable-cell' : '')}${((column.today) ? ' today' : '')}`}>
+												<div className="placement-status p-0 m-0">
 													<div className={`mr-2 p-0 ml-0 mr-0 mb-0 indicator ${column.placementStatus}`}></div>
 													<div className="p-0 m-0 count">{column.count}/{column.total}</div>
 												</div>
@@ -845,17 +882,23 @@ class Employees extends Component {
 												</div>
 											</td>
 											{row.columns.map((column, columnIndex) => ((column.draggable) ? (
-												<td key={columnIndex} className="p-0 align-top non-draggable-cell">
+												<td key={columnIndex} className="p-0 align-top non-draggable-cell" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId}>
 													{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
-														<NonDraggableCellShiftButton key={shiftPlacementIndex} name="Sean" shiftPlacement={shiftPlacement} />
+														<ShiftButton key={shiftPlacementIndex} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} />
 													)) : null}
 												</td>
 											) : (
 												<td key={columnIndex} className="p-0 align-top draggable-cell" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId}>
 													{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
-														<DraggableCellShiftButton key={shiftPlacementIndex} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} />
+														<ShiftButton key={shiftPlacementIndex} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} />
 													)) : (
-														<DraggableCellAddShiftButton handleCreateShift={event => this.handleCreateShift(event, column.accountEmployee.employee.employeeId, moment(column.weekDate).format('YYYY-MM-DD'))} />
+														<Fragment>
+															{(column.unassignedShifts.length > 0) ? (
+																<AssignShiftButton handleAssignShift={event => this.handleAssignShift(event, column.accountEmployee.employee.employeeId, moment(column.weekDate).format('YYYY-MM-DD'))} />
+															) : (
+																<CreateShiftButton handleCreateShift={event => this.handleCreateShift(event, column.accountEmployee.employee.employeeId, moment(column.weekDate).format('YYYY-MM-DD'))} />
+															)}
+														</Fragment>
 													)}
 												</td>
 											)))}
@@ -908,19 +951,22 @@ class Employees extends Component {
 						</div>
 					</Fragment>
 				) : null}
-				<Modal title="Shifts" className="modal-dialog" show={this.state.isShiftModalOpen} onClose={event => this.handleCreateShift(event, this.state.employeeId, moment(this.state.startDate).format('YYYY-MM-DD'))}>
+				<Modal title="Create Shift" className="modal-dialog" show={this.state.isShiftModalOpen} onClose={event => this.handleCreateShift(event, this.state.employeeId, moment(this.state.startDate).format('YYYY-MM-DD'))}>
 					<ShiftForm editMode={false} employeeId={this.state.employeeId} startDate={moment(this.state.startDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleCreateShift(event, this.state.employeeId, moment(this.state.startDate).format('YYYY-MM-DD'))} />
 				</Modal>
+				<Modal title="Assign Shift" className="modal-dialog" show={this.state.isAssignShiftModalOpen} onClose={event => this.handleAssignShift(event, this.state.employeeId, moment(this.state.startDate).format('YYYY-MM-DD'))}>
+					<AssignShiftForm employeeId={this.state.employeeId} startDate={moment(this.state.startDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleAssignShift(event, this.state.employeeId, moment(this.state.startDate).format('YYYY-MM-DD'))} handleSwitchFromAssignShiftToCreateShift={this.handleSwitchFromAssignShiftToCreateShift} />
+				</Modal>
 				{(this.state.editMode) ? (
-					<Modal title="Employees" className="modal-dialog" show={this.state.isEmployeeModalOpen} onClose={this.handleEditEmployee}>
+					<Modal title="Edit Employee" className="modal-dialog" show={this.state.isEmployeeModalOpen} onClose={this.handleEditEmployee}>
 						<EmployeeForm editMode={true} employeeId={this.state.employeeId} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleEditEmployee} />
 					</Modal>
 				) : (
-					<Modal title="Employees" className="modal-dialog" show={this.state.isEmployeeModalOpen} onClose={this.handleCreateEmployee}>
+					<Modal title="Create Employee" className="modal-dialog" show={this.state.isEmployeeModalOpen} onClose={this.handleCreateEmployee}>
 						<EmployeeForm editMode={false} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateEmployee} />
 					</Modal>
 				)}
-				<Modal title="Employees" className="modal-dialog" show={this.state.isUploadEmployeesModalOpen} onClose={this.handleUploadEmployees}>
+				<Modal title="Upload Employees" className="modal-dialog" show={this.state.isUploadEmployeesModalOpen} onClose={this.handleUploadEmployees}>
 					<UploadEmployeesForm handleInfoNotification={this.handleInfoNotification} handleClose={this.handleUploadEmployees} />
 				</Modal>
 				{(this.state.error.data) ? (

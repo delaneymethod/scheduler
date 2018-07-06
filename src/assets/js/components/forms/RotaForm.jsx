@@ -30,11 +30,11 @@ const { STATUSES } = routes.ROTAS;
 const propTypes = {
 	title: PropTypes.string,
 	message: PropTypes.string,
-	handleClose: PropTypes.func,
 	week: PropTypes.object.isRequired,
 	rotas: PropTypes.array.isRequired,
 	rotaTypes: PropTypes.array.isRequired,
-	handleSuccessNotification: PropTypes.func,
+	handleClose: PropTypes.func.isRequired,
+	handleSuccessNotification: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -225,12 +225,12 @@ class RotaForm extends Component {
 					</Col>
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
 						<FormGroup>
-							<Label for="startDate">Select Start Date <span className="text-danger">&#42;</span></Label>
+							<Label for="startDate">Start Date <span className="text-danger">&#42;</span></Label>
 							<Input type="select" name="startDate" id="startDate" className="custom-select custom-select-xl" value={this.state.startDate} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="3" required={true}>
 								{this.state.startDates.map((startDate, index) => <option key={index} value={moment(startDate).format('YYYY-MM-DD')} label={moment(startDate).format('dddd, Do MMMM YYYY')} />)}
 							</Input>
 							<FieldFeedbacks for="startDate" show="all">
-								<FieldFeedback when="*">- Please provide a valid start date.</FieldFeedback>
+								<FieldFeedback when="*">- Please select a start date.</FieldFeedback>
 							</FieldFeedbacks>
 						</FormGroup>
 					</Col>
