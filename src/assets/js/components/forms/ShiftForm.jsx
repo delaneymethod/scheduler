@@ -149,6 +149,11 @@ class ShiftForm extends Component {
 			this.times.push(time);
 		}
 
+		/* Because the shift was passed a start date as a prop, (shift form was opened via employee view), we need to hide times in the past so user can pick 2pm if its currently 4pm */
+		if (!isEmpty(this.props.startDate) && moment(this.props.startDate).format('YYYY-MM-DD') === moment().format('YYYY-MM-DD')) {
+			this.times = this.times.filter(time => moment(time, 'HH:mm A').isSameOrAfter(moment()));
+		}
+
 		/* Added 23:59 PM to the list as a midnight option */
 		const midnight = moment(start).endOf('day').format('HH:mm A');
 
