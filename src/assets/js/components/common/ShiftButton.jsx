@@ -68,8 +68,8 @@ class ShiftPlacement extends Component {
 	render = () => (
 		<Fragment>
 			<button className="p-2 mb-2 d-block text-left shift" draggable="true" id={this.props.id} data-shift-id={this.props.shiftPlacement.shiftId} data-placement-id={this.props.shiftPlacement.placementId} title="Click to toggle Shift options" aria-label="Click to toggle Shift options" onClick={this.handleShiftMenu}>
-				<div className="shift__data-row d-block w-100"><strong>{this.props.shiftPlacement.roleName}</strong> {(!this.props.shiftPlacement.isClosingShift) ? `(${this.props.shiftPlacement.hours} hrs)` : null}</div>
-				<div className="shift__data-row d-block w-100">{moment(this.props.shiftPlacement.startTime).format('HH:mm a')} - {(this.props.shiftPlacement.isClosingShift) ? 'Closing' : moment(this.props.shiftPlacement.endTime).format('HH:mm a')}</div>
+				<div className="shift__data-row d-block text-truncate"><strong>{this.props.shiftPlacement.roleName}</strong> {(!this.props.shiftPlacement.isClosingShift) ? `(${this.props.shiftPlacement.hours} hrs)` : null}</div>
+				<div className="shift__data-row d-block">{moment(this.props.shiftPlacement.startTime).format('HH:mm a')} - {(this.props.shiftPlacement.isClosingShift) ? 'Closing' : moment(this.props.shiftPlacement.endTime).format('HH:mm a')}</div>
 			</button>
 			<Popover placement="right" isOpen={this.state.isShiftPopoverOpen} target={this.props.id} toggle={this.handleShiftMenu}>
 				<PopoverBody>
