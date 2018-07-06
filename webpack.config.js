@@ -24,7 +24,7 @@ module.exports = (env, options) => ({
 	entry: './src/assets/js/Scheduler.jsx',
 	output: {
 		publicPath: '/',
-		filename: 'assets/js/[name].bundle.js',
+		filename: 'assets/js/[name]-[hash].bundle.js',
 		path: path.resolve(__dirname, 'public'),
 	},
 	watchOptions: {
@@ -169,7 +169,7 @@ module.exports = (env, options) => ({
 	},
 	plugins: [
 		new MiniCssExtractPlugin({
-			filename: 'assets/css/[name].bundle.css',
+			filename: 'assets/css/[name]-[hash].bundle.css',
 		}),
 		new HtmlWebPackPlugin({
 			template: 'src/index.html',
