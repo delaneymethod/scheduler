@@ -45,6 +45,7 @@ const propTypes = {
 	shifts: PropTypes.array.isRequired,
 	rotaTypes: PropTypes.array.isRequired,
 	employees: PropTypes.array.isRequired,
+	ajaxLoading: PropTypes.bool.isRequired,
 	authenticated: PropTypes.bool.isRequired,
 };
 
@@ -56,6 +57,7 @@ const defaultProps = {
 	shifts: [],
 	rotaTypes: [],
 	employees: [],
+	ajaxLoading: true,
 	authenticated: false,
 };
 
@@ -115,7 +117,7 @@ class Dashboard extends Component {
 	};
 
 	handleFetchData = () => {
-		const { actions } = this.props;
+		const { history, actions } = this.props;
 
 		/* Grab all roles, employees, rota types, rotas and finally all shifts in this order. */
 		console.log('Called Dashboard handleFetchData getRoles');
@@ -171,11 +173,13 @@ class Dashboard extends Component {
 														actions.switchWeek(payload).then(() => {
 															/* Get shifts for current rota */
 															console.log('Called Dashboard handleFetchData getShifts');
-															actions.getShifts(rota).catch((error) => {
-																this.setState({ error });
+															actions.getShifts(rota)
+																.then(() => history.push(routes.DASHBOARD.EMPLOYEES.URI))
+																.catch((error) => {
+																	this.setState({ error });
 
-																this.handleModal();
-															});
+																	this.handleModal();
+																});
 														});
 													});
 												}
@@ -225,6 +229,9 @@ class Dashboard extends Component {
 	render = () => (
 		<Fragment>
 			<Header history={this.props.history} />
+			{(this.props.ajaxLoading) ? (
+				<div className="m-0 p-3">Loading&hellip;</div>
+			) : null}
 			{(this.state.error.data) ? (
 				<Modal title={this.state.error.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isErrorModalOpen} onClose={this.handleModal}>
 					<div dangerouslySetInnerHTML={{ __html: this.state.error.data.message }} />
@@ -249,6 +256,7 @@ const mapStateToProps = (state, props) => ({
 	shifts: state.shifts,
 	rotaTypes: state.rotaTypes,
 	employees: state.employees,
+	ajaxLoading: state.ajaxLoading,
 	authenticated: state.authenticated,
 });
 
