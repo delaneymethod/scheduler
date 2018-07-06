@@ -16,6 +16,7 @@
 	background-color: $white;
 	border-radius: calculateRem(5px);
 	border: calculateRem(5px) solid $white;
+	background-color: aqua;
 }
 
 .employees {
@@ -85,7 +86,7 @@
 			}
 			
 			.flex-column {
-				width: 50%;
+				width: 30%;
 				background-color: transparent;
 				
 				.flex-row {
@@ -97,6 +98,10 @@
 						background-color: $gray-200;
 					}
 				}
+				
+				&:last-child {
+					width: 70%;	
+				}
 			}
 			
 			&.sortable {
@@ -105,15 +110,15 @@
 		}
 		
 		.column {
-			width: 195px;
+			width: 160px;
 		}
 		
-		th.column.first {
-			width: 334px;
+		.column.first {
+			width: 300px;
 		}
 		
-		th.column.last {
-			width: 180px;
+		.column.last {
+			width: 130px;
 		}
 	
 		td {

@@ -414,7 +414,7 @@ class Employees extends Component {
 							let hours = moment.duration(moment(endTime).diff(moment(startTime))).asHours();
 
 							/* Round the hours so 10.988888 becomes 11 hours, for example */
-							hours = (Math.round(hours * 12) / 12).toFixed(2);
+							hours = (Math.round(hours * 12) / 12);
 
 							const shiftPlacement = {
 								cost,
@@ -937,7 +937,7 @@ class Employees extends Component {
 													<div className="flex-column">
 														<div className="p-2 flex-row text-danger">&pound;{column.cost.toFixed(2)}</div>
 														{(column.last) ? (
-															<div className="p-2 flex-row">&pound;{this.props.rota.budget.toFixed(2)}</div>
+															<div className="p-2 flex-row">&pound;{this.props.rota.budget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
 														) : (
 															<div className="p-2 flex-row">&nbsp;</div>
 														)}
