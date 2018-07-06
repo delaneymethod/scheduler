@@ -8,7 +8,11 @@
 	-webkit-user-drag: element;
 }
 
-.live__scroll {
+.table-wrapper {
+	position: relative;
+}
+
+.table-scroller {
 	width: 100%;
 	overflow-y: hidden;
 	white-space: nowrap;
@@ -16,6 +20,28 @@
 	background-color: $white;
 	border-radius: calculateRem(5px);
 	border: calculateRem(5px) solid $white;
+	
+	/*
+	@include media-breakpoint-down(lg) {
+		border-radius: 0;
+		margin-left: 300px;
+		overflow-x: scroll;
+		overflow-y: visible;
+		border-left: 0 !important;
+    }
+    
+    @include media-breakpoint-down(lg) {
+		width: 859px;
+	}
+	
+	@include media-breakpoint-down(md) {
+		width: 659px;
+	}
+	
+	@include media-breakpoint-down(sm) {
+		width: 436px;
+	}
+	*/
 }
 
 .employees {
@@ -23,6 +49,10 @@
 	table-layout: fixed;
 	border-collapse: collapse;
 	
+	thead {
+		position: relative;
+	}
+
 	tr {
 		&:nth-child(even) {
 		}
@@ -121,6 +151,7 @@
 		}
 	
 		td {
+			white-space: nowrap;
 			background-color: $gray-400;
 			border: calculateRem(5px) solid $white;
 			
@@ -225,3 +256,41 @@
 		background-color: $white;
 	}
 }
+
+/*
+@include media-breakpoint-down(lg) {
+	.freeze {
+		left: 0;
+		top: auto;
+		width: 300px;
+		position: absolute;
+		margin-top: -2px !important;
+	}
+	
+	thead {
+		.freeze {
+			padding: 12px 10px !important;
+		}
+		
+		th:nth-child(2) {
+			border-left: 0 !important;
+		}
+	}
+	
+	tbody {
+		.freeze {
+			padding: 12px 10px !important;
+		}
+		
+		td:nth-child(2) {
+			border-left: 0 !important;
+		}
+	}
+	
+	tfoot {
+		th:nth-child(2) {
+			border-left: 0 !important;
+		}
+	}
+}
+*/

@@ -813,141 +813,145 @@ class Employees extends Component {
 				<Toolbar history={this.props.history} />
 				{(!isEmpty(this.state.tableData)) ? (
 					<Fragment>
-						<div className="live__scroll border-0 mt-0 ml-0 mr-0 mb-3 p-0 u-disable-selection">
-							<table className="employees p-0 m-0">
-								<thead>
-									<tr>
-										<th className="p-2 text-left column first sortable text-uppercase">
-											<div className="d-flex align-items-center p-0 m-0">
-												<div className="d-inline-block p-0 mr-auto">Employees ({this.props.employees.length})</div>
-												{(this.props.employees.length > 0) ? (
-													<Fragment>
-														<div className="d-inline-block p-0 mr-2"><button type="button" className="btn btn-dark btn-icon" id="filter" title="Filter by" aria-label="Filter by" onClick={this.handleFilter}><i className="fa fa-fw fa-filter" aria-hidden="true"></i></button></div>
-														<div className="d-inline-block p-0 mr-2"><button type="button" className="btn btn-dark btn-icon" id="sortBy" title="Sort by" aria-label="Sort by" onClick={this.handleSortBy}><i className="fa fa-fw fa-sort" aria-hidden="true"></i></button></div>
-													</Fragment>
-												) : null}
-												<div className="d-inline-block p-0 mr-2"><button type="button" className="btn btn-secondary btn-icon" title="Upload Employees" aria-label="Upload Employees" onClick={this.handleUploadEmployees}><i className="fa fa-fw fa-upload" aria-hidden="true"></i></button></div>
-												<div className="d-inline-block p-0 m-0"><button type="button" className="btn btn-secondary btn-icon" title="Add New Employee" aria-label="Add New Employee" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-user-plus" aria-hidden="true"></i></button></div>
-											</div>
-											<Popover placement="bottom" isOpen={this.state.isFilterPopoverOpen} target="filter" toggle={this.handleFilter}>
-												<PopoverBody>
-													<ul className="popover-menu">
-														<li><label className="pt-2 pb-1 m-0">Filter</label></li>
-													</ul>
-													<Form className="popover-menu">
-														<FormGroup className="pl-1 pr-1 pb-1 mb-0">
-															<Input type="text" name="employeeName" id="employeeName" value={this.state.employeeName} onChange={this.handleFilterEmployees} placeholder="By employee name..." autoComplete="off" tabIndex="-1" bsSize="sm" />
-														</FormGroup>
-													</Form>
-												</PopoverBody>
-											</Popover>
-											<Popover placement="bottom" isOpen={this.state.isSortByPopoverOpen} target="sortBy" toggle={this.handleSortBy}>
-												<PopoverBody>
-													<ul className="popover-menu">
-														<li><label className="pt-2 pb-1 m-0">Sort by</label></li>
-														<li><button type="button" title="Sort by First Name" className="btn btn-action btn-nav border-0" onClick={event => this.handleSortEmployees(event, 'firstName')}>First Name</button></li>
-														<li><button type="button" title="Sort by Last Name" className="btn btn-action btn-nav border-0" onClick={event => this.handleSortEmployees(event, 'lastName')}>Last Name</button></li>
-													</ul>
-												</PopoverBody>
-											</Popover>
-										</th>
-										{this.state.tableData.header.columns.map((column, index) => (
-											<th key={index} width="195" className={`p-2 m-0 text-center column${((column.draggable) ? ' non-draggable-cell' : '')}${((column.today) ? ' today' : '')}`}>
-												<div className="placement-status p-0 m-0">
-													<div className={`mr-2 p-0 ml-0 mr-0 mb-0 indicator ${column.placementStatus}`}></div>
-													<div className="p-0 m-0 count">{column.count}/{column.total}</div>
-												</div>
-												<div className="p-0 m-0">{moment(column.weekDate).format('ddd Do')}</div>
-											</th>
-										))}
-										<th className="p-2 m-0 text-center column last">Total</th>
-									</tr>
-								</thead>
-								<tbody id="tableBody">
-									{this.state.tableData.body.rows.length > 0 && this.state.tableData.body.rows.map((row, rowIndex) => (
-										<tr key={rowIndex} className="draggable-row" data-account-employee-id={row.accountEmployee.accountEmployeeId}>
-											<td className="p-2 align-top text-left drag-handler p-0 m-0" onClick={event => this.handleEditEmployee(event, row.accountEmployee.employee.employeeId)}>
+						<div className="table-wrapper">
+							<div className="table-scroller border-0 mt-0 ml-01 mr-0 mb-3 p-0 u-disable-selection">
+								<table className="employees p-0 m-0">
+									<thead>
+										<tr>
+											<th className="p-2 text-left column first sortable text-uppercase">
 												<div className="d-flex align-items-center p-0 m-0">
-													<div className="d-inline-block p-0 mt-0 ml-0 mr-2 mb-0">
-														<Avatar name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="51" cache={true} />
+													<div className="d-inline-block p-0 mr-auto">Employees ({this.props.employees.length})</div>
+													<div className="">
+														{(this.props.employees.length > 0) ? (
+															<Fragment>
+																<div className="d-inline-block p-0 mr-1 mr-xl-2"><button type="button" className="btn btn-dark btn-icon" id="filter" title="Filter by" aria-label="Filter by" onClick={this.handleFilter}><i className="fa fa-fw fa-filter" aria-hidden="true"></i></button></div>
+																<div className="d-inline-block p-0 mr-1 mr-xl-2"><button type="button" className="btn btn-dark btn-icon" id="sortBy" title="Sort by" aria-label="Sort by" onClick={this.handleSortBy}><i className="fa fa-fw fa-sort" aria-hidden="true"></i></button></div>
+															</Fragment>
+														) : null}
+														<div className="d-none d-md-inline-block p-0 mr-1 mr-xl-2"><button type="button" className="btn btn-secondary btn-icon" title="Upload Employees" aria-label="Upload Employees" onClick={this.handleUploadEmployees}><i className="fa fa-fw fa-upload" aria-hidden="true"></i></button></div>
+														<div className="d-inline-block p-0 m-0"><button type="button" className="btn btn-secondary btn-icon" title="Add New Employee" aria-label="Add New Employee" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-user-plus" aria-hidden="true"></i></button></div>
 													</div>
-													<div className="d-inline-block pt-1 pl-0 pr-0 pb-0 m-0">
-														<div id="fullname">{row.accountEmployee.employee.firstName} {row.accountEmployee.employee.lastName}</div>
-														<div className="align-middle">
-															<i className={`align-middle p-0 ml-0 fa fa-fw fa-gbp ${(row.accountEmployee.hourlyRate) || (row.accountEmployee.salary) ? 'complete' : ''}`} aria-hidden="true"></i>
-															<i className={`align-middle p-0 ml-1 fa fa-fw fa-envelope ${(row.accountEmployee.employee.email) ? 'complete' : ''}`} aria-hidden="true"></i>
-															<i className={`align-middle p-0 ml-1 fa fa-fw fa-phone ${(row.accountEmployee.employee.mobile) ? 'complete' : ''}`} aria-hidden="true"></i>
+												</div>
+												<Popover placement="bottom" isOpen={this.state.isFilterPopoverOpen} target="filter" toggle={this.handleFilter}>
+													<PopoverBody>
+														<ul className="popover-menu">
+															<li><label className="pt-2 pb-1 m-0">Filter</label></li>
+														</ul>
+														<Form className="popover-menu">
+															<FormGroup className="pl-1 pr-1 pb-1 mb-0">
+																<Input type="text" name="employeeName" id="employeeName" value={this.state.employeeName} onChange={this.handleFilterEmployees} placeholder="By employee name..." autoComplete="off" tabIndex="-1" bsSize="sm" />
+															</FormGroup>
+														</Form>
+													</PopoverBody>
+												</Popover>
+												<Popover placement="bottom" isOpen={this.state.isSortByPopoverOpen} target="sortBy" toggle={this.handleSortBy}>
+													<PopoverBody>
+														<ul className="popover-menu">
+															<li><label className="pt-2 pb-1 m-0">Sort by</label></li>
+															<li><button type="button" title="Sort by First Name" className="btn btn-action btn-nav border-0" onClick={event => this.handleSortEmployees(event, 'firstName')}>First Name</button></li>
+															<li><button type="button" title="Sort by Last Name" className="btn btn-action btn-nav border-0" onClick={event => this.handleSortEmployees(event, 'lastName')}>Last Name</button></li>
+														</ul>
+													</PopoverBody>
+												</Popover>
+											</th>
+											{this.state.tableData.header.columns.map((column, index) => (
+												<th key={index} width="195" className={`p-2 m-0 text-center column${((column.draggable) ? ' non-draggable-cell' : '')}${((column.today) ? ' today' : '')}`}>
+													<div className="placement-status p-0 m-0">
+														<div className={`mr-2 p-0 ml-0 mr-0 mb-0 indicator ${column.placementStatus}`}></div>
+														<div className="p-0 m-0 count">{column.count}/{column.total}</div>
+													</div>
+													<div className="p-0 m-0">{moment(column.weekDate).format('ddd Do')}</div>
+												</th>
+											))}
+											<th className="p-2 m-0 text-center column last">Total</th>
+										</tr>
+									</thead>
+									<tbody id="tableBody">
+										{this.state.tableData.body.rows.length > 0 && this.state.tableData.body.rows.map((row, rowIndex) => (
+											<tr key={rowIndex} className="draggable-row" data-account-employee-id={row.accountEmployee.accountEmployeeId}>
+												<td className="p-2 align-top text-left drag-handler p-0 m-0" onClick={event => this.handleEditEmployee(event, row.accountEmployee.employee.employeeId)}>
+													<div className="d-flex align-items-center p-0 m-0">
+														<div className="d-inline-block p-0 mt-0 ml-0 mr-2 mb-0">
+															<Avatar name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="51" cache={true} />
+														</div>
+														<div className="d-inline-block pt-1 pl-0 pr-0 pb-0 m-0">
+															<div id="fullname text-truncate">{row.accountEmployee.employee.firstName} {row.accountEmployee.employee.lastName}</div>
+															<div className="align-middle">
+																<i className={`align-middle p-0 ml-0 fa fa-fw fa-gbp ${(row.accountEmployee.hourlyRate) || (row.accountEmployee.salary) ? 'complete' : ''}`} aria-hidden="true"></i>
+																<i className={`align-middle p-0 ml-1 fa fa-fw fa-envelope ${(row.accountEmployee.employee.email) ? 'complete' : ''}`} aria-hidden="true"></i>
+																<i className={`align-middle p-0 ml-1 fa fa-fw fa-phone ${(row.accountEmployee.employee.mobile) ? 'complete' : ''}`} aria-hidden="true"></i>
+															</div>
 														</div>
 													</div>
-												</div>
-											</td>
-											{row.columns.map((column, columnIndex) => ((column.draggable) ? (
-												<td key={columnIndex} className="p-0 align-top non-draggable-cell" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId}>
-													{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
-														<ShiftButton key={shiftPlacementIndex} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} />
-													)) : null}
 												</td>
-											) : (
-												<td key={columnIndex} className="p-0 align-top draggable-cell" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId}>
-													{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
-														<ShiftButton key={shiftPlacementIndex} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} />
-													)) : (
-														<Fragment>
-															{(column.unassignedShifts.length > 0) ? (
-																<AssignShiftButton handleAssignShift={event => this.handleAssignShift(event, column.accountEmployee.employee.employeeId, moment(column.weekDate).format('YYYY-MM-DD'))} />
-															) : (
-																<CreateShiftButton handleCreateShift={event => this.handleCreateShift(event, column.accountEmployee.employee.employeeId, moment(column.weekDate).format('YYYY-MM-DD'))} />
-															)}
-														</Fragment>
-													)}
-												</td>
-											)))}
-											<td className="p-2 align-top text-center">
-												<div className="d-flex align-items-center">
-													<div className="w-100">
-														<div>{row.hours.toFixed(2)} hrs</div>
-														<div>(&pound;{row.cost.toFixed(2)})</div>
-													</div>
-												</div>
-											</td>
-										</tr>
-									))}
-								</tbody>
-								<tfoot>
-									<tr>
-										<th className="text-center">
-											<div className="d-flex align-items-center">
-												<div className="flex-column">
-													<div className="p-2 flex-row">Total Hours</div>
-													<div className="p-2 flex-row">Total Shifts</div>
-												</div>
-												<div className="flex-column">
-													<div className="p-2 flex-row text-danger">Total Costs</div>
-													<div className="p-2 flex-row">Total Budget</div>
-												</div>
-											</div>
-										</th>
-										{this.state.tableData.footer.columns.map((column, columnIndex) => (
-											<th key={columnIndex} className="text-center">
-												<div className="d-flex align-items-center">
-													<div className="flex-column">
-														<div className="p-2 flex-row">{column.hours}</div>
-														<div className="p-2 flex-row">{column.shifts}</div>
-													</div>
-													<div className="flex-column">
-														<div className="p-2 flex-row text-danger">&pound;{column.cost.toFixed(2)}</div>
-														{(column.last) ? (
-															<div className="p-2 flex-row">&pound;{this.props.rota.budget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
-														) : (
-															<div className="p-2 flex-row">&nbsp;</div>
+												{row.columns.map((column, columnIndex) => ((column.draggable) ? (
+													<td key={columnIndex} className="p-0 align-top non-draggable-cell" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId}>
+														{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
+															<ShiftButton key={shiftPlacementIndex} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} />
+														)) : null}
+													</td>
+												) : (
+													<td key={columnIndex} className="p-0 align-top draggable-cell" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId}>
+														{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
+															<ShiftButton key={shiftPlacementIndex} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} />
+														)) : (
+															<Fragment>
+																{(column.unassignedShifts.length > 0) ? (
+																	<AssignShiftButton handleAssignShift={event => this.handleAssignShift(event, column.accountEmployee.employee.employeeId, moment(column.weekDate).format('YYYY-MM-DD'))} />
+																) : (
+																	<CreateShiftButton handleCreateShift={event => this.handleCreateShift(event, column.accountEmployee.employee.employeeId, moment(column.weekDate).format('YYYY-MM-DD'))} />
+																)}
+															</Fragment>
 														)}
+													</td>
+												)))}
+												<td className="p-2 align-top text-center">
+													<div className="d-flex align-items-center">
+														<div className="w-100">
+															<div>{row.hours.toFixed(2)} hrs</div>
+															<div>(&pound;{row.cost.toFixed(2)})</div>
+														</div>
+													</div>
+												</td>
+											</tr>
+										))}
+									</tbody>
+									<tfoot>
+										<tr>
+											<th className="text-center">
+												<div className="d-flex align-items-center">
+													<div className="flex-column">
+														<div className="p-2 flex-row">Total Hours</div>
+														<div className="p-2 flex-row">Total Shifts</div>
+													</div>
+													<div className="flex-column">
+														<div className="p-2 flex-row text-danger">Total Costs</div>
+														<div className="p-2 flex-row">Total Budget</div>
 													</div>
 												</div>
 											</th>
-										))}
-									</tr>
-								</tfoot>
-							</table>
+											{this.state.tableData.footer.columns.map((column, columnIndex) => (
+												<th key={columnIndex} className="text-center">
+													<div className="d-flex align-items-center">
+														<div className="flex-column">
+															<div className="p-2 flex-row">{column.hours}</div>
+															<div className="p-2 flex-row">{column.shifts}</div>
+														</div>
+														<div className="flex-column">
+															<div className="p-2 flex-row text-danger">&pound;{column.cost.toFixed(2)}</div>
+															{(column.last) ? (
+																<div className="p-2 flex-row">&pound;{this.props.rota.budget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
+															) : (
+																<div className="p-2 flex-row">&nbsp;</div>
+															)}
+														</div>
+													</div>
+												</th>
+											))}
+										</tr>
+									</tfoot>
+								</table>
+							</div>
 						</div>
 					</Fragment>
 				) : null}
