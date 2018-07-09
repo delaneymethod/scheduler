@@ -88,7 +88,7 @@ class SwitchAccount extends Component {
 								<Popover placement="bottom" isOpen={this.state.isSwitchAccountMenuPopoverOpen} target="switchAccountMenu" toggle={this.handleSwitchAccountMenu}>
 									<PopoverBody>
 										<ul className="popover-menu">
-											{this.props.user.accounts.map((account, index) => <li key={index}><button type="button" title={`Switch to ${account.name}`} aria-label={`Switch to ${account.name}`} className="btn btn-action btn-nav border-0" onClick={event => this.handleSwitchAccount(event, account.id)}>{this.props.user.account.name}</button></li>)}
+											{this.props.user.accounts.map((account, index) => (<li key={index}><button type="button" title={`Switch to ${account.name}`} aria-label={`Switch to ${account.name}`} className="btn btn-action btn-nav border-0" onClick={event => this.handleSwitchAccount(event, account.id)}>{this.props.user.account.name}</button></li>))}
 										</ul>
 									</PopoverBody>
 								</Popover>

@@ -29,6 +29,8 @@ import EmployeeForm from '../../forms/EmployeeForm';
 
 import Notification from '../../common/Notification';
 
+import ShiftsOverview from '../../common/ShiftsOverview';
+
 import AssignShiftForm from '../../forms/AssignShiftForm';
 
 import CreateShiftButton from '../../common/CreateShiftButton';
@@ -821,16 +823,14 @@ class Employees extends Component {
 											<th className="p-2 text-left column first sortable text-uppercase">
 												<div className="d-flex align-items-center p-0 m-0">
 													<div className="d-inline-block p-0 mr-auto">Employees ({this.props.employees.length})</div>
-													<div className="">
-														{(this.props.employees.length > 0) ? (
-															<Fragment>
-																<div className="d-inline-block p-0 mr-1 mr-xl-2"><button type="button" className="btn btn-dark btn-icon" id="filter" title="Filter by" aria-label="Filter by" onClick={this.handleFilter}><i className="fa fa-fw fa-filter" aria-hidden="true"></i></button></div>
-																<div className="d-inline-block p-0 mr-1 mr-xl-2"><button type="button" className="btn btn-dark btn-icon" id="sortBy" title="Sort by" aria-label="Sort by" onClick={this.handleSortBy}><i className="fa fa-fw fa-sort" aria-hidden="true"></i></button></div>
-															</Fragment>
-														) : null}
-														<div className="d-none d-md-inline-block p-0 mr-1 mr-xl-2"><button type="button" className="btn btn-secondary btn-icon" title="Upload Employees" aria-label="Upload Employees" onClick={this.handleUploadEmployees}><i className="fa fa-fw fa-upload" aria-hidden="true"></i></button></div>
-														<div className="d-inline-block p-0 m-0"><button type="button" className="btn btn-secondary btn-icon" title="Add New Employee" aria-label="Add New Employee" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-user-plus" aria-hidden="true"></i></button></div>
-													</div>
+													{(this.props.employees.length > 0) ? (
+														<Fragment>
+															<div className="d-inline-block p-0 mr-1 mr-xl-2"><button type="button" className="btn btn-dark btn-icon" id="filter" title="Filter by" aria-label="Filter by" onClick={this.handleFilter}><i className="fa fa-fw fa-filter" aria-hidden="true"></i></button></div>
+															<div className="d-inline-block p-0 mr-1 mr-xl-2"><button type="button" className="btn btn-dark btn-icon" id="sortBy" title="Sort by" aria-label="Sort by" onClick={this.handleSortBy}><i className="fa fa-fw fa-sort" aria-hidden="true"></i></button></div>
+														</Fragment>
+													) : null}
+													<div className="d-none d-md-inline-block p-0 mr-1 mr-xl-2"><button type="button" className="btn btn-secondary btn-icon" title="Upload Employees" aria-label="Upload Employees" onClick={this.handleUploadEmployees}><i className="fa fa-fw fa-upload" aria-hidden="true"></i></button></div>
+													<div className="d-inline-block p-0 m-0"><button type="button" className="btn btn-secondary btn-icon" title="Add New Employee" aria-label="Add New Employee" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-user-plus" aria-hidden="true"></i></button></div>
 												</div>
 												<Popover placement="bottom" isOpen={this.state.isFilterPopoverOpen} target="filter" toggle={this.handleFilter}>
 													<PopoverBody>
@@ -856,10 +856,7 @@ class Employees extends Component {
 											</th>
 											{this.state.tableData.header.columns.map((column, index) => (
 												<th key={index} width="195" className={`p-2 m-0 text-center column${((column.draggable) ? ' non-draggable-cell' : '')}${((column.today) ? ' today' : '')}`}>
-													<div className="placement-status p-0 m-0">
-														<div className={`mr-2 p-0 ml-0 mr-0 mb-0 indicator ${column.placementStatus}`}></div>
-														<div className="p-0 m-0 count">{column.count}/{column.total}</div>
-													</div>
+													<ShiftsOverview past={column.draggable} weekDate={column.weekDate} count={column.count} total={column.total} placementStatus={column.placementStatus} />
 													<div className="p-0 m-0">{moment(column.weekDate).format('ddd Do')}</div>
 												</th>
 											))}
@@ -872,7 +869,7 @@ class Employees extends Component {
 												<td className="p-2 align-top text-left drag-handler p-0 m-0" onClick={event => this.handleEditEmployee(event, row.accountEmployee.employee.employeeId)}>
 													<div className="d-flex align-items-center p-0 m-0">
 														<div className="d-inline-block p-0 mt-0 ml-0 mr-2 mb-0">
-															<Avatar name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="51" cache={true} />
+															<Avatar name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="51" />
 														</div>
 														<div className="d-inline-block pt-1 pl-0 pr-0 pb-0 m-0">
 															<div id="fullname text-truncate">{row.accountEmployee.employee.firstName} {row.accountEmployee.employee.lastName}</div>

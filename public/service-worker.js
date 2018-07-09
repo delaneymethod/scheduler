@@ -7,7 +7,6 @@
 		'crossdomain.xml',
 		'main.bundle.css',
 		'vendors.bundle.js',
-		'scripts.bundle.js',
 		'service-worker.js',
 	];
 

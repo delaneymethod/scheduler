@@ -40,6 +40,8 @@ class ShiftPlacement extends Component {
 		this.handleEditShift = this.handleEditShift.bind(this);
 
 		this.handleCreateShift = this.handleCreateShift.bind(this);
+
+		this.handleSuccessNotification = this.handleSuccessNotification.bind(this);
 	}
 
 	getInitialState = () => ({

@@ -263,7 +263,7 @@ class Toolbar extends Component {
 					<Popover placement="bottom" isOpen={this.state.isRotaTypeMenuPopoverOpen} target="rotaTypeMenu" toggle={this.handleRotaTypeMenu}>
 						<PopoverBody>
 							<ul className="popover-menu">
-								{(this.props.rotaTypes.length > 0) ? this.props.rotaTypes.map((rotaType, index) => <li key={index}><button type="button" title={rotaType.rotaTypeName} className="btn btn-action btn-nav border-0" id={rotaType.rotaTypeId} onClick={this.handleSwitchRotaType}>{rotaType.rotaTypeName}</button></li>) : null}
+								{(this.props.rotaTypes.length > 0) ? this.props.rotaTypes.map((rotaType, index) => (<li key={index}><button type="button" title={rotaType.rotaTypeName} className="btn btn-action btn-nav border-0" id={rotaType.rotaTypeId} onClick={this.handleSwitchRotaType}>{rotaType.rotaTypeName}</button></li>)) : null}
 								<li><button type="button" title="Add New Rota" className="btn btn-primary btn-nav border-0" onClick={this.handleCreateRota}>Add New Rota</button></li>
 							</ul>
 						</PopoverBody>

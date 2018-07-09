@@ -68,6 +68,8 @@ class AssignShiftForm extends Component {
 	});
 
 	componentDidMount = () => {
+		console.log('this.props.startDate:', this.props.startDate);
+
 		/* We debounce this call to wait 1000ms (we do not want the leading (or "immediate") flag passed because we want to wait until the user has finished typing before running validation */
 		this.handleValidateFields = debounce(this.handleValidateFields.bind(this), 1000);
 
