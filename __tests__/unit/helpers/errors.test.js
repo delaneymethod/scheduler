@@ -19,9 +19,7 @@ describe('Errors', () => {
 
 		const formattedError = {
 			data: {
-				code: 404,
-				title: '404 Not Found',
-				message: '<p>A 404 status code indicates that the requested resource was not found at the URL given, and the server has no idea how long for.</p><p class="pb-0 mb-0">Email address was not found.</p>',
+				message: '<p>Email address was not found.</p>',
 			},
 		};
 
@@ -39,8 +37,6 @@ describe('Errors', () => {
 
 		const formattedError = {
 			data: {
-				code: 404,
-				title: '404 Not Found',
 				message: '<p>A 404 status code indicates that the requested resource was not found at the URL given, and the server has no idea how long for.</p>',
 			},
 		};
@@ -57,8 +53,6 @@ describe('Errors', () => {
 
 		const formattedError = {
 			data: {
-				code: undefined,
-				title: 'Error',
 				message: '<p>Test error message</p>',
 			},
 		};
@@ -74,8 +68,6 @@ describe('Errors', () => {
 
 		const formattedError = {
 			data: {
-				code: 504,
-				title: '504 Network Error',
 				message: '<p>A network error has occurred. Please try again in a few minutes.</p>',
 			},
 		};
@@ -90,8 +82,6 @@ describe('Errors', () => {
 
 		const formattedError = {
 			data: {
-				code: undefined,
-				title: 'Error',
 				message: '<p>Test error message</p>',
 			},
 		};

@@ -89,19 +89,10 @@ class UpdateYourPasswordForm extends Component {
 				password,
 			};
 
-			/* eslint-disable no-param-reassign */
 			console.log('Called UpdateYourPasswordForm handleSubmit updateYourPassword');
 			actions.updateYourPassword(payload)
 				.then(() => this.setState(Object.assign(this.getInitialState(), { emailSent: true })))
-				.catch((error) => {
-					/* Set a more friendlier error message if its a 404 */
-					if (error.data.code === 404) {
-						error.data.message = routes.UPDATE_YOUR_PASSWORD.MESSAGES.NOT_FOUND;
-					}
-
-					this.setState({ error });
-				});
-			/* eslint-enable no-param-reassign */
+				.catch(error => this.setState({ error }));
 		}
 	};
 

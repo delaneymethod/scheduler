@@ -102,14 +102,7 @@ class LoginForm extends Component {
 
 					actions.updateUser(user).then(() => history.push(routes.DASHBOARD.HOME.URI));
 				})
-				.catch((error) => {
-					/* Set a more friendlier error message if its a 401 */
-					if (error.data.code === 401) {
-						error.data.message = routes.LOGIN.MESSAGES.FAILED;
-					}
-
-					this.setState({ error });
-				});
+				.catch(error => this.setState({ error }));
 			/* eslint-enable no-param-reassign */
 		}
 	};

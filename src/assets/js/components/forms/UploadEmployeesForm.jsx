@@ -90,7 +90,7 @@ class UploadEmployeesForm extends Component {
 		}
 	};
 
-	errorMessage = () => (this.state.error.data ? <Alert color="danger" title={this.state.error.data.title} message={this.state.error.data.message} className="mb-5" /> : null);
+	errorMessage = () => (this.state.error.data ? <Alert color="danger" message={this.state.error.data.message} className="mb-5" /> : null);
 
 	render = () => (
 		<Fragment>

@@ -259,7 +259,7 @@ class EmployeeForm extends Component {
 
 	handleValidateFields = target => ((this.form && target) ? this.form.validateFields(target) : null);
 
-	errorMessage = () => (this.state.error.data ? <Alert color="danger" title={this.state.error.data.title} message={this.state.error.data.message} /> : null);
+	errorMessage = () => (this.state.error.data ? <Alert color="danger" message={this.state.error.data.message} /> : null);
 
 	render = () => (
 		<Fragment>

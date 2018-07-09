@@ -74,9 +74,7 @@ describe('Authentication Actions', () => {
 
 		const expectedError = {
 			data: {
-				code: 404,
-				title: '404 Not Found',
-				message: '<p>A 404 status code indicates that the requested resource was not found at the URL given, and the server has no idea how long for.</p><p class="pb-0 mb-0">Email address was not found.</p>',
+				message: '<p>Email address was not found.</p>',
 			},
 		};
 
@@ -196,9 +194,7 @@ describe('Authentication Actions', () => {
 
 		const expectedError = {
 			data: {
-				code: 409,
-				title: '409 Conflict',
-				message: '<p>A 404 status code indicates that the requested resource was not found at the URL given, and the server has no idea how long for.</p><p class="pb-0 mb-0">Email address already exists.</p>',
+				message: '<p>Email address already exists.</p>',
 			},
 		};
 
@@ -245,9 +241,7 @@ describe('Authentication Actions', () => {
 
 		const expectedError = {
 			data: {
-				code: 409,
-				title: '409 Conflict',
-				message: '<p>A 404 status code indicates that the requested resource was not found at the URL given, and the server has no idea how long for.</p><p class="pb-0 mb-0">Email address already exists.</p>',
+				message: '<p>Email address already exists.</p>',
 			},
 		};
 
@@ -306,9 +300,7 @@ describe('Authentication Actions', () => {
 
 		const expectedError = {
 			data: {
-				code: 404,
-				title: '404 Not Found',
-				message: '<p>A 404 status code indicates that the requested resource was not found at the URL given, and the server has no idea how long for.</p><p class="pb-0 mb-0">Email address was not found.</p>',
+				message: '<p>Email address was not found.</p>',
 			},
 		};
 
@@ -371,9 +363,7 @@ describe('Authentication Actions', () => {
 
 		const expectedError = {
 			data: {
-				code: 404,
-				title: '404 Not Found',
-				message: '<p>A 404 status code indicates that the requested resource was not found at the URL given, and the server has no idea how long for.</p><p class="pb-0 mb-0">Email address was not found.</p>',
+				message: '<p>Email address was not found.</p>',
 			},
 		};
 
@@ -437,9 +427,7 @@ describe('Authentication Actions', () => {
 
 		const expectedError = {
 			data: {
-				code: 404,
-				title: '404 Not Found',
-				message: '<p>A 404 status code indicates that the requested resource was not found at the URL given, and the server has no idea how long for.</p><p class="pb-0 mb-0">Email address was not found.</p>',
+				message: '<p>Email address was not found.</p>',
 			},
 		};
 

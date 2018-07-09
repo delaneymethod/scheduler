@@ -72,19 +72,10 @@ class ForgottenYourPasswordForm extends Component {
 				email: this.state.email,
 			};
 
-			/* eslint-disable no-param-reassign */
 			console.log('Called ForgottenYourPasswordForm handleSubmit forgottenYourPassword');
 			actions.forgottenYourPassword(payload)
 				.then(() => this.setState(Object.assign(this.getInitialState(), { email: payload.email, emailSent: true })))
-				.catch((error) => {
-					/* Set a more friendlier error message if its a 404 */
-					if (error.data.code === 404) {
-						error.data.message = routes.FORGOTTEN_YOUR_PASSWORD.MESSAGES.NOT_FOUND;
-					}
-
-					this.setState({ error });
-				});
-			/* eslint-enable no-param-reassign */
+				.catch(error => this.setState({ error }));
 		}
 	};
 
