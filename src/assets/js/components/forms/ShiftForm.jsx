@@ -17,9 +17,9 @@ import { getRoles } from '../../actions/roleActions';
 
 import InputSelectField from '../fields/InputSelectField';
 
-import { createPlacement, updatePlacement } from '../../actions/placementActions';
-
 import { getShifts, createShift, updateShift, deleteShift } from '../../actions/shiftActions';
+
+import { createPlacement, updatePlacement, deletePlacement } from '../../actions/placementActions';
 
 const routes = constants.APP.ROUTES;
 
@@ -369,31 +369,54 @@ class ShiftForm extends Component {
 						 * If there was a match, the shift belongs to same employee id.
 						 */
 						if (isEmpty(oldPlacement)) {
-							payload = {
-								shiftId,
-								employeeId,
-								placementId,
-							};
+							if (isEmpty(employeeId)) {
+								payload = {
+									placementId,
+								};
 
-							/**
-							 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
-							 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
-							 */
-							console.log('Called ShiftForm handleSubmit updatePlacement');
-							actions.updatePlacement(payload)
-								/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-								.then(() => {
-									/* Close the modal */
-									this.props.handleClose(event, '', moment());
+								/* Employee Id was unselected so lets delete the placement for the shift */
+								console.log('Called ShiftForm handleSubmit deletePlacement');
+								actions.deletePlacement(payload)
+									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+									.then(() => {
+										/* Close the modal */
+										this.props.handleClose(event, '', moment());
 
-									const message = '<p>Shift was updated!</p>';
+										const message = '<p>Shift was updated!</p>';
 
-									/* Pass a message back up the rabbit hole to the parent component */
-									this.props.handleSuccessNotification(message);
-								})
-								/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-								.then(() => this.handleGetShifts())
-								.catch(error => this.setState({ error }));
+										/* Pass a message back up the rabbit hole to the parent component */
+										this.props.handleSuccessNotification(message);
+									})
+									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+									.then(() => this.handleGetShifts())
+									.catch(error => this.setState({ error }));
+							} else {
+								payload = {
+									shiftId,
+									employeeId,
+									placementId,
+								};
+
+								/**
+								 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
+								 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
+								 */
+								console.log('Called ShiftForm handleSubmit updatePlacement');
+								actions.updatePlacement(payload)
+									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+									.then(() => {
+										/* Close the modal */
+										this.props.handleClose(event, '', moment());
+
+										const message = '<p>Shift was updated!</p>';
+
+										/* Pass a message back up the rabbit hole to the parent component */
+										this.props.handleSuccessNotification(message);
+									})
+									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+									.then(() => this.handleGetShifts())
+									.catch(error => this.setState({ error }));
+							}
 						} else {
 							/* Close the modal */
 							this.props.handleClose(event, '', moment());
@@ -572,6 +595,7 @@ const mapDispatchToProps = dispatch => ({
 		deleteShift,
 		createPlacement,
 		updatePlacement,
+		deletePlacement,
 	}, dispatch),
 });
 

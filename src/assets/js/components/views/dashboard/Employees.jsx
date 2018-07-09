@@ -132,6 +132,8 @@ class Employees extends Component {
 
 		this.handleEditEmployee = this.handleEditEmployee.bind(this);
 
+		this.handleSetShiftHours = this.handleSetShiftHours.bind(this);
+
 		this.handleSortEmployees = this.handleSortEmployees.bind(this);
 
 		this.handleSortDirection = this.handleSortDirection.bind(this);
@@ -289,6 +291,17 @@ class Employees extends Component {
 		}
 	};
 
+	handleSetShiftHours = (shift) => {
+		const hours = moment.duration(moment(shift.endTime).diff(moment(shift.startTime))).asHours();
+
+		/* eslint-disable no-param-reassign */
+		/* Round the hours so 10.988888 becomes 11 hours, for example */
+		shift.hours = (Math.round(hours * 12) / 12);
+		/* eslint-enable no-param-reassign */
+
+		return shift;
+	};
+
 	handleCreateEmployee = () => this.setState({ isEmployeeModalOpen: !this.state.isEmployeeModalOpen });
 
 	handleUploadEmployees = () => this.setState({ isUploadEmployeesModalOpen: !this.state.isUploadEmployeesModalOpen });
@@ -336,10 +349,20 @@ class Employees extends Component {
 			/* Loop over all shifts for current date and total up the number of positions available */
 			const total = shifts.map(data => data.numberOfPositions).reduce((prev, next) => prev + next, 0);
 
+			const assignedShifts = shifts.filter(data => !(data.placements === null || data.placements.length === 0));
+
+			assignedShifts.map(data => this.handleSetShiftHours(data));
+
+			const unassignedShifts = shifts.filter(data => (data.placements === null || data.placements.length === 0));
+
+			unassignedShifts.map(data => this.handleSetShiftHours(data));
+
 			tableData.header.columns.push({
-				count: 0,
 				total,
+				count: 0,
 				weekDate,
+				assignedShifts,
+				unassignedShifts,
 				placementStatus: 'todo',
 			});
 
@@ -856,7 +879,7 @@ class Employees extends Component {
 											</th>
 											{this.state.tableData.header.columns.map((column, index) => (
 												<th key={index} width="195" className={`p-2 m-0 text-center column${((column.draggable) ? ' non-draggable-cell' : '')}${((column.today) ? ' today' : '')}`}>
-													<ShiftsOverview past={column.draggable} weekDate={column.weekDate} count={column.count} total={column.total} placementStatus={column.placementStatus} />
+													<ShiftsOverview past={column.draggable} weekDate={column.weekDate} count={column.count} total={column.total} placementStatus={column.placementStatus} assignedShifts={column.assignedShifts} unassignedShifts={column.unassignedShifts} />
 													<div className="p-0 m-0">{moment(column.weekDate).format('ddd Do')}</div>
 												</th>
 											))}

@@ -2,9 +2,7 @@ import moment from 'moment';
 import Avatar from 'react-avatar';
 import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
-import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
-import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
 import { Popover, PopoverBody, PopoverHeader } from 'reactstrap';
 
@@ -26,20 +24,20 @@ const propTypes = {
 	past: PropTypes.bool.isRequired,
 	total: PropTypes.number.isRequired,
 	count: PropTypes.number.isRequired,
-	shifts: PropTypes.array.isRequired,
-	employees: PropTypes.array.isRequired,
 	weekDate: PropTypes.object.isRequired,
+	assignedShifts: PropTypes.array.isRequired,
+	unassignedShifts: PropTypes.array.isRequired,
 	placementStatus: PropTypes.string.isRequired,
 };
 
 const defaultProps = {
 	count: 0,
 	total: 0,
-	shifts: [],
 	past: false,
 	weekDate: {},
-	employees: [],
+	assignedShifts: [],
 	placementStatus: '',
+	unassignedShifts: [],
 };
 
 class ShiftsOverview extends Component {
@@ -71,40 +69,6 @@ class ShiftsOverview extends Component {
 		isOverviewPopoverOpen: false,
 		isAssignShiftModalOpen: false,
 	});
-
-	/* eslint-disable no-param-reassign */
-	componentDidMount = () => {
-		if (this.props.count > 0) {
-			const assignedShifts = this.props.shifts.filter(data => (moment(data.startTime).format('YYYY-MM-DD') === moment(this.props.weekDate).format('YYYY-MM-DD')) && data.placements.length > 0);
-
-			assignedShifts.map((assignedShift) => {
-				const hours = moment.duration(moment(assignedShift.endTime).diff(moment(assignedShift.startTime))).asHours();
-
-				/* Round the hours so 10.988888 becomes 11 hours, for example */
-				assignedShift.hours = (Math.round(hours * 12) / 12);
-
-				return assignedShift;
-			});
-
-			this.setState({ assignedShifts });
-		}
-
-		if (this.props.total > 0) {
-			const unassignedShifts = this.props.shifts.filter(data => (moment(data.startTime).format('YYYY-MM-DD') === moment(this.props.weekDate).format('YYYY-MM-DD')) && (data.placements === null || data.placements.length === 0));
-
-			unassignedShifts.map((unassignedShift) => {
-				const hours = moment.duration(moment(unassignedShift.endTime).diff(moment(unassignedShift.startTime))).asHours();
-
-				/* Round the hours so 10.988888 becomes 11 hours, for example */
-				unassignedShift.hours = (Math.round(hours * 12) / 12);
-
-				return unassignedShift;
-			});
-
-			this.setState({ unassignedShifts });
-		}
-		/* eslint-enable no-param-reassign */
-	};
 
 	handleSuccessNotification = (message) => {
 		if (!toast.isActive(this.toastId)) {
@@ -141,7 +105,7 @@ class ShiftsOverview extends Component {
 					<PopoverBody>
 						<ul className="popover-menu">
 							<li style={{ minWidth: '264px' }}><label className="pt-2 pb-1 m-0">Overview</label></li>
-							{this.state.unassignedShifts.map((unassignedShift, unassignedShiftIndex) => (
+							{this.props.unassignedShifts.map((unassignedShift, unassignedShiftIndex) => (
 								<li key={unassignedShiftIndex} className="p-0" style={{ minWidth: '264px' }}>
 									<button type="button" title="Assign Shift" className="btn btn-action border-0 p-0 font-weight-normal" style={{ lineHeight: 'normal', fontSize: '0.7rem' }} onClick={this.handleAssignShift}>
 										<div className="d-flex align-items-center pt-1 pl-2 pr-2 pb-1 m-0">
@@ -156,7 +120,7 @@ class ShiftsOverview extends Component {
 									</button>
 								</li>
 							))}
-							{this.state.assignedShifts.map((assignedShift, assignedShiftIndex) => assignedShift.placements.map((placement, placementIndex) => (
+							{this.props.assignedShifts.map((assignedShift, assignedShiftIndex) => assignedShift.placements.map((placement, placementIndex) => (
 								<li key={`${assignedShiftIndex}_${placementIndex}`} className="p-0" style={{ minWidth: '264px' }}>
 									<button type="button" title="Edit Shift" className="btn btn-action border-0 p-0 font-weight-normal" style={{ lineHeight: 'normal', fontSize: '0.7rem' }} onClick={event => this.handleEditShift(event, assignedShift.shiftId, placement.employee.employeeId)}>
 										<div className="d-flex align-items-center pt-1 pl-2 pr-2 pb-1 m-0">
@@ -200,13 +164,4 @@ ShiftsOverview.propTypes = propTypes;
 
 ShiftsOverview.defaultProps = defaultProps;
 
-const mapStateToProps = (state, props) => ({
-	shifts: state.shifts,
-	employees: state.employees,
-});
-
-const mapDispatchToProps = dispatch => ({
-	actions: bindActionCreators({}, dispatch),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ShiftsOverview);
+export default ShiftsOverview;
