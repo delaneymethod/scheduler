@@ -62,7 +62,6 @@ class ShiftsOverview extends Component {
 	getInitialState = () => ({
 		shiftId: '',
 		employeeId: '',
-		editMode: false,
 		assignedShifts: [],
 		unassignedShifts: [],
 		isEditShiftModalOpen: false,
@@ -79,12 +78,7 @@ class ShiftsOverview extends Component {
 		}
 	};
 
-	handleEditShift = (event, shiftId, employeeId) => this.setState({
-		shiftId,
-		employeeId,
-		editMode: true,
-		isEditShiftModalOpen: !this.state.isEditShiftModalOpen,
-	});
+	handleEditShift = (event, shiftId, employeeId) => this.setState({ shiftId, employeeId, isEditShiftModalOpen: !this.state.isEditShiftModalOpen });
 
 	handleOverview = () => this.setState({ isOverviewPopoverOpen: !this.state.isOverviewPopoverOpen });
 
@@ -139,15 +133,12 @@ class ShiftsOverview extends Component {
 					</PopoverBody>
 				</Popover>
 			</div>
-			{(this.state.editMode) ? (
-				<Modal title="Edit Shift" className="modal-dialog" show={this.state.isEditShiftModalOpen} onClose={event => this.handleEditShift(event, this.state.employeeId, moment(this.props.weekDate).format('YYYY-MM-DD'))}>
-					<ShiftForm editMode={true} shiftId={this.state.shiftId} employeeId={this.state.employeeId} startDate={moment(this.props.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleEditShift(event, this.state.employeeId, moment(this.props.weekDate).format('YYYY-MM-DD'))} />
-				</Modal>
-			) : (
-				<Modal title="Create Shift" className="modal-dialog" show={this.state.isCreateShiftModalOpen} onClose={event => this.handleCreateShift(event, null, moment(this.props.weekDate).format('YYYY-MM-DD'))}>
-					<ShiftForm editMode={false} startDate={moment(this.props.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleCreateShift(event, null, moment(this.props.weekDate).format('YYYY-MM-DD'))} />
-				</Modal>
-			)}
+			<Modal title="Edit Shift" className="modal-dialog" show={this.state.isEditShiftModalOpen} onClose={event => this.handleEditShift(event, this.state.employeeId, moment(this.props.weekDate).format('YYYY-MM-DD'))}>
+				<ShiftForm editMode={true} shiftId={this.state.shiftId} employeeId={this.state.employeeId} startDate={moment(this.props.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleEditShift(event, this.state.employeeId, moment(this.props.weekDate).format('YYYY-MM-DD'))} />
+			</Modal>
+			<Modal title="Create Shift" className="modal-dialog" show={this.state.isCreateShiftModalOpen} onClose={event => this.handleCreateShift(event, null, moment(this.props.weekDate).format('YYYY-MM-DD'))}>
+				<ShiftForm editMode={false} startDate={moment(this.props.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleCreateShift(event, null, moment(this.props.weekDate).format('YYYY-MM-DD'))} />
+			</Modal>
 			<Modal title="Assign Shift" className="modal-dialog" show={this.state.isAssignShiftModalOpen} onClose={event => this.handleAssignShift(event, this.state.employeeId, moment(this.props.weekDate).format('YYYY-MM-DD'))}>
 				<AssignShiftForm startDate={moment(this.props.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleAssignShift(event, this.state.employeeId, moment(this.props.weekDate).format('YYYY-MM-DD'))} handleSwitchFromAssignShiftToCreateShift={this.handleSwitchFromAssignShiftToCreateShift} />
 			</Modal>

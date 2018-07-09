@@ -163,16 +163,16 @@ class Employees extends Component {
 		error: {},
 		tableData: {},
 		employeeId: '',
-		editMode: false,
 		placementId: '',
 		employeeName: '',
 		startDate: moment(),
 		isErrorModalOpen: false,
-		isShiftModalOpen: false,
 		isFilterPopoverOpen: false,
 		isSortByPopoverOpen: false,
-		isEmployeeModalOpen: false,
 		isAssignShiftModalOpen: false,
+		isCreateShiftModalOpen: false,
+		isEditEmployeeModalOpen: false,
+		isCreateEmployeeModalOpen: false,
 		isUploadEmployeesModalOpen: false,
 	});
 
@@ -302,15 +302,15 @@ class Employees extends Component {
 		return shift;
 	};
 
-	handleCreateEmployee = () => this.setState({ isEmployeeModalOpen: !this.state.isEmployeeModalOpen });
+	handleCreateEmployee = () => this.setState({ isCreateEmployeeModalOpen: !this.state.isCreateEmployeeModalOpen });
 
 	handleUploadEmployees = () => this.setState({ isUploadEmployeesModalOpen: !this.state.isUploadEmployeesModalOpen });
 
 	handleAssignShift = (event, employeeId, startDate) => this.setState({ startDate, employeeId, isAssignShiftModalOpen: !this.state.isAssignShiftModalOpen });
 
-	handleCreateShift = (event, employeeId, startDate) => this.setState({ startDate, employeeId, isShiftModalOpen: !this.state.isShiftModalOpen });
+	handleCreateShift = (event, employeeId, startDate) => this.setState({ startDate, employeeId, isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen });
 
-	handleEditEmployee = (event, employeeId) => this.setState({ editMode: true, employeeId, isEmployeeModalOpen: !this.state.isEmployeeModalOpen });
+	handleEditEmployee = (event, employeeId) => this.setState({ employeeId, isEditEmployeeModalOpen: !this.state.isEditEmployeeModalOpen });
 
 	handleFetchData = () => {
 		console.log('Called Employees handleFetchData');
@@ -975,21 +975,18 @@ class Employees extends Component {
 						</div>
 					</Fragment>
 				) : null}
-				<Modal title="Create Shift" className="modal-dialog" show={this.state.isShiftModalOpen} onClose={event => this.handleCreateShift(event, this.state.employeeId, moment(this.state.startDate).format('YYYY-MM-DD'))}>
+				<Modal title="Create Shift" className="modal-dialog" show={this.state.isCreateShiftModalOpen} onClose={event => this.handleCreateShift(event, this.state.employeeId, moment(this.state.startDate).format('YYYY-MM-DD'))}>
 					<ShiftForm editMode={false} employeeId={this.state.employeeId} startDate={moment(this.state.startDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleCreateShift(event, this.state.employeeId, moment(this.state.startDate).format('YYYY-MM-DD'))} />
 				</Modal>
 				<Modal title="Assign Shift" className="modal-dialog" show={this.state.isAssignShiftModalOpen} onClose={event => this.handleAssignShift(event, this.state.employeeId, moment(this.state.startDate).format('YYYY-MM-DD'))}>
 					<AssignShiftForm employeeId={this.state.employeeId} startDate={moment(this.state.startDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleAssignShift(event, this.state.employeeId, moment(this.state.startDate).format('YYYY-MM-DD'))} handleSwitchFromAssignShiftToCreateShift={this.handleSwitchFromAssignShiftToCreateShift} />
 				</Modal>
-				{(this.state.editMode) ? (
-					<Modal title="Edit Employee" className="modal-dialog" show={this.state.isEmployeeModalOpen} onClose={this.handleEditEmployee}>
-						<EmployeeForm editMode={true} employeeId={this.state.employeeId} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleEditEmployee} />
-					</Modal>
-				) : (
-					<Modal title="Create Employee" className="modal-dialog" show={this.state.isEmployeeModalOpen} onClose={this.handleCreateEmployee}>
-						<EmployeeForm editMode={false} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateEmployee} />
-					</Modal>
-				)}
+				<Modal title="Edit Employee" className="modal-dialog" show={this.state.isEditEmployeeModalOpen} onClose={this.handleEditEmployee}>
+					<EmployeeForm editMode={true} employeeId={this.state.employeeId} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleEditEmployee} />
+				</Modal>
+				<Modal title="Create Employee" className="modal-dialog" show={this.state.isCreateEmployeeModalOpen} onClose={this.handleCreateEmployee}>
+					<EmployeeForm editMode={false} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateEmployee} />
+				</Modal>
 				<Modal title="Upload Employees" className="modal-dialog" show={this.state.isUploadEmployeesModalOpen} onClose={this.handleUploadEmployees}>
 					<UploadEmployeesForm handleInfoNotification={this.handleInfoNotification} handleClose={this.handleUploadEmployees} />
 				</Modal>
