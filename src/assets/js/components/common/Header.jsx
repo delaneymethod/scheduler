@@ -112,6 +112,7 @@ class Header extends Component {
 											<Popover placement="bottom" isOpen={this.state.isProfileMenuPopoverOpen} target="profileMenu" toggle={this.handleProfileMenu}>
 												<PopoverBody>
 													<ul className="popover-menu">
+														<li><a href={dashboard.SETTINGS.URI} title={dashboard.SETTINGS.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-cog" aria-hidden="true"></i>{dashboard.SETTINGS.TITLE}</a></li>
 														<li><button type="button" title={routes.LOGOUT.TITLE} className="btn btn-action btn-nav border-0" onClick={this.handleLogout}><i className="pr-2 fa fa-fw fa-sign-out" aria-hidden="true"></i>{routes.LOGOUT.TITLE}</button></li>
 													</ul>
 												</PopoverBody>

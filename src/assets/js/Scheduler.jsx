@@ -31,6 +31,7 @@ store.subscribe(throttle(() => {
 		rotas,
 		roles,
 		shifts,
+		settings,
 		rotaType,
 		rotaTypes,
 		employees,
@@ -39,7 +40,11 @@ store.subscribe(throttle(() => {
 
 	saveState('user', user);
 
+	saveState('week', week);
+
 	saveState('roles', roles);
+
+	saveState('settings', settings);
 
 	saveState('employees', employees);
 
@@ -52,8 +57,6 @@ store.subscribe(throttle(() => {
 	saveState('rotaTypes', (rotaTypes.length === 0) ? [] : rotaTypes);
 
 	saveState('rota', (rotaTypes.length === 0 || rotas.length === 0) ? {} : rota);
-
-	saveState('week', (rotaTypes.length === 0 || rotas.length === 0) ? {} : week);
 
 	saveState('shifts', (rotaTypes.length === 0 || rotas.length === 0) ? [] : shifts);
 }, 1000));

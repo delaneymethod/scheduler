@@ -26,6 +26,11 @@ export default {
 			LOGOUT: {
 				TITLE: 'Logout',
 			},
+			SETTINGS: {
+				UPDATE: {
+					TITLE: 'Update Settings',
+				},
+			},
 			EMPLOYEES: {
 				DELETE: {
 					TITLE: 'Delete Employee',
@@ -141,6 +146,14 @@ export default {
 				EMPLOYEES: {
 					TITLE: 'Employees',
 					URI: '/dashboard/employees',
+					META: {
+						DESCRIPTION: '',
+						KEYWORDS: '',
+					},
+				},
+				SETTINGS: {
+					TITLE: 'Settings',
+					URI: '/dashboard/settings',
 					META: {
 						DESCRIPTION: '',
 						KEYWORDS: '',

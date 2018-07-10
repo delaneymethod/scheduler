@@ -8,6 +8,7 @@ import rotas from './rotasReducer';
 import shifts from './shiftsReducer';
 import accounts from './accountsReducer';
 import rotaType from './rotaTypeReducer';
+import settings from './settingsReducer';
 import employees from './employeesReducer';
 import rotaTypes from './rotaTypesReducer';
 import placements from './placementsReducer';
@@ -24,6 +25,7 @@ const reducers = combineReducers({
 	shifts,
 	accounts,
 	rotaType,
+	settings,
 	employees,
 	rotaTypes,
 	placements,

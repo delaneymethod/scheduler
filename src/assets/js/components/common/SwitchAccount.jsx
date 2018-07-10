@@ -59,6 +59,8 @@ class SwitchAccount extends Component {
 					actions.updateUser(this.props.user).then(() => window.location.reload());
 				})
 				.catch((error) => {
+					error.data.title = 'Switch Account';
+
 					this.setState({ error });
 
 					this.handleModal();

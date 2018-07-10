@@ -15,23 +15,13 @@ const routes = constants.APP.ROUTES;
 
 const propTypes = {
 	week: PropTypes.object.isRequired,
-	rota: PropTypes.object.isRequired,
-	rotas: PropTypes.array.isRequired,
 	user: PropTypes.object.isRequired,
-	shifts: PropTypes.array.isRequired,
-	rotaType: PropTypes.object.isRequired,
-	employees: PropTypes.array.isRequired,
 	authenticated: PropTypes.bool.isRequired,
 };
 
 const defaultProps = {
 	user: {},
 	week: {},
-	rota: {},
-	rotas: [],
-	shifts: [],
-	rotaType: {},
-	employees: [],
 	authenticated: false,
 };
 
@@ -84,11 +74,6 @@ Overview.defaultProps = defaultProps;
 const mapStateToProps = (state, props) => ({
 	user: state.user,
 	week: state.week,
-	rota: state.rota,
-	rotas: state.rotas,
-	shifts: state.shifts,
-	rotaType: state.rotaType,
-	employees: state.employees,
 	authenticated: state.authenticated,
 });
 

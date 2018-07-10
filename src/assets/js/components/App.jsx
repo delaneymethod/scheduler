@@ -15,6 +15,7 @@ import UpdateYourPassword from './views/UpdateYourPassword';
 import ForgottenYourPassword from './views/ForgottenYourPassword';
 
 import Roles from './views/dashboard/Roles';
+import Settings from './views/dashboard/Settings';
 import Overview from './views/dashboard/Overview';
 import Dashboard from './views/dashboard/Dashboard';
 import Employees from './views/dashboard/Employees';
@@ -33,6 +34,7 @@ const App = () => (
 			<Route exact path={routes.DASHBOARD.EMPLOYEES.URI} component={Employees} />
 			<Route exact path={routes.DASHBOARD.ROLES.URI} component={Roles} />
 			<Route exact path={routes.DASHBOARD.OVERVIEW.URI} component={Overview} />
+			<Route exact path={routes.DASHBOARD.SETTINGS.URI} component={Settings} />
 			<Route path="*" component={NotFoundPage} />
 		</Switch>
 		<ToastContainer className="p-0" draggable={false} newestOnTop={true} transition={Slide} hideProgressBar={true} />

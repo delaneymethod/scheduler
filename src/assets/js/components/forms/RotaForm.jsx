@@ -19,6 +19,8 @@ import { getShifts } from '../../actions/shiftActions';
 
 import { switchWeek } from '../../actions/weekActions';
 
+import { updateSettings } from '../../actions/settingActions';
+
 import { getRotas, createRota, updateRota, deleteRota, switchRota } from '../../actions/rotaActions';
 
 import { createRotaType, updateRotaType, deleteRotaType, switchRotaType } from '../../actions/rotaTypeActions';
@@ -32,6 +34,8 @@ const propTypes = {
 	message: PropTypes.string,
 	week: PropTypes.object.isRequired,
 	rotas: PropTypes.array.isRequired,
+	firstRota: PropTypes.bool.isRequired,
+	settings: PropTypes.object.isRequired,
 	rotaTypes: PropTypes.array.isRequired,
 	handleClose: PropTypes.func.isRequired,
 	handleSuccessNotification: PropTypes.func.isRequired,
@@ -42,7 +46,9 @@ const defaultProps = {
 	title: '',
 	rotas: [],
 	message: '',
+	settings: {},
 	rotaTypes: [],
+	firstRota: false,
 	handleClose: () => {},
 	handleSuccessNotification: () => {},
 };
@@ -81,7 +87,7 @@ class RotaForm extends Component {
 		const startDates = [];
 
 		/* Get the start date of the week... */
-		const startDate = moment().day(1);
+		const startDate = moment().startOf('week');
 
 		/* Update the state with a default start date */
 		this.setState({ startDate: startDate.format('YYYY-MM-DD') });
@@ -94,7 +100,8 @@ class RotaForm extends Component {
 
 		/* Loop over our range of dates and add each start date of the week to the list of start dates */
 		while (startDate.isBefore(endDate)) {
-			startDate.add(7, 'days');
+			/* Set to 1 day so rota start dates can be any day of the week */
+			startDate.add(1, 'days');
 
 			startDates.push(startDate.toDate());
 		}
@@ -174,9 +181,11 @@ class RotaForm extends Component {
 												actions.getShifts(rota)
 													.then(() => {
 														/* Then we use the new rotas start date to set the current week start and end dates */
-														const weekStartDate = moment(startDate, 'YYYY-MM-DD').startOf('isoWeek');
+														const firstDayOfWeek = moment(startDate).day();
 
-														const weekEndDate = moment(startDate, 'YYYY-MM-DD').endOf('isoWeek');
+														const weekStartDate = moment(startDate, 'YYYY-MM-DD');
+
+														const weekEndDate = moment(startDate, 'YYYY-MM-DD').add(6, 'days');
 
 														payload = {
 															endDate: weekEndDate,
@@ -186,13 +195,30 @@ class RotaForm extends Component {
 														/* Set the current week */
 														console.log('Called RotaForm handleSubmit switchWeek');
 														actions.switchWeek(payload).then(() => {
-															/* Close the modal */
-															this.props.handleClose();
+															payload = {
+																firstDayOfWeek,
+															};
 
-															const message = '<p>Rota was created!</p>';
+															/* Set the day of week based on start date */
+															console.log('Called RotaForm handleSubmit updateSettings');
+															actions.updateSettings(payload).then(() => {
+																console.log('Called RotaForm handleSubmit firstDayOfWeek:', firstDayOfWeek);
 
-															/* Pass a message back up the rabbit hole to the parent component */
-															this.props.handleSuccessNotification(message);
+																moment.updateLocale('en', {
+																	week: {
+																		dow: firstDayOfWeek,
+																		doy: moment.localeData('en').firstDayOfYear(),
+																	},
+																});
+
+																/* Close the modal */
+																this.props.handleClose();
+
+																const message = '<p>Rota was created!</p>';
+
+																/* Pass a message back up the rabbit hole to the parent component */
+																this.props.handleSuccessNotification(message);
+															});
 														});
 													})
 													.catch(error => this.setState({ error }));
@@ -252,6 +278,7 @@ RotaForm.defaultProps = defaultProps;
 const mapStateToProps = (state, props) => ({
 	week: state.week,
 	rotas: state.rotas,
+	settings: state.settings,
 	rotaTypes: state.rotaTypes,
 });
 
@@ -268,6 +295,7 @@ const mapDispatchToProps = dispatch => ({
 		updateRotaType,
 		deleteRotaType,
 		switchRotaType,
+		updateSettings,
 	}, dispatch),
 });
 

@@ -11,11 +11,13 @@ import Toolbar from '../../common/Toolbar';
 
 import constants from '../../../helpers/constants';
 
+import SettingsForm from '../../forms/SettingsForm';
+
 const routes = constants.APP.ROUTES;
 
 const propTypes = {
-	week: PropTypes.object.isRequired,
 	user: PropTypes.object.isRequired,
+	week: PropTypes.object.isRequired,
 	authenticated: PropTypes.bool.isRequired,
 };
 
@@ -25,7 +27,7 @@ const defaultProps = {
 	authenticated: false,
 };
 
-class Roles extends Component {
+class Settings extends Component {
 	constructor(props) {
 		super(props);
 
@@ -50,12 +52,12 @@ class Roles extends Component {
 			return;
 		}
 
-		document.title = `${constants.APP.TITLE}: ${routes.DASHBOARD.ROLES.TITLE} - ${routes.DASHBOARD.HOME.TITLE}`;
+		document.title = `${constants.APP.TITLE}: ${routes.DASHBOARD.SETTINGS.TITLE} - ${routes.DASHBOARD.HOME.TITLE}`;
 
 		const meta = document.getElementsByTagName('meta');
 
-		meta.description.setAttribute('content', routes.DASHBOARD.ROLES.META.DESCRIPTION);
-		meta.keywords.setAttribute('content', routes.DASHBOARD.ROLES.META.KEYWORDS);
+		meta.description.setAttribute('content', routes.DASHBOARD.SETTINGS.META.DESCRIPTION);
+		meta.keywords.setAttribute('content', routes.DASHBOARD.SETTINGS.META.KEYWORDS);
 		meta.author.setAttribute('content', constants.APP.AUTHOR);
 	};
 
@@ -63,13 +65,14 @@ class Roles extends Component {
 		<Fragment>
 			<Header history={this.props.history} />
 			<Toolbar history={this.props.history} />
+			<SettingsForm history={this.props.history} />
 		</Fragment>
 	);
 }
 
-Roles.propTypes = propTypes;
+Settings.propTypes = propTypes;
 
-Roles.defaultProps = defaultProps;
+Settings.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
 	user: state.user,
@@ -79,4 +82,4 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = dispatch => ({});
 
-export default connect(mapStateToProps, mapDispatchToProps)(Roles);
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);

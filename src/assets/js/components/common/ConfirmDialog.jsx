@@ -27,7 +27,7 @@ const ConfirmDialog = ({
 	proceed,
 }) => (
 	<Modal backdrop="static" keyboard={false} centered={true} isOpen={show} toggle={dismiss} className={options.className}>
-		<ModalHeader toggle={dismiss}>{options.title}</ModalHeader>
+		<ModalHeader toggle={() => cancel(options.values.cancel)}>{options.title}</ModalHeader>
 		<ModalBody className="p-4 p-sm-4 p-md-5 p-lg-5 p-xl-5">
 			<div dangerouslySetInnerHTML={{ __html: options.message }} />
 		</ModalBody>

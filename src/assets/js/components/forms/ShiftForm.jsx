@@ -170,7 +170,7 @@ class ShiftForm extends Component {
 		}
 
 		/* Our range will be the current week */
-		const startDates = [];
+		let startDates = [];
 
 		/* Add the first date of the week to the range */
 		startDates.unshift(moment(this.props.week.startDate).toDate());
@@ -186,6 +186,9 @@ class ShiftForm extends Component {
 
 		/* Finally add the end of the week date */
 		startDates.push(moment(this.props.week.endDate).toDate());
+
+		/* Remove past dates */
+		startDates = startDates.filter(data => moment(data).isSameOrAfter(moment().format('YYYY-MM-DD')));
 
 		this.setState({ startDate, startDates });
 

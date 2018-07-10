@@ -84,7 +84,6 @@ class LoginForm extends Component {
 				password,
 			};
 
-			/* eslint-disable no-param-reassign */
 			console.log('Called Login handleSubmit login');
 			actions.login(payload)
 				.then((user) => {
@@ -103,7 +102,6 @@ class LoginForm extends Component {
 					actions.updateUser(user).then(() => history.push(routes.DASHBOARD.HOME.URI));
 				})
 				.catch(error => this.setState({ error }));
-			/* eslint-enable no-param-reassign */
 		}
 	};
 

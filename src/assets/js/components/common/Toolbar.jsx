@@ -2,9 +2,9 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
-import { orderBy, isEmpty } from 'lodash';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
+import { orderBy, isEmpty, includes } from 'lodash';
 import { Col, Row, Popover, PopoverBody, PopoverHeader } from 'reactstrap';
 
 import Modal from './Modal';
@@ -24,6 +24,8 @@ import AssignShiftForm from '../forms/AssignShiftForm';
 import { switchWeek } from '../../actions/weekActions';
 
 import { getShifts } from '../../actions/shiftActions';
+
+import { updateSettings } from '../../actions/settingActions';
 
 import { getRotas, switchRota, updateRota } from '../../actions/rotaActions';
 
@@ -113,8 +115,8 @@ class Toolbar extends Component {
 		}
 
 		/* If the current week/rota or shifts have changes, re/check the shift button state and update label to reflect available actions */
-		if (prevProps.week !== this.props.week || prevProps.shifts !== this.props.shifts || prevProps.rota !== this.props.rota) {
-			const currentStartDate = moment().startOf('isoWeek').format('YYYY-MM-DD');
+		if (prevProps.week !== this.props.week || prevProps.shifts !== this.props.shifts || prevProps.rota !== this.props.rota || prevProps.settings !== this.props.settings) {
+			const currentStartDate = moment().startOf('week').format('YYYY-MM-DD');
 
 			const weekStartDate = moment(this.props.week.startDate).format('YYYY-MM-DD');
 
@@ -143,9 +145,19 @@ class Toolbar extends Component {
 			}
 
 			/* However if the current rota/week start date is not in the current week e.g today/this week (not the week that the user is viewing) then disabled the shift button again (we also change the label to reflect the approiate action, although this doesnt really matter TBH as button is disabled) */
-			if (moment(weekStartDate).isBefore(moment(currentStartDate))) {
-				enableShiftButton = false;
+			const currentWeekRange = [];
 
+			const startOfCurrentWeek = moment(weekStartDate);
+
+			const endOfCurrentWeek = moment(weekStartDate).add(7, 'days');
+
+			currentWeekRange.push(startOfCurrentWeek.format('YYYY-MM-DD'));
+
+			while (startOfCurrentWeek.add(1, 'days').diff(endOfCurrentWeek) < 0) {
+				currentWeekRange.push(startOfCurrentWeek.format('YYYY-MM-DD'));
+			}
+
+			if (includes(currentWeekRange, moment(currentStartDate).format('YYYY-MM-DD'))) {
 				hasUnassignedShifts = false;
 			}
 
@@ -171,16 +183,23 @@ class Toolbar extends Component {
 					actions.getRotas(rotaType)
 						.then(() => {
 							/* We only want to get the rota matching the current week so we have some data by default */
-							const rota = this.props.rotas.filter(data => moment(data.startDate).format('YYYY-MM-DD') === moment(this.props.week.startDate).format('YYYY-MM-DD')).shift();
+							let rota = this.props.rotas.filter(data => moment(data.startDate).format('YYYY-MM-DD') === moment(this.props.week.startDate).format('YYYY-MM-DD')).shift();
+
+							/* No rotas match the current week so lets use the first rota we find */
+							if (isEmpty(rota)) {
+								rota = orderBy(this.props.rotas, 'startDate').shift();
+							}
 
 							console.log('Called Toolbar handleSwitchRotaType switchRota');
 							actions.switchRota(rota).then(() => {
 								/* Then we use the rotas start date to set the current week start and end dates */
-								const weekStartDate = moment(rota.startDate).startOf('isoWeek');
+								const firstDayOfWeek = moment(rota.startDate).day();
 
-								const weekEndDate = moment(rota.startDate).endOf('isoWeek');
+								const weekStartDate = moment(rota.startDate);
 
-								const payload = {
+								const weekEndDate = moment(rota.startDate).add(6, 'days');
+
+								let payload = {
 									endDate: weekEndDate,
 									startDate: weekStartDate,
 								};
@@ -190,15 +209,37 @@ class Toolbar extends Component {
 								actions.switchWeek(payload).then(() => {
 									/* Get shifts for current rota */
 									console.log('Called Toolbar handleSwitchRotaType getShifts');
-									actions.getShifts(rota).catch((error) => {
-										this.setState({ error });
+									actions.getShifts(rota)
+										.then(() => {
+											payload = {
+												firstDayOfWeek,
+											};
 
-										this.handleModal();
-									});
+											/* Set the day of week based on start date */
+											console.log('Called Toolbar handleSwitchRotaType updateSettings');
+											actions.updateSettings(payload);
+
+											console.log('Called Toolbar handleSwitchRotaType firstDayOfWeek:', firstDayOfWeek);
+											moment.updateLocale('en', {
+												week: {
+													dow: firstDayOfWeek,
+													doy: moment.localeData('en').firstDayOfYear(),
+												},
+											});
+										})
+										.catch((error) => {
+											error.data.title = 'Get Shifts';
+
+											this.setState({ error });
+
+											this.handleModal();
+										});
 								});
 							});
 						})
 						.catch((error) => {
+							error.data.title = 'Get Rotas';
+
 							this.setState({ error });
 
 							this.handleModal();
@@ -228,6 +269,8 @@ class Toolbar extends Component {
 		};
 
 		actions.updateRota(payload).catch((error) => {
+			error.data.title = 'Publish Rota';
+
 			this.setState({ error });
 
 			this.handleModal();
@@ -289,7 +332,7 @@ class Toolbar extends Component {
 				</Col>
 			</Row>
 			<Modal title="Create Rota" className="modal-dialog" show={this.state.isRotaModalOpen} onClose={this.handleCreateRota}>
-				<RotaForm handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateRota} />
+				<RotaForm firstRota={false} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateRota} />
 			</Modal>
 			<Modal title="Create Shift" className="modal-dialog" show={this.state.isShiftModalOpen} onClose={event => this.handleCreateShift(event, this.state.startDate)}>
 				<ShiftForm startDate={this.state.startDate} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleCreateShift(event, this.state.startDate)} />
@@ -327,6 +370,7 @@ const mapDispatchToProps = dispatch => ({
 		switchRota,
 		updateRota,
 		getRotaTypes,
+		updateSettings,
 		switchRotaType,
 	}, dispatch),
 });

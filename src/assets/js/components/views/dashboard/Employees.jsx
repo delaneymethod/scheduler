@@ -201,8 +201,8 @@ class Employees extends Component {
 			return;
 		}
 
-		/* If the current week, current rota, current rota type, employees or shifts had any changes, re/load the table */
-		if (prevProps.employees !== this.props.employees || prevProps.week !== this.props.week || prevProps.rota !== this.props.rota || prevProps.rotaType !== this.props.rotaType || prevProps.shifts !== this.props.shifts) {
+		/* If the current week, current rota, current rota type, employees, settings or shifts had any changes, re/load the table */
+		if (prevProps.employees !== this.props.employees || prevProps.week !== this.props.week || prevProps.rota !== this.props.rota || prevProps.rotaType !== this.props.rotaType || prevProps.shifts !== this.props.shifts || prevProps.settings !== this.props.settings) {
 			this.handleFetchData();
 		}
 	};
@@ -294,10 +294,8 @@ class Employees extends Component {
 	handleSetShiftHours = (shift) => {
 		const hours = moment.duration(moment(shift.endTime).diff(moment(shift.startTime))).asHours();
 
-		/* eslint-disable no-param-reassign */
 		/* Round the hours so 10.988888 becomes 11 hours, for example */
 		shift.hours = (Math.round(hours * 12) / 12);
-		/* eslint-enable no-param-reassign */
 
 		return shift;
 	};
@@ -335,7 +333,7 @@ class Employees extends Component {
 
 		const start = startDate.clone();
 
-		while (start.isBefore(endDate)) {
+		while (start.isSameOrBefore(endDate)) {
 			weekDates.push(start.toDate());
 
 			start.add(1, 'days');
@@ -565,26 +563,28 @@ class Employees extends Component {
 	};
 
 	handleOrderable = () => {
-		Orderable.create(document.getElementById('tableBody'), {
-			scroll: true,
-			animation: 150,
-			group: 'employees',
-			dataIdAttr: 'data-account-employee-id',
-			handle: '.drag-handler',
-			draggable: '.draggable-row',
-			ghostClass: 'draggable-row-ghost',
-			store: {
-				get: () => {
-					const employees = this.handleOrderEmployees();
+		if (document.getElementById('tableBody')) {
+			Orderable.create(document.getElementById('tableBody'), {
+				scroll: true,
+				animation: 150,
+				group: 'employees',
+				dataIdAttr: 'data-account-employee-id',
+				handle: '.drag-handler',
+				draggable: '.draggable-row',
+				ghostClass: 'draggable-row-ghost',
+				store: {
+					get: () => {
+						const employees = this.handleOrderEmployees();
 
-					/* The rows are sorted based on account employee id... */
-					return employees.map(employee => employee.accountEmployeeId);
+						/* The rows are sorted based on account employee id... */
+						return employees.map(employee => employee.accountEmployeeId);
+					},
+					set: sortable => this.handleUpdateEmployeeOrder(sortable.toArray()),
 				},
-				set: sortable => this.handleUpdateEmployeeOrder(sortable.toArray()),
-			},
-		});
+			});
 
-		console.log('Called Employees handleOrderable - orderable listeners ready');
+			console.log('Called Employees handleOrderable - orderable listeners ready');
+		}
 	};
 
 	handleUpdateEmployeeOrder = (ids) => {
@@ -605,12 +605,16 @@ class Employees extends Component {
 			.then(() => {
 				console.log('Called Employees handleUpdateEmployeeOrder getEmployees');
 				actions.getEmployees().catch((error) => {
+					error.data.title = 'Get Employees';
+
 					this.setState({ error });
 
 					this.handleModal();
 				});
 			})
 			.catch((error) => {
+				error.data.title = 'Order Employees';
+
 				this.setState({ error });
 
 				this.handleModal();
@@ -680,6 +684,8 @@ class Employees extends Component {
 						/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 						.then(() => this.handleGetShifts(rotaId))
 						.catch((error) => {
+							error.data.title = 'Edit Placement';
+
 							this.setState({ error });
 
 							this.handleModal();
@@ -690,6 +696,8 @@ class Employees extends Component {
 				}
 			})
 			.catch((error) => {
+				error.data.title = 'Edit Shift';
+
 				this.setState({ error });
 
 				this.handleModal();
@@ -705,31 +713,34 @@ class Employees extends Component {
 
 		console.log('Called Employees handleGetShifts getShifts');
 		actions.getShifts(payload).catch((error) => {
+			error.data.title = 'Get Shifts';
+
 			this.setState({ error });
 
 			this.handleModal();
 		});
 	};
 
-	/* eslint-disable no-param-reassign */
 	handleDragAndDrop = () => {
 		const shifts = document.querySelectorAll('.shift');
 
-		shifts.forEach((shift) => {
-			shift.addEventListener('dragend', this.handleDragEnd);
-			shift.addEventListener('dragstart', this.handleDragStart);
-		});
+		if (shifts.length > 0) {
+			shifts.forEach((shift) => {
+				shift.addEventListener('dragend', this.handleDragEnd);
+				shift.addEventListener('dragstart', this.handleDragStart);
+			});
 
-		const draggableCells = document.querySelectorAll('.draggable-cell');
+			const draggableCells = document.querySelectorAll('.draggable-cell');
 
-		draggableCells.forEach((draggableCell) => {
-			draggableCell.addEventListener('drop', this.handleDrop);
-			draggableCell.addEventListener('dragover', this.handleDragOver);
-			draggableCell.addEventListener('dragenter', this.handleDragEnter);
-			draggableCell.addEventListener('dragleave', this.handleDragLeave);
-		});
+			draggableCells.forEach((draggableCell) => {
+				draggableCell.addEventListener('drop', this.handleDrop);
+				draggableCell.addEventListener('dragover', this.handleDragOver);
+				draggableCell.addEventListener('dragenter', this.handleDragEnter);
+				draggableCell.addEventListener('dragleave', this.handleDragLeave);
+			});
 
-		console.log('Called Employees handleDragAndDrop - drag and drop listeners ready');
+			console.log('Called Employees handleDragAndDrop - drag and drop listeners ready');
+		}
 	};
 
 	handleDragStart = (event) => {
@@ -823,7 +834,6 @@ class Employees extends Component {
 
 		return false;
 	};
-	/* eslint-enable no-param-reassign */
 
 	handleSwitchFromAssignShiftToCreateShift = () => this.setState({ isShiftModalOpen: true, isAssignShiftModalOpen: false });
 

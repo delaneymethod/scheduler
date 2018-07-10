@@ -61,11 +61,7 @@ class UploadEmployeesForm extends Component {
 			actions.uploadEmployees(payload)
 				.then(() => {
 					console.log('Called UploadEmployeesForm handleSubmit getEmployees');
-					actions.getEmployees().catch((error) => {
-						this.setState({ error });
-
-						this.handleModal();
-					});
+					actions.getEmployees().catch(error => this.setState({ error }));
 				})
 				.then((response) => {
 					/* Close the modal */

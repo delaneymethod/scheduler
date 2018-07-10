@@ -6,6 +6,7 @@ export default {
 	rotas: [],
 	shifts: [],
 	accounts: [],
+	settings: {},
 	rotaType: {},
 	employees: [],
 	rotaTypes: [],
