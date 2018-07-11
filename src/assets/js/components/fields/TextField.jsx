@@ -1,12 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Label, Input, FormGroup } from 'reactstrap';
-import { FieldFeedback, FieldFeedbacks } from 'react-form-with-constraints';
+import { Async, FieldFeedback, FieldFeedbacks } from 'react-form-with-constraints';
+
+import isDuplicate from '../../helpers/isDuplicate';
 
 const propTypes = {
 	fieldValue: PropTypes.any,
+	duplicatesPool: PropTypes.any,
 	valueMissing: PropTypes.string,
 	fieldPlaceholder: PropTypes.string,
+	isDuplicateHaystack: PropTypes.array,
 	handleBlur: PropTypes.func.isRequired,
 	fieldName: PropTypes.string.isRequired,
 	fieldLabel: PropTypes.string.isRequired,
@@ -25,7 +29,9 @@ const defaultProps = {
 	handleBlur: () => {},
 	fieldRequired: false,
 	fieldPlaceholder: '',
+	showIsDuplicate: null,
 	handleChange: () => {},
+	isDuplicateHaystack: [],
 	fieldAutoComplete: 'off',
 };
 
@@ -38,8 +44,10 @@ const TextField = ({
 	handleChange,
 	fieldRequired,
 	fieldTabIndex,
+	showIsDuplicate,
 	fieldPlaceholder,
 	fieldAutoComplete,
+	isDuplicateHaystack,
 }) => (
 	<FormGroup>
 		<Label for={fieldName}>{fieldLabel} {(fieldRequired) ? (<span className="text-danger">&#42;</span>) : null}</Label>
@@ -47,6 +55,11 @@ const TextField = ({
 		<FieldFeedbacks for={fieldName} show="all">
 			<FieldFeedback when="valueMissing">- {valueMissing}</FieldFeedback>
 		</FieldFeedbacks>
+		{(showIsDuplicate && isDuplicateHaystack.length > 0) ? (
+			<FieldFeedbacks for={fieldName} show="all">
+				<Async promise={() => isDuplicate(fieldValue, isDuplicateHaystack)} then={duplicate => (duplicate ? <FieldFeedback error>- {fieldLabel} already exists.</FieldFeedback> : null)} />
+			</FieldFeedbacks>
+		) : null}
 	</FormGroup>
 );
 
