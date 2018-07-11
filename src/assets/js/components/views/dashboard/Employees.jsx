@@ -900,11 +900,11 @@ class Employees extends Component {
 										{this.state.tableData.body.rows.length > 0 && this.state.tableData.body.rows.map((row, rowIndex) => (
 											<tr key={rowIndex} className="draggable-row" data-account-employee-id={row.accountEmployee.accountEmployeeId}>
 												<td className="p-2 align-top text-left drag-handler p-0 m-0" onClick={event => this.handleEditEmployee(event, row.accountEmployee.employee.employeeId)}>
-													<div className="d-flex align-items-center p-0 m-0">
+													<div className="d-flex align-items-start p-0 m-0">
 														<div className="d-inline-block p-0 mt-0 ml-0 mr-2 mb-0">
-															<Avatar name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="51" />
+															<Avatar name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="39" />
 														</div>
-														<div className="d-inline-block pt-1 pl-0 pr-0 pb-0 m-0">
+														<div className="d-inline-block pt-0 pl-0 pr-0 pb-0 m-0">
 															<div id="fullname text-truncate">{row.accountEmployee.employee.firstName} {row.accountEmployee.employee.lastName}</div>
 															<div className="align-middle">
 																<i className={`align-middle p-0 ml-0 fa fa-fw fa-gbp ${(row.accountEmployee.hourlyRate) || (row.accountEmployee.salary) ? 'complete' : ''}`} aria-hidden="true"></i>

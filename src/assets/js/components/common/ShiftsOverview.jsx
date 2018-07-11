@@ -91,7 +91,7 @@ class ShiftsOverview extends Component {
 	render = () => ((!this.props.past && this.props.total > 0) ? (
 		<Fragment>
 			<div className="placements-status p-0 m-0">
-				<button type="button" className="btn btn-icon border-0 p-0 m-0 bg-transparent" title="View Overview" aria-label="View Overview" id={`overview-${moment(this.props.weekDate).format('YYYYMMDD')}`} onClick={this.handleOverview}>
+				<button type="button" className="btn btn-overview border-0 p-0 m-0 bg-transparent" title="View Overview" aria-label="View Overview" id={`overview-${moment(this.props.weekDate).format('YYYYMMDD')}`} onClick={this.handleOverview}>
 					<div className={`mr-2 p-0 ml-0 mr-0 mb-0 indicator ${this.props.placementStatus}`}></div>
 					<div className="p-0 m-0 count">{this.props.count}/{this.props.total}</div>
 				</button>
