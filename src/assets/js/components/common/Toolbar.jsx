@@ -87,6 +87,7 @@ class Toolbar extends Component {
 	getInitialState = () => ({
 		error: {},
 		startDate: '',
+		rotaStatus: 'DRAFT',
 		rolesIsActive: false,
 		isRotaModalOpen: false,
 		isShiftModalOpen: false,
@@ -103,6 +104,7 @@ class Toolbar extends Component {
 		const { pathname } = this.props.history.location;
 
 		this.setState({
+			rotaStatus: this.props.rota.status,
 			rolesIsActive: (pathname === dashboard.ROLES.URI),
 			overviewIsActive: (pathname === dashboard.OVERVIEW.URI),
 			employeesIsActive: (pathname === dashboard.EMPLOYEES.URI),
@@ -161,7 +163,7 @@ class Toolbar extends Component {
 				hasUnassignedShifts = false;
 			}
 
-			this.setState({ enableShiftButton, hasUnassignedShifts });
+			this.setState({ enableShiftButton, hasUnassignedShifts, rotaStatus: this.props.rota.status });
 		}
 	};
 
@@ -268,13 +270,18 @@ class Toolbar extends Component {
 			rotaTypeId,
 		};
 
-		actions.updateRota(payload).catch((error) => {
-			error.data.title = 'Publish Rota';
+		console.log('Called Toolbar handleSwitchRota updateRota');
+		console.log('Called Toolbar handleSwitchRota switchRota');
+		actions.updateRota(payload)
+			/* We switch the rota again even though its not really updating anything related to it - e.g week, shifts, first day of week etc. Only change is the status which we need to reflect below hence this call. */
+			.then(updatedRota => actions.switchRota(updatedRota))
+			.catch((error) => {
+				error.data.title = 'Publish Rota';
 
-			this.setState({ error });
+				this.setState({ error });
 
-			this.handleModal();
-		});
+				this.handleModal();
+			});
 	};
 
 	handleModal = () => this.setState({ isErrorModalOpen: !this.state.isErrorModalOpen }, () => ((!this.state.isErrorModalOpen) ? this.props.history.push(routes.DASHBOARD.HOME.URI) : null));
@@ -324,10 +331,10 @@ class Toolbar extends Component {
 					) : (
 						<button type="button" title="Create Shift" className="btn btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 border-0" disabled={!this.state.enableShiftButton} onClick={this.handleCreateShift}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Create Shift</button>
 					)}
-					{(this.props.rota.status === STATUSES.DRAFT) ? (
+					{(this.state.rotaStatus === STATUSES.DRAFT) ? (
 						<button type="button" title="Publish Rota" className="btn btn-nav btn-primary col-12 col-sm-auto pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 ml-sm-3 border-0" onClick={this.handlePublishRota}>Publish</button>
 					) : (
-						<button type="button" title={this.props.rota.status} className="btn btn-rotas-popover text-dark col-12 col-sm-auto pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 ml-sm-3 border-0" disabled>{this.props.rota.status}</button>
+						<button type="button" title={this.state.rotaStatus} className="btn btn-rotas-popover text-dark col-12 col-sm-auto pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 ml-sm-3 border-0" disabled>{this.state.rotaStatus}</button>
 					)}
 				</Col>
 			</Row>
