@@ -81,11 +81,9 @@ class PasswordField extends Component {
 				<FieldFeedback when="patternMismatch">- Password should be at least {this.props.minLength} characters long.</FieldFeedback>
 			</FieldFeedbacks>
 			{(this.props.showPasswordCommon && this.props.fieldName === 'password') ? (
-				<Fragment>
-					<FieldFeedbacks for="password" show="all">
-						<Async promise={isPasswordCommon} then={commonPassword => (commonPassword ? <FieldFeedback warning>- Password is very common.</FieldFeedback> : null)} />
-					</FieldFeedbacks>
-				</Fragment>
+				<FieldFeedbacks for="password" show="all">
+					<Async promise={isPasswordCommon} then={commonPassword => (commonPassword ? <FieldFeedback warning>- Password is very common.</FieldFeedback> : null)} />
+				</FieldFeedbacks>
 			) : null}
 			{(this.props.fieldName === 'confirmPassword') ? (
 				<FieldFeedbacks for="confirmPassword" show="all">
