@@ -26,6 +26,21 @@ describe('API', () => {
 		mock.reset();
 	});
 
+	it('should use development API', () => {
+		mock.onPost('/login').reply(200, {
+			token: '1234567890',
+		});
+
+		const payload = {
+			password: 'passwordMustBe10',
+			email: 'barry.lynch@giggrafter.com',
+		};
+
+		process.env.NODE_ENV = 'development';
+
+		return api.login(payload).then(data => expect(data.token).toEqual('1234567890'));
+	});
+
 	it('should grab user state', () => {
 		mock.onPost('/login').reply(200, {
 			token: '1234567890',

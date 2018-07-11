@@ -166,6 +166,9 @@ export default {
 		},
 	},
 	API: {
-		HOST: 'https://test.giggrafter.com/v1',
+		HOST: {
+			DEV: 'https://test.giggrafter.com/v1',
+			PROD: 'https://api.giggrafter.com/v1',
+		},
 	},
 };

@@ -64,7 +64,7 @@ const request = (method, url, expectedStatus = 200, payload = null) => {
 		}
 	}
 
-	axios.defaults.baseURL = constants.API.HOST;
+	axios.defaults.baseURL = (process.env.NODE_ENV === 'development') ? constants.API.HOST.DEV : constants.API.HOST.PROD;
 
 	/* If the response is an array of data, the data array will be wrapped in a data attribute. Confusing I know! */
 	return axios.request(config)
