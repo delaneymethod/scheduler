@@ -144,6 +144,14 @@
 		
 		.column.first {
 			width: 300px;
+			
+			.flex-column {
+				width: 50%;
+	
+				&:last-child {
+					width: 50%;
+				}
+			}
 		}
 		
 		.column.last {

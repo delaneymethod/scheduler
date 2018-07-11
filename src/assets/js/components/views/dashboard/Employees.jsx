@@ -948,7 +948,7 @@ class Employees extends Component {
 									</tbody>
 									<tfoot>
 										<tr>
-											<th className="text-center">
+											<th className="text-center column first">
 												<div className="d-flex align-items-center">
 													<div className="flex-column">
 														<div className="p-2 flex-row">Total Hours</div>
