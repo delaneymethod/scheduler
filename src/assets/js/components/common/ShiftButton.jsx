@@ -5,6 +5,8 @@ import { toast } from 'react-toastify';
 import React, { Fragment, Component } from 'react';
 import { Popover, PopoverBody, PopoverHeader } from 'reactstrap';
 
+import Modal from './Modal';
+
 import ShiftForm from '../forms/ShiftForm';
 
 import constants from '../../helpers/constants';
@@ -25,7 +27,7 @@ const defaultProps = {
 	shiftPlacement: {},
 };
 
-class ShiftPlacement extends Component {
+class ShiftButton extends Component {
 	constructor(props) {
 		super(props);
 
@@ -44,15 +46,16 @@ class ShiftPlacement extends Component {
 
 	getInitialState = () => ({
 		editMode: false,
-		isShiftModalOpen: false,
 		isShiftPopoverOpen: false,
+		isEditShiftModalOpen: false,
+		isCreateShiftModalOpen: false,
 	});
 
 	handleShiftMenu = () => this.setState({ isShiftPopoverOpen: !this.state.isShiftPopoverOpen });
 
-	handleCreateShift = () => this.setState({ isShiftModalOpen: !this.state.isShiftModalOpen });
+	handleCreateShift = () => this.setState({ isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen });
 
-	handleEditShift = () => this.setState({ editMode: true, isShiftModalOpen: !this.state.isShiftModalOpen });
+	handleEditShift = () => this.setState({ isEditShiftModalOpen: !this.state.isEditShiftModalOpen });
 
 	handleSuccessNotification = (message) => {
 		if (!toast.isActive(this.toastId)) {
@@ -77,21 +80,18 @@ class ShiftPlacement extends Component {
 					</div>
 				</PopoverBody>
 			</Popover>
-			{(this.state.editMode) ? (
-				<Modal title="Edit Shift" className="modal-dialog" show={this.state.isShiftModalOpen} onClose={this.handleEditShift}>
-					<ShiftForm editMode={true} shiftId={this.props.shiftPlacement.shiftId} employeeId={this.props.shiftPlacement.employeeId} placementId={this.props.shiftPlacement.employeeId} startDate={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleEditShift} />
-				</Modal>
-			) : (
-				<Modal title="Create Shift" className="modal-dialog" show={this.state.isShiftModalOpen} onClose={this.handleCreateShift}>
-					<ShiftForm editMode={false} employeeId={this.props.shiftPlacement.employeeId} startDate={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateShift} />
-				</Modal>
-			)}
+			<Modal title="Edit Shift" className="modal-dialog" show={this.state.isEditShiftModalOpen} onClose={this.handleEditShift}>
+				<ShiftForm editMode={true} shiftId={this.props.shiftPlacement.shiftId} employeeId={this.props.shiftPlacement.employeeId} placementId={this.props.shiftPlacement.employeeId} startDate={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleEditShift} />
+			</Modal>
+			<Modal title="Create Shift" className="modal-dialog" show={this.state.isCreateShiftModalOpen} onClose={this.handleCreateShift}>
+				<ShiftForm editMode={false} employeeId={this.props.shiftPlacement.employeeId} startDate={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateShift} />
+			</Modal>
 		</Fragment>
 	);
 }
 
-ShiftPlacement.propTypes = propTypes;
+ShiftButton.propTypes = propTypes;
 
-ShiftPlacement.defaultProps = defaultProps;
+ShiftButton.defaultProps = defaultProps;
 
-export default ShiftPlacement;
+export default ShiftButton;
