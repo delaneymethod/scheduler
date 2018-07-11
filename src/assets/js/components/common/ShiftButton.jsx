@@ -5,8 +5,6 @@ import { toast } from 'react-toastify';
 import React, { Fragment, Component } from 'react';
 import { Popover, PopoverBody, PopoverHeader } from 'reactstrap';
 
-import Modal from './Modal';
-
 import ShiftForm from '../forms/ShiftForm';
 
 import constants from '../../helpers/constants';
@@ -49,8 +47,6 @@ class ShiftPlacement extends Component {
 		isShiftModalOpen: false,
 		isShiftPopoverOpen: false,
 	});
-
-	handleModal = () => this.setState({ isErrorModalOpen: !this.state.isErrorModalOpen });
 
 	handleShiftMenu = () => this.setState({ isShiftPopoverOpen: !this.state.isShiftPopoverOpen });
 

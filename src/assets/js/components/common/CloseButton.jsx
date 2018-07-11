@@ -9,11 +9,7 @@ const defaultProps = {
 	closeToast: () => {},
 };
 
-const CloseButton = ({ closeToast }) => (
-	<button type="button" className="toast-close-button" onClick={closeToast} aria-label="Close">
-		<span aria-hidden="true">&times;</span>
-	</button>
-);
+const CloseButton = ({ closeToast }) => (<button type="button" className="toast-close-button" onClick={closeToast} aria-label="Close"><span aria-hidden="true">&times;</span></button>);
 
 CloseButton.propTypes = propTypes;
 

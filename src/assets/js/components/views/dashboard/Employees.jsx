@@ -267,7 +267,7 @@ class Employees extends Component {
 		return className;
 	};
 
-	handleModal = () => this.setState({ isErrorModalOpen: !this.state.isErrorModalOpen });
+	handleModal = () => this.setState({ isErrorModalOpen: !this.state.isErrorModalOpen }, () => ((!this.state.isErrorModalOpen) ? this.props.history.push(routes.DASHBOARD.HOME.URI) : null));
 
 	handleSortBy = () => this.setState({ isSortByPopoverOpen: !this.state.isSortByPopoverOpen });
 

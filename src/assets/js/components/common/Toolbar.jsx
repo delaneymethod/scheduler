@@ -277,7 +277,7 @@ class Toolbar extends Component {
 		});
 	};
 
-	handleModal = () => this.setState({ isErrorModalOpen: !this.state.isErrorModalOpen });
+	handleModal = () => this.setState({ isErrorModalOpen: !this.state.isErrorModalOpen }, () => ((!this.state.isErrorModalOpen) ? this.props.history.push(routes.DASHBOARD.HOME.URI) : null));
 
 	handleCreateRota = () => this.setState({ isRotaModalOpen: !this.state.isRotaModalOpen });
 

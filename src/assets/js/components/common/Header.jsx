@@ -105,7 +105,7 @@ class Header extends Component {
 									</div>
 									<ul className="mt-3 mt-md-0 actions profile-toggle col-12 col-sm-12 col-md-10 col-lg-6 col-xl-6">
 										<li className="col-12 col-sm-6 col-md-auto mr-sm-3 pl-0 pr-0 pl-sm-3 p-md-0 mb-3 mb-sm-0">
-											<SwitchAccount inline />
+											<SwitchAccount inline history={this.props.history} />
 										</li>
 										<li className="col-12 col-sm-6 col-md-auto p-0 text-right">
 											<button type="button" className="btn btn-nav btn-user border-0 col-12 col-sm-auto" id="profileMenu" title="Profile Menu" aria-label="Profile Menu" onClick={this.handleProfileMenu}>Hello, {this.props.user.firstName}<i className="pl-2 fa fa-fw fa-chevron-down" aria-hidden="true"></i></button>

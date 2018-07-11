@@ -369,7 +369,7 @@ class Dashboard extends Component {
 		});
 	};
 
-	handleModal = () => this.setState({ isErrorModalOpen: !this.state.isErrorModalOpen });
+	handleModal = () => this.setState({ isErrorModalOpen: !this.state.isErrorModalOpen }, () => ((!this.state.isErrorModalOpen) ? window.location.reload() : null));
 
 	handleCreateRota = () => this.setState({ isRotaModalOpen: !this.state.isRotaModalOpen });
 
