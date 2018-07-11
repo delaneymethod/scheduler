@@ -191,6 +191,11 @@ module.exports = (env, options) => ({
 			{
 				force: true,
 				cache: true,
+				to: 'assets/icons',
+				from: 'src/assets/icons',
+			}, {
+				force: true,
+				cache: true,
 				to: 'assets/img',
 				from: 'src/assets/img',
 			}, {
