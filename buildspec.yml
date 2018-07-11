@@ -8,7 +8,7 @@ phases:
       - npm install
   build:
     commands:
-      - npm run prod
+      - npm run dev
       - ls -lah public
 artifacts:
   files:
