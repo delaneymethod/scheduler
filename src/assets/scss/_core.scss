@@ -27,6 +27,17 @@ html {
 	background: $dark;
 }
 
+.wrap-words {
+	white-space: normal;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	word-break: break-all;
+	white-space: -pre-wrap;
+	white-space: -o-pre-wrap;
+	white-space: -webkit-pre-wrap;
+	white-space: -moz-pre-wrap !important;
+}
+
 .bg-dark {
 	color: $body-color-light;
 }
