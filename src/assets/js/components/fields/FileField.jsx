@@ -172,9 +172,9 @@ class FileField extends Component {
 			<Label for={this.props.fieldName} className={this.state.labelClass} onDragEnter={this.handleDragEnter} onDragLeave={this.handleDragLeave} onDragOver={this.handleDragOver} onDrop={this.handleDrop} style={{ outlineColor: this.state.borderColor }}>
 				{(this.props.fieldAccept === 'image/*') ? (<img src={this.state.source} className={this.state.loaded && 'loaded'} />) : null}
 				{(this.state.loaded && this.props.fieldAccept !== 'image/*') ? (
-					<div><i className={`fa fa-fw ${this.state.fileIcon} icon mx-auto text-dark`} aria-hidden="true"></i><br />{this.state.file.name} ({this.handleFormatFileSize(this.state.file.size)})</div>
+					<div className="text-center pl-4 pr-4 pl-md-3 pr-md-3"><i className={`fa fa-fw ${this.state.fileIcon} icon mx-auto text-dark`} aria-hidden="true"></i><br />{this.state.file.name} ({this.handleFormatFileSize(this.state.file.size)})</div>
 				) : (
-					<div><i className="fa fa-fw fa-upload icon mx-auto text-dark" aria-hidden="true"></i><br />Drop a file or click to open the file picker.</div>
+					<div className="text-center pl-4 pr-4 pl-md-3 pr-md-3"><i className="fa fa-fw fa-upload icon mx-auto text-dark" aria-hidden="true"></i><br />Drop a file or click to open the file picker.</div>
 				)}
 				<Input type="file" ref="input" name={this.props.fieldName} id={this.props.fieldName} onChange={this.handleFileChange} onBlur={this.props.handleBlur} accept={this.props.fieldAccept} required={this.props.fieldRequired} />
 			</Label>

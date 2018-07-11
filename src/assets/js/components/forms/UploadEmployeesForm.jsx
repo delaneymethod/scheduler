@@ -59,28 +59,34 @@ class UploadEmployeesForm extends Component {
 
 			console.log('Called UploadEmployeesForm handleSubmit uploadEmployees');
 			actions.uploadEmployees(payload)
-				.then(() => {
-					console.log('Called UploadEmployeesForm handleSubmit getEmployees');
-					actions.getEmployees().catch(error => this.setState({ error }));
-				})
 				.then((response) => {
-					/* Close the modal */
-					this.props.handleClose();
-
 					let message = '';
 
-					message += `<p>${response.loadedEmployees.length} Employees were uploaded!</p>`;
+					if (response.loadedEmployees.length > 0) {
+						message += `<p>${response.loadedEmployees.length} employee${(response.loadedEmployees.length === 1) ? ' was' : 's were'} uploaded successfully!</p>`;
+					}
 
 					if (response.failedEmployees.length > 0) {
-						message += `<p>${response.failedEmployees.length} Employees upload failed!</p><ul>`;
+						message += `<p>${response.failedEmployees.length} employee${(response.failedEmployees.length === 1) ? ' was' : 's were'} not uploaded! See reason${(response.failedEmployees.length === 1) ? '' : 's'} below:</p>`;
+						message += '<ul class="list-unstyled">';
 
-						message += response.failedEmployees.map((failedEmployee, index) => `<li key="${index}">${failedEmployee.data[0]} ${failedEmployee.data[1]}: <i>${failedEmployee.reason}</i></li>`);
+						response.failedEmployees.forEach((failedEmployee) => {
+							message += `<li>&bullet; ${failedEmployee.data[0]} ${failedEmployee.data[1]} - <i>${failedEmployee.reason}</i></li>`;
+						});
 
 						message += '</ul>';
 					}
 
-					/* Pass a message back up the rabbit hole to the parent component */
-					this.props.handleInfoNotification(message);
+					console.log('Called UploadEmployeesForm handleSubmit getEmployees');
+					actions.getEmployees()
+						.then(() => {
+							/* Close the modal */
+							this.props.handleClose();
+
+							/* Pass a message back up the rabbit hole to the parent component */
+							this.props.handleInfoNotification(message);
+						})
+						.catch(error => this.setState({ error }));
 				})
 				.catch(error => this.setState({ error }));
 		}
