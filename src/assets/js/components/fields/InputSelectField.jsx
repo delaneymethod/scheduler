@@ -1,6 +1,6 @@
 import delay from 'lodash/delay';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { Fragment, Component } from 'react';
 import { Label, Input, Button, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks } from 'react-form-with-constraints';
 
@@ -69,7 +69,14 @@ class InputSelectField extends Component {
 					<Input type="text" name={this.props.fieldName} id={this.props.fieldName} value={this.props.fieldValue} placeholder={this.props.fieldPlaceholder} tabIndex={this.props.fieldTabIndex} autoComplete={this.props.fieldAutoComplete} onChange={this.props.handleChange} onBlur={this.props.handleBlur} required={this.props.fieldRequired} />
 				) : (
 					<Input type="select" name={this.props.fieldName} id={this.props.fieldName} value={this.props.fieldValue} className="custom-select custom-select-xl" tabIndex={this.props.fieldTabIndex} onChange={this.props.handleChange} onBlur={this.props.handleBlur} required={this.props.fieldRequired}>
-						{(this.props.fieldName === 'roleName') ? this.props.fieldOptions.map((role, index) => <option key={index} value={role.roleName} label={role.roleName} />) : null}
+						{(this.props.fieldName === 'roleName') ? (
+							<Fragment>
+								<option value="" label="" />
+								{this.props.fieldOptions.map((role, index) => <option key={index} value={role.roleName} label={role.roleName} />)}
+							</Fragment>
+						) : (
+							<option value="" label="" />
+						)}
 					</Input>
 				)}
 				<div className="input-group-append">

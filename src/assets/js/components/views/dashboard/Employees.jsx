@@ -424,15 +424,14 @@ class Employees extends Component {
 							} = placement;
 
 							const {
-								role: {
-									roleName,
-								},
 								shiftId,
 								endTime,
 								startTime,
 								isClosingShift,
 								numberOfPositions,
 							} = shift;
+
+							const { roleName } = (!isEmpty(shift.role)) ? shift.role : '';
 
 							let hours = moment.duration(moment(endTime).diff(moment(startTime))).asHours();
 
@@ -634,7 +633,7 @@ class Employees extends Component {
 		let { endTime, startTime } = shift;
 
 		/* Deconstructing all the values we need to create our new payload that updates the shift and placement */
-		const { roleName } = shift.role;
+		const { roleName } = (!isEmpty(shift.role)) ? shift.role : '';
 
 		const {
 			isClosingShift,
@@ -651,10 +650,10 @@ class Employees extends Component {
 			rotaId,
 			shiftId,
 			endTime,
-			roleName,
 			startTime,
 			isClosingShift,
 			numberOfPositions,
+			roleName: ((!isEmpty(roleName)) ? roleName : ''),
 		};
 
 		console.log('Called Employees handleUpdateShift updateShift');
@@ -917,13 +916,13 @@ class Employees extends Component {
 												{row.columns.map((column, columnIndex) => ((column.draggable) ? (
 													<td key={columnIndex} className="p-0 align-top non-draggable-cell" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId}>
 														{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
-															<ShiftButton key={shiftPlacementIndex} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} />
+															<ShiftButton key={shiftPlacementIndex} past={true} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} />
 														)) : null}
 													</td>
 												) : (
 													<td key={columnIndex} className="p-0 align-top draggable-cell" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId}>
 														{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
-															<ShiftButton key={shiftPlacementIndex} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} />
+															<ShiftButton key={shiftPlacementIndex} past={false} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} />
 														)) : (
 															<Fragment>
 																{(column.unassignedShifts.length > 0) ? (

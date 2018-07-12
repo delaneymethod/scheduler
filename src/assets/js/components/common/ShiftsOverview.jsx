@@ -78,8 +78,6 @@ class ShiftsOverview extends Component {
 		}
 	};
 
-	handleEditShift = (event, shiftId, employeeId) => this.setState({ shiftId, employeeId, isEditShiftModalOpen: !this.state.isEditShiftModalOpen });
-
 	handleOverview = () => this.setState({ isOverviewPopoverOpen: !this.state.isOverviewPopoverOpen });
 
 	handleCreateShift = event => this.setState({ isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen });
@@ -88,27 +86,29 @@ class ShiftsOverview extends Component {
 
 	handleSwitchFromAssignShiftToCreateShift = () => this.setState({ isCreateShiftModalOpen: true, isAssignShiftModalOpen: false });
 
+	handleEditShift = (event, shiftId, employeeId) => this.setState({ shiftId, employeeId, isEditShiftModalOpen: !this.state.isEditShiftModalOpen });
+
 	render = () => ((!this.props.past && this.props.total > 0) ? (
 		<Fragment>
 			<div className="placements-status p-0 m-0">
-				<button type="button" className="btn btn-overview border-0 p-0 m-0 bg-transparent" title="View Overview" aria-label="View Overview" id={`overview-${moment(this.props.weekDate).format('YYYYMMDD')}`} onClick={this.handleOverview}>
+				<button type="button" className="btn btn-overview border-0 p-0 m-0 bg-transparent" id={`overview-${moment(this.props.weekDate).format('YYYYMMDD')}`} onClick={this.handleOverview}>
 					<div className={`mr-2 p-0 ml-0 mr-0 mb-0 indicator ${this.props.placementStatus}`}></div>
 					<div className="p-0 m-0 count">{this.props.count}/{this.props.total}</div>
 				</button>
 				<Popover placement="bottom" isOpen={this.state.isOverviewPopoverOpen} target={`overview-${moment(this.props.weekDate).format('YYYYMMDD')}`} toggle={this.handleOverview}>
 					<PopoverBody>
-						<ul className="popover-menu">
-							<li style={{ minWidth: '264px' }}><label className="pt-2 pb-1 m-0">Overview</label></li>
+						<ul className="popover-menu" style={{ minWidth: '264px' }}>
+							<li style={{ minWidth: '264px' }}><label className="pt-2 pb-1 m-0">Overview - {moment(this.props.weekDate).format('ddd, Do')}</label></li>
 							{this.props.unassignedShifts.map((unassignedShift, unassignedShiftIndex) => (
 								<li key={unassignedShiftIndex} className="p-0" style={{ minWidth: '264px' }}>
-									<button type="button" title="Assign Shift" className="btn btn-action border-0 p-0 font-weight-normal" style={{ lineHeight: 'normal', fontSize: '0.7rem' }} onClick={this.handleAssignShift}>
-										<div className="d-flex align-items-center pt-1 pl-2 pr-2 pb-1 m-0">
+									<button type="button" className="btn btn-action border-0 p-0 font-weight-normal" id={`unassigned-shift-${unassignedShiftIndex}`} style={{ lineHeight: 'normal', fontSize: '0.7rem' }} onClick={this.handleAssignShift}>
+										<div className="d-flex align-items-start pt-1 pl-2 pr-2 pb-1 m-0">
 											<div className="d-inline-block p-0 mr-2 mb-0">
-												<Avatar name="" round={true} size="31" />
+												<Avatar name="" round={true} size="27" />
 											</div>
 											<div className="d-inline-block w-100 p-0 m-0">
-												<div className="text-truncate text-right"><span className="pull-left font-italic">Unassigned</span> {moment(unassignedShift.startTime).format('HH:mm a')} - {(unassignedShift.isClosingShift) ? 'Closing' : moment(unassignedShift.endTime).format('HH:mm a')}</div>
-												<div className="text-right"><span className="pull-left">{unassignedShift.role.roleName}</span> {(!unassignedShift.isClosingShift) ? `${unassignedShift.hours} ${((unassignedShift.hours === 1) ? 'hr' : 'hrs')}` : null}</div>
+												<div className="wrap-words text-right"><span className="pull-left text-left w-50 p-0 ml-0 mt-0 mb-0 mr-1">Unassigned</span> {moment(unassignedShift.startTime).format('HH:mma')} - {(unassignedShift.isClosingShift) ? 'Closing' : moment(unassignedShift.endTime).format('HH:mma')}</div>
+												<div className="text-right"><span className="pull-left font-italic text-left w-50 p-0 ml-0 mt-0 mb-0 mr-1">{(!isEmpty(unassignedShift.role)) ? unassignedShift.role.roleName : 'No role assigned'}</span>{(!unassignedShift.isClosingShift) ? `${unassignedShift.hours} ${((unassignedShift.hours === 1) ? 'hr' : 'hrs')}` : null}</div>
 											</div>
 										</div>
 									</button>
@@ -116,14 +116,14 @@ class ShiftsOverview extends Component {
 							))}
 							{this.props.assignedShifts.map((assignedShift, assignedShiftIndex) => assignedShift.placements.map((placement, placementIndex) => (
 								<li key={`${assignedShiftIndex}_${placementIndex}`} className="p-0" style={{ minWidth: '264px' }}>
-									<button type="button" title="Edit Shift" className="btn btn-action border-0 p-0 font-weight-normal" style={{ lineHeight: 'normal', fontSize: '0.7rem' }} onClick={event => this.handleEditShift(event, assignedShift.shiftId, placement.employee.employeeId)}>
-										<div className="d-flex align-items-center pt-1 pl-2 pr-2 pb-1 m-0">
+									<button type="button" className="btn btn-action border-0 p-0 font-weight-normal" id={`assigned-shift-${assignedShiftIndex}-${placementIndex}`} style={{ lineHeight: 'normal', fontSize: '0.7rem' }} onClick={event => this.handleEditShift(event, assignedShift.shiftId, placement.employee.employeeId)}>
+										<div className="d-flex align-items-start pt-1 pl-2 pr-2 pb-1 m-0">
 											<div className="d-inline-block p-0 mr-2 mb-0">
-												<Avatar name={`${placement.employee.firstName} ${placement.employee.lastName}`} round={true} size="31" />
+												<Avatar name={`${placement.employee.firstName} ${placement.employee.lastName}`} round={true} size="27" />
 											</div>
 											<div className="d-inline-block w-100 p-0 m-0">
-												<div className="text-truncate text-right"><span className="pull-left">{placement.employee.firstName} {placement.employee.lastName}</span> {moment(assignedShift.startTime).format('HH:mm a')} - {(assignedShift.isClosingShift) ? 'Closing' : moment(assignedShift.endTime).format('HH:mm a')}</div>
-												<div className="text-right"><span className="pull-left">{assignedShift.role.roleName}</span> {(!assignedShift.isClosingShift) ? `${assignedShift.hours} ${((assignedShift.hours === 1) ? 'hr' : 'hrs')}` : null}</div>
+												<div className="wrap-words text-right"><span className="pull-left text-left w-50 p-0 ml-0 mt-0 mb-0 mr-1">{placement.employee.firstName} {placement.employee.lastName}</span> {moment(assignedShift.startTime).format('HH:mma')} - {(assignedShift.isClosingShift) ? 'Closing' : moment(assignedShift.endTime).format('HH:mma')}</div>
+												<div className="text-right"><span className="pull-left font-italic text-left w-50 p-0 ml-0 mt-0 mb-0 mr-1">{(!isEmpty(assignedShift.role)) ? assignedShift.role.roleName : 'No role assigned'}</span>{(!assignedShift.isClosingShift) ? `${assignedShift.hours} ${((assignedShift.hours === 1) ? 'hr' : 'hrs')}` : null}</div>
 											</div>
 										</div>
 									</button>

@@ -116,11 +116,6 @@ class ShiftForm extends Component {
 			this.setState({ shiftId: this.props.shiftId });
 		}
 
-		/* Sets the default value to fix validation issues if user doesnt pick any role */
-		if (this.props.roles.length > 0) {
-			this.setState({ roleName: this.props.roles[0].roleName });
-		}
-
 		/* 24 hours * 60 mins in an hour */
 		let hours = 24 * 60;
 
@@ -197,7 +192,11 @@ class ShiftForm extends Component {
 			const shift = this.props.shifts.filter(data => data.shiftId === this.props.shiftId).shift();
 
 			/* Override role name */
-			const { roleName } = shift.role;
+			if (!isEmpty(shift.role)) {
+				const { roleName } = shift.role;
+
+				this.setState({ roleName });
+			}
 
 			const { isClosingShift, numberOfPositions } = shift;
 
@@ -211,7 +210,6 @@ class ShiftForm extends Component {
 			/* Update the state with all the edit shift details */
 			this.setState({
 				endTime,
-				roleName,
 				startTime,
 				startDate,
 				isClosingShift,
@@ -262,7 +260,13 @@ class ShiftForm extends Component {
 		const accountEmployee = this.props.employees.filter(data => data.employee.employeeId === this.state.employeeId).shift();
 
 		/* Check if the user wants to delete the shift */
-		let message = `<div class="text-center"><p>Please confirm that you wish to delete the Shift?</p><ul class="list-unstyled font-weight-bold"><li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li><li>Role: ${shift.role.roleName}</li><li>Date: ${moment(shift.startTime).format('YYYY-MM-DD')}</li><li>Time: ${moment(shift.startTime).format('HH:mm a')} - ${(shift.isClosingShift) ? 'Closing' : moment(shift.endTime).format('HH:mm a')}</li></ul><p class="text-warning"><i class="pr-3 fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
+		let message = `<div class="text-center"><p>Please confirm that you wish to delete the Shift?</p><ul class="list-unstyled font-weight-bold"><li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li>`;
+
+		if (!isEmpty(shift.role)) {
+			message += `<li>Role: ${shift.role.roleName}</li>`;
+		}
+
+		message += `<li>Date: ${moment(shift.startTime).format('YYYY-MM-DD')}</li><li>Time: ${moment(shift.startTime).format('HH:mma')} - ${(shift.isClosingShift) ? 'Closing' : moment(shift.endTime).format('HH:mma')}</li></ul><p class="text-warning"><i class="pr-3 fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
 
 		const options = {
 			message,
@@ -348,17 +352,17 @@ class ShiftForm extends Component {
 				rotaId,
 				shiftId,
 				endTime,
-				roleName,
 				startTime,
 				isClosingShift,
 				numberOfPositions,
+				roleName: ((!isEmpty(roleName)) ? roleName : ''),
 			};
 
 			if (this.props.editMode) {
 				/* Keep track of old shifts before updating so we can do checks on the employee/placement */
 				const oldShifts = shifts;
 
-				console.log('Called ShiftForm handleSubmit updateShift');
+				console.log('Called ShiftForm handleSubmit updateShift', payload);
 				actions.updateShift(payload)
 					.then(() => {
 						/* Get the edit shift again based on shift id. Updated shift doesnt have placments included */
@@ -428,11 +432,10 @@ class ShiftForm extends Component {
 
 							/* Pass a message back up the rabbit hole to the parent component */
 							this.props.handleSuccessNotification(message);
-
-							/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-							this.handleGetShifts();
 						}
 					})
+					/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+					.then(() => this.handleGetShifts())
 					/* The user can select or create a role so we need to get roles each time we update or create a shift */
 					.then(() => this.handleGetRoles())
 					.catch(error => this.setState({ error }));
@@ -495,7 +498,7 @@ class ShiftForm extends Component {
 						<FieldFeedback when="*">- Please select a start date.</FieldFeedback>
 					</FieldFeedbacks>
 				</FormGroup>
-				<InputSelectField fieldName="roleName" fieldLabel="Role Name" fieldValue={this.state.roleName} fieldPlaceholder="e.g Manager" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid role name." fieldTabIndex={2} fieldRequired={true} fieldToggleButtonLabel="Role" fieldOptions={this.props.roles} />
+				<InputSelectField fieldName="roleName" fieldLabel="Role Name" fieldValue={this.state.roleName} fieldPlaceholder="e.g Manager" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid role name." fieldTabIndex={2} fieldRequired={false} fieldToggleButtonLabel="Role" fieldOptions={this.props.roles} />
 				<Row>
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
 						<FormGroup>

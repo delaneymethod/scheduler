@@ -9,11 +9,13 @@ import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-w
 
 import Alert from '../common/Alert';
 
+import confirm from '../../helpers/confirm';
+
 import constants from '../../helpers/constants';
 
-import { getShifts } from '../../actions/shiftActions';
-
 import { createPlacement } from '../../actions/placementActions';
+
+import { getShifts, deleteShift } from '../../actions/shiftActions';
 
 const routes = constants.APP.ROUTES;
 
@@ -55,6 +57,8 @@ class AssignShiftForm extends Component {
 
 		this.handleChange = this.handleChange.bind(this);
 
+		this.handleDelete = this.handleDelete.bind(this);
+
 		this.handleUnassignedShifts = this.handleUnassignedShifts.bind(this);
 	}
 
@@ -68,8 +72,6 @@ class AssignShiftForm extends Component {
 	});
 
 	componentDidMount = () => {
-		console.log('this.props.startDate:', this.props.startDate);
-
 		/* We debounce this call to wait 1000ms (we do not want the leading (or "immediate") flag passed because we want to wait until the user has finished typing before running validation */
 		this.handleValidateFields = debounce(this.handleValidateFields.bind(this), 1000);
 
@@ -147,6 +149,67 @@ class AssignShiftForm extends Component {
 				this.setState({ shiftId, unassignedShifts });
 			}
 		}
+	};
+
+	handleDelete = (event) => {
+		const shift = this.props.shifts.filter(data => data.shiftId === this.state.shiftId).shift();
+
+		const accountEmployee = this.props.employees.filter(data => data.employee.employeeId === this.state.employeeId).shift();
+
+		/* Check if the user wants to delete the shift */
+		let message = '<div class="text-center"><p>Please confirm that you wish to delete the Shift?</p><ul class="list-unstyled font-weight-bold">';
+
+		if (!isEmpty(shift.role.roleName)) {
+			message += `<li>Role: ${shift.role.roleName}</li>`;
+		}
+
+		message += `<li>Date: ${moment(shift.startTime).format('YYYY-MM-DD')}</li><li>Time: ${moment(shift.startTime).format('HH:mma')} - ${(shift.isClosingShift) ? 'Closing' : moment(shift.endTime).format('HH:mma')}</li></ul><p class="text-warning"><i class="pr-3 fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
+
+		const options = {
+			message,
+			labels: {
+				cancel: 'Cancel',
+				proceed: 'Delete',
+			},
+			values: {
+				cancel: false,
+				process: true,
+			},
+			colors: {
+				proceed: 'danger',
+			},
+			title: 'Delete Shift',
+			className: 'modal-dialog-warning',
+		};
+
+		/* If the user has clicked the proceed button, we delete the shift */
+		/* If the user has clicked the cancel button, we do nothing */
+		confirm(options)
+			.then((result) => {
+				const { actions } = this.props;
+
+				const { shiftId } = this.state;
+
+				const payload = {
+					shiftId,
+				};
+
+				console.log('Called ShiftForm handleDelete deleteShifts');
+				actions.deleteShift(payload)
+					.then(() => {
+						/* Close the modal */
+						this.props.handleClose(event, '', moment());
+
+						message = '<p>Shift was deleted!</p>';
+
+						/* Pass a message back up the rabbit hole to the parent component */
+						this.props.handleSuccessNotification(message);
+					})
+					.then(() => this.handleGetShifts())
+					.catch(error => this.setState({ error }));
+			}, (result) => {
+				/* We do nothing */
+			});
 	};
 
 	handleChange = (event) => {
@@ -236,7 +299,7 @@ class AssignShiftForm extends Component {
 					<Label for="shiftId">Shift <span className="text-danger">&#42;</span></Label>
 					<div className="input-group">
 						<Input type="select" name="shiftId" id="shiftId" className="custom-select custom-select-xl" value={this.state.shiftId} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="2" required>
-							{this.state.unassignedShifts.map((unassignedShift, index) => <option key={index} value={unassignedShift.shiftId} label={`${unassignedShift.role.roleName}, ${moment(unassignedShift.startTime).format('HH:mm a')} to ${(unassignedShift.isClosingShift) ? 'Closing' : moment(unassignedShift.endTime).format('HH:mm a')}`} />)}
+							{this.state.unassignedShifts.map((unassignedShift, index) => <option key={index} value={unassignedShift.shiftId} label={`${(!isEmpty(unassignedShift.role)) ? unassignedShift.role.roleName.concat(', ') : ''}${moment(unassignedShift.startTime).format('HH:mma')} to ${(unassignedShift.isClosingShift) ? 'Closing' : moment(unassignedShift.endTime).format('HH:mma')}`} />)}
 						</Input>
 						<div className="input-group-append">
 							<Button title="Create Shift" id="btn-toggle" className="input-group-text border-0 btn-toggle-fields" onClick={this.props.handleSwitchFromAssignShiftToCreateShift}>Create Shift</Button>
@@ -258,6 +321,7 @@ class AssignShiftForm extends Component {
 					</FormGroup>
 				) : null}
 				<Button type="submit" color="primary" className="mt-4" title={routes.SHIFTS.ASSIGN.TITLE} tabIndex="4" block>{routes.SHIFTS.ASSIGN.TITLE}</Button>
+				<Button type="button" className="mt-4 text-danger btn btn-outline-danger" title={routes.SHIFTS.DELETE.TITLE} tabIndex="5" block onClick={this.handleDelete}>{routes.SHIFTS.DELETE.TITLE}</Button>
 			</FormWithConstraints>
 		</Fragment>
 	);
@@ -277,6 +341,7 @@ const mapStateToProps = (state, props) => ({
 const mapDispatchToProps = dispatch => ({
 	actions: bindActionCreators({
 		getShifts,
+		deleteShift,
 		createPlacement,
 	}, dispatch),
 });
