@@ -289,7 +289,7 @@ class AssignShiftForm extends Component {
 				<FormGroup>
 					<Label for="unassignedShiftDate">Date <span className="text-danger">&#42;</span></Label>
 					<Input type="select" name="unassignedShiftDate" id="unassignedShiftDate" className="custom-select custom-select-xl" value={this.state.unassignedShiftDate} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="1" required>
-						{this.state.unassignedShiftDates.map((unassignedShiftDate, index) => <option key={index} value={moment(unassignedShiftDate).format('YYYY-MM-DD')} label={moment(unassignedShiftDate).format('dddd, Do MMMM YYYY')} />)}
+						{this.state.unassignedShiftDates.map((unassignedShiftDate, index) => <option key={index} value={moment(unassignedShiftDate).format('YYYY-MM-DD')} label={moment(unassignedShiftDate).format('dddd, Do MMMM YYYY')}>{moment(unassignedShiftDate).format('dddd, Do MMMM YYYY')}</option>)}
 					</Input>
 					<FieldFeedbacks for="unassignedShiftDate" show="all">
 						<FieldFeedback when="*">- Please select a date.</FieldFeedback>
@@ -299,7 +299,7 @@ class AssignShiftForm extends Component {
 					<Label for="shiftId">Shift <span className="text-danger">&#42;</span></Label>
 					<div className="input-group">
 						<Input type="select" name="shiftId" id="shiftId" className="custom-select custom-select-xl" value={this.state.shiftId} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="2" required>
-							{this.state.unassignedShifts.map((unassignedShift, index) => <option key={index} value={unassignedShift.shiftId} label={`${(!isEmpty(unassignedShift.role)) ? unassignedShift.role.roleName.concat(', ') : ''}${moment(unassignedShift.startTime).format('HH:mma')} to ${(unassignedShift.isClosingShift) ? 'Closing' : moment(unassignedShift.endTime).format('HH:mma')}`} />)}
+							{this.state.unassignedShifts.map((unassignedShift, index) => <option key={index} value={unassignedShift.shiftId} label={`${(!isEmpty(unassignedShift.role)) ? unassignedShift.role.roleName.concat(', ') : ''}${moment(unassignedShift.startTime).format('HH:mma')} to ${(unassignedShift.isClosingShift) ? 'Closing' : moment(unassignedShift.endTime).format('HH:mma')}`}>{`${(!isEmpty(unassignedShift.role)) ? unassignedShift.role.roleName.concat(', ') : ''}${moment(unassignedShift.startTime).format('HH:mma')} to ${(unassignedShift.isClosingShift) ? 'Closing' : moment(unassignedShift.endTime).format('HH:mma')}`}</option>)}
 						</Input>
 						<div className="input-group-append">
 							<Button title="Create Shift" id="btn-toggle" className="input-group-text border-0 btn-toggle-fields" onClick={this.props.handleSwitchFromAssignShiftToCreateShift}>Create Shift</Button>
@@ -313,7 +313,7 @@ class AssignShiftForm extends Component {
 					<FormGroup>
 						<Label for="employeeId">Employee <span className="text-danger">&#42;</span></Label>
 						<Input type="select" name="employeeId" id="employeeId" className="custom-select custom-select-xl" value={this.state.employeeId} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="3" required>
-							{this.props.employees.map(({ employee }, index) => <option key={index} value={employee.employeeId} label={`${employee.firstName} ${employee.lastName}`} />)}
+							{this.props.employees.map(({ employee }, index) => <option key={index} value={employee.employeeId} label={`${employee.firstName} ${employee.lastName}`}>{employee.firstName} ${employee.lastName}</option>)}
 						</Input>
 						<FieldFeedbacks for="employeeId" show="all">
 							<FieldFeedback when="*">- Please select an employee.</FieldFeedback>

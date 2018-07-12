@@ -111,7 +111,7 @@ class SwitchAccount extends Component {
 						<FormGroup>
 							<Label for="accountId">Account</Label>
 							<Input type="select" name="accountId" id="accountId" className="custom-select custom-select-md custom-select-lg custom-select-xl" onChange={this.handleChange} defaultValue={this.props.user.account.id}>
-								{this.props.user.accounts.map((account, index) => <option key={index} value={account.id} label={account.name} />)}
+								{this.props.user.accounts.map((account, index) => <option key={index} value={account.id} label={account.name}>{account.name}</option>)}
 							</Input>
 						</FormGroup>
 					</Form>

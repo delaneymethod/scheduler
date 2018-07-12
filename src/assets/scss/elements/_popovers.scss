@@ -10,7 +10,8 @@
 	text-align: center;
 	// font-size: 0.75rem;
 	max-height: 300px;
-	overflow-x: scroll; 
+	overflow-y: inherit;
+	overflow-x: hidden;
 	
 	.popover-menu {
 		@extend %clearlist;

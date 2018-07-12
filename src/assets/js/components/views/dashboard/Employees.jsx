@@ -724,14 +724,14 @@ class Employees extends Component {
 		const shifts = document.querySelectorAll('.shift');
 
 		if (shifts.length > 0) {
-			shifts.forEach((shift) => {
+			[...shifts].forEach((shift) => {
 				shift.addEventListener('dragend', this.handleDragEnd);
 				shift.addEventListener('dragstart', this.handleDragStart);
 			});
 
 			const draggableCells = document.querySelectorAll('.draggable-cell');
 
-			draggableCells.forEach((draggableCell) => {
+			[...draggableCells].forEach((draggableCell) => {
 				draggableCell.addEventListener('drop', this.handleDrop);
 				draggableCell.addEventListener('dragover', this.handleDragOver);
 				draggableCell.addEventListener('dragenter', this.handleDragEnter);
@@ -746,6 +746,10 @@ class Employees extends Component {
 		const { target } = event;
 
 		this.shift = target;
+
+		event.dataTransfer.effectAllowed = 'move';
+
+		event.dataTransfer.setData('text', this.shift.id);
 
 		/* this.oldDraggableCell = target.closest('.draggable-cell'); */
 
@@ -764,14 +768,30 @@ class Employees extends Component {
 		removeClass(target, 'shift-invisible');
 	};
 
-	handleDragOver = event => event.preventDefault();
+	handleDragOver = (event) => {
+		/* Necessary. Allows us to drop */
+		if (event.preventDefault) {
+			event.preventDefault();
+		}
+
+		event.dataTransfer.dropEffect = 'move';
+
+		return false;
+	};
 
 	handleDragEnter = (event) => {
-		event.preventDefault();
+		/* Necessary. Allows us to drop */
+		if (event.preventDefault) {
+			event.preventDefault();
+		}
+
+		event.dataTransfer.dropEffect = 'move';
 
 		const draggableCell = event.target.closest('.draggable-cell');
 
 		addClass(draggableCell, 'cell-highlighted');
+
+		return false;
 	};
 
 	handleDragLeave = (event) => {
@@ -781,11 +801,19 @@ class Employees extends Component {
 	};
 
 	handleDrop = (event) => {
-		event.preventDefault();
+		if (event.preventDefault) {
+			event.preventDefault();
+		}
 
-		event.stopPropagation();
+		/* Stops some browsers from redirecting */
+		if (event.stopPropagation) {
+			event.stopPropagation();
+		}
 
-		const { shift } = this;
+		let { shift } = this;
+
+		/* Set the source cell HTML to the HTML of the cell we dropped on */
+		shift = document.getElementById(event.dataTransfer.getData('text'));
 
 		/* const { oldDraggableCell } = this; */
 
@@ -823,7 +851,7 @@ class Employees extends Component {
 
 		const allDraggableCells = document.querySelectorAll('.draggable-cell');
 
-		allDraggableCells.forEach(draggableCell => removeClass(draggableCell, 'cell-highlighted'));
+		[...allDraggableCells].forEach(draggableCell => removeClass(draggableCell, 'cell-highlighted'));
 
 		this.handleUpdateShift(shiftId, placementId, employeeId, date);
 

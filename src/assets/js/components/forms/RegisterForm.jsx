@@ -138,7 +138,7 @@ class RegisterForm extends Component {
 					<FormGroup>
 						<Label for="subscriptionLevelId">Subscription Type</Label>
 						<Input type="select" name="subscriptionLevelId" id="subscriptionLevelId" className="custom-select custom-select-xl" onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="1" required>
-							{this.props.subscriptionLevels.map((subscriptionLevel, index) => <option key={index} value={subscriptionLevel.subscriptionLevelId} label={subscriptionLevel.subscriptionLevelName} />)}
+							{this.props.subscriptionLevels.map((subscriptionLevel, index) => <option key={index} value={subscriptionLevel.subscriptionLevelId} label={subscriptionLevel.subscriptionLevelName}>{subscriptionLevel.subscriptionLevelName}</option>)}
 						</Input>
 						<FieldFeedbacks for="subscriptionLevelId" show="all">
 							<FieldFeedback when="*">- Please select a subscription.</FieldFeedback>

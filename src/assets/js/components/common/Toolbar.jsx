@@ -161,6 +161,8 @@ class Toolbar extends Component {
 
 			if (includes(currentWeekRange, moment(currentStartDate).format('YYYY-MM-DD'))) {
 				hasUnassignedShifts = false;
+			} else {
+				enableShiftButton = false;
 			}
 
 			this.setState({ enableShiftButton, hasUnassignedShifts, rotaStatus: this.props.rota.status });

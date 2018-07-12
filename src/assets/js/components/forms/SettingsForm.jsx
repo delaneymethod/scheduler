@@ -100,13 +100,13 @@ class SettingsForm extends Component {
 						<FormGroup>
 							<Label for="firstDayOfWeek">First Day Of Week</Label>
 							<Input type="select" name="firstDayOfWeek" id="firstDayOfWeek" className="custom-select custom-select-xl" value={this.state.firstDayOfWeek} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="1" required>
-								<option value="0" label="Sunday" />
-								<option value="1" label="Monday" />
-								<option value="2" label="Tuesday" />
-								<option value="3" label="Wednesday" />
-								<option value="4" label="Thursday" />
-								<option value="5" label="Friday" />
-								<option value="6" label="Saturday" />
+								<option value="0" label="Sunday">Sunday</option>
+								<option value="1" label="Monday">Monday</option>
+								<option value="2" label="Tuesday">Tuesday</option>
+								<option value="3" label="Wednesday">Wednesday</option>
+								<option value="4" label="Thursday">Thursday</option>
+								<option value="5" label="Friday">Friday</option>
+								<option value="6" label="Saturday">Saturday</option>
 							</Input>
 							<FieldFeedbacks for="firstDayOfWeek" show="all">
 								<FieldFeedback when="*">- Please select first day of week.</FieldFeedback>

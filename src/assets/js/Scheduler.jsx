@@ -1,5 +1,8 @@
 import 'bootstrap';
+import 'raf/polyfill';
 import 'babel-polyfill';
+import 'core-js/es6/map';
+import 'core-js/es6/set';
 import React from 'react';
 import 'classlist-polyfill';
 import ReactDOM from 'react-dom';
@@ -72,6 +75,11 @@ ReactDOM.render(
 
 /* Polyfill to remove click delays on touch UIs */
 fastclick.attach(document.body);
+
+/* Fixes Object doesn't support property or method "forEach" in IE */
+if (typeof NodeList.prototype.forEach !== 'function') {
+	NodeList.prototype.forEach = Array.prototype.forEach;
+}
 
 /* IE10 viewport hack for Surface/desktop Windows 8 bug */
 if (navigator.userAgent.match(/IEMobile\/10\.0/)) {

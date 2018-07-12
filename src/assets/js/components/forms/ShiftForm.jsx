@@ -492,7 +492,7 @@ class ShiftForm extends Component {
 				<FormGroup>
 					<Label for="startDate">Date <span className="text-danger">&#42;</span></Label>
 					<Input type="select" name="startDate" id="startDate" className="custom-select custom-select-xl" value={this.state.startDate} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="1" required={true}>
-						{this.state.startDates.map((startDate, index) => <option key={index} value={moment(startDate).format('YYYY-MM-DD')} label={moment(startDate).format('dddd, Do MMMM YYYY')} />)}
+						{this.state.startDates.map((startDate, index) => <option key={index} value={moment(startDate).format('YYYY-MM-DD')} label={moment(startDate).format('dddd, Do MMMM YYYY')}>{moment(startDate).format('dddd, Do MMMM YYYY')}</option>)}
 					</Input>
 					<FieldFeedbacks for="startDate" show="all">
 						<FieldFeedback when="*">- Please select a start date.</FieldFeedback>
@@ -504,7 +504,7 @@ class ShiftForm extends Component {
 						<FormGroup>
 							<Label for="startTime">Start Time</Label>
 							<Input type="select" name="startTime" id="startTime" className="custom-select custom-select-xl" value={this.state.startTime} onChange={this.handleChangeTime} onBlur={this.handleBlur} tabIndex="3" required>
-								{this.times.map((time, index) => <option key={index} value={time} label={time} />)}
+								{this.times.map((time, index) => <option key={index} value={time} label={time}>{time}</option>)}
 							</Input>
 							<FieldFeedbacks for="startTime" show="all">
 								<FieldFeedback when="*" />
@@ -516,7 +516,7 @@ class ShiftForm extends Component {
 						<FormGroup>
 							<Label for="endTime">End Time</Label>
 							<Input type="select" name="endTime" id="endTime" className="custom-select custom-select-xl" value={this.state.endTime} onChange={this.handleChangeTime} onBlur={this.handleBlur} tabIndex="4" required>
-								{this.times.map((time, index) => <option key={index} value={time} label={time} />)}
+								{this.times.map((time, index) => <option key={index} value={time} label={time}>{time}</option>)}
 							</Input>
 							<FieldFeedbacks for="endTime" show="all">
 								<FieldFeedback when="*" />
@@ -530,7 +530,7 @@ class ShiftForm extends Component {
 						<FormGroup>
 							<Label for="numberOfPositions">Number Of Positions</Label>
 							<Input type="select" name="numberOfPositions" id="numberOfPositions" className="custom-select custom-select-xl" value={this.state.numberOfPositions} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="5" required>
-								{Array.from({ length: this.maxNumberOfPositions }, (key, value) => value + 1).map((position, index) => <option key={index} value={position} label={position} />)}
+								{Array.from({ length: this.maxNumberOfPositions }, (key, value) => value + 1).map((position, index) => <option key={index} value={position} label={position}>{position}</option>)}
 							</Input>
 							<FieldFeedbacks for="numberOfPositions" show="all">
 								<FieldFeedback when="*">- Please select the number of positions.</FieldFeedback>
@@ -541,8 +541,8 @@ class ShiftForm extends Component {
 						<FormGroup>
 							<Label for="isClosingShift">Is Closing Shift</Label>
 							<Input type="select" name="isClosingShift" id="isClosingShift" className="custom-select custom-select-xl" value={this.state.isClosingShift} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="6" required>
-								<option value="false" label="No" />
-								<option value="true" label="Yes" />
+								<option value="false" label="No">No</option>
+								<option value="true" label="Yes">Yes</option>
 							</Input>
 							<FieldFeedbacks for="isClosingShift" show="all">
 								<FieldFeedback when="*">- Please select if this shift is a closing shift.</FieldFeedback>
@@ -555,7 +555,7 @@ class ShiftForm extends Component {
 						<Label for="employeeId">Assign Employee</Label>
 						<Input type="select" name="employeeId" id="employeeId" className="custom-select custom-select-xl" value={this.state.employeeId} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="7">
 							<option value="" label="" />
-							{this.props.employees.map(({ employee }, index) => <option key={index} value={employee.employeeId} label={`${employee.firstName} ${employee.lastName}`} />)}
+							{this.props.employees.map(({ employee }, index) => <option key={index} value={employee.employeeId} label={`${employee.firstName} ${employee.lastName}`}>{employee.firstName} {employee.lastName}</option>)}
 						</Input>
 						<FieldFeedbacks for="employeeId" show="all">
 							<FieldFeedback when="*">- Please select an employee.</FieldFeedback>

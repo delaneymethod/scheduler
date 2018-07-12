@@ -253,7 +253,7 @@ class RotaForm extends Component {
 						<FormGroup>
 							<Label for="startDate">Start Date <span className="text-danger">&#42;</span></Label>
 							<Input type="select" name="startDate" id="startDate" className="custom-select custom-select-xl" value={this.state.startDate} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="3" required={true}>
-								{this.state.startDates.map((startDate, index) => <option key={index} value={moment(startDate).format('YYYY-MM-DD')} label={moment(startDate).format('dddd, Do MMMM YYYY')} />)}
+								{this.state.startDates.map((startDate, index) => <option key={index} value={moment(startDate).format('YYYY-MM-DD')} label={moment(startDate).format('dddd, Do MMMM YYYY')}>{moment(startDate).format('dddd, Do MMMM YYYY')}</option>)}
 							</Input>
 							<FieldFeedbacks for="startDate" show="all">
 								<FieldFeedback when="*">- Please select a start date.</FieldFeedback>

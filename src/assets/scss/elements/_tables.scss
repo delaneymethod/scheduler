@@ -1,4 +1,4 @@
-[draggable] {
+[draggable=true] {
 	user-select: none;
 	-moz-user-select: none;
 	-khtml-user-select: none;
@@ -60,7 +60,7 @@
 		th {
 			background-color: $gray-700;
 			font-weight: $font-weight-semi;
-			border: calculateRem(5px) solid $white;
+			border: calculateRem(5px) solid $white !important;
 			
 			.sort-direction {
 				width: 0;
@@ -252,11 +252,9 @@
 	}
 	
 	.draggable-row-ghost {
-		opacity: 0;
-		
 		td {
 			border: 5px solid $white;
-			background-color: $success;
+			background-color: rgba(144, 189, 72, 0.3);
 		}
 	}
 	
