@@ -25,6 +25,8 @@ import registerServiceWorker from './helpers/registerServiceWorker';
 
 const store = configureStore();
 
+console.log('Gig Grafter v0.0.4');
+
 /* Listen for state changes, saving a maximum once per second. */
 store.subscribe(throttle(() => {
 	const {
