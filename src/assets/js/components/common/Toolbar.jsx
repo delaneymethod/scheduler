@@ -370,24 +370,24 @@ class Toolbar extends Component {
 					{(this.state.employeesIsActive || this.state.overviewIsActive) ? (
 						<Fragment>
 							{(this.state.hasUnassignedShifts) ? (
-								<button type="button" title="Assign Shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 border-0" disabled={!this.state.enableShiftButton} onClick={event => this.handleAssignShift(event, '')}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Assign Shift</button>
+								<button type="button" title="Assign Shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 pl-4 pr-4 border-0" disabled={!this.state.enableShiftButton} onClick={event => this.handleAssignShift(event, '')}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Assign Shift</button>
 							) : (
-								<button type="button" title="Create Shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 border-0" disabled={!this.state.enableShiftButton} onClick={event => this.handleCreateShift(event, moment().format('YYYY-MM-DD'))}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Create Shift</button>
+								<button type="button" title="Create Shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 pl-4 pr-4 border-0" disabled={!this.state.enableShiftButton} onClick={event => this.handleCreateShift(event, moment().format('YYYY-MM-DD'))}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Create Shift</button>
 							)}
 						</Fragment>
 					) : (
-						<button type="button" title="Create Shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 border-0" disabled={!this.state.enableShiftButton} onClick={this.handleCreateShift}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Create Shift</button>
+						<button type="button" title="Create Shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 pl-4 pr-4 pl-md-4 pr-md-4 border-0" disabled={!this.state.enableShiftButton} onClick={this.handleCreateShift}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Create Shift</button>
 					)}
 					{(this.state.rotaStatus === STATUSES.DRAFT) ? (
-						<button type="button" title="Publish" className="btn btn-nav btn-primary col-12 col-sm-auto pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 ml-sm-3 mb-3 m-sm-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish</button>
+						<button type="button" title="Publish" className="btn btn-nav btn-primary col-12 col-sm-auto pl-4 pr-4 pl-md-4 pr-md-4 ml-sm-3 mb-3 m-sm-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish</button>
 					) : null}
 					{(this.state.rotaStatus === STATUSES.PUBLISHED) ? (
-						<button type="button" title="Published" className="btn btn-nav btn-primary col-12 col-sm-auto pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 ml-sm-3 mb-3 m-sm-0 border-0" disabled>Publish</button>
+						<button type="button" title="Published" className="btn btn-nav btn-primary col-12 col-sm-auto pl-4 pr-4 pl-md-4 pr-md-4 ml-sm-3 mb-3 m-sm-0 border-0" disabled>Publish</button>
 					) : null}
 					{(this.state.rotaStatus === STATUSES.EDITED) ? (
-						<button type="button" title="Publish Changes" className="btn btn-nav btn-primary col-12 col-sm-auto pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 ml-sm-3 mb-3 m-sm-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish Changes</button>
+						<button type="button" title="Publish Changes" className="btn btn-nav btn-primary col-12 col-sm-auto pl-4 pr-4 ml-sm-3 mb-3 m-sm-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish Changes</button>
 					) : null}
-					<button type="button" title="Rota Budget" className="btn text-dark col-12 col-sm-auto pl-5 pr-5 pl-md-4 pr-md-4 pl-lg-5 pr-lg-5 ml-sm-3 border-0">Budget: &pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
+					<button type="button" title="Rota Budget" className="btn bg-white text-dark col-12 col-sm-auto pl-4 pr-4 ml-sm-3 border-0">Budget: &pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
 				</Col>
 			</Row>
 			<Modal title="Create Rota" className="modal-dialog" show={this.state.isRotaModalOpen} onClose={this.handleCreateRota}>
