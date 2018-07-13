@@ -983,7 +983,7 @@ class Employees extends Component {
 													</div>
 													<div className="flex-column">
 														<div className="p-2 flex-row text-danger">Total Costs</div>
-														<div className="p-2 flex-row">Total Budget</div>
+														<div className="d-none p-2 flex-row">Total Budget</div>
 													</div>
 												</div>
 											</th>
@@ -997,9 +997,9 @@ class Employees extends Component {
 														<div className="flex-column">
 															<div className="p-2 flex-row text-danger">&pound;{column.cost.toFixed(2)}</div>
 															{(column.last) ? (
-																<div className="p-2 flex-row">&pound;{this.props.rota.budget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
+																<div className="d-none p-2 flex-row">&pound;{this.props.rota.budget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
 															) : (
-																<div className="p-2 flex-row">&nbsp;</div>
+																<div className="d-none p-2 flex-row">&nbsp;</div>
 															)}
 														</div>
 													</div>

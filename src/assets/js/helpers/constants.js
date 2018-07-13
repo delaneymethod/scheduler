@@ -72,6 +72,7 @@ export default {
 				},
 				STATUSES: {
 					DRAFT: 'DRAFT',
+					EDITED: 'EDITED',
 					PUBLISHED: 'PUBLISHED',
 				},
 			},
