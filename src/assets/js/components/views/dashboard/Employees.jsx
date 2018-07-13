@@ -189,11 +189,11 @@ class Employees extends Component {
 		meta.keywords.setAttribute('content', routes.DASHBOARD.EMPLOYEES.META.KEYWORDS);
 		meta.author.setAttribute('content', constants.APP.AUTHOR);
 
-		/* We debounce this call to wait 100ms (we do not want the leading (or "immediate") flag passed because we want to wait until all the componentDidUpdate calls have finished before loading the table data again */
+		/* We debounce this call to wait 10ms (we do not want the leading (or "immediate") flag passed because we want to wait until all the componentDidUpdate calls have finished before loading the table data again */
 		this.handleFetchData = debounce(this.handleFetchData.bind(this), 10);
 
-		/* We debounce this call to wait 1300ms (we do not want the leading (or "immediate") flag passed because we want to wait the user has finished ordering all rows before saving the order */
-		this.handleUpdateEmployeeOrder = debounce(this.handleUpdateEmployeeOrder.bind(this), 1300);
+		/* We debounce this call to wait 10ms (we do not want the leading (or "immediate") flag passed because we want to wait the user has finished ordering all rows before saving the order */
+		this.handleUpdateEmployeeOrder = debounce(this.handleUpdateEmployeeOrder.bind(this), 10);
 	};
 
 	componentDidUpdate = (prevProps, prevState) => {

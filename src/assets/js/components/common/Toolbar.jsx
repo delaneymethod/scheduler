@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
-import { orderBy, isEmpty, includes } from 'lodash';
+import { delay, orderBy, isEmpty, includes, debounce } from 'lodash';
 import { Col, Row, Popover, PopoverBody, PopoverHeader } from 'reactstrap';
 
 import Modal from './Modal';
@@ -12,6 +12,8 @@ import Modal from './Modal';
 import RotaForm from '../forms/RotaForm';
 
 import ShiftForm from '../forms/ShiftForm';
+
+import confirm from '../../helpers/confirm';
 
 import constants from '../../helpers/constants';
 
@@ -101,14 +103,8 @@ class Toolbar extends Component {
 	});
 
 	componentDidMount = () => {
-		const { pathname } = this.props.history.location;
-
-		this.setState({
-			rotaStatus: this.props.rota.status,
-			rolesIsActive: (pathname === dashboard.ROLES.URI),
-			overviewIsActive: (pathname === dashboard.OVERVIEW.URI),
-			employeesIsActive: (pathname === dashboard.EMPLOYEES.URI),
-		});
+		/* We debounce this call to wait 10ms (we do not want the leading (or "immediate") flag passed because we want to wait until all the componentDidUpdate calls have finished before loading the button states again */
+		this.handleToggleButtonStates = debounce(this.handleToggleButtonStates.bind(this), 10);
 	};
 
 	componentDidUpdate = (prevProps, prevState) => {
@@ -118,53 +114,69 @@ class Toolbar extends Component {
 
 		/* If the current week/rota or shifts have changes, re/check the shift button state and update label to reflect available actions */
 		if (prevProps.week !== this.props.week || prevProps.shifts !== this.props.shifts || prevProps.rota !== this.props.rota || prevProps.settings !== this.props.settings) {
-			const currentStartDate = moment().startOf('week').format('YYYY-MM-DD');
-
-			const weekStartDate = moment(this.props.week.startDate).format('YYYY-MM-DD');
-
-			const rotaStartDate = moment(this.props.rota.startDate).format('YYYY-MM-DD');
-
-			/* By default hide the shift button */
-			let enableShiftButton = false;
-
-			/* By default if no unassigned shifts, show the create shift button */
-			let hasUnassignedShifts = false;
-
-			/* Enable the shift button if the current week start date is equal to the current rota start date */
-			if (weekStartDate === rotaStartDate) {
-				enableShiftButton = true;
-			}
-
-			if (moment(weekStartDate).isBefore(moment(currentStartDate))) {
-				enableShiftButton = false;
-			}
-
-			/* Loop over all shifts and get the unassigned ones */
-			let unassignedShifts = this.props.shifts.filter(data => (data.placements === null || data.placements.length === 0));
-
-			/* Filter all unassigned shifts and return those that have not yet pasted. E.g if date was 6th July and an unassigned shifts start date was 5th July, it would not be returned... */
-			unassignedShifts = unassignedShifts.filter(data => moment(data.startTime).isSameOrAfter(moment().format('YYYY-MM-DD')));
-
-			/* If we have unassigned shifts, show the assign shift button */
-			if (unassignedShifts.length > 0) {
-				hasUnassignedShifts = true;
-			}
-
-			/* However if the current rota/week start date is not in the current week e.g today/this week (not the week that the user is viewing) then disabled the shift button again (we also change the label to reflect the approiate action, although this doesnt really matter TBH as button is disabled) */
-			const currentWeekRange = [];
-
-			const startOfCurrentWeek = moment(weekStartDate);
-
-			const endOfCurrentWeek = moment(weekStartDate).add(7, 'days');
-
-			currentWeekRange.push(startOfCurrentWeek.format('YYYY-MM-DD'));
-
-			while (startOfCurrentWeek.add(1, 'days').diff(endOfCurrentWeek) < 0) {
-				currentWeekRange.push(startOfCurrentWeek.format('YYYY-MM-DD'));
-			}
-
-			this.setState({ enableShiftButton, hasUnassignedShifts, rotaStatus: this.props.rota.status });
+			this.handleToggleButtonStates();
 		}
+	};
+
+	handleToggleButtonStates = () => {
+		const { pathname } = this.props.history.location;
+
+		const firstDayOfCurrentWeekDate = moment().startOf('week').format('YYYY-MM-DD');
+
+		const currentWeekDate = moment(this.props.week.startDate).format('YYYY-MM-DD');
+
+		const currentRotaDate = moment(this.props.rota.startDate).format('YYYY-MM-DD');
+
+		/* By default hide the shift button */
+		let enableShiftButton = false;
+
+		/* By default if no unassigned shifts, show the create shift button */
+		let hasUnassignedShifts = false;
+
+		/* However if the current rota/week start date is not in the current week e.g today/this week (not the week that the user is viewing) then disabled the shift button again (we also change the label to reflect the approiate action, although this doesnt really matter TBH as button is disabled) */
+		const currentWeekRange = [];
+
+		const startOfCurrentWeek = moment(currentWeekDate);
+
+		const endOfCurrentWeek = moment(currentWeekDate).add(7, 'days');
+
+		currentWeekRange.push(startOfCurrentWeek.format('YYYY-MM-DD'));
+
+		while (startOfCurrentWeek.add(1, 'days').diff(endOfCurrentWeek) < 0) {
+			currentWeekRange.push(startOfCurrentWeek.format('YYYY-MM-DD'));
+		}
+
+		/**
+		 * if first day of current week date is same or before current week date, enable
+		 * if first day of current week date is in current week range, enable
+		 */
+		if (moment(firstDayOfCurrentWeekDate).isSameOrBefore(moment(currentWeekDate))) {
+			enableShiftButton = true;
+		}
+
+		if (includes(currentWeekRange, moment())) {
+			enableShiftButton = true;
+		}
+
+		/* Loop over all shifts and get the unassigned ones */
+		let unassignedShifts = this.props.shifts.filter(data => (data.placements === null || data.placements.length === 0));
+
+		/* Filter all unassigned shifts and return those that have not yet pasted. E.g if date was 6th July and an unassigned shifts start date was 5th July, it would not be returned... */
+		unassignedShifts = unassignedShifts.filter(data => moment(data.startTime).isSameOrAfter(moment().format('YYYY-MM-DD')));
+
+		/* If we have unassigned shifts, show the assign shift button */
+		if (unassignedShifts.length > 0) {
+			hasUnassignedShifts = true;
+		}
+
+		this.setState({
+			enableShiftButton,
+			hasUnassignedShifts,
+			rotaStatus: this.props.rota.status,
+			rolesIsActive: (pathname === dashboard.ROLES.URI),
+			overviewIsActive: (pathname === dashboard.OVERVIEW.URI),
+			employeesIsActive: (pathname === dashboard.EMPLOYEES.URI),
+		});
 	};
 
 	handleSwitchRotaType = (event) => {
@@ -252,35 +264,68 @@ class Toolbar extends Component {
 	};
 
 	handlePublishRota = () => {
-		const { rota, rotaType: { rotaTypeId }, actions } = this.props;
+		/* Check if the user wants to publish the rota */
+		let message = '<div class="text-center"><p>Please confirm that you wish to publish the Rota?</p></div>';
 
-		let { startDate } = rota;
-
-		const { rotaId, budget } = rota;
-
-		const status = STATUSES.PUBLISHED;
-
-		startDate = moment(startDate).format('YYYY-MM-DD');
-
-		const payload = {
-			rotaId,
-			budget,
-			status,
-			startDate,
-			rotaTypeId,
+		const options = {
+			message,
+			labels: {
+				cancel: 'Cancel',
+				proceed: 'Publish',
+			},
+			values: {
+				cancel: false,
+				process: true,
+			},
+			colors: {
+				proceed: 'primary',
+			},
+			title: 'Publish Rota',
+			className: 'modal-dialog',
 		};
 
-		console.log('Called Toolbar handleSwitchRota updateRota');
-		console.log('Called Toolbar handleSwitchRota switchRota');
-		actions.updateRota(payload)
-			/* We switch the rota again even though its not really updating anything related to it - e.g week, shifts, first day of week etc. Only change is the status which we need to reflect below hence this call. */
-			.then(updatedRota => actions.switchRota(updatedRota))
-			.catch((error) => {
-				error.data.title = 'Publish Rota';
+		/* If the user has clicked the proceed button, we publish the rota */
+		/* If the user has clicked the cancel button, we do nothing */
+		confirm(options)
+			.then((result) => {
+				const { rota, rotaType: { rotaTypeId }, actions } = this.props;
 
-				this.setState({ error });
+				let { startDate } = rota;
 
-				this.handleModal();
+				const { rotaId, budget } = rota;
+
+				const status = STATUSES.PUBLISHED;
+
+				startDate = moment(startDate).format('YYYY-MM-DD');
+
+				const payload = {
+					rotaId,
+					budget,
+					status,
+					startDate,
+					rotaTypeId,
+				};
+
+				console.log('Called Toolbar handleSwitchRota updateRota');
+				console.log('Called Toolbar handleSwitchRota switchRota');
+				actions.updateRota(payload)
+					/* We switch the rota again even though its not really updating anything related to it - e.g week, shifts, first day of week etc. Only change is the status which we need to reflect below hence this call. */
+					.then((updatedRota) => {
+						actions.switchRota(updatedRota);
+
+						message = '<p>Rota was published!</p>';
+
+						this.handleSuccessNotification(message);
+					})
+					.catch((error) => {
+						error.data.title = 'Publish Rota';
+
+						this.setState({ error });
+
+						this.handleModal();
+					});
+			}, (result) => {
+				/* We do nothing */
 			});
 	};
 
