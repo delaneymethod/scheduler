@@ -59,6 +59,7 @@
 		
 		th {
 			background-color: $gray-700;
+			background-clip: padding-box;
 			font-weight: $font-weight-semi;
 			border: calculateRem(5px) solid $white !important;
 			
@@ -175,10 +176,22 @@
 				position: relative;
 				color: $body-color-light;
 				background-color: $secondary;
+				cursor: move;
+				cursor: grab;
+				cursor: -moz-grab;
+				cursor: -webkit-grab;
 				
-				&:hover,
-				&:active {
+				&:hover {
 					cursor: move;
+					cursor: grab;
+					cursor: -moz-grab;
+					cursor: -webkit-grab;
+				}
+				
+				&:active {
+					cursor: grabbing;
+					cursor: -moz-grabbing;
+					cursor: -webkit-grabbing;
 				}
 
 				&:not(:only-child, :last-child) {
@@ -187,14 +200,16 @@
 			}
 			
 			.shift-selected {
-				cursor: move;
+				cursor: grabbing !important;
+				cursor: -moz-grabbing !important;
+				cursor: -webkit-grabbing !important;
 				background-color: $secondary !important;
 			}
 
 			.shift-invisible {
 				display: none !important;
 			}
-			
+	
 			.add-shift {
 				border: 0;
 				opacity: 0;
@@ -248,6 +263,22 @@
 
 		.drag-handler {
 			cursor: move;
+			cursor: grab;
+			cursor: -moz-grab;
+			cursor: -webkit-grab;
+			
+			&:hover {
+				cursor: move;
+				cursor: grab;
+				cursor: -moz-grab;
+				cursor: -webkit-grab;
+			}
+
+			&:active {
+				cursor: grabbing !important;
+				cursor: -moz-grabbing !important;
+				cursor: -webkit-grabbing !important;
+			}
 		}
 	}
 	

@@ -36,8 +36,8 @@ select.form-control:not([size]):not([multiple]) {
 .custom-select-md,
 .custom-select-lg,
 .custom-select-xl {
-	height: $custom-select-height-xl;
-	font-size: $custom-select-font-size-xl;
+	height: $custom-select-height-xl !important;
+	font-size: $custom-select-font-size-xl !important;
 }
 
 .uploader {

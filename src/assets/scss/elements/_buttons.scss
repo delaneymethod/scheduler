@@ -1,3 +1,9 @@
+@-moz-document url-prefix() {
+	.close {
+		font-size: 1.21875rem !important;
+	}
+}
+
 .btn {
 	box-shadow: none;
 	// font-size: 0.75rem;
