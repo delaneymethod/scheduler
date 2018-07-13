@@ -791,7 +791,7 @@ class Employees extends Component {
 
 		addClass(draggableCell, 'cell-highlighted');
 
-		removeClass(event.target, 'cell-highlighted');
+		/* removeClass(event.target, 'cell-highlighted'); */
 
 		return false;
 	};
