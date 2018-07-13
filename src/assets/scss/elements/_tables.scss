@@ -162,6 +162,7 @@
 		td {
 			white-space: nowrap;
 			background-color: $gray-400;
+			background-clip: padding-box;
 			border: calculateRem(5px) solid $white;
 			
 			.complete {
@@ -172,14 +173,14 @@
 				border: 0;
 				z-index: 1;
 				width: 100%;
-				min-height: 57px;
-				position: relative;
-				color: $body-color-light;
-				background-color: $secondary;
 				cursor: move;
 				cursor: grab;
+				min-height: 57px;
 				cursor: -moz-grab;
+				position: relative;
 				cursor: -webkit-grab;
+				color: $body-color-light;
+				background-color: $secondary;
 				
 				&:hover {
 					cursor: move;
@@ -267,7 +268,7 @@
 			cursor: -moz-grab;
 			cursor: -webkit-grab;
 			
-			&:hover {
+			&:focus {
 				cursor: move;
 				cursor: grab;
 				cursor: -moz-grab;

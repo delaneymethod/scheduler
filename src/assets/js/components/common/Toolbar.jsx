@@ -135,6 +135,10 @@ class Toolbar extends Component {
 				enableShiftButton = true;
 			}
 
+			if (moment(weekStartDate).isBefore(moment(currentStartDate))) {
+				enableShiftButton = false;
+			}
+
 			/* Loop over all shifts and get the unassigned ones */
 			let unassignedShifts = this.props.shifts.filter(data => (data.placements === null || data.placements.length === 0));
 
@@ -157,12 +161,6 @@ class Toolbar extends Component {
 
 			while (startOfCurrentWeek.add(1, 'days').diff(endOfCurrentWeek) < 0) {
 				currentWeekRange.push(startOfCurrentWeek.format('YYYY-MM-DD'));
-			}
-
-			if (includes(currentWeekRange, moment(currentStartDate).format('YYYY-MM-DD'))) {
-				hasUnassignedShifts = false;
-			} else {
-				enableShiftButton = false;
 			}
 
 			this.setState({ enableShiftButton, hasUnassignedShifts, rotaStatus: this.props.rota.status });

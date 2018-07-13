@@ -167,3 +167,24 @@ header {
 		}
 	}
 }
+
+/* IE only */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+	.custom-select,
+	.form-control {
+		line-height: normal;
+		height: calculateRem(58px);
+	}
+	
+	.form-control-sm {
+		line-height: normal;
+		height: auto;
+	}
+}	
+
+/* Firefox only */
+@-moz-document url-prefix() {
+	.close {
+		font-size: 1.21875rem;
+	}
+}	

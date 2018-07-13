@@ -28,6 +28,10 @@ label {
 	line-height: calculateRem(24px);
 }
 
+.form-control-sm {
+	height: $input-height-sm;
+}
+
 .custom-select,
 select.form-control:not([size]):not([multiple]) {
 	height: auto;

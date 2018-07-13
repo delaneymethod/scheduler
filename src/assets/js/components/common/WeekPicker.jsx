@@ -436,7 +436,7 @@ class WeekPicker extends Component {
 				<button type="button" name="next-week" className="col-2 col-sm-2 col-md-2 btn btn-toggle p-0 border-0 font-weight-normal text-dark" disabled={(pathname === dashboard.HOME.URI) ? 'disabled' : null} onClick={this.handleNext}><i className="fa fa-fw fa-caret-right" aria-hidden="true"></i></button>
 				{(this.state.isCalenderOpen) ? (
 					<DatePicker withPortal inline autoFocus fixedHeight tabIndex={-1} selected={this.state.week.startDate} onChange={this.handleChange} onClickOutside={this.handleToggle} highlightDates={this.state.highlightedDates}>
-						<div className="p-3 text-right">
+						<div className="d-none p-3 text-right">
 							<button type="button" title="Cancel" className="mt-2 btn btn-secondary" onClick={this.handleToggle}>Cancel</button>
 						</div>
 					</DatePicker>
