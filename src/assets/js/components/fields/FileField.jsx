@@ -110,20 +110,23 @@ class FileField extends Component {
 	};
 
 	handleFileChange = (event, files) => {
+		/* See: https://stackoverflow.com/questions/11832930/html-input-file-accept-attribute-file-type-csv */
+		/*
 		let pattern = '';
 
-		/* See: https://stackoverflow.com/questions/11832930/html-input-file-accept-attribute-file-type-csv */
 		if (this.props.fieldAccept === 'image/*') {
 			pattern = /image/gi;
 		}
 
-		if (this.props.fieldAccept === '.csv') {
+		if (this.props.fieldAccept === '.csv, text/csv, application/vnd.ms-excel') {
 			pattern = 'csv.*';
 		}
+		*/
 
 		const file = (files && files.length) ? files[0] : event.target.files[0];
 
 		if (file) {
+			/*
 			if (!isEmpty(pattern) && !file.type.match(pattern)) {
 				const error = {
 					data: {
@@ -140,13 +143,13 @@ class FileField extends Component {
 					loaded: false,
 				});
 
-				/* This is the important part - passing the file back to the parent component so we can track it */
 				this.props.handleChange(null);
 
 				this.handleModal();
 
 				return;
 			}
+			*/
 
 			/* This gets the file extension and maps an icon for UX / preview purposes */
 			const extension = file.name.split('.').pop();
