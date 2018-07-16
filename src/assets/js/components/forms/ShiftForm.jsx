@@ -325,7 +325,7 @@ class ShiftForm extends Component {
 		await this.form.validateFields();
 
 		if (this.form.isValid()) {
-			let { endTime, startTime, isClosingShift } = this.state;
+			let { endTime, startTime } = this.state;
 
 			const {
 				shiftId,
@@ -333,6 +333,7 @@ class ShiftForm extends Component {
 				startDate,
 				employeeId,
 				placementId,
+				isClosingShift,
 				numberOfPositions,
 			} = this.state;
 
@@ -340,13 +341,6 @@ class ShiftForm extends Component {
 			endTime = `${startDate} ${moment(endTime, 'HH:mm A').format('HH:mm:ss')}`;
 
 			startTime = `${startDate} ${moment(startTime, 'HH:mm A').format('HH:mm:ss')}`;
-
-			/* Makes sure we are working with proper booleans and not boolean strings */
-			isClosingShift = (isClosingShift === 'true');
-
-			if (isClosingShift) {
-				endTime = `${startDate} 23:59:00`;
-			}
 
 			let payload = {
 				rotaId,
