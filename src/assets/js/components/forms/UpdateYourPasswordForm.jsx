@@ -46,7 +46,6 @@ class UpdateYourPasswordForm extends Component {
 		token: '',
 		email: '',
 		password: '',
-		emailSent: false,
 		confirmPassword: '',
 	});
 
@@ -74,7 +73,7 @@ class UpdateYourPasswordForm extends Component {
 	handleSubmit = async (event) => {
 		event.preventDefault();
 
-		const { actions } = this.props;
+		const { actions, history } = this.props;
 
 		this.setState({ error: {} });
 
@@ -91,7 +90,7 @@ class UpdateYourPasswordForm extends Component {
 
 			console.log('Called UpdateYourPasswordForm handleSubmit updateYourPassword');
 			actions.updateYourPassword(payload)
-				.then(() => this.setState(Object.assign(this.getInitialState(), { emailSent: true })))
+				.then(() => history.push(`${routes.UPDATE_YOUR_PASSWORD.URI}/login`))
 				.catch(error => this.setState({ error }));
 		}
 	};
@@ -100,12 +99,9 @@ class UpdateYourPasswordForm extends Component {
 
 	errorMessage = () => (this.state.error.data ? <Alert color="danger" message={this.state.error.data.message} /> : null);
 
-	successMessage = () => (this.state.emailSent ? <Alert color="success" message={'Password was updated successfully.'} /> : null);
-
 	render = () => (
 		<Fragment>
 			{this.errorMessage()}
-			{this.successMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 				<EmailField fieldValue={this.state.email} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={1} fieldRequired={true} />
 				<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={2} showPasswordStrength showPasswordCommon fieldRequired={true} />

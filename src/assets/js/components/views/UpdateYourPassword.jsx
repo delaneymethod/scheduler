@@ -1,5 +1,12 @@
+import { delay } from 'lodash';
+import PropTypes from 'prop-types';
 import { Col, Row } from 'reactstrap';
+import { connect } from 'react-redux';
 import React, { Component } from 'react';
+
+import Alert from '../common/Alert';
+
+import LoginForm from '../forms/LoginForm';
 
 import constants from '../../helpers/constants';
 
@@ -7,7 +14,25 @@ import UpdateYourPasswordForm from '../forms/UpdateYourPasswordForm';
 
 const routes = constants.APP.ROUTES;
 
+const propTypes = {
+	token: PropTypes.string.isRequired,
+};
+
+const defaultProps = {
+	token: '',
+};
+
 class UpdateYourPassword extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = this.getInitialState();
+	}
+
+	getInitialState = () => ({
+		success: false,
+	});
+
 	componentDidMount = () => {
 		document.title = `${constants.APP.TITLE}: ${routes.UPDATE_YOUR_PASSWORD.TITLE}`;
 
@@ -16,6 +41,12 @@ class UpdateYourPassword extends Component {
 		meta.description.setAttribute('content', routes.UPDATE_YOUR_PASSWORD.META.DESCRIPTION);
 		meta.keywords.setAttribute('content', routes.UPDATE_YOUR_PASSWORD.META.KEYWORDS);
 		meta.author.setAttribute('content', constants.APP.AUTHOR);
+	};
+
+	componentDidUpdate = (prevProps, prevState) => {
+		if (prevProps.token !== this.props.token && this.props.token === 'login') {
+			this.setState({ success: true }, () => delay(() => this.setState({ success: false }), 4000));
+		}
 	};
 
 	render = () => (
@@ -27,16 +58,39 @@ class UpdateYourPassword extends Component {
 				</div>
 			</Col>
 			<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center py-5">
-				<div className="panel-page">
-					<a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} className="panel-page__link">Back to {routes.LOGIN.TITLE}</a>
-					<div className="card panel-page__content">
-						<h2 className="h5--title-card">{routes.UPDATE_YOUR_PASSWORD.TITLE}</h2>
-						<UpdateYourPasswordForm token={this.props.match.params.token} history={this.props.history} />
+				{(this.props.token === 'login') ? (
+					<div className="panel-page">
+						<a href={routes.REGISTER.URI} title={routes.REGISTER.TITLE} className="panel-page__link">Back to {routes.REGISTER.TITLE}</a>
+						<div className="card panel-page__content">
+							<h2 className="h5--title-card">{routes.LOGIN.TITLE}</h2>
+							{(this.state.success) ? (
+								<Alert color="success" message="Your password was updated successfully." />
+							) : null}
+							<LoginForm history={this.props.history} />
+						</div>
 					</div>
-				</div>
+				) : (
+					<div className="panel-page">
+						<a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} className="panel-page__link">Back to {routes.LOGIN.TITLE}</a>
+						<div className="card panel-page__content">
+							<h2 className="h5--title-card">{routes.UPDATE_YOUR_PASSWORD.TITLE}</h2>
+							<UpdateYourPasswordForm token={this.props.token} history={this.props.history} />
+						</div>
+					</div>
+				)}
 			</Col>
 		</Row>
 	);
 }
 
-export default UpdateYourPassword;
+UpdateYourPassword.propTypes = propTypes;
+
+UpdateYourPassword.defaultProps = defaultProps;
+
+const mapStateToProps = (state, props) => ({
+	token: props.match.params.token,
+});
+
+const mapDispatchToProps = dispatch => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateYourPassword);

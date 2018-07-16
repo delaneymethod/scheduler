@@ -96,6 +96,7 @@ class LoginForm extends Component {
 					const [account] = user.accounts;
 
 					user.account = account;
+
 					/* Update the user state and then go to the dashboard */
 					console.log('Called Login handleSubmit updateUser');
 
