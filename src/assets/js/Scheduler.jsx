@@ -17,15 +17,17 @@ import App from './components/App';
 
 import { removeClass } from './helpers/classes';
 
+import packageJson from '../../../package.json';
+
 import { saveState } from './store/persistedState';
 
 import configureStore from './store/configureStore';
 
 import registerServiceWorker from './helpers/registerServiceWorker';
 
-const store = configureStore();
+console.log('Gig Grafter version:', packageJson.version);
 
-console.log('Gig Grafter v0.0.5');
+const store = configureStore();
 
 /* Listen for state changes, saving a maximum once per second. */
 store.subscribe(throttle(() => {

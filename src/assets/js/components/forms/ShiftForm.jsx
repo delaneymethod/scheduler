@@ -15,8 +15,6 @@ import constants from '../../helpers/constants';
 
 import { getRoles } from '../../actions/roleActions';
 
-import InputSelectField from '../fields/InputSelectField';
-
 import { getShifts, createShift, updateShift, deleteShift } from '../../actions/shiftActions';
 
 import { createPlacement, updatePlacement, deletePlacement } from '../../actions/placementActions';
@@ -24,6 +22,7 @@ import { createPlacement, updatePlacement, deletePlacement } from '../../actions
 const routes = constants.APP.ROUTES;
 
 const propTypes = {
+	roleName: PropTypes.any,
 	editMode: PropTypes.bool,
 	shiftId: PropTypes.string,
 	startDate: PropTypes.string,
@@ -36,6 +35,7 @@ const propTypes = {
 	employees: PropTypes.array.isRequired,
 	handleClose: PropTypes.func.isRequired,
 	handleSuccessNotification: PropTypes.func.isRequired,
+	handleSwitchFromSelectRoleToCreateRole: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -45,12 +45,14 @@ const defaultProps = {
 	shifts: [],
 	shiftId: null,
 	employees: [],
+	roleName: null,
 	editMode: false,
 	startDate: null,
 	employeeId: null,
 	placementId: null,
 	handleClose: () => {},
 	handleSuccessNotification: () => {},
+	handleSwitchFromSelectRoleToCreateRole: () => {},
 };
 
 class ShiftForm extends Component {
@@ -114,6 +116,11 @@ class ShiftForm extends Component {
 		/* If shift id was passed in as a prop, make sure we also update the state... Used when editing a shift */
 		if (!isEmpty(this.props.shiftId)) {
 			this.setState({ shiftId: this.props.shiftId });
+		}
+
+		/* If role name was passed in as a prop, make sure we also update the state... */
+		if (!isEmpty(this.props.roleName)) {
+			this.setState({ roleName: this.props.roleName });
 		}
 
 		/* 24 hours * 60 mins in an hour */
@@ -492,7 +499,26 @@ class ShiftForm extends Component {
 						<FieldFeedback when="*">- Please select a start date.</FieldFeedback>
 					</FieldFeedbacks>
 				</FormGroup>
-				<InputSelectField fieldName="roleName" fieldLabel="Role Name" fieldValue={this.state.roleName} fieldPlaceholder="e.g Manager" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid role name." fieldTabIndex={2} fieldRequired={false} fieldToggleButtonLabel="Role" fieldOptions={this.props.roles} />
+				<Row>
+					<Col xs="12" sm="9" md="9" lg="9" xl="9">
+						<FormGroup>
+							<Label for="roleName">Role</Label>
+							<Input type="select" name="roleName" id="roleName" className="custom-select custom-select-xl" value={this.state.roleName} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="2">
+								<option value="" label=""></option>
+								{this.props.roles.map((role, index) => <option key={index} value={role.roleName} label={role.roleName}>{role.roleName}</option>)}
+							</Input>
+							<FieldFeedbacks for="roleName" show="all">
+								<FieldFeedback when="*" />
+							</FieldFeedbacks>
+						</FormGroup>
+					</Col>
+					<Col className="text-right" xs="12" sm="3" md="3" lg="3" xl="3">
+						<FormGroup>
+							<Label className="text-white">Select Role</Label>
+							<Button type="button" title="Create Role" className="btn btn-create-select btn-toggle-fields" onClick={this.props.handleSwitchFromSelectRoleToCreateRole}>Create Role</Button>
+						</FormGroup>
+					</Col>
+				</Row>
 				<Row>
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
 						<FormGroup>
@@ -580,6 +606,7 @@ const mapStateToProps = (state, props) => ({
 	shifts: state.shifts,
 	shiftId: props.shiftId,
 	editMode: props.editMode,
+	roleName: props.roleName,
 	startDate: props.startDate,
 	employees: state.employees,
 	employeeId: props.employeeId,

@@ -45,6 +45,17 @@ export default {
 					TITLE: 'Upload Employees',
 				},
 			},
+			ROLES: {
+				DELETE: {
+					TITLE: 'Delete Role',
+				},
+				UPDATE: {
+					TITLE: 'Update Role',
+				},
+				CREATE: {
+					TITLE: 'Create Role',
+				},
+			},
 			SHIFTS: {
 				DELETE: {
 					TITLE: 'Delete Shift',

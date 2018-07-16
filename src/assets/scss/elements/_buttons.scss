@@ -132,3 +132,16 @@
 		background-color: #b1b1b1;
 	}
 }
+
+.btn-create-select {
+	color: $dark;
+	border-color: #D9D9D9;
+	height: 58px !important;
+    background-color: #F0F0F0;
+	
+	&:hover {
+		color: $dark;
+		border-color: #D9D9D9;
+		background-color: #f8f9fa;
+	}
+}
