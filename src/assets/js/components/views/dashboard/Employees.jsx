@@ -881,7 +881,7 @@ class Employees extends Component {
 		return false;
 	};
 
-	handleSwitchFromAssignShiftToCreateShift = () => this.setState({ isShiftModalOpen: true, isAssignShiftModalOpen: false });
+	handleSwitchFromAssignShiftToCreateShift = () => this.setState({ isCreateShiftModalOpen: true, isAssignShiftModalOpen: false });
 
 	render = () => {
 		if (isEmpty(this.props.rota)) {
