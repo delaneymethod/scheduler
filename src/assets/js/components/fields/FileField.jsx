@@ -117,7 +117,7 @@ class FileField extends Component {
 			pattern = /image/gi;
 		}
 
-		if (this.props.fieldAccept === '.csv, text/csv') {
+		if (this.props.fieldAccept === '.csv') {
 			pattern = 'csv.*';
 		}
 
