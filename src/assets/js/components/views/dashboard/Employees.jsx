@@ -720,6 +720,20 @@ class Employees extends Component {
 		});
 	};
 
+	handleAddCellHighlight = (element) => {
+		const targetElement = (!element.tagName) ? element.parentElement : element;
+
+		const draggableCell = targetElement.closest('.draggable-cell');
+
+		addClass(draggableCell, 'cell-highlighted');
+	};
+
+	handleRemoveCellHighlight = () => {
+		const allDraggableCells = document.querySelectorAll('.draggable-cell');
+
+		[...allDraggableCells].forEach(draggableCell => removeClass(draggableCell, 'cell-highlighted'));
+	};
+
 	handleDragAndDrop = () => {
 		const shifts = document.querySelectorAll('.shift');
 
@@ -743,9 +757,7 @@ class Employees extends Component {
 	};
 
 	handleDragStart = (event) => {
-		const { target } = event;
-
-		this.shift = target;
+		this.shift = event.target || event.srcElement;
 
 		event.dataTransfer.effectAllowed = 'move';
 
@@ -753,19 +765,19 @@ class Employees extends Component {
 
 		/* this.oldDraggableCell = target.closest('.draggable-cell'); */
 
-		addClass(target, 'shift-selected');
+		addClass(this.shift, 'shift-selected');
 
 		/* Commented out due to non native drag and drop remove/append functionality below. See comments. */
 		/* Hide the shift in the current cell when the user has selected it and dragging... */
-		setTimeout(() => addClass(target, 'shift-invisible'), 0);
+		setTimeout(() => addClass(this.shift, 'shift-invisible'), 0);
 	};
 
 	handleDragEnd = (event) => {
-		const { target } = event;
+		const element = event.target || event.srcElement;
 
-		removeClass(target, 'shift-selected');
+		removeClass(element, 'shift-selected');
 
-		removeClass(target, 'shift-invisible');
+		removeClass(element, 'shift-invisible');
 	};
 
 	handleDragOver = (event) => {
@@ -787,17 +799,22 @@ class Employees extends Component {
 
 		event.dataTransfer.dropEffect = 'move';
 
-		const draggableCell = event.target.closest('.draggable-cell');
+		const element = event.target || event.srcElement;
 
-		addClass(draggableCell, 'cell-highlighted');
+		this.handleRemoveCellHighlight();
 
-		/* removeClass(event.target, 'cell-highlighted'); */
+		/* We wait so DOM can update before we start adding cell highlight class as otherwise it will be cleared before UI is refreshed */
+		setTimeout(() => this.handleAddCellHighlight(element), 0);
 
 		return false;
 	};
 
 	handleDragLeave = (event) => {
-		const draggableCell = event.target.closest('.draggable-cell');
+		const element = event.target || event.srcElement;
+
+		const targetElement = (!element.tagName) ? element.parentElement : element;
+
+		const draggableCell = targetElement.closest('.draggable-cell');
 
 		removeClass(draggableCell, 'cell-highlighted');
 	};
@@ -812,6 +829,8 @@ class Employees extends Component {
 			event.stopPropagation();
 		}
 
+		const element = event.target || event.srcElement;
+
 		let { shift } = this;
 
 		/* Set the source cell HTML to the HTML of the cell we dropped on */
@@ -819,13 +838,13 @@ class Employees extends Component {
 
 		/* const { oldDraggableCell } = this; */
 
-		const selectedDraggableCell = event.target.closest('.draggable-cell');
-
 		const shiftId = shift.getAttribute('data-shift-id');
 
-		const date = selectedDraggableCell.getAttribute('data-date');
-
 		const placementId = shift.getAttribute('data-placement-id');
+
+		const selectedDraggableCell = element.closest('.draggable-cell');
+
+		const date = selectedDraggableCell.getAttribute('data-date');
 
 		const employeeId = selectedDraggableCell.getAttribute('data-employee-id');
 
@@ -851,9 +870,7 @@ class Employees extends Component {
 		}
 		*/
 
-		const allDraggableCells = document.querySelectorAll('.draggable-cell');
-
-		[...allDraggableCells].forEach(draggableCell => removeClass(draggableCell, 'cell-highlighted'));
+		this.handleRemoveCellHighlight();
 
 		this.handleUpdateShift(shiftId, placementId, employeeId, date);
 

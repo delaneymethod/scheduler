@@ -362,7 +362,7 @@ class ShiftForm extends Component {
 				/* Keep track of old shifts before updating so we can do checks on the employee/placement */
 				const oldShifts = shifts;
 
-				console.log('Called ShiftForm handleSubmit updateShift', payload);
+				console.log('Called ShiftForm handleSubmit updateShift');
 				actions.updateShift(payload)
 					.then(() => {
 						/* Get the edit shift again based on shift id. Updated shift doesnt have placments included */

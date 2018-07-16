@@ -190,9 +190,9 @@
 				}
 				
 				&:active {
-					cursor: grabbing;
-					cursor: -moz-grabbing;
-					cursor: -webkit-grabbing;
+					cursor: grabbing !important;
+					cursor: -moz-grabbing !important;
+					cursor: -webkit-grabbing !important;
 				}
 
 				&:not(:only-child, :last-child) {
