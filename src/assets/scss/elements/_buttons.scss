@@ -145,3 +145,12 @@
 		background-color: #f8f9fa;
 	}
 }
+
+.btn-no-click {
+	cursor: default !important;
+	
+	&:active,
+	&:hover {
+		background-color: inherit !important;
+	}
+}

@@ -72,6 +72,11 @@ html {
 	font-weight: 400;
 }
 
+*:focus {
+	outline: none !important;
+	box-shadow: none !important;
+}
+
 .wrap-words {
 	white-space: normal;
 	white-space: pre-wrap;
