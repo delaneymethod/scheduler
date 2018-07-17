@@ -145,13 +145,13 @@ class RegisterForm extends Component {
 						</FieldFeedbacks>
 					</FormGroup>
 				) : null}
-				<TextField fieldName="businessName" fieldLabel="Business Name" fieldValue={this.state.businessName} fieldPlaceholder="e.g. Gig Grafter.com" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid business name." fieldTabIndex={2} fieldRequired={true} />
+				<TextField fieldName="businessName" fieldLabel="Business Name" fieldValue={this.state.businessName} fieldPlaceholder="e.g. Steak & Grill Bar" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid business name." fieldTabIndex={2} fieldRequired={true} />
 				<Row>
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
-						<TextField fieldName="firstName" fieldLabel="First Name" fieldValue={this.state.firstName} fieldPlaceholder="e.g. Barry" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid first name." fieldTabIndex={3} fieldRequired={true} />
+						<TextField fieldName="firstName" fieldLabel="First Name" fieldValue={this.state.firstName} fieldPlaceholder="e.g. Jane" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid first name." fieldTabIndex={3} fieldRequired={true} />
 					</Col>
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
-						<TextField fieldName="lastName" fieldLabel="Last Name" fieldValue={this.state.lastName} fieldPlaceholder="e.g. Lynch" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid last name." fieldTabIndex={4} fieldRequired={true} />
+						<TextField fieldName="lastName" fieldLabel="Last Name" fieldValue={this.state.lastName} fieldPlaceholder="e.g. Smith" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid last name." fieldTabIndex={4} fieldRequired={true} />
 					</Col>
 				</Row>
 				<EmailField fieldValue={this.state.email} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={5} fieldRequired={true} />
