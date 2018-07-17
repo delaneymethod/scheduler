@@ -54,13 +54,14 @@ class UpdateYourPasswordForm extends Component {
 
 		this.setState({ token });
 
-		/* We debounce this call to wait 1000ms (we do not want the leading (or "immediate") flag passed because we want to wait until the user has finished typing before running validation */
-		this.handleValidateFields = debounce(this.handleValidateFields.bind(this), 1000);
+		/* We debounce this call to wait 1300ms (we do not want the leading (or "immediate") flag passed because we want to wait until the user has finished typing before running validation */
+		this.handleValidateFields = debounce(this.handleValidateFields.bind(this), 1300);
+
+		/* This listens for change events across the document - user typing and browser autofill */
+		document.addEventListener('change', event => this.form && this.form.validateFields(event.target));
 	};
 
 	handleChange = (event) => {
-		this.setState({ error: {}, emailSent: false });
-
 		const target = event.currentTarget;
 
 		this.setState({
@@ -106,7 +107,7 @@ class UpdateYourPasswordForm extends Component {
 				<EmailField fieldValue={this.state.email} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={1} fieldRequired={true} />
 				<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={2} showPasswordStrength showPasswordCommon fieldRequired={true} />
 				<PasswordField fieldLabel="Confirm Password" fieldName="confirmPassword" fieldValue={this.state.confirmPassword} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={3} fieldRequired={true} />
-				<Button type="submit" color="primary" className="mt-4" title={routes.UPDATE_YOUR_PASSWORD.TITLE} tabIndex="3" disabled={this.state.emailSent} block>{routes.UPDATE_YOUR_PASSWORD.TITLE}</Button>
+				<Button type="submit" color="primary" className="mt-4" title={routes.UPDATE_YOUR_PASSWORD.TITLE} tabIndex="3" block>{routes.UPDATE_YOUR_PASSWORD.TITLE}</Button>
 			</FormWithConstraints>
 		</Fragment>
 	);

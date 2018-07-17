@@ -51,8 +51,11 @@ class RoleForm extends Component {
 	});
 
 	componentDidMount = () => {
-		/* We debounce this call to wait 1000ms (we do not want the leading (or "immediate") flag passed because we want to wait until the user has finished typing before running validation */
-		this.handleValidateFields = debounce(this.handleValidateFields.bind(this), 1000);
+		/* We debounce this call to wait 1300ms (we do not want the leading (or "immediate") flag passed because we want to wait until the user has finished typing before running validation */
+		this.handleValidateFields = debounce(this.handleValidateFields.bind(this), 1300);
+
+		/* This listens for change events across the document - user typing and browser autofill */
+		document.addEventListener('change', event => this.form && this.form.validateFields(event.target));
 	};
 
 	handleChange = (event) => {

@@ -5,6 +5,7 @@ import 'core-js/es6/map';
 import 'core-js/es6/set';
 import React from 'react';
 import 'classlist-polyfill';
+import 'vanilla-autofill-event';
 import ReactDOM from 'react-dom';
 import fastclick from 'fastclick';
 import { Provider } from 'react-redux';

@@ -25,6 +25,10 @@ const defaultProps = {
 	fieldAutoComplete: 'off',
 };
 
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/email#Validation
+ * https://stackoverflow.com/questions/20573488/why-does-html5-form-validation-allow-emails-without-a-dot
+ */
 class EmailField extends Component {
 	constructor(props) {
 		super(props);
@@ -59,13 +63,13 @@ class EmailField extends Component {
 		});
 
 		/* This is the important part - passing the event back to the parent component so we can track it */
-		this.props.handleBlur(event);
+		ReactDOM.findDOMNode(this.refs.input).blur();
 	};
 
 	render = () => (
 		<FormGroup>
 			<Label for="email">Email Address {(this.props.fieldRequired) ? (<span className="text-danger">&#42;</span>) : null}</Label>
-			<Input type="email" name="email" id="email" value={this.props.fieldValue} ref="input" placeholder="e.g. hello@giggrafter.com" tabIndex={this.props.fieldTabIndex} autoComplete={this.props.fieldAutoComplete} onChange={this.props.handleChange} onBlur={this.handleBlur} required={this.props.fieldRequired} />
+			<Input type="email" name="email" id="email" value={this.props.fieldValue} ref="input" placeholder="e.g. hello@giggrafter.com" tabIndex={this.props.fieldTabIndex} autoComplete={this.props.fieldAutoComplete} onChange={this.props.handleChange} onBlur={this.handleBlur} required={this.props.fieldRequired} pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$" />
 			<FieldFeedbacks for="email" show="all">
 				<FieldFeedback when="*">- Please provide a valid email address.</FieldFeedback>
 			</FieldFeedbacks>
