@@ -215,6 +215,11 @@ module.exports = (env, options) => ({
 				force: true,
 				cache: true,
 				to: 'assets/fonts',
+				from: 'src/assets/fonts',
+			}, {
+				force: true,
+				cache: true,
+				to: 'assets/fonts',
 				from: 'node_modules/font-awesome/fonts',
 			},
 		]),
