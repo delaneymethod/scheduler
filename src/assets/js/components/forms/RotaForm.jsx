@@ -162,7 +162,7 @@ class RotaForm extends Component {
 								status,
 								startDate,
 								rotaTypeId,
-								budget: (!isEmpty(budget)) ? budget : 0,
+								budget: (budget === '') ? 0 : budget,
 							};
 
 							/* Now we create a new rota */
