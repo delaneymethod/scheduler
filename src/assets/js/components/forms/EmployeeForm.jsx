@@ -18,6 +18,8 @@ import NumberField from '../fields/NumberField';
 
 import constants from '../../helpers/constants';
 
+import { getShifts } from '../../actions/shiftActions';
+
 import { createEmployee, updateEmployee, getEmployees, deleteEmployee } from '../../actions/employeeActions';
 
 const routes = constants.APP.ROUTES;
@@ -25,12 +27,14 @@ const routes = constants.APP.ROUTES;
 const propTypes = {
 	editMode: PropTypes.bool,
 	employeeId: PropTypes.string,
+	rota: PropTypes.object.isRequired,
 	employees: PropTypes.array.isRequired,
 	handleClose: PropTypes.func.isRequired,
 	handleSuccessNotification: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
+	rota: {},
 	employees: [],
 	editMode: false,
 	employeeId: null,
@@ -53,6 +57,8 @@ class EmployeeForm extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 
 		this.handleChange = this.handleChange.bind(this);
+
+		this.handleGetShifts = this.handleGetShifts.bind(this);
 
 		this.handleChangeMobile = this.handleChangeMobile.bind(this);
 
@@ -133,6 +139,17 @@ class EmployeeForm extends Component {
 		});
 	};
 
+	handleGetShifts = () => {
+		const { actions, rota: { rotaId } } = this.props;
+
+		const payload = {
+			rotaId,
+		};
+
+		console.log('Called EmployeeForm handleGetShifts getShifts');
+		actions.getShifts(payload).catch(error => this.setState({ error }));
+	};
+
 	handleChangeMobile = (event, values) => this.setState({ mobile: values.value });
 
 	handleChangeSalary = (event, values) => this.setState({ salary: values.floatValue });
@@ -194,7 +211,10 @@ class EmployeeForm extends Component {
 						/* Pass a message back up the rabbit hole to the parent component */
 						this.props.handleSuccessNotification(message);
 					})
+					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
 					.then(() => this.handleGetEmployees())
+					/* Updating a shift or placement will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+					.then(() => this.handleGetShifts())
 					.catch(error => this.setState({ error }));
 			}, (result) => {
 				/* We do nothing */
@@ -247,6 +267,8 @@ class EmployeeForm extends Component {
 					})
 					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
 					.then(() => this.handleGetEmployees())
+					/* Updating a shift or placement will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+					.then(() => this.handleGetShifts())
 					.catch(error => this.setState({ error }));
 			} else {
 				console.log('Called EmployeeForm handleSubmit createEmployee');
@@ -262,6 +284,8 @@ class EmployeeForm extends Component {
 					})
 					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
 					.then(() => this.handleGetEmployees())
+					/* Updating a shift or placement will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+					.then(() => this.handleGetShifts())
 					.catch(error => this.setState({ error }));
 			}
 		}
@@ -318,6 +342,7 @@ EmployeeForm.propTypes = propTypes;
 EmployeeForm.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
+	rota: state.rota,
 	editMode: props.editMode,
 	employees: state.employees,
 	employeeId: props.employeeId,
@@ -325,6 +350,7 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = dispatch => ({
 	actions: bindActionCreators({
+		getShifts,
 		getEmployees,
 		createEmployee,
 		updateEmployee,
