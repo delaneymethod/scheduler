@@ -1012,10 +1012,7 @@ class Employees extends Component {
 														<div className="p-2 flex-row">Total Hours</div>
 														<div className="p-2 flex-row">Total Shifts</div>
 													</div>
-													<div className="flex-column">
-														<div className="p-2 flex-row text-danger">Total Costs</div>
-														<div className="d-none p-2 flex-row">Total Budget</div>
-													</div>
+													<div className="flex-column text-danger">Total Costs</div>
 												</div>
 											</th>
 											{this.state.tableData.footer.columns.map((column, columnIndex) => (
@@ -1025,14 +1022,7 @@ class Employees extends Component {
 															<div className="p-2 flex-row">{column.hours}</div>
 															<div className="p-2 flex-row">{column.shifts}</div>
 														</div>
-														<div className="flex-column">
-															<div className="p-2 flex-row text-danger">&pound;{column.cost.toFixed(2)}</div>
-															{(column.last) ? (
-																<div className="d-none p-2 flex-row">&pound;{this.props.rota.budget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
-															) : (
-																<div className="d-none p-2 flex-row">&nbsp;</div>
-															)}
-														</div>
+														<div className="flex-column text-danger">&pound;{column.cost.toFixed(2)}</div>
 													</div>
 												</th>
 											))}
