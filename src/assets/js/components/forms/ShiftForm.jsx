@@ -307,7 +307,7 @@ class ShiftForm extends Component {
 			message += `<li>Role: ${shift.role.roleName}</li>`;
 		}
 
-		message += `<li>Date: ${moment(shift.startTime).format('YYYY-MM-DD')}</li><li>Time: ${moment(shift.startTime).format('HH:mma')} - ${(shift.isClosingShift) ? 'Closing' : moment(shift.endTime).format('HH:mma')}</li></ul><p class="text-warning"><i class="pr-3 fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
+		message += `<li>Date: ${moment(shift.startTime).format('YYYY-MM-DD')}</li><li>Time: ${moment(shift.startTime).format('HH:mma')} - ${(shift.isClosingShift) ? 'Closing' : moment(shift.endTime).format('HH:mma')}</li></ul><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
 
 		const options = {
 			message,
@@ -344,6 +344,7 @@ class ShiftForm extends Component {
 						/* Close the modal */
 						this.props.handleClose(event, '', moment());
 
+						/* FIXME - Make messages constant */
 						message = '<p>Shift was deleted!</p>';
 
 						/* Pass a message back up the rabbit hole to the parent component */
@@ -427,6 +428,7 @@ class ShiftForm extends Component {
 										/* Close the modal */
 										this.props.handleClose(event, '', moment());
 
+										/* FIXME - Make messages constant */
 										const message = '<p>Shift was updated!</p>';
 
 										/* Pass a message back up the rabbit hole to the parent component */
@@ -455,6 +457,7 @@ class ShiftForm extends Component {
 										/* Close the modal */
 										this.props.handleClose(event, '', moment());
 
+										/* FIXME - Make messages constant */
 										const message = '<p>Shift was updated!</p>';
 
 										/* Pass a message back up the rabbit hole to the parent component */
@@ -513,6 +516,7 @@ class ShiftForm extends Component {
 							/* Close the modal */
 							this.props.handleClose(event, '', moment());
 
+							/* FIXME - Make messages constant */
 							const message = '<p>Shift was created!</p>';
 
 							/* Pass a message back up the rabbit hole to the parent component */

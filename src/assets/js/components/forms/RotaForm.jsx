@@ -9,6 +9,8 @@ import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-w
 
 import Alert from '../common/Alert';
 
+import confirm from '../../helpers/confirm';
+
 import TextField from '../fields/TextField';
 
 import NumberField from '../fields/NumberField';
@@ -21,7 +23,7 @@ import { switchWeek } from '../../actions/weekActions';
 
 import { updateSettings } from '../../actions/settingActions';
 
-import { getRotas, createRota, updateRota, deleteRota, switchRota } from '../../actions/rotaActions';
+import { getRotas, createRota, updateRota, switchRota } from '../../actions/rotaActions';
 
 import { createRotaType, updateRotaType, deleteRotaType, switchRotaType } from '../../actions/rotaTypeActions';
 
@@ -31,12 +33,14 @@ const { STATUSES } = routes.ROTAS;
 
 const propTypes = {
 	title: PropTypes.string,
+	rotaId: PropTypes.string,
 	message: PropTypes.string,
 	week: PropTypes.object.isRequired,
 	rotas: PropTypes.array.isRequired,
 	firstRota: PropTypes.bool.isRequired,
 	settings: PropTypes.object.isRequired,
 	rotaTypes: PropTypes.array.isRequired,
+	rotaType: PropTypes.object.isRequired,
 	handleClose: PropTypes.func.isRequired,
 	handleSuccessNotification: PropTypes.func.isRequired,
 };
@@ -45,8 +49,10 @@ const defaultProps = {
 	week: {},
 	title: '',
 	rotas: [],
+	rotaId: '',
 	message: '',
 	settings: {},
+	rotaType: {},
 	rotaTypes: [],
 	firstRota: false,
 	handleClose: () => {},
@@ -75,9 +81,12 @@ class RotaForm extends Component {
 	getInitialState = () => ({
 		error: {},
 		budget: '',
+		rotaId: '',
 		rotaName: '',
 		startDate: '',
+		rotaTypeId: '',
 		startDates: [],
+		haystackRotaTypes: [],
 	});
 
 	componentDidMount = () => {
@@ -87,7 +96,12 @@ class RotaForm extends Component {
 		/* This listens for change events across the document - user typing and browser autofill */
 		document.addEventListener('change', event => this.form && this.form.validateFields(event.target));
 
-		const startDates = [];
+		/* If shift id was passed in as a prop, make sure we also update the state... Used when editing a shift */
+		if (!isEmpty(this.props.rotaId)) {
+			this.setState({ rotaId: this.props.rotaId });
+		}
+
+		let startDates = [];
 
 		/* Get the start date of the week... */
 		const startDate = moment().startOf('week');
@@ -109,8 +123,47 @@ class RotaForm extends Component {
 			startDates.push(startDate.toDate());
 		}
 
+		let haystackRotaTypes = this.props.rotaTypes;
+
 		/* Update the state again with the list of start dates */
-		this.setState({ startDates });
+		this.setState({ startDates, haystackRotaTypes });
+
+		/* If we are in edit mode, we basically need to overwrite most of the above except for the rota id */
+		if (this.props.editMode && !isEmpty(this.props.rotaId)) {
+			const rota = this.props.rotas.filter(data => data.rotaId === this.props.rotaId).shift();
+
+			const { budget } = rota;
+
+			const rotaStartDate = moment(rota.startDate);
+
+			const { rotaTypeId, rotaTypeName } = this.props.rotaType;
+
+			startDates = [];
+
+			/* Add the start of the week to the list of start dates */
+			startDates.push(rotaStartDate.toDate());
+
+			/* Loop over our range of dates and add each start date of the week to the list of start dates */
+			while (rotaStartDate.isBefore(endDate)) {
+				/* Set to 1 day so rota start dates can be any day of the week */
+				rotaStartDate.add(1, 'days');
+
+				startDates.push(rotaStartDate.toDate());
+			}
+
+			/* Removes current rota type name from duplicate list so we dont trigger a duplicate in edit mode */
+			haystackRotaTypes = haystackRotaTypes.filter(data => data.rotaTypeId !== rotaTypeId);
+
+			/* Update the state with all the edit rota details */
+			this.setState({
+				rotaTypeId,
+				startDates,
+				haystackRotaTypes,
+				rotaName: rotaTypeName,
+				startDate: rotaStartDate,
+				budget: (budget === '') ? 0 : budget,
+			});
+		}
 	};
 
 	handleChange = (event) => {
@@ -125,7 +178,58 @@ class RotaForm extends Component {
 
 	handleBlur = async event => this.handleValidateFields(event.currentTarget);
 
-	handleDelete = event => console.log('FIXME - Delete Rota');
+	handleDelete = (event) => {
+		const rotaType = this.props.rotaTypes.filter(data => data.rotaTypeId === this.state.rotaTypeId).shift();
+
+		/* Check if the user wants to delete the shift */
+		let message = '<div class="text-center"><p>Please confirm that you wish to delete the Rota?</p><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>This will permanently delete all shifts, past and present for the rota!</p><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>';
+
+		const options = {
+			message,
+			labels: {
+				cancel: 'Cancel',
+				proceed: 'Delete',
+			},
+			values: {
+				cancel: false,
+				process: true,
+			},
+			colors: {
+				proceed: 'danger',
+			},
+			title: 'Delete Rota',
+			className: 'modal-dialog-warning',
+		};
+
+		/* If the user has clicked the proceed button, we delete the rota type */
+		/* If the user has clicked the cancel button, we do nothing */
+		confirm(options)
+			.then((result) => {
+				const { actions, history } = this.props;
+
+				const { rotaTypeId } = this.state;
+
+				const payload = {
+					rotaTypeId,
+				};
+
+				console.log('Called RotaForm handleDelete deleteRotaType');
+				actions.deleteRotaType(payload)
+					.then(() => {
+						/* Close the modal */
+						this.props.handleClose();
+
+						/* FIXME - Make messages constant */
+						message = '<p>Rota was deleted!</p>';
+
+						/* Pass a message back up the rabbit hole to the parent component */
+						this.props.handleSuccessNotification(message);
+					})
+					.catch(error => this.setState({ error }));
+			}, (result) => {
+				/* We do nothing */
+			});
+	};
 
 	handleSubmit = async (event) => {
 		event.preventDefault();
@@ -217,6 +321,7 @@ class RotaForm extends Component {
 																/* Close the modal */
 																this.props.handleClose();
 
+																/* FIXME - Make messages constant */
 																const message = '<p>Rota was created!</p>';
 
 																/* Pass a message back up the rabbit hole to the parent component */
@@ -247,7 +352,7 @@ class RotaForm extends Component {
 			{(!isEmpty(this.props.message)) ? (<p className="lead mt-3 mb-4 pl-4 pr-4 text-center">{this.props.message}</p>) : null}
 			{this.errorMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
-				<TextField fieldName="rotaName" fieldLabel="Rota Name" fieldValue={this.state.rotaName} fieldPlaceholder="e.g. Bar" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid rota name." fieldTabIndex={1} fieldRequired={true} showIsDuplicate isDuplicateHaystack={this.props.rotaTypes.map(data => data.rotaTypeName)} />
+				<TextField fieldName="rotaName" fieldLabel="Rota Name" fieldValue={this.state.rotaName} fieldPlaceholder="e.g. Bar" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid rota name." fieldTabIndex={1} fieldRequired={true} showIsDuplicate isDuplicateHaystack={this.state.haystackRotaTypes.map(data => data.rotaTypeName)} />
 				<Row>
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
 						<NumberField fieldName="budget" fieldLabel="Budget" fieldValue={this.state.budget} fieldPlaceholder="e.g. £2,000" handleChange={this.handleChangeBudget} handleBlur={this.handleBlur} valueMissing="Please provide a valid budget." fieldTabIndex={2} fieldRequired={false} />
@@ -265,7 +370,10 @@ class RotaForm extends Component {
 					</Col>
 				</Row>
 				{(this.props.editMode) ? (
-					<Button type="submit" color="primary" className="mt-4" title={routes.ROTAS.UPDATE.TITLE} tabIndex="4" block>{routes.ROTAS.UPDATE.TITLE}</Button>
+					<Fragment>
+						<Button type="submit" color="primary" className="mt-4" title={routes.ROTAS.UPDATE.TITLE} tabIndex="4" block>{routes.ROTAS.UPDATE.TITLE}</Button>
+						<Button type="button" className="mt-4 text-danger btn btn-outline-danger" title={routes.ROTAS.DELETE.TITLE} tabIndex="5" block onClick={this.handleDelete}>{routes.ROTAS.DELETE.TITLE}</Button>
+					</Fragment>
 				) : (
 					<Button type="submit" color="primary" className="mt-4" title={routes.ROTAS.CREATE.TITLE} tabIndex="4" block>{routes.ROTAS.CREATE.TITLE}</Button>
 				)}
@@ -281,7 +389,10 @@ RotaForm.defaultProps = defaultProps;
 const mapStateToProps = (state, props) => ({
 	week: state.week,
 	rotas: state.rotas,
+	rotaId: props.rotaId,
 	settings: state.settings,
+	editMode: props.editMode,
+	rotaType: state.rotaType,
 	rotaTypes: state.rotaTypes,
 });
 
@@ -292,7 +403,6 @@ const mapDispatchToProps = dispatch => ({
 		switchWeek,
 		createRota,
 		updateRota,
-		deleteRota,
 		switchRota,
 		createRotaType,
 		updateRotaType,

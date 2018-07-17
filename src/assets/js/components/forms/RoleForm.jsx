@@ -101,6 +101,7 @@ class RoleForm extends Component {
 								/* Close the modal */
 								this.props.handleClose(roleName);
 
+								/* FIXME - Make messages constant */
 								const message = '<p>Role was created!</p>';
 
 								/* Pass a message back up the rabbit hole to the parent component */

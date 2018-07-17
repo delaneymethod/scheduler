@@ -71,6 +71,8 @@ class Toolbar extends Component {
 
 		this.handleModal = this.handleModal.bind(this);
 
+		this.handleEditRota = this.handleEditRota.bind(this);
+
 		this.handleCreateRole = this.handleCreateRole.bind(this);
 
 		this.handleCreateRota = this.handleCreateRota.bind(this);
@@ -94,16 +96,18 @@ class Toolbar extends Component {
 
 	getInitialState = () => ({
 		error: {},
+		rotaId: '',
 		roleName: '',
 		startDate: '',
 		rotaBudget: 0,
 		rotaStatus: 'DRAFT',
 		rolesIsActive: false,
-		isRotaModalOpen: false,
 		isErrorModalOpen: false,
 		overviewIsActive: false,
 		employeesIsActive: false,
 		enableShiftButton: false,
+		isEditRotaModalOpen: false,
+		isCreateRotaModalOpen: false,
 		isCreateRoleModalOpen: false,
 		isCreateShiftModalOpen: false,
 		isAssignShiftModalOpen: false,
@@ -325,6 +329,7 @@ class Toolbar extends Component {
 					.then((updatedRota) => {
 						actions.switchRota(updatedRota);
 
+						/* FIXME - Make messages constant */
 						message = '<p>Rota was published!</p>';
 
 						this.handleSuccessNotification(message);
@@ -341,7 +346,9 @@ class Toolbar extends Component {
 			});
 	};
 
-	handleCreateRota = () => this.setState({ isRotaModalOpen: !this.state.isRotaModalOpen });
+	handleEditRota = (event, rotaId) => this.setState({ rotaId, isEditRotaModalOpen: !this.state.isEditRotaModalOpen });
+
+	handleCreateRota = () => this.setState({ isCreateRotaModalOpen: !this.state.isCreateRotaModalOpen });
 
 	handleCreateRole = () => this.setState({ isCreateRoleModalOpen: !this.state.isCreateRoleModalOpen });
 
@@ -362,6 +369,12 @@ class Toolbar extends Component {
 				autoClose: notifications.TIMEOUT,
 			});
 		}
+
+		/* FIXME - Make messages constant */
+		/* If the message has come from deleting a rota, we need to redirect back to dashboard to reload all data again */
+		if (message === '<p>Rota was deleted!</p>') {
+			this.props.history.push(routes.DASHBOARD.HOME.URI);
+		}
 	};
 
 	handleModal = () => this.setState({ isErrorModalOpen: !this.state.isErrorModalOpen }, () => ((!this.state.isErrorModalOpen) ? this.props.history.push(routes.DASHBOARD.HOME.URI) : null));
@@ -369,43 +382,46 @@ class Toolbar extends Component {
 	render = () => (
 		<Fragment>
 			<Row>
-				<Col className="pt-3 pb-0 pt-sm-3 pb-ms-3 text-center text-md-left" xs="12" sm="12" md="4" lg="4" xl="4">
+				<Col className="pt-3 pb-0 pt-sm-3 pb-ms-3 text-center text-md-left" xs="12" sm="12" md="5" lg="4" xl="4">
 					<button type="button" className="btn btn-rotas-popover text-dark border-0 col-12 col-sm-auto" id="rotaTypeMenu" title="Toggle Rotas" aria-label="Toggle Rotas" onClick={this.handleRotaTypeMenu}>{this.props.rotaType.rotaTypeName}<i className="pl-2 fa fa-fw fa-chevron-down" aria-hidden="true"></i></button>
 					<Popover placement="bottom" isOpen={this.state.isRotaTypeMenuPopoverOpen} target="rotaTypeMenu" toggle={this.handleRotaTypeMenu}>
 						<PopoverBody>
 							<ul className="popover-menu">
-								{(this.props.rotaTypes.length > 0) ? this.props.rotaTypes.map((rotaType, index) => (<li key={index}><button type="button" title={rotaType.rotaTypeName} className="btn btn-action btn-nav border-0" id={rotaType.rotaTypeId} onClick={this.handleSwitchRotaType}>{rotaType.rotaTypeName}</button></li>)) : null}
+								{(this.props.rotaTypes.length > 0) ? this.props.rotaTypes.map((rotaType, index) => (<li key={index}><button type="button" title={rotaType.rotaTypeName} className="btn btn-action btn-nav border-0 text-truncate" id={rotaType.rotaTypeId} onClick={this.handleSwitchRotaType}>{rotaType.rotaTypeName}</button></li>)) : null}
 								<li><button type="button" title="Add New Rota" className="btn btn-primary btn-nav border-0" onClick={this.handleCreateRota}>Add New Rota</button></li>
 							</ul>
 						</PopoverBody>
 					</Popover>
 				</Col>
-				<Col className="pt-3 pb-3 pt-sm-3 pb-ms-3 text-center text-md-right" xs="12" sm="12" md="8" lg="8" xl="8">
+				<Col className="pt-3 pb-3 pt-sm-3 pb-ms-3 text-center text-md-right" xs="12" sm="12" md="7" lg="8" xl="8">
 					{(this.state.employeesIsActive || this.state.overviewIsActive) ? (
 						<Fragment>
 							{(this.state.hasUnassignedShifts) ? (
-								<button type="button" title="Assign Shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 pl-4 pr-4 border-0" disabled={!this.state.enableShiftButton} onClick={event => this.handleAssignShift(event, '')}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Assign Shift</button>
+								<button type="button" title="Assign Shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 mb-md-0 pl-4 pr-4 border-0" disabled={!this.state.enableShiftButton} onClick={event => this.handleAssignShift(event, '')}><i className="pr-2 fa fa-fw fa-plus d-sm-inline-block d-md-none d-lg-inline-block" aria-hidden="true"></i>Assign Shift</button>
 							) : (
-								<button type="button" title="Create Shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 pl-4 pr-4 border-0" disabled={!this.state.enableShiftButton} onClick={event => this.handleCreateShift(event, moment().format('YYYY-MM-DD'))}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Create Shift</button>
+								<button type="button" title="Create Shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 mb-md-0 pl-4 pr-4 border-0" disabled={!this.state.enableShiftButton} onClick={event => this.handleCreateShift(event, moment().format('YYYY-MM-DD'))}><i className="pr-2 fa fa-fw fa-plus d-sm-inline-block d-md-none d-lg-inline-block" aria-hidden="true"></i>Create Shift</button>
 							)}
 						</Fragment>
 					) : (
-						<button type="button" title="Create Shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 pl-4 pr-4 pl-md-4 pr-md-4 border-0" disabled={!this.state.enableShiftButton} onClick={this.handleCreateShift}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Create Shift</button>
+						<button type="button" title="Create Shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 mb-md-0 pl-4 pr-4 pl-md-4 pr-md-4 border-0" disabled={!this.state.enableShiftButton} onClick={this.handleCreateShift}><i className="pr-2 fa fa-fw fa-plus d-sm-inline-block d-md-none d-lg-inline-block" aria-hidden="true"></i>Create Shift</button>
 					)}
 					{(this.state.rotaStatus === STATUSES.DRAFT) ? (
-						<button type="button" title="Publish" className="btn btn-nav btn-primary col-12 col-sm-auto pl-4 pr-4 pl-md-4 pr-md-4 ml-sm-3 mb-3 m-sm-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish</button>
+						<button type="button" title="Publish Rota" className="btn btn-nav btn-primary col-12 col-sm-auto pl-4 pr-4 pl-md-4 pr-md-4 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish</button>
 					) : null}
 					{(this.state.rotaStatus === STATUSES.PUBLISHED) ? (
-						<button type="button" title="Published" className="btn btn-nav btn-primary col-12 col-sm-auto pl-4 pr-4 pl-md-4 pr-md-4 ml-sm-3 mb-3 m-sm-0 border-0" disabled>Publish</button>
+						<button type="button" title="Rota Published" className="btn btn-nav btn-primary col-12 col-sm-auto pl-4 pr-4 pl-md-4 pr-md-4 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled>Publish</button>
 					) : null}
 					{(this.state.rotaStatus === STATUSES.EDITED) ? (
-						<button type="button" title="Publish Changes" className="btn btn-nav btn-primary col-12 col-sm-auto pl-4 pr-4 ml-sm-3 mb-3 m-sm-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish Changes</button>
+						<button type="button" title="Publish Rota Changes" className="btn btn-nav btn-primary col-12 col-sm-auto pl-4 pr-4 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish Changes</button>
 					) : null}
-					<button type="button" title="Rota Budget" className="btn bg-white text-dark col-12 col-sm-auto pl-4 pr-4 ml-sm-3 border-0">Budget: &pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
+					<button type="button" title="Rota Budget" className="btn bg-white text-dark col-12 col-sm-auto pl-4 pr-4 ml-sm-3 mb-sm-0 mb-md-0 border-0"><span className="d-sm-inline-block d-md-none d-lg-inline-block">Budget:&nbsp;</span>&pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
 				</Col>
 			</Row>
-			<Modal title="Create Rota" className="modal-dialog" show={this.state.isRotaModalOpen} onClose={this.handleCreateRota}>
-				<RotaForm firstRota={false} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateRota} />
+			<Modal title="Create Rota" className="modal-dialog" show={this.state.isCreateRotaModalOpen} onClose={this.handleCreateRota}>
+				<RotaForm editMode={false} firstRota={false} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateRota} />
+			</Modal>
+			<Modal title="Edit Rota" className="modal-dialog" show={this.state.isEditRotaModalOpen} onClose={this.handleEditRota}>
+				<RotaForm rotaId={this.state.rotaId} editMode={true} firstRota={false} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleEditRota} />
 			</Modal>
 			<Modal title="Create Shift" className="modal-dialog" show={this.state.isCreateShiftModalOpen} onClose={event => this.handleCreateShift(event, this.state.startDate)}>
 				<ShiftForm startDate={this.state.startDate} roleName={this.state.roleName} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleCreateShift(event, this.state.startDate)} handleSwitchFromSelectRoleToCreateRole={this.handleSwitchFromSelectRoleToCreateRole} />

@@ -211,6 +211,7 @@ class AssignShiftForm extends Component {
 						/* Close the modal */
 						this.props.handleClose(event, '', moment());
 
+						/* FIXME - Make messages constant */
 						message = '<p>Shift was deleted!</p>';
 
 						/* Pass a message back up the rabbit hole to the parent component */
@@ -294,6 +295,7 @@ class AssignShiftForm extends Component {
 					/* Close the modal */
 					this.props.handleClose();
 
+					/* FIXME - Make messages constant */
 					const message = '<p>Shift was assigned!</p>';
 
 					/* Pass a message back up the rabbit hole to the parent component */

@@ -169,7 +169,7 @@ class EmployeeForm extends Component {
 		const accountEmployee = this.props.employees.filter(data => data.employee.employeeId === this.state.employeeId).shift();
 
 		/* Check if the user wants to delete the employee */
-		let message = `<div class="text-center"><p>Please confirm that you wish to delete the Employee?</p><ul class="list-unstyled font-weight-bold"><li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li></ul><p class="text-warning"><i class="pr-3 fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
+		let message = `<div class="text-center"><p>Please confirm that you wish to delete the Employee?</p><ul class="list-unstyled font-weight-bold"><li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li></ul><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
 
 		const options = {
 			message,
@@ -206,6 +206,7 @@ class EmployeeForm extends Component {
 						/* Close the modal */
 						this.props.handleClose();
 
+						/* FIXME - Make messages constant */
 						message = '<p>Employee was deleted!</p>';
 
 						/* Pass a message back up the rabbit hole to the parent component */
@@ -260,6 +261,7 @@ class EmployeeForm extends Component {
 						/* Close the modal */
 						this.props.handleClose();
 
+						/* FIXME - Make messages constant */
 						const message = '<p>Employee was updated!</p>';
 
 						/* Pass a message back up the rabbit hole to the parent component */
@@ -277,6 +279,7 @@ class EmployeeForm extends Component {
 						/* Close the modal */
 						this.props.handleClose();
 
+						/* FIXME - Make messages constant */
 						const message = '<p>Employee was created!</p>';
 
 						/* Pass a message back up the rabbit hole to the parent component */
