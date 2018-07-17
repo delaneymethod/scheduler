@@ -508,13 +508,13 @@ class ShiftForm extends Component {
 								{this.props.roles.map((role, index) => <option key={index} value={role.roleName} label={role.roleName}>{role.roleName}</option>)}
 							</Input>
 							<FieldFeedbacks for="roleName" show="all">
-								<FieldFeedback when="*" />
+								<FieldFeedback when="*">- Please select a valid role.</FieldFeedback>
 							</FieldFeedbacks>
 						</FormGroup>
 					</Col>
 					<Col className="text-right" xs="12" sm="3" md="3" lg="3" xl="3">
 						<FormGroup>
-							<Label className="text-white">Select Role</Label>
+							<Label className="text-white">Create Role</Label>
 							<Button type="button" title="Create Role" className="btn btn-create-select btn-toggle-fields" onClick={this.props.handleSwitchFromSelectRoleToCreateRole}>Create Role</Button>
 						</FormGroup>
 					</Col>

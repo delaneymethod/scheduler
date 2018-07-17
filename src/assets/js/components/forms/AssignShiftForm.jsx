@@ -295,20 +295,26 @@ class AssignShiftForm extends Component {
 						<FieldFeedback when="*">- Please select a date.</FieldFeedback>
 					</FieldFeedbacks>
 				</FormGroup>
-				<FormGroup>
-					<Label for="shiftId">Shift <span className="text-danger">&#42;</span></Label>
-					<div className="input-group">
-						<Input type="select" name="shiftId" id="shiftId" className="custom-select custom-select-xl" value={this.state.shiftId} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="2" required>
-							{this.state.unassignedShifts.map((unassignedShift, index) => <option key={index} value={unassignedShift.shiftId} label={`${(!isEmpty(unassignedShift.role)) ? unassignedShift.role.roleName.concat(', ') : ''}${moment(unassignedShift.startTime).format('HH:mma')} to ${(unassignedShift.isClosingShift) ? 'Closing' : moment(unassignedShift.endTime).format('HH:mma')}`}>{`${(!isEmpty(unassignedShift.role)) ? unassignedShift.role.roleName.concat(', ') : ''}${moment(unassignedShift.startTime).format('HH:mma')} to ${(unassignedShift.isClosingShift) ? 'Closing' : moment(unassignedShift.endTime).format('HH:mma')}`}</option>)}
-						</Input>
-						<div className="input-group-append">
-							<Button title="Create Shift" id="btn-toggle" className="input-group-text border-0 btn-toggle-fields" onClick={this.props.handleSwitchFromAssignShiftToCreateShift}>Create Shift</Button>
-						</div>
-					</div>
-					<FieldFeedbacks for="shiftId" show="all">
-						<FieldFeedback when="valueMissing">- Please select a shift.</FieldFeedback>
-					</FieldFeedbacks>
-				</FormGroup>
+				<Row>
+					<Col xs="12" sm="9" md="9" lg="9" xl="9">
+						<FormGroup>
+							<Label for="shiftId">Shift <span className="text-danger">&#42;</span></Label>
+							<Input type="select" name="shiftId" id="shiftId" className="custom-select custom-select-xl" value={this.state.shiftId} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="2" required>
+								<option value="" label=""></option>
+								{this.state.unassignedShifts.map((unassignedShift, index) => <option key={index} value={unassignedShift.shiftId} label={`${(!isEmpty(unassignedShift.role)) ? unassignedShift.role.roleName.concat(', ') : ''}${moment(unassignedShift.startTime).format('HH:mma')} to ${(unassignedShift.isClosingShift) ? 'Closing' : moment(unassignedShift.endTime).format('HH:mma')}`}>{`${(!isEmpty(unassignedShift.role)) ? unassignedShift.role.roleName.concat(', ') : ''}${moment(unassignedShift.startTime).format('HH:mma')} to ${(unassignedShift.isClosingShift) ? 'Closing' : moment(unassignedShift.endTime).format('HH:mma')}`}</option>)}
+							</Input>
+							<FieldFeedbacks for="shiftId" show="all">
+								<FieldFeedback when="valueMissing">- Please select a shift.</FieldFeedback>
+							</FieldFeedbacks>
+						</FormGroup>
+					</Col>
+					<Col className="text-right" xs="12" sm="3" md="3" lg="3" xl="3">
+						<FormGroup>
+							<Label className="text-white">Create Shift</Label>
+							<Button type="button" title="Create Shift" className="btn btn-create-select btn-toggle-fields" onClick={this.props.handleSwitchFromAssignShiftToCreateShift}>Create Shift</Button>
+						</FormGroup>
+					</Col>
+				</Row>
 				{(this.props.employees.length > 0) ? (
 					<FormGroup>
 						<Label for="employeeId">Employee <span className="text-danger">&#42;</span></Label>

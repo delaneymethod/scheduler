@@ -20,11 +20,24 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
+const filenames = {
+	css: '[name].bundle.css',
+	js: '[name].bundle.js',
+};
+
+/* Cache busted names for production */
+if (process.env.NODE_ENV === 'production') {
+	const timestamp = new Date();
+
+	filenames.css = `[name].bundle.${timestamp}.css`;
+	filenames.js = `[name].bundle.${timestamp}.js`;
+}
+
 module.exports = (env, options) => ({
 	entry: './src/assets/js/Scheduler.jsx',
 	output: {
 		publicPath: '/',
-		filename: 'assets/js/[name].bundle.js',
+		filename: `assets/js/${filenames.js}`,
 		path: path.resolve(__dirname, 'public'),
 	},
 	watchOptions: {
@@ -93,7 +106,7 @@ module.exports = (env, options) => ({
 					loader: 'postcss-loader',
 					options: {
 						autoprefixer: {
-							browsers: ['last 2 versions'],
+							browsers: ['last 3 versions'],
 						},
 						plugins: loader => [
 							precss(),
@@ -148,7 +161,7 @@ module.exports = (env, options) => ({
 		hints: false,
 	},
 	optimization: {
-		runtimeChunk: false,
+		runtimeChunk: 'single',
 		splitChunks: {
 			cacheGroups: {
 				commons: {
@@ -169,7 +182,7 @@ module.exports = (env, options) => ({
 	},
 	plugins: [
 		new MiniCssExtractPlugin({
-			filename: 'assets/css/[name].bundle.css',
+			filename: `assets/css/${filenames.css}`,
 		}),
 		new HtmlWebPackPlugin({
 			template: 'src/index.html',
