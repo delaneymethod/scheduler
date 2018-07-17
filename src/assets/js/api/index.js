@@ -127,8 +127,6 @@ export const updateAccount = account => request('PUT', `/accounts/${account.acco
 
 export const deleteAccount = account => request('DELETE', `/accounts/${account.accountId}`, 204);
 
-export const switchAccount = account => request('POST', '/accounts/switch', 200, account);
-
 /* SHIFTS */
 export const getShifts = rota => request('GET', `/shifts?rotaId=${rota.rotaId}`);
 

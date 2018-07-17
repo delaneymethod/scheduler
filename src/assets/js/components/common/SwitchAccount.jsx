@@ -47,25 +47,25 @@ class SwitchAccount extends Component {
 	});
 
 	handleSwitchAccount = (event, accountId) => {
-		const { actions } = this.props;
+		const { actions, history } = this.props;
 
-		if (accountId !== this.props.user.account.id) {
-			console.log('Called SwitchAccount handleChange switchAccount');
-			actions.switchAccount({ accountId })
-				.then(() => {
-					this.props.user.account = this.props.user.accounts.map(({ id }) => accountId);
+		console.log('Called SwitchAccount handleChange switchAccount');
+		actions.switchAccount({ accountId })
+			.then(() => {
+				const { user } = this.props;
 
-					console.log('Called SwitchAccount handleChange updateUser');
-					actions.updateUser(this.props.user).then(() => window.location.reload());
-				})
-				.catch((error) => {
-					error.data.title = 'Switch Account';
+				user.account = user.accounts.filter(data => data.id === accountId).shift();
 
-					this.setState({ error });
+				console.log('Called SwitchAccount handleChange updateUser');
+				actions.updateUser(user).then(() => history.push(routes.DASHBOARD.HOME.URI));
+			})
+			.catch((error) => {
+				error.data.title = 'Switch Account';
 
-					this.handleModal();
-				});
-		}
+				this.setState({ error });
+
+				this.handleModal();
+			});
 	};
 
 	handleModal = () => this.setState({ isErrorModalOpen: !this.state.isErrorModalOpen }, () => ((!this.state.isErrorModalOpen) ? this.props.history.push(routes.DASHBOARD.HOME.URI) : null));
@@ -98,7 +98,7 @@ class SwitchAccount extends Component {
 						) : (
 							<Fragment>
 								{(this.props.user.account) ? (
-									<button type="button" className="btn btn-nav btn-user ml-r border-0 col-12 col-sm-auto" title={this.props.user.account.name} aria-label={this.props.user.account.name}>
+									<button type="button" className="btn btn-nav btn-user btn-no-click ml-r border-0 col-12 col-sm-auto" title={this.props.user.account.name} aria-label={this.props.user.account.name}>
 										<span className="d-none d-sm-none d-md-inline-block d-lg-none">{truncateText(this.props.user.account.name)}</span>
 										<span className="d-inline-block d-sm-inline-block d-md-none d-lg-inline-block">{this.props.user.account.name}</span>
 									</button>

@@ -139,20 +139,7 @@ export const switchAccountSuccess = account => ({
 });
 
 export const switchAccount = payload => (dispatch) => {
-	dispatch(ajaxLoading(true));
+	dispatch(switchAccountSuccess(payload));
 
-	return api.switchAccount(payload)
-		.then((account) => {
-			dispatch(ajaxLoading(false));
-
-			dispatch(switchAccountSuccess(account));
-
-			return account;
-		})
-		.catch((error) => {
-			dispatch(ajaxLoading(false));
-
-			/* Bubble the error back up the rabbit hole */
-			return Promise.reject(error);
-		});
+	return Promise.resolve(true);
 };

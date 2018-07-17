@@ -240,32 +240,18 @@ describe('Account Actions', () => {
 		return store.dispatch(actions.deleteAccount({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
 
-	it('should create SWITCH_ACCOUNT and AJAX_LOADING actions on switchAccount', () => {
-		moxios.wait(() => {
-			const request = moxios.requests.mostRecent();
-
-			request.respondWith({
-				status: 200,
-				response: {},
-			});
-		});
-
-		store = mockStore({ accounts: [] });
-
-		const expectedActions = [{
-			status: true,
-			type: types.AJAX_LOADING,
-		}, {
-			status: false,
-			type: types.AJAX_LOADING,
-		}, {
-			account: {},
-			type: types.SWITCH_ACCOUNT,
-		}];
+	it('should create SWITCH_ACCOUNT action on switchAccount', () => {
+		store = mockStore({ account: {} });
 
 		const payload = {
-			id: 1,
+			id: '1234',
+			name: 'Gig Grafter',
 		};
+
+		const expectedActions = [{
+			account: payload,
+			type: types.SWITCH_ACCOUNT,
+		}];
 
 		return store.dispatch(actions.switchAccount(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
 	});

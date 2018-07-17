@@ -1,6 +1,6 @@
 import accountsReducer from '../../../src/assets/js/reducers/accountsReducer';
 
-import { GET_ACCOUNT, GET_ACCOUNTS, CREATE_ACCOUNT, UPDATE_ACCOUNT, DELETE_ACCOUNT } from '../../../src/assets/js/actions/actionTypes';
+import { GET_ACCOUNT, GET_ACCOUNTS, CREATE_ACCOUNT, UPDATE_ACCOUNT, DELETE_ACCOUNT, SWITCH_ACCOUNT } from '../../../src/assets/js/actions/actionTypes';
 
 const findAccount = (accounts, id) => (accounts.length ? accounts.find(account => account.id === id) : null);
 
@@ -90,5 +90,19 @@ describe('Accounts Reducer', () => {
 		const accounts = accountsReducer(mockAccounts, action);
 
 		expect(accounts.length).toEqual(0);
+	});
+
+	it('should handle SWITCH_ACCOUNT', () => {
+		const account = {
+			id: '1234',
+			name: 'Gig Grafter',
+		};
+
+		const action = {
+			type: SWITCH_ACCOUNT,
+			account,
+		};
+
+		expect(accountsReducer({}, action)).toEqual(account);
 	});
 });

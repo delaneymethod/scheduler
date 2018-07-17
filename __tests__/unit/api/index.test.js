@@ -415,18 +415,6 @@ describe('API', () => {
 		return api.deleteAccount(payload).then(data => expect(data.deleted).toBe(true));
 	});
 
-	it('should switch account', () => {
-		mock.onPost('/accounts/switch').reply(200, {
-			accounts: [],
-		});
-
-		const payload = {
-			accountId: 1,
-		};
-
-		return api.switchAccount(payload).then(data => expect(data.accounts).toEqual([]));
-	});
-
 	it('should get rota types', () => {
 		mock.onGet('/rota-types').reply(200, {
 			rotaTypes: [],
