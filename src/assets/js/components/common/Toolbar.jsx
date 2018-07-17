@@ -122,7 +122,7 @@ class Toolbar extends Component {
 		}
 
 		/* If the current week/rota or shifts have changes, re/check the shift button state and update label to reflect available actions */
-		if (prevProps.week !== this.props.week || prevProps.shifts !== this.props.shifts || prevProps.rota !== this.props.rota || prevProps.settings !== this.props.settings) {
+		if (prevProps.week !== this.props.week || prevProps.shifts !== this.props.shifts || prevProps.rotaType !== this.props.rotaType || prevProps.rota !== this.props.rota || prevProps.settings !== this.props.settings) {
 			this.handleToggleButtonStates();
 		}
 	};
@@ -178,11 +178,13 @@ class Toolbar extends Component {
 			hasUnassignedShifts = true;
 		}
 
+		const { status, budget } = this.props.rota;
+
 		this.setState({
 			enableShiftButton,
+			rotaBudget: budget,
+			rotaStatus: status,
 			hasUnassignedShifts,
-			rotaBudget: this.props.rota.budget,
-			rotaStatus: this.props.rota.status,
 			rolesIsActive: (pathname === dashboard.ROLES.URI),
 			overviewIsActive: (pathname === dashboard.OVERVIEW.URI),
 			employeesIsActive: (pathname === dashboard.EMPLOYEES.URI),

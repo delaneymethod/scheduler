@@ -13,6 +13,8 @@ import confirm from '../../helpers/confirm';
 
 import constants from '../../helpers/constants';
 
+import { getRotas, switchRota } from '../../actions/rotaActions';
+
 import { createPlacement } from '../../actions/placementActions';
 
 import { getShifts, deleteShift } from '../../actions/shiftActions';
@@ -25,6 +27,7 @@ const propTypes = {
 	rota: PropTypes.object.isRequired,
 	week: PropTypes.object.isRequired,
 	shifts: PropTypes.array.isRequired,
+	rotaType: PropTypes.object.isRequired,
 	employees: PropTypes.array.isRequired,
 	handleClose: PropTypes.func.isRequired,
 	handleSuccessNotification: PropTypes.func.isRequired,
@@ -35,6 +38,7 @@ const defaultProps = {
 	rota: {},
 	week: {},
 	shifts: [],
+	rotaType: {},
 	employees: [],
 	startDate: null,
 	employeeId: null,
@@ -58,6 +62,10 @@ class AssignShiftForm extends Component {
 		this.handleChange = this.handleChange.bind(this);
 
 		this.handleDelete = this.handleDelete.bind(this);
+
+		this.handleGetRotas = this.handleGetRotas.bind(this);
+
+		this.handleGetShifts = this.handleGetShifts.bind(this);
 
 		this.handleUnassignedShifts = this.handleUnassignedShifts.bind(this);
 	}
@@ -206,6 +214,7 @@ class AssignShiftForm extends Component {
 						this.props.handleSuccessNotification(message);
 					})
 					.then(() => this.handleGetShifts())
+					.then(() => this.handleGetRotas())
 					.catch(error => this.setState({ error }));
 			}, (result) => {
 				/* We do nothing */
@@ -231,6 +240,31 @@ class AssignShiftForm extends Component {
 
 		console.log('Called AssignShiftForm handleGetShifts getShifts');
 		actions.getShifts(payload).catch(error => this.setState({ error }));
+	};
+
+	handleGetRotas = () => {
+		const {
+			rota,
+			actions,
+			rotaType: {
+				rotaTypeId,
+			},
+		} = this.props;
+
+		const payload = {
+			rotaTypeId,
+		};
+
+		console.log('Called AssignShiftForm handleGetRotas getRotas');
+		actions.getRotas(payload)
+			.then((allRotas) => {
+				/* After we get all rotas, we need to find our current rota again and switch it so its details are also updated */
+				const currentRota = allRotas.filter(data => data.rotaId === rota.rotaId).shift();
+
+				console.log('Called ShiftForm handleGetRotas switchRota');
+				actions.switchRota(currentRota);
+			})
+			.catch(error => this.setState({ error }));
 	};
 
 	handleSubmit = async (event) => {
@@ -263,6 +297,7 @@ class AssignShiftForm extends Component {
 					this.props.handleSuccessNotification(message);
 				})
 				.then(() => this.handleGetShifts())
+				.then(() => this.handleGetRotas())
 				.catch(error => this.setState({ error }));
 		}
 	};
@@ -341,12 +376,15 @@ const mapStateToProps = (state, props) => ({
 	rota: state.rota,
 	week: state.week,
 	shifts: state.shifts,
+	rotaType: state.rotaType,
 	employees: state.employees,
 });
 
 const mapDispatchToProps = dispatch => ({
 	actions: bindActionCreators({
+		getRotas,
 		getShifts,
+		switchRota,
 		deleteShift,
 		createPlacement,
 	}, dispatch),

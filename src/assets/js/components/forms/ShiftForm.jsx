@@ -15,6 +15,8 @@ import constants from '../../helpers/constants';
 
 import { getRoles } from '../../actions/roleActions';
 
+import { getRotas, switchRota } from '../../actions/rotaActions';
+
 import { getShifts, createShift, updateShift, deleteShift } from '../../actions/shiftActions';
 
 import { createPlacement, updatePlacement, deletePlacement } from '../../actions/placementActions';
@@ -32,6 +34,7 @@ const propTypes = {
 	rota: PropTypes.object.isRequired,
 	roles: PropTypes.array.isRequired,
 	shifts: PropTypes.array.isRequired,
+	rotaType: PropTypes.object.isRequired,
 	employees: PropTypes.array.isRequired,
 	handleClose: PropTypes.func.isRequired,
 	handleSuccessNotification: PropTypes.func.isRequired,
@@ -43,6 +46,7 @@ const defaultProps = {
 	rota: {},
 	roles: [],
 	shifts: [],
+	rotaType: {},
 	shiftId: null,
 	employees: [],
 	roleName: null,
@@ -76,6 +80,8 @@ class ShiftForm extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 
 		this.handleChange = this.handleChange.bind(this);
+
+		this.handleGetRotas = this.handleGetRotas.bind(this);
 
 		this.handleGetRoles = this.handleGetRoles.bind(this);
 
@@ -256,6 +262,31 @@ class ShiftForm extends Component {
 		actions.getShifts(payload).catch(error => this.setState({ error }));
 	};
 
+	handleGetRotas = () => {
+		const {
+			rota,
+			actions,
+			rotaType: {
+				rotaTypeId,
+			},
+		} = this.props;
+
+		const payload = {
+			rotaTypeId,
+		};
+
+		console.log('Called ShiftForm handleGetRotas getRotas');
+		actions.getRotas(payload)
+			.then((allRotas) => {
+				/* After we get all rotas, we need to find our current rota again and switch it so its details are also updated */
+				const currentRota = allRotas.filter(data => data.rotaId === rota.rotaId).shift();
+
+				console.log('Called ShiftForm handleGetRotas switchRota');
+				actions.switchRota(currentRota);
+			})
+			.catch(error => this.setState({ error }));
+	};
+
 	handleGetRoles = () => {
 		console.log('Called ShiftForm handleGetRoles getRoles');
 		this.props.actions.getRoles().catch(error => this.setState({ error }));
@@ -315,7 +346,10 @@ class ShiftForm extends Component {
 						/* Pass a message back up the rabbit hole to the parent component */
 						this.props.handleSuccessNotification(message);
 					})
+					/* Updating a shift or placement will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 					.then(() => this.handleGetShifts())
+					/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
+					.then(() => this.handleGetRotas())
 					.catch(error => this.setState({ error }));
 			}, (result) => {
 				/* We do nothing */
@@ -397,6 +431,8 @@ class ShiftForm extends Component {
 									})
 									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 									.then(() => this.handleGetShifts())
+									/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
+									.then(() => this.handleGetRotas())
 									.catch(error => this.setState({ error }));
 							} else {
 								payload = {
@@ -423,6 +459,8 @@ class ShiftForm extends Component {
 									})
 									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 									.then(() => this.handleGetShifts())
+									/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
+									.then(() => this.handleGetRotas())
 									.catch(error => this.setState({ error }));
 							}
 						} else {
@@ -439,6 +477,8 @@ class ShiftForm extends Component {
 					.then(() => this.handleGetShifts())
 					/* The user can select or create a role so we need to get roles each time we update or create a shift */
 					.then(() => this.handleGetRoles())
+					/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
+					.then(() => this.handleGetRotas())
 					.catch(error => this.setState({ error }));
 			} else {
 				console.log('Called ShiftForm handleSubmit createShift');
@@ -461,7 +501,10 @@ class ShiftForm extends Component {
 									/* Pass a message back up the rabbit hole to the parent component */
 									this.props.handleSuccessNotification(message);
 								})
+								/* The user can select or create a role so we need to get roles each time we update or create a shift */
 								.then(() => this.handleGetShifts())
+								/* Creating a placement updates a rotas status so we need to refresh our rotas list too */
+								.then(() => this.handleGetRotas())
 								.catch(error => this.setState({ error }));
 						} else {
 							/* Close the modal */
@@ -472,11 +515,17 @@ class ShiftForm extends Component {
 							/* Pass a message back up the rabbit hole to the parent component */
 							this.props.handleSuccessNotification(message);
 
+							/* Creating a shift will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 							this.handleGetShifts();
+
+							/* Creating a shift updates a rotas status so we need to refresh our rotas list too */
+							this.handleGetRotas();
 						}
 					})
 					/* The user can select or create a role so we need to get roles each time we update or create a shift */
 					.then(() => this.handleGetRoles())
+					/* Creating a shift updates a rotas status so we need to refresh our rotas list too */
+					.then(() => this.handleGetRotas())
 					.catch(error => this.setState({ error }));
 			}
 		}
@@ -605,6 +654,7 @@ const mapStateToProps = (state, props) => ({
 	roles: state.roles,
 	shifts: state.shifts,
 	shiftId: props.shiftId,
+	rotaType: state.rotaType,
 	editMode: props.editMode,
 	roleName: props.roleName,
 	startDate: props.startDate,
@@ -615,8 +665,10 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = dispatch => ({
 	actions: bindActionCreators({
+		getRotas,
 		getRoles,
 		getShifts,
+		switchRota,
 		createShift,
 		updateShift,
 		deleteShift,

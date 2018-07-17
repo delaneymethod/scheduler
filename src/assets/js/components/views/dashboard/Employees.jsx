@@ -43,6 +43,8 @@ import { addClass, removeClass } from '../../../helpers/classes';
 
 import UploadEmployeesForm from '../../forms/UploadEmployeesForm';
 
+import { getRotas, switchRota } from '../../../actions/rotaActions';
+
 import { updatePlacement } from '../../../actions/placementActions';
 
 import { getShifts, updateShift } from '../../../actions/shiftActions';
@@ -111,6 +113,8 @@ class Employees extends Component {
 		this.handleFilter = this.handleFilter.bind(this);
 
 		this.handleDragEnd = this.handleDragEnd.bind(this);
+
+		this.handleGetRotas = this.handleGetRotas.bind(this);
 
 		this.handleDragOver = this.handleDragOver.bind(this);
 
@@ -631,10 +635,15 @@ class Employees extends Component {
 	};
 
 	handleUpdateShift = (shiftId, placementId, employeeId, date) => {
-		const { actions } = this.props;
-
-		/* Get the rota id based on current rota */
-		const { rotaId } = this.props.rota;
+		const {
+			actions,
+			rota: {
+				rotaId,
+			},
+			rotaType: {
+				rotaTypeId,
+			},
+		} = this.props;
 
 		/* Get the shift based on shift id */
 		const shift = this.props.shifts.filter(data => data.shiftId === shiftId).shift();
@@ -692,6 +701,7 @@ class Employees extends Component {
 					actions.updatePlacement(payload)
 						/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 						.then(() => this.handleGetShifts(rotaId))
+						.then(() => this.handleGetRotas(rotaTypeId))
 						.catch((error) => {
 							error.data.title = 'Edit Placement';
 
@@ -702,6 +712,8 @@ class Employees extends Component {
 				} else {
 					/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 					this.handleGetShifts(rotaId);
+
+					this.handleGetRotas(rotaTypeId);
 				}
 			})
 			.catch((error) => {
@@ -728,6 +740,31 @@ class Employees extends Component {
 
 			this.handleModal();
 		});
+	};
+
+	handleGetRotas = (rotaTypeId) => {
+		const { rota, actions } = this.props;
+
+		const payload = {
+			rotaTypeId,
+		};
+
+		console.log('Called Employees handleGetRotas getRotas');
+		actions.getRotas(payload)
+			.then((allRotas) => {
+				/* After we get all rotas, we need to find our current rota again and switch it so its details are also updated */
+				const currentRota = allRotas.filter(data => data.rotaId === rota.rotaId).shift();
+
+				console.log('Called Employees handleGetRotas switchRota');
+				actions.switchRota(currentRota);
+			})
+			.catch((error) => {
+				error.data.title = 'Get Rotas';
+
+				this.setState({ error });
+
+				this.handleModal();
+			});
 	};
 
 	handleAddCellHighlight = (element) => {
@@ -1078,7 +1115,9 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = dispatch => ({
 	actions: bindActionCreators({
+		getRotas,
 		getShifts,
+		switchRota,
 		updateShift,
 		getEmployees,
 		orderEmployees,
