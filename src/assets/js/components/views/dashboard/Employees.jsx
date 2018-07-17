@@ -463,7 +463,7 @@ class Employees extends Component {
 							};
 
 							/* Keeping track of totals per row/employee */
-							row.cost = parseFloat(row.cost) + parseFloat(cost);
+							row.cost = parseFloat(cost) * parseFloat(hours);
 
 							row.hours = parseFloat(row.hours) + parseFloat(hours);
 
