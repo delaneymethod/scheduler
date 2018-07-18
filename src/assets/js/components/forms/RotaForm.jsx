@@ -458,9 +458,6 @@ class RotaForm extends Component {
 				<TextField fieldName="rotaName" fieldLabel="Rota Name" fieldValue={this.state.rotaName} fieldPlaceholder="e.g. Bar" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid rota name." fieldTabIndex={1} fieldRequired={true} showIsDuplicate isDuplicateHaystack={this.state.haystackRotaTypes.map(data => data.rotaTypeName)} />
 				<Row>
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
-						<NumberField fieldName="budget" fieldLabel="Budget" fieldValue={this.state.budget} fieldPlaceholder="e.g. £2,000" handleChange={this.handleChangeBudget} handleBlur={this.handleBlur} valueMissing="Please provide a valid budget." fieldTabIndex={2} fieldRequired={false} />
-					</Col>
-					<Col xs="12" sm="12" md="12" lg="6" xl="6">
 						<FormGroup>
 							<Label for="startDate">Start Date {(this.state.startDateReadOnly) ? <small className="text-muted">Readonly</small> : <span className="text-danger">&#42;</span>}</Label>
 							{(this.state.startDateReadOnly) ? (
@@ -474,6 +471,9 @@ class RotaForm extends Component {
 								<FieldFeedback when="*">- Please select a start date.</FieldFeedback>
 							</FieldFeedbacks>
 						</FormGroup>
+					</Col>
+					<Col xs="12" sm="12" md="12" lg="6" xl="6">
+						<NumberField fieldName="budget" fieldLabel="Budget" fieldValue={this.state.budget} fieldPlaceholder="e.g. £2,000" handleChange={this.handleChangeBudget} handleBlur={this.handleBlur} valueMissing="Please provide a valid budget." fieldTabIndex={2} fieldRequired={false} />
 					</Col>
 				</Row>
 				{(this.props.editMode) ? (
