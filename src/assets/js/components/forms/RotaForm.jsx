@@ -37,6 +37,7 @@ const propTypes = {
 	message: PropTypes.string,
 	week: PropTypes.object.isRequired,
 	rotas: PropTypes.array.isRequired,
+	shifts: PropTypes.array.isRequired,
 	firstRota: PropTypes.bool.isRequired,
 	settings: PropTypes.object.isRequired,
 	rotaTypes: PropTypes.array.isRequired,
@@ -49,6 +50,7 @@ const defaultProps = {
 	week: {},
 	title: '',
 	rotas: [],
+	shifts: [],
 	rotaId: '',
 	message: '',
 	settings: {},
@@ -82,11 +84,13 @@ class RotaForm extends Component {
 		error: {},
 		budget: '',
 		rotaId: '',
+		status: '',
 		rotaName: '',
 		startDate: '',
 		rotaTypeId: '',
 		startDates: [],
 		haystackRotaTypes: [],
+		startDateReadOnly: false,
 	});
 
 	componentDidMount = () => {
@@ -104,7 +108,7 @@ class RotaForm extends Component {
 		let startDates = [];
 
 		/* Get the start date of the week... */
-		const startDate = moment().startOf('week');
+		let startDate = moment().startOf('week');
 
 		/* Update the state with a default start date */
 		this.setState({ startDate: startDate.format('YYYY-MM-DD') });
@@ -132,9 +136,11 @@ class RotaForm extends Component {
 		if (this.props.editMode && !isEmpty(this.props.rotaId)) {
 			const rota = this.props.rotas.filter(data => data.rotaId === this.props.rotaId).shift();
 
-			const { budget } = rota;
+			const { status, budget } = rota;
 
 			const rotaStartDate = moment(rota.startDate);
+
+			startDate = rotaStartDate.format('YYYY-MM-DD');
 
 			const { rotaTypeId, rotaTypeName } = this.props.rotaType;
 
@@ -154,13 +160,28 @@ class RotaForm extends Component {
 			/* Removes current rota type name from duplicate list so we dont trigger a duplicate in edit mode */
 			haystackRotaTypes = haystackRotaTypes.filter(data => data.rotaTypeId !== rotaTypeId);
 
+			/* Business Rule - Users can only change a rotas start date if there is only 1 rota and it has no shifts. In all other circumstances, the start date is readonly. */
+			let { startDateReadOnly } = this.state;
+
+			if (this.props.rotas.length === 1) {
+				startDateReadOnly = false;
+
+				if (this.props.shifts.length > 0) {
+					startDateReadOnly = true;
+				}
+			} else {
+				startDateReadOnly = true;
+			}
+
 			/* Update the state with all the edit rota details */
 			this.setState({
+				status,
+				startDate,
 				rotaTypeId,
 				startDates,
 				haystackRotaTypes,
+				startDateReadOnly,
 				rotaName: rotaTypeName,
-				startDate: rotaStartDate,
 				budget: (budget === '') ? 0 : budget,
 			});
 		}
@@ -241,17 +262,101 @@ class RotaForm extends Component {
 		await this.form.validateFields();
 
 		if (this.form.isValid()) {
-			let payload;
+			const { rotaName, rotaTypeId } = this.state;
 
-			const { rotaName } = this.state;
+			let payload = {
+				rotaName,
+				rotaTypeId,
+			};
 
 			if (this.props.editMode) {
-				console.log('FIXME - Update Rota');
-			} else {
-				payload = {
-					rotaName,
-				};
+				console.log('Called RotaForm handleSubmit updateRotaType');
+				actions.updateRotaType(payload)
+					.then((updatedRotaType) => {
+						/* Set the current rota type */
+						console.log('Called RotaForm handleSubmit switchRotaType');
+						actions.switchRotaType(updatedRotaType).then(() => {
+							let { startDate } = this.state;
 
+							const { status, rotaId, budget } = this.state;
+
+							startDate = moment(startDate).format('YYYY-MM-DD');
+
+							payload = {
+								status,
+								rotaId,
+								startDate,
+								rotaTypeId,
+								budget: (budget === '') ? 0 : budget,
+							};
+
+							/* Now we create a new rota */
+							console.log('Called RotaForm handleSubmit updateRota');
+							actions.updateRota(payload)
+								.then((updatedRota) => {
+									/* Set the current rota */
+									console.log('Called RotaForm handleSubmit switchRota');
+									actions.switchRota(updatedRota).then(() => {
+										/* Lets make sure we pull the latest list of rotas from the API and update the store */
+										console.log('Called RotaForm handleSubmit getRotas');
+										actions.getRotas(updatedRotaType)
+											.then(() => {
+												/* Lets also make sure we pull the latest list of shifts from the API and update the store */
+												console.log('Called RotaForm handleSubmit getShifts');
+												actions.getShifts(updatedRota)
+													.then(() => {
+														/* Then we use the new rotas start date to set the current week start and end dates */
+														const firstDayOfWeek = moment(startDate).day();
+
+														const weekStartDate = moment(startDate, 'YYYY-MM-DD');
+
+														const weekEndDate = moment(startDate, 'YYYY-MM-DD').add(6, 'days');
+
+														payload = {
+															endDate: weekEndDate,
+															startDate: weekStartDate,
+														};
+
+														/* Set the current week */
+														console.log('Called RotaForm handleSubmit switchWeek');
+														actions.switchWeek(payload).then(() => {
+															payload = {
+																firstDayOfWeek,
+															};
+
+															/* Set the day of week based on start date */
+															console.log('Called RotaForm handleSubmit updateSettings');
+															actions.updateSettings(payload).then(() => {
+																console.log('Called RotaForm handleSubmit firstDayOfWeek:', firstDayOfWeek);
+
+																moment.updateLocale('en', {
+																	week: {
+																		dow: firstDayOfWeek,
+																		doy: moment.localeData('en').firstDayOfYear(),
+																	},
+																});
+
+																/* Close the modal */
+																this.props.handleClose();
+
+																/* FIXME - Make messages constant */
+																const message = '<p>Rota was updated!</p>';
+
+																/* Pass a message back up the rabbit hole to the parent component */
+																this.props.handleSuccessNotification(message);
+															});
+														});
+													})
+													.catch(error => this.setState({ error }));
+											})
+											.catch(error => this.setState({ error }));
+									});
+								})
+								.catch(error => this.setState({ error }));
+						});
+					})
+					.catch(error => this.setState({ error }));
+			} else {
 				/* Creates a new rota type */
 				console.log('Called RotaForm handleSubmit createRotaType');
 				actions.createRotaType(payload)
@@ -261,14 +366,12 @@ class RotaForm extends Component {
 						actions.switchRotaType(rotaType).then(() => {
 							const status = STATUSES.DRAFT;
 
-							const { rotaTypeId } = rotaType;
-
 							const { budget, startDate } = this.state;
 
 							payload = {
 								status,
 								startDate,
-								rotaTypeId,
+								rotaTypeId: rotaType.rotaTypeId,
 								budget: (budget === '') ? 0 : budget,
 							};
 
@@ -322,7 +425,7 @@ class RotaForm extends Component {
 																this.props.handleClose();
 
 																/* FIXME - Make messages constant */
-																const message = '<p>Rota was created!</p>';
+																const message = '<p>Rota was updated!</p>';
 
 																/* Pass a message back up the rabbit hole to the parent component */
 																this.props.handleSuccessNotification(message);
@@ -359,10 +462,14 @@ class RotaForm extends Component {
 					</Col>
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
 						<FormGroup>
-							<Label for="startDate">Start Date <span className="text-danger">&#42;</span></Label>
-							<Input type="select" name="startDate" id="startDate" className="custom-select custom-select-xl" value={this.state.startDate} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="3" required={true}>
-								{this.state.startDates.map((startDate, index) => <option key={index} value={moment(startDate).format('YYYY-MM-DD')} label={moment(startDate).format('dddd, Do MMMM YYYY')}>{moment(startDate).format('dddd, Do MMMM YYYY')}</option>)}
-							</Input>
+							<Label for="startDate">Start Date {(this.state.startDateReadOnly) ? <small className="text-muted">Readonly</small> : <span className="text-danger">&#42;</span>}</Label>
+							{(this.state.startDateReadOnly) ? (
+								<Input type="text" name="startDate" id="startDate" value={moment(this.state.startDate).format('dddd, Do MMMM YYYY')} tabIndex={3} readOnly />
+							) : (
+								<Input type="select" name="startDate" id="startDate" className="custom-select custom-select-xl" value={this.state.startDate} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="3" required={true}>
+									{this.state.startDates.map((startDate, index) => <option key={index} value={moment(startDate).format('YYYY-MM-DD')} label={moment(startDate).format('dddd, Do MMMM YYYY')}>{moment(startDate).format('dddd, Do MMMM YYYY')}</option>)}
+								</Input>
+							)}
 							<FieldFeedbacks for="startDate" show="all">
 								<FieldFeedback when="*">- Please select a start date.</FieldFeedback>
 							</FieldFeedbacks>
@@ -390,6 +497,7 @@ const mapStateToProps = (state, props) => ({
 	week: state.week,
 	rotas: state.rotas,
 	rotaId: props.rotaId,
+	shifts: state.shifts,
 	settings: state.settings,
 	editMode: props.editMode,
 	rotaType: state.rotaType,

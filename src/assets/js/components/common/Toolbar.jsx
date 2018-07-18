@@ -414,6 +414,7 @@ class Toolbar extends Component {
 					{(this.state.rotaStatus === STATUSES.EDITED) ? (
 						<button type="button" title="Publish Rota Changes" className="btn btn-nav btn-primary col-12 col-sm-auto pl-4 pr-4 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish Changes</button>
 					) : null}
+					<button type="button" title="Edit Rota" className="btn btn-rotas-popover text-dark border-0 col-12 col-sm-auto pl-4 pr-4 ml-sm-3 mb-3 mb-sm-0 mt-md-0" onClick={event => this.handleEditRota(event, this.props.rota.rotaId)}>Edit</button>
 					<button type="button" title="Rota Budget" className="btn bg-white text-dark col-12 col-sm-auto pl-4 pr-4 ml-sm-3 mb-sm-0 mb-md-0 border-0"><span className="d-sm-inline-block d-md-none d-lg-inline-block">Budget:&nbsp;</span>&pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
 				</Col>
 			</Row>

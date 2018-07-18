@@ -18,9 +18,9 @@ label {
 	// font-size: 0.875em;
 	background-color: $gray-300;
 	color: $body-color !important;
+	line-height: calculateRem(44px);
 	// font-weight: $font-weight-semi;
 	border: calculateRem(1px) solid $gray-600;
-	line-height: calculateRem(44px);
 }
 
 .form-control-md,
