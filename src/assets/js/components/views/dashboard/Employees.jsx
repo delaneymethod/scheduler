@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
-import { concat, isEmpty, includes, debounce } from 'lodash';
+import { concat, isEmpty, isString, includes, debounce } from 'lodash';
 import { Form, Label, Input, Popover, FormGroup, PopoverBody, PopoverHeader } from 'reactstrap';
 
 import Modal from '../../common/Modal';
@@ -217,6 +217,12 @@ class Employees extends Component {
 		if (prevProps.employees !== this.props.employees || prevProps.week !== this.props.week || prevProps.rota !== this.props.rota || prevProps.rotaType !== this.props.rotaType || prevProps.shifts !== this.props.shifts || prevProps.settings !== this.props.settings) {
 			this.handleFetchData();
 		}
+
+		if (prevState.roleName !== this.state.roleName) {
+			const { roleName } = this.state;
+
+			this.setState({ roleName });
+		}
 	};
 
 	handleSortEmployees = (event, column) => {
@@ -318,9 +324,15 @@ class Employees extends Component {
 
 	handleUploadEmployees = () => this.setState({ isUploadEmployeesModalOpen: !this.state.isUploadEmployeesModalOpen });
 
-	handleAssignShift = (event, employeeId, startDate) => this.setState({ startDate, employeeId, isAssignShiftModalOpen: !this.state.isAssignShiftModalOpen });
+	handleAssignShift = (event, employeeId, startDate) => this.setState({ startDate, employeeId, isAssignShiftModalOpen: !this.state.isAssignShiftModalOpen }, () => {
+		/* If we close the modal, reset the role name state. If the user hasnt saved, but reopens the modal, we want the correct value - not the state value */
+		this.setState({ roleName: '' });
+	});
 
-	handleCreateShift = (event, employeeId, startDate) => this.setState({ startDate, employeeId, isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen });
+	handleCreateShift = (event, employeeId, startDate) => this.setState({ startDate, employeeId, isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen }, () => {
+		/* If we close the modal, reset the role name state. If the user hasnt saved, but reopens the modal, we want the correct value - not the state value */
+		this.setState({ roleName: '' });
+	});
 
 	handleEditEmployee = (event, employeeId) => this.setState({ employeeId, isEditEmployeeModalOpen: !this.state.isEditEmployeeModalOpen });
 
@@ -928,7 +940,18 @@ class Employees extends Component {
 		return false;
 	};
 
-	handleSwitchFromSelectRoleToCreateRole = roleName => this.setState({ roleName, isCreateRoleModalOpen: !this.state.isCreateRoleModalOpen, isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen });
+	handleSwitchFromSelectRoleToCreateRole = (roleName) => {
+		if (isString(roleName)) {
+			this.setState({ roleName });
+		}
+
+		this.setState({ isCreateRoleModalOpen: !this.state.isCreateRoleModalOpen, isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen }, () => {
+			/* If we close the modal, reset the role name state. If the user hasnt saved, but reopens the modal, we want the correct value - not the state value */
+			if (!this.state.isCreateShiftModalOpen) {
+				this.setState({ roleName: '' });
+			}
+		});
+	};
 
 	handleSwitchFromAssignShiftToCreateShift = () => this.setState({ isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen, isAssignShiftModalOpen: !this.state.isAssignShiftModalOpen });
 
@@ -1012,13 +1035,13 @@ class Employees extends Component {
 												{row.columns.map((column, columnIndex) => ((column.draggable) ? (
 													<td key={columnIndex} className="p-0 align-top non-draggable-cell" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId}>
 														{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
-															<ShiftButton key={shiftPlacementIndex} past={true} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} />
+															<ShiftButton key={shiftPlacementIndex} past={true} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} roleName={this.state.roleName} handleSwitchFromSelectRoleToCreateRole={this.handleSwitchFromSelectRoleToCreateRole} />
 														)) : null}
 													</td>
 												) : (
 													<td key={columnIndex} className="p-0 align-top draggable-cell" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId}>
 														{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
-															<ShiftButton key={shiftPlacementIndex} past={false} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} />
+															<ShiftButton key={shiftPlacementIndex} past={false} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} roleName={this.state.roleName} handleSwitchFromSelectRoleToCreateRole={this.handleSwitchFromSelectRoleToCreateRole} />
 														)) : (
 															<Fragment>
 																{(column.unassignedShifts.length > 0) ? (

@@ -1,6 +1,6 @@
-import 'element-closest';
 import moment from 'moment';
 import PropTypes from 'prop-types';
+import isEmpty from 'lodash/isEmpty';
 import { toast } from 'react-toastify';
 import React, { Fragment, Component } from 'react';
 import { Popover, PopoverBody, PopoverHeader } from 'reactstrap';
@@ -18,15 +18,19 @@ import Notification from '../common/Notification';
 const notifications = constants.APP.NOTIFICATIONS;
 
 const propTypes = {
+	roleName: PropTypes.string,
 	id: PropTypes.string.isRequired,
 	past: PropTypes.bool.isRequired,
 	shiftPlacement: PropTypes.object.isRequired,
+	handleSwitchFromSelectRoleToCreateRole: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
 	id: '',
 	past: false,
+	roleName: '',
 	shiftPlacement: {},
+	handleSwitchFromSelectRoleToCreateRole: () => {},
 };
 
 class ShiftButton extends Component {
@@ -47,17 +51,42 @@ class ShiftButton extends Component {
 	}
 
 	getInitialState = () => ({
+		roleName: '',
 		editMode: false,
 		isShiftPopoverOpen: false,
 		isEditShiftModalOpen: false,
 		isCreateShiftModalOpen: false,
 	});
 
+	componentDidMount = () => {
+		const { roleName } = this.props;
+
+		if (!isEmpty(roleName)) {
+			this.setState({ roleName });
+		}
+	};
+
+	componentDidUpdate = (prevProps, prevState) => {
+		if (prevProps.roleName !== this.props.roleName) {
+			const { roleName } = this.props;
+
+			if (!isEmpty(roleName)) {
+				this.setState({ roleName });
+			}
+		}
+	};
+
 	handleShiftMenu = () => this.setState({ isShiftPopoverOpen: !this.state.isShiftPopoverOpen });
 
-	handleCreateShift = () => this.setState({ isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen });
+	handleCreateShift = () => this.setState({ isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen }, () => {
+		/* If we close the modal, reset the role name state. If the user hasnt saved, but reopens the modal, we want the correct value - not the state value */
+		this.setState({ roleName: '' });
+	});
 
-	handleEditShift = () => this.setState({ isEditShiftModalOpen: !this.state.isEditShiftModalOpen });
+	handleEditShift = () => this.setState({ isEditShiftModalOpen: !this.state.isEditShiftModalOpen }, () => {
+		/* If we close the modal, reset the role name state. If the user hasnt saved, but reopens the modal, we want the correct value - not the state value */
+		this.setState({ roleName: '' });
+	});
 
 	handleSuccessNotification = (message) => {
 		if (!toast.isActive(this.toastId)) {
@@ -83,10 +112,10 @@ class ShiftButton extends Component {
 				</PopoverBody>
 			</Popover>
 			<Modal title="Edit Shift" className="modal-dialog" show={this.state.isEditShiftModalOpen} onClose={this.handleEditShift}>
-				<ShiftForm editMode={true} shiftId={this.props.shiftPlacement.shiftId} employeeId={this.props.shiftPlacement.employeeId} placementId={this.props.shiftPlacement.employeeId} startDate={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleEditShift} />
+				<ShiftForm editMode={true} roleName={(!isEmpty(this.state.roleName)) ? this.state.roleName : this.props.shiftPlacement.roleName} shiftId={this.props.shiftPlacement.shiftId} employeeId={this.props.shiftPlacement.employeeId} placementId={this.props.shiftPlacement.employeeId} startDate={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleEditShift} handleSwitchFromSelectRoleToCreateRole={this.props.handleSwitchFromSelectRoleToCreateRole} />
 			</Modal>
 			<Modal title="Create Shift" className="modal-dialog" show={this.state.isCreateShiftModalOpen} onClose={this.handleCreateShift}>
-				<ShiftForm editMode={false} employeeId={this.props.shiftPlacement.employeeId} startDate={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateShift} />
+				<ShiftForm editMode={false} roleName={(!isEmpty(this.state.roleName)) ? this.state.roleName : this.props.shiftPlacement.roleName} employeeId={this.props.shiftPlacement.employeeId} startDate={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateShift} handleSwitchFromSelectRoleToCreateRole={this.props.handleSwitchFromSelectRoleToCreateRole} />
 			</Modal>
 		</Fragment>
 	) : (

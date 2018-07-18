@@ -352,9 +352,15 @@ class Toolbar extends Component {
 
 	handleCreateRole = () => this.setState({ isCreateRoleModalOpen: !this.state.isCreateRoleModalOpen });
 
-	handleCreateShift = (event, startDate) => this.setState({ startDate, isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen });
+	handleCreateShift = (event, startDate) => this.setState({ startDate, isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen }, () => {
+		/* If we close the modal, reset the role name state. If the user hasnt saved, but reopens the modal, we want the correct value - not the state value */
+		this.setState({ roleName: '' });
+	});
 
-	handleAssignShift = (event, startDate) => this.setState({ startDate, isAssignShiftModalOpen: !this.state.isAssignShiftModalOpen });
+	handleAssignShift = (event, startDate) => this.setState({ startDate, isAssignShiftModalOpen: !this.state.isAssignShiftModalOpen }, () => {
+		/* If we close the modal, reset the role name state. If the user hasnt saved, but reopens the modal, we want the correct value - not the state value */
+		this.setState({ roleName: '' });
+	});
 
 	handleRotaTypeMenu = () => this.setState({ isRotaTypeMenuPopoverOpen: !this.state.isRotaTypeMenuPopoverOpen });
 

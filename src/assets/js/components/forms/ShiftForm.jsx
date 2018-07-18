@@ -234,6 +234,14 @@ class ShiftForm extends Component {
 		}
 	};
 
+	componentDidUpdate = (prevProps, prevState) => {
+		if (prevProps.roleName !== this.props.roleName) {
+			const { roleName } = this.props;
+
+			this.setState({ roleName });
+		}
+	};
+
 	handleChange = (event) => {
 		const target = event.currentTarget;
 
