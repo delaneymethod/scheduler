@@ -25,7 +25,7 @@ import { updateSettings } from '../../actions/settingActions';
 
 import { getRotas, createRota, updateRota, switchRota } from '../../actions/rotaActions';
 
-import { createRotaType, updateRotaType, deleteRotaType, switchRotaType } from '../../actions/rotaTypeActions';
+import { getRotaTypes, createRotaType, updateRotaType, deleteRotaType, switchRotaType } from '../../actions/rotaTypeActions';
 
 const routes = constants.APP.ROUTES;
 
@@ -297,55 +297,60 @@ class RotaForm extends Component {
 									/* Set the current rota */
 									console.log('Called RotaForm handleSubmit switchRota');
 									actions.switchRota(updatedRota).then(() => {
-										/* Lets make sure we pull the latest list of rotas from the API and update the store */
-										console.log('Called RotaForm handleSubmit getRotas');
-										actions.getRotas(updatedRotaType)
+										/* Lets make sure we pull the latest list of rota types and rotas from the API and update the store */
+										console.log('Called RotaForm handleSubmit getRotaTypes');
+										actions.getRotaTypes()
 											.then(() => {
-												/* Lets also make sure we pull the latest list of shifts from the API and update the store */
-												console.log('Called RotaForm handleSubmit getShifts');
-												actions.getShifts(updatedRota)
+												console.log('Called RotaForm handleSubmit getRotas');
+												actions.getRotas(updatedRotaType)
 													.then(() => {
-														/* Then we use the new rotas start date to set the current week start and end dates */
-														const firstDayOfWeek = moment(startDate).day();
+														/* Lets also make sure we pull the latest list of shifts from the API and update the store */
+														console.log('Called RotaForm handleSubmit getShifts');
+														actions.getShifts(updatedRota)
+															.then(() => {
+																/* Then we use the new rotas start date to set the current week start and end dates */
+																const firstDayOfWeek = moment(startDate).day();
 
-														const weekStartDate = moment(startDate, 'YYYY-MM-DD');
+																const weekStartDate = moment(startDate, 'YYYY-MM-DD');
 
-														const weekEndDate = moment(startDate, 'YYYY-MM-DD').add(6, 'days');
+																const weekEndDate = moment(startDate, 'YYYY-MM-DD').add(6, 'days');
 
-														payload = {
-															endDate: weekEndDate,
-															startDate: weekStartDate,
-														};
+																payload = {
+																	endDate: weekEndDate,
+																	startDate: weekStartDate,
+																};
 
-														/* Set the current week */
-														console.log('Called RotaForm handleSubmit switchWeek');
-														actions.switchWeek(payload).then(() => {
-															payload = {
-																firstDayOfWeek,
-															};
+																/* Set the current week */
+																console.log('Called RotaForm handleSubmit switchWeek');
+																actions.switchWeek(payload).then(() => {
+																	payload = {
+																		firstDayOfWeek,
+																	};
 
-															/* Set the day of week based on start date */
-															console.log('Called RotaForm handleSubmit updateSettings');
-															actions.updateSettings(payload).then(() => {
-																console.log('Called RotaForm handleSubmit firstDayOfWeek:', firstDayOfWeek);
+																	/* Set the day of week based on start date */
+																	console.log('Called RotaForm handleSubmit updateSettings');
+																	actions.updateSettings(payload).then(() => {
+																		console.log('Called RotaForm handleSubmit firstDayOfWeek:', firstDayOfWeek);
 
-																moment.updateLocale('en', {
-																	week: {
-																		dow: firstDayOfWeek,
-																		doy: moment.localeData('en').firstDayOfYear(),
-																	},
+																		moment.updateLocale('en', {
+																			week: {
+																				dow: firstDayOfWeek,
+																				doy: moment.localeData('en').firstDayOfYear(),
+																			},
+																		});
+
+																		/* Close the modal */
+																		this.props.handleClose();
+
+																		/* FIXME - Make messages constant */
+																		const message = '<p>Rota was updated!</p>';
+
+																		/* Pass a message back up the rabbit hole to the parent component */
+																		this.props.handleSuccessNotification(message);
+																	});
 																});
-
-																/* Close the modal */
-																this.props.handleClose();
-
-																/* FIXME - Make messages constant */
-																const message = '<p>Rota was updated!</p>';
-
-																/* Pass a message back up the rabbit hole to the parent component */
-																this.props.handleSuccessNotification(message);
-															});
-														});
+															})
+															.catch(error => this.setState({ error }));
 													})
 													.catch(error => this.setState({ error }));
 											})
@@ -512,6 +517,7 @@ const mapDispatchToProps = dispatch => ({
 		createRota,
 		updateRota,
 		switchRota,
+		getRotaTypes,
 		createRotaType,
 		updateRotaType,
 		deleteRotaType,
