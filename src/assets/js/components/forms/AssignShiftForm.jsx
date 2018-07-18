@@ -165,8 +165,6 @@ class AssignShiftForm extends Component {
 	handleDelete = (event) => {
 		const shift = this.props.shifts.filter(data => data.shiftId === this.state.shiftId).shift();
 
-		const accountEmployee = this.props.employees.filter(data => data.employee.employeeId === this.state.employeeId).shift();
-
 		/* Check if the user wants to delete the shift */
 		let message = '<div class="text-center"><p>Please confirm that you wish to delete the Shift?</p><ul class="list-unstyled font-weight-bold">';
 

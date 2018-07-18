@@ -301,7 +301,11 @@ class ShiftForm extends Component {
 		const accountEmployee = this.props.employees.filter(data => data.employee.employeeId === this.state.employeeId).shift();
 
 		/* Check if the user wants to delete the shift */
-		let message = `<div class="text-center"><p>Please confirm that you wish to delete the Shift?</p><ul class="list-unstyled font-weight-bold"><li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li>`;
+		let message = '<div class="text-center"><p>Please confirm that you wish to delete the Shift?</p><ul class="list-unstyled font-weight-bold">';
+
+		if (!isEmpty(accountEmployee)) {
+			message += `<li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li>`;
+		}
 
 		if (!isEmpty(shift.role)) {
 			message += `<li>Role: ${shift.role.roleName}</li>`;
