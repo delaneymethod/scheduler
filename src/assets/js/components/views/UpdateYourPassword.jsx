@@ -1,4 +1,3 @@
-import { delay } from 'lodash';
 import PropTypes from 'prop-types';
 import { Col, Row } from 'reactstrap';
 import { connect } from 'react-redux';
@@ -23,16 +22,6 @@ const defaultProps = {
 };
 
 class UpdateYourPassword extends Component {
-	constructor(props) {
-		super(props);
-
-		this.state = this.getInitialState();
-	}
-
-	getInitialState = () => ({
-		success: false,
-	});
-
 	componentDidMount = () => {
 		document.title = `${constants.APP.TITLE}: ${routes.UPDATE_YOUR_PASSWORD.TITLE}`;
 
@@ -41,12 +30,6 @@ class UpdateYourPassword extends Component {
 		meta.description.setAttribute('content', routes.UPDATE_YOUR_PASSWORD.META.DESCRIPTION);
 		meta.keywords.setAttribute('content', routes.UPDATE_YOUR_PASSWORD.META.KEYWORDS);
 		meta.author.setAttribute('content', constants.APP.AUTHOR);
-	};
-
-	componentDidUpdate = (prevProps, prevState) => {
-		if (prevProps.token !== this.props.token && this.props.token === 'login') {
-			this.setState({ success: true }, () => delay(() => this.setState({ success: false }), 4000));
-		}
 	};
 
 	render = () => (
@@ -63,9 +46,7 @@ class UpdateYourPassword extends Component {
 						<a href={routes.REGISTER.URI} title={routes.REGISTER.TITLE} className="panel-page__link">Back to {routes.REGISTER.TITLE}</a>
 						<div className="card panel-page__content">
 							<h2 className="h5--title-card">{routes.LOGIN.TITLE}</h2>
-							{(this.state.success) ? (
-								<Alert color="success" message="Your password was updated successfully." />
-							) : null}
+							<Alert color="success" message="Your password was updated successfully." />
 							<LoginForm history={this.props.history} />
 						</div>
 					</div>
