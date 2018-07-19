@@ -46,7 +46,7 @@ class UpdateYourPassword extends Component {
 						<a href={routes.REGISTER.URI} title={routes.REGISTER.TITLE} className="panel-page__link">Back to {routes.REGISTER.TITLE}</a>
 						<div className="card panel-page__content">
 							<h2 className="h5--title-card">{routes.LOGIN.TITLE}</h2>
-							<Alert color="success" message="Your password was updated successfully." />
+							<Alert color="success" message="Your password was updated successfully. You can now login below." />
 							<LoginForm history={this.props.history} />
 						</div>
 					</div>
