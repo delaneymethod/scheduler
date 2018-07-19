@@ -35,6 +35,7 @@ const propTypes = {
 	title: PropTypes.string,
 	rotaId: PropTypes.string,
 	message: PropTypes.string,
+	user: PropTypes.object.isRequired,
 	week: PropTypes.object.isRequired,
 	rotas: PropTypes.array.isRequired,
 	shifts: PropTypes.array.isRequired,
@@ -47,6 +48,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+	user: {},
 	week: {},
 	title: '',
 	rotas: [],
@@ -85,6 +87,7 @@ class RotaForm extends Component {
 		budget: '',
 		rotaId: '',
 		status: '',
+		message: '',
 		rotaName: '',
 		startDate: '',
 		rotaTypeId: '',
@@ -104,6 +107,15 @@ class RotaForm extends Component {
 		if (!isEmpty(this.props.rotaId)) {
 			this.setState({ rotaId: this.props.rotaId });
 		}
+
+		/* Do a bit of string replacement here - replacing FIRST_NAME with the users real first name value */
+		let { message } = this.props;
+
+		const { firstName } = this.props.user;
+
+		message = message.replace('<FIRST_NAME>', firstName);
+
+		this.setState({ message });
 
 		let startDates = [];
 
@@ -457,7 +469,7 @@ class RotaForm extends Component {
 	render = () => (
 		<Fragment>
 			{(!isEmpty(this.props.title)) ? (<h2 className="text-center text-uppercase">{this.props.title}</h2>) : null}
-			{(!isEmpty(this.props.message)) ? (<p className="lead mt-3 mb-4 pl-4 pr-4 text-center">{this.props.message}</p>) : null}
+			{(!isEmpty(this.state.message)) ? (<div className="lead mt-3 mb-4 pl-4 pr-4 text-center" dangerouslySetInnerHTML={{ __html: this.state.message }} />) : null}
 			{this.errorMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 				<TextField fieldName="rotaName" fieldLabel="Rota Name" fieldValue={this.state.rotaName} fieldPlaceholder="e.g. Bar" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid rota name." fieldTabIndex={1} fieldRequired={true} showIsDuplicate isDuplicateHaystack={this.state.haystackRotaTypes.map(data => data.rotaTypeName)} />
@@ -499,6 +511,7 @@ RotaForm.propTypes = propTypes;
 RotaForm.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
+	user: state.user,
 	week: state.week,
 	rotas: state.rotas,
 	rotaId: props.rotaId,
