@@ -216,7 +216,7 @@ class ShiftForm extends Component {
 
 				this.handleSetEndTimes();
 
-				delay(() => this.setState({ endTime, startTime }), 2000);
+				this.setState({ endTime, startTime });
 			});
 		}
 	};
