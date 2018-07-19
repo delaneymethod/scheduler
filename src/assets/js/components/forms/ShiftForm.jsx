@@ -259,7 +259,7 @@ class ShiftForm extends Component {
 			const minutes = moment(start).add(this.timeInterval * i, 'minutes').seconds(0);
 
 			const option = {
-				label: minutes.format('HH:mm A'),
+				label: minutes.format('HH:mm'),
 				day: minutes.format('ddd, Do MMMM'),
 				value: minutes.format('YYYY-MM-DD HH:mm:ss'),
 			};
@@ -269,7 +269,7 @@ class ShiftForm extends Component {
 
 			/* Now add the time but removing past times e.g we dont want the user being able to select 2pm, Thur 19th July if its 4pm, Thur 19th July */
 			if (moment(option.value, 'YYYY-MM-DD').isSame(moment().format('YYYY-MM-DD'))) {
-				if (moment(option.label, 'HH:mm A').isSameOrAfter(moment())) {
+				if (moment(option.label, 'HH:mm').isSameOrAfter(moment())) {
 					this.startTimes[option.day].push(option);
 				}
 			} else {
@@ -316,14 +316,14 @@ class ShiftForm extends Component {
 			const minutes = moment(endTime).add(this.timeInterval * i, 'minutes').seconds(0);
 
 			const option = {
-				label: minutes.format('HH:mm A'),
+				label: minutes.format('HH:mm'),
 				day: minutes.format('ddd, Do MMMM'),
 				value: minutes.format('YYYY-MM-DD HH:mm:ss'),
 			};
 
 			/* This is to dyanmically update the label value if the selected end time if in the next day - allows better UX for the user */
 			if (moment(option.value, 'YYYY-MM-DD').isAfter(moment(this.state.startDate).format('YYYY-MM-DD'))) {
-				option.label = moment(option.value).format('HH:mm A (ddd, Do)');
+				option.label = moment(option.value).format('HH:mm (ddd, Do)');
 			}
 
 			/* Add the day if it doesn't exist */

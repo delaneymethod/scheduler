@@ -107,7 +107,7 @@ class ShiftsOverview extends Component {
 												<Avatar name="" round={true} size="27" />
 											</div>
 											<div className="d-inline-block w-100 p-0 m-0">
-												<div className="wrap-words text-right"><span className="pull-left text-left w-50 p-0 ml-0 mt-0 mb-0 mr-1">Unassigned</span> {moment(unassignedShift.startTime).format('HH:mma')} - {(unassignedShift.isClosingShift) ? 'Closing' : moment(unassignedShift.endTime).format('HH:mma')}</div>
+												<div className="wrap-words text-right"><span className="pull-left text-left w-50 p-0 ml-0 mt-0 mb-0 mr-1">Unassigned</span> {moment(unassignedShift.startTime).format('HH:mm')} - {(unassignedShift.isClosingShift) ? 'Closing' : moment(unassignedShift.endTime).format('HH:mm')}</div>
 												<div className="text-right"><span className="pull-left font-italic text-left w-50 p-0 ml-0 mt-0 mb-0 mr-1">{(!isEmpty(unassignedShift.role)) ? unassignedShift.role.roleName : 'No role assigned'}</span>{(!unassignedShift.isClosingShift) ? `${unassignedShift.hours} ${((unassignedShift.hours === 1) ? 'hr' : 'hrs')}` : null}</div>
 											</div>
 										</div>
@@ -122,7 +122,7 @@ class ShiftsOverview extends Component {
 												<Avatar name={`${placement.employee.firstName} ${placement.employee.lastName}`} round={true} size="27" />
 											</div>
 											<div className="d-inline-block w-100 p-0 m-0">
-												<div className="wrap-words text-right"><span className="pull-left text-left w-50 p-0 ml-0 mt-0 mb-0 mr-1">{placement.employee.firstName} {placement.employee.lastName}</span> {moment(assignedShift.startTime).format('HH:mma')} - {(assignedShift.isClosingShift) ? 'Closing' : moment(assignedShift.endTime).format('HH:mma')}</div>
+												<div className="wrap-words text-right"><span className="pull-left text-left w-50 p-0 ml-0 mt-0 mb-0 mr-1">{placement.employee.firstName} {placement.employee.lastName}</span> {moment(assignedShift.startTime).format('HH:mm')} - {(assignedShift.isClosingShift) ? 'Closing' : moment(assignedShift.endTime).format('HH:mm')}</div>
 												<div className="text-right"><span className="pull-left font-italic text-left w-50 p-0 ml-0 mt-0 mb-0 mr-1">{(!isEmpty(assignedShift.role)) ? assignedShift.role.roleName : 'No role assigned'}</span>{(!assignedShift.isClosingShift) ? `${assignedShift.hours} ${((assignedShift.hours === 1) ? 'hr' : 'hrs')}` : null}</div>
 											</div>
 										</div>
