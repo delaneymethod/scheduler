@@ -44,6 +44,13 @@ select.form-control:not([size]):not([multiple]) {
 	font-size: $custom-select-font-size-xl !important;
 }
 
+input:disabled,
+select:disabled,
+textarea:disabled {
+	cursor: not-allowed;
+	opacity: 0.5 !important;
+}
+
 .uploader {
 	width: 100%;
 	display: flex;

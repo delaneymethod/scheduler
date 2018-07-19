@@ -1,8 +1,8 @@
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isEmpty, debounce } from 'lodash';
 import { bindActionCreators } from 'redux';
+import { delay, isEmpty, debounce } from 'lodash';
 import React, { Fragment, Component } from 'react';
 import { Row, Col, Label, Input, Button, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
@@ -65,7 +65,9 @@ class ShiftForm extends Component {
 
 		this.form = null;
 
-		this.times = [];
+		this.endTimes = {};
+
+		this.startTimes = {};
 
 		this.timeInterval = 15;
 
@@ -87,7 +89,15 @@ class ShiftForm extends Component {
 
 		this.handleGetShifts = this.handleGetShifts.bind(this);
 
-		this.handleChangeTime = this.handleChangeTime.bind(this);
+		this.handleSetEndTimes = this.handleSetEndTimes.bind(this);
+
+		this.handleChangeEndTime = this.handleChangeEndTime.bind(this);
+
+		this.handleSetStartTimes = this.handleSetStartTimes.bind(this);
+
+		this.handleChangeStartTime = this.handleChangeStartTime.bind(this);
+
+		this.handleChangeStartDate = this.handleChangeStartDate.bind(this);
 	}
 
 	getInitialState = () => ({
@@ -132,44 +142,6 @@ class ShiftForm extends Component {
 			this.setState({ roleName: this.props.roleName });
 		}
 
-		/* 24 hours * 60 mins in an hour */
-		let hours = 24 * 60;
-
-		if (this.timeInterval === 15) {
-			/* 24 hours * 15 mins in an hour (DO NOT EDIT. Edit this.timeInterval instead). */
-			hours = 24 * 4;
-		} else if (this.timeInterval === 30) {
-			/* 24 hours * 30 mins in an hour (DO NOT EDIT. Edit this.timeInterval instead). */
-			hours = 24 * 2;
-		}
-
-		/* Set default start and end times, to nearest time intervals */
-		const start = moment().startOf('day');
-
-		const remainder = this.timeInterval - (moment().minute() % this.timeInterval);
-
-		let startTime = moment().add(remainder, 'minutes').format('HH:mm A');
-
-		let endTime = moment().add(1, 'hour').add(remainder, 'minutes').format('HH:mm A');
-
-		this.setState({ startTime, endTime });
-
-		for (let i = 0; i < hours; i += 1) {
-			const time = moment(start).add(this.timeInterval * i, 'minutes').format('HH:mm A');
-
-			this.times.push(time);
-		}
-
-		/* Because the shift was passed a start date as a prop, (shift form was opened via employee view), we need to hide times in the past so user can pick 2pm if its currently 4pm */
-		if (!isEmpty(this.props.startDate) && moment(this.props.startDate).format('YYYY-MM-DD') === moment().format('YYYY-MM-DD')) {
-			this.times = this.times.filter(time => moment(time, 'HH:mm A').isSameOrAfter(moment()));
-		}
-
-		/* Added 23:59 PM to the list as a midnight option */
-		const midnight = moment(start).endOf('day').format('HH:mm A');
-
-		this.times.push(midnight);
-
 		/* Sets the default value to fix validation issues if user doesnt pick any dates */
 		let startDate;
 
@@ -201,7 +173,7 @@ class ShiftForm extends Component {
 		/* Remove past dates */
 		startDates = startDates.filter(data => moment(data).isSameOrAfter(moment().format('YYYY-MM-DD')));
 
-		this.setState({ startDate, startDates });
+		this.setState({ startDate, startDates }, () => this.handleSetStartTimes());
 
 		/* If we are in edit mode, we basically need to overwrite most of the above except for the shift id, placement id, employee id */
 		if (this.props.editMode && !isEmpty(this.props.shiftId)) {
@@ -216,20 +188,35 @@ class ShiftForm extends Component {
 
 			const { isClosingShift, numberOfPositions } = shift;
 
-			endTime = moment(shift.endTime).format('HH:mm A');
+			const endTime = moment(shift.endTime).seconds(0).format('YYYY-MM-DD HH:mm:ss');
 
-			startTime = moment(shift.startTime).format('HH:mm A');
+			const startTime = moment(shift.startTime).seconds(0).format('YYYY-MM-DD HH:mm:ss');
 
 			/* We already have the start date passed in as a prop, but lets set it again, just to be safe */
 			startDate = moment(shift.startTime).format('YYYY-MM-DD');
 
 			/* Update the state with all the edit shift details */
 			this.setState({
-				endTime,
 				startTime,
 				startDate,
 				isClosingShift,
 				numberOfPositions,
+			}, () => {
+				this.endTimes = [];
+
+				this.startTimes = [];
+
+				document.getElementById('endTime').innerHTML = '';
+
+				document.getElementById('startTime').innerHTML = '';
+
+				document.getElementById('endTime').disabled = false;
+
+				this.handleSetStartTimes();
+
+				this.handleSetEndTimes();
+
+				delay(() => this.setState({ endTime, startTime }), 2000);
 			});
 		}
 	};
@@ -250,14 +237,180 @@ class ShiftForm extends Component {
 		});
 	};
 
-	handleChangeTime = async (event) => {
+	handleSetStartTimes = () => {
+		this.startTimes = [];
+
+		/* 24 hours * 60 mins in an hour */
+		let startTimeHours = 24 * 60;
+
+		if (this.timeInterval === 15) {
+			/* 24 hours * 15 mins in an hour (DO NOT EDIT. Edit this.timeInterval instead). */
+			startTimeHours = 24 * 4;
+		} else if (this.timeInterval === 30) {
+			/* 24 hours * 30 mins in an hour (DO NOT EDIT. Edit this.timeInterval instead). */
+			startTimeHours = 24 * 2;
+		}
+
+		/* Set default start and end times, to nearest time intervals so we have some default times */
+		const start = moment(this.state.startDate, 'YYYY-MM-DD').startOf('day');
+
+		/* Loop over the hours, creating a start time range from current day 00:00 to next day midnight */
+		for (let i = 0; i < startTimeHours; i += 1) {
+			const minutes = moment(start).add(this.timeInterval * i, 'minutes').seconds(0);
+
+			const option = {
+				label: minutes.format('HH:mm A'),
+				day: minutes.format('ddd, Do MMMM'),
+				value: minutes.format('YYYY-MM-DD HH:mm:ss'),
+			};
+
+			/* Add the day if it doesn't exist */
+			this.startTimes[option.day] = this.startTimes[option.day] || [];
+
+			/* Now add the time but removing past times e.g we dont want the user being able to select 2pm, Thur 19th July if its 4pm, Thur 19th July */
+			if (moment(option.value, 'YYYY-MM-DD').isSame(moment().format('YYYY-MM-DD'))) {
+				if (moment(option.label, 'HH:mm A').isSameOrAfter(moment())) {
+					this.startTimes[option.day].push(option);
+				}
+			} else {
+				this.startTimes[option.day].push(option);
+			}
+		}
+
+		/* Create our select with optgroup and options */
+		Object.entries(this.startTimes).forEach((day) => {
+			/* Set the optgroup label to be the day - e.g Thur 19th July */
+			const [label] = day;
+
+			const optGroup = document.createElement('optgroup');
+
+			optGroup.label = label;
+
+			day[1].forEach(data => optGroup.appendChild(new Option(data.label, data.value)));
+
+			document.getElementById('startTime').appendChild(optGroup);
+		});
+	};
+
+	handleSetEndTimes = () => {
+		this.endTimes = [];
+
+		/* 24 hours * 60 mins in an hour */
+		let endTimeHours = 24 * 60;
+
+		if (this.timeInterval === 15) {
+			/* 24 hours * 15 mins in an hour (DO NOT EDIT. Edit this.timeInterval instead). */
+			endTimeHours = 24 * 4;
+		} else if (this.timeInterval === 30) {
+			/* 24 hours * 30 mins in an hour (DO NOT EDIT. Edit this.timeInterval instead). */
+			endTimeHours = 24 * 2;
+		}
+
+		/* We take the start time and add time interval to it to create or base end time */
+		const endTime = moment(this.state.startTime, 'YYYY-MM-DD HH:mm:ss').add(this.timeInterval, 'minutes').seconds(0);
+
+		this.setState({ endTime });
+
+		/* Loop over the hours, creating a end time range from the start time plus 24 hours */
+		for (let i = 0; i < endTimeHours; i += 1) {
+			const minutes = moment(endTime).add(this.timeInterval * i, 'minutes').seconds(0);
+
+			const option = {
+				label: minutes.format('HH:mm A'),
+				day: minutes.format('ddd, Do MMMM'),
+				value: minutes.format('YYYY-MM-DD HH:mm:ss'),
+			};
+
+			/* This is to dyanmically update the label value if the selected end time if in the next day - allows better UX for the user */
+			if (moment(option.value, 'YYYY-MM-DD').isAfter(moment(this.state.startDate).format('YYYY-MM-DD'))) {
+				option.label = moment(option.value).format('HH:mm A (ddd, Do)');
+			}
+
+			/* Add the day if it doesn't exist */
+			this.endTimes[option.day] = this.endTimes[option.day] || [];
+
+			this.endTimes[option.day].push(option);
+		}
+
+		/* Create our select with optgroup and options */
+		Object.entries(this.endTimes).forEach((day) => {
+			/* Set the optgroup label to be the day - e.g Thur 19th July */
+			const [label] = day;
+
+			const optGroup = document.createElement('optgroup');
+
+			optGroup.label = label;
+
+			day[1].forEach(data => optGroup.appendChild(new Option(data.label, data.value)));
+
+			document.getElementById('endTime').appendChild(optGroup);
+		});
+	};
+
+	handleChangeStartDate = (event) => {
+		const target = event.currentTarget;
+
+		/* If the user changes the start date, we need to redo all start and end times again so reset the states and start time and clear the end times array. We also need to reset the forms validation listeners */
+		this.setState({
+			endTime: '',
+			startTime: '',
+			[target.name]: target.value,
+		}, () => {
+			this.endTimes = [];
+
+			this.startTimes = [];
+
+			document.getElementById('endTime').innerHTML = '';
+
+			document.getElementById('endTime').disabled = true;
+
+			document.getElementById('startTime').innerHTML = '';
+
+			document.getElementById('startTime').appendChild(new Option('', ''));
+
+			this.handleSetStartTimes();
+
+			const field = this.form.fieldsStore.getField('startTime');
+
+			field.validations = [];
+
+			this.form.forceUpdate();
+
+			this.form.reset();
+		});
+	};
+
+	handleChangeStartTime = (event) => {
+		const target = event.currentTarget;
+
+		this.setState({
+			[target.name]: target.value,
+		}, () => {
+			if (isEmpty(target.value)) {
+				this.endTimes = [];
+
+				this.setState({ endTime: '' });
+
+				document.getElementById('endTime').innerHTML = '';
+
+				document.getElementById('endTime').disabled = true;
+			} else {
+				/* We set the end times based on the start times */
+				document.getElementById('endTime').innerHTML = '';
+
+				document.getElementById('endTime').disabled = false;
+
+				this.handleSetEndTimes();
+			}
+		});
+	};
+
+	handleChangeEndTime = (event) => {
 		const target = event.currentTarget;
 
 		this.setState({
 			[target.name]: target.value,
 		});
-
-		await this.form.validateFields('startTime', 'endTime');
 	};
 
 	handleBlur = async event => this.handleValidateFields(event.currentTarget);
@@ -394,10 +547,10 @@ class ShiftForm extends Component {
 				numberOfPositions,
 			} = this.state;
 
-			/* We need to make sure our start and end values are in the format like 2018-06-05 18:50:00 and if its a closing shift, force the end time to be midnight */
-			endTime = `${startDate} ${moment(endTime, 'HH:mm A').format('HH:mm:ss')}`;
+			/* We are just renforcing the formats */
+			endTime = moment(endTime).seconds(0).format('YYYY-MM-DD HH:mm:ss');
 
-			startTime = `${startDate} ${moment(startTime, 'HH:mm A').format('HH:mm:ss')}`;
+			startTime = moment(startTime).seconds(0).format('YYYY-MM-DD HH:mm:ss');
 
 			let payload = {
 				rotaId,
@@ -560,7 +713,7 @@ class ShiftForm extends Component {
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 				<FormGroup>
 					<Label for="startDate">Date <span className="text-danger">&#42;</span></Label>
-					<Input type="select" name="startDate" id="startDate" className="custom-select custom-select-xl" value={this.state.startDate} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="1" required={true}>
+					<Input type="select" name="startDate" id="startDate" className="custom-select custom-select-xl" value={this.state.startDate} onChange={this.handleChangeStartDate} onBlur={this.handleBlur} tabIndex="1" required={true}>
 						{this.state.startDates.map((startDate, index) => <option key={index} value={moment(startDate).format('YYYY-MM-DD')} label={moment(startDate).format('dddd, Do MMMM YYYY')}>{moment(startDate).format('dddd, Do MMMM YYYY')}</option>)}
 					</Input>
 					<FieldFeedbacks for="startDate" show="all">
@@ -591,25 +744,18 @@ class ShiftForm extends Component {
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
 						<FormGroup>
 							<Label for="startTime">Start Time</Label>
-							<Input type="select" name="startTime" id="startTime" className="custom-select custom-select-xl" value={this.state.startTime} onChange={this.handleChangeTime} onBlur={this.handleBlur} tabIndex="3" required>
-								{this.times.map((time, index) => <option key={index} value={time} label={time}>{time}</option>)}
+							<Input type="select" name="startTime" id="startTime" className="custom-select custom-select-xl" value={this.state.startTime} onChange={this.handleChangeStartTime} onBlur={this.handleBlur} tabIndex="3" required>
+								<option value="" label=""></option>
 							</Input>
 							<FieldFeedbacks for="startTime" show="all">
-								<FieldFeedback when="*" />
-								<FieldFeedback when={value => (!(moment(value, 'HH:mm A').isBefore(moment(this.state.endTime, 'HH:mm A'))))}>- Please select a valid start time.</FieldFeedback>
+								<FieldFeedback when="*">- Please select a valid start time.</FieldFeedback>
 							</FieldFeedbacks>
 						</FormGroup>
 					</Col>
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
 						<FormGroup>
 							<Label for="endTime">End Time</Label>
-							<Input type="select" name="endTime" id="endTime" className="custom-select custom-select-xl" value={this.state.endTime} onChange={this.handleChangeTime} onBlur={this.handleBlur} tabIndex="4" required>
-								{this.times.map((time, index) => <option key={index} value={time} label={time}>{time}</option>)}
-							</Input>
-							<FieldFeedbacks for="endTime" show="all">
-								<FieldFeedback when="*" />
-								<FieldFeedback when={value => (!(moment(value, 'HH:mm A').isAfter(moment(this.state.startTime, 'HH:mm A'))))}>- Please select a valid end time.</FieldFeedback>
-							</FieldFeedbacks>
+							<Input type="select" name="endTime" id="endTime" className="custom-select custom-select-xl" value={this.state.endTime} onChange={this.handleChangeEndTime} onBlur={this.handleBlur} tabIndex="4" required disabled />
 						</FormGroup>
 					</Col>
 				</Row>
