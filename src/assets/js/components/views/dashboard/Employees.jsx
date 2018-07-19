@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
 import { concat, isEmpty, isString, includes, debounce } from 'lodash';
-import { Form, Label, Input, Popover, FormGroup, PopoverBody, PopoverHeader } from 'reactstrap';
+import { Row, Col, Form, Label, Input, Popover, FormGroup, InputGroup, InputGroupAddon, PopoverBody, PopoverHeader } from 'reactstrap';
 
 import Modal from '../../common/Modal';
 
@@ -156,6 +156,8 @@ class Employees extends Component {
 
 		this.handleInfoNotification = this.handleInfoNotification.bind(this);
 
+		this.handleNoEnterKeySubmit = this.handleNoEnterKeySubmit.bind(this);
+
 		this.handleSuccessNotification = this.handleSuccessNotification.bind(this);
 
 		this.handleUpdateEmployeeOrder = this.handleUpdateEmployeeOrder.bind(this);
@@ -176,6 +178,7 @@ class Employees extends Component {
 		employeeId: '',
 		placementId: '',
 		employeeName: '',
+		totalEmployees: 0,
 		startDate: moment(),
 		isErrorModalOpen: false,
 		isFilterPopoverOpen: false,
@@ -206,6 +209,8 @@ class Employees extends Component {
 
 		/* We debounce this call to wait 10ms (we do not want the leading (or "immediate") flag passed because we want to wait the user has finished ordering all rows before saving the order */
 		this.handleUpdateEmployeeOrder = debounce(this.handleUpdateEmployeeOrder.bind(this), 10);
+
+		this.setState({ totalEmployees: this.props.employees.length });
 	};
 
 	componentDidUpdate = (prevProps, prevState) => {
@@ -550,24 +555,44 @@ class Employees extends Component {
 		this.handleDragAndDrop();
 	};
 
-	handleFilterEmployees = (event) => {
+	handleFilterEmployees = (event, name) => {
+		let employeeName = name;
+
 		const target = event.currentTarget;
 
-		this.setState({
-			[target.name]: target.value,
-		});
+		if (isEmpty(employeeName)) {
+			employeeName = target.value;
+		}
 
-		const tableBody = document.getElementById('tableBody');
+		this.setState({ employeeName }, () => {
+			if (isEmpty(this.state.employeeName)) {
+				document.getElementById('employeeName').value = '';
 
-		/* Quick and easy - loop over each table body row and hide / show rows based on employee full name values */
-		Array.prototype.forEach.call(tableBody.rows, (row) => {
-			const employeeFullName = row.querySelector('#fullname').textContent.toLowerCase();
+				this.setState({ totalEmployees: this.props.employees.length });
+			}
 
-			const employeeSearchName = target.value.toLowerCase();
+			const tableBody = document.getElementById('tableBody');
 
-			const display = includes(employeeFullName, employeeSearchName) ? 'display:table-row' : 'display:none';
+			/* Quick and easy - loop over each table body row and hide / show rows based on employee full name values */
+			let totalEmployees = 0;
 
-			row.setAttribute('style', display);
+			Array.prototype.forEach.call(tableBody.rows, (row) => {
+				if (row.classList.contains('draggable-row')) {
+					const employeeFullName = row.querySelector('#fullname').textContent.toLowerCase();
+
+					const employeeSearchName = employeeName.toLowerCase();
+
+					const display = includes(employeeFullName, employeeSearchName) ? 'display:table-row' : 'display:none';
+
+					if (display === 'display:table-row') {
+						totalEmployees += 1;
+					}
+
+					row.setAttribute('style', display);
+				}
+			});
+
+			this.setState({ totalEmployees });
 		});
 	};
 
@@ -955,6 +980,14 @@ class Employees extends Component {
 
 	handleSwitchFromAssignShiftToCreateShift = () => this.setState({ isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen, isAssignShiftModalOpen: !this.state.isAssignShiftModalOpen });
 
+	handleNoEnterKeySubmit = (event) => {
+		const key = event.charCode || event.keyCode || 0;
+
+		if (key === 13) {
+			event.preventDefault();
+		}
+	};
+
 	render = () => {
 		if (isEmpty(this.props.rota)) {
 			return null;
@@ -973,10 +1006,10 @@ class Employees extends Component {
 										<tr>
 											<th className="p-2 text-left column first sortable text-uppercase">
 												<div className="d-flex align-items-center p-0 m-0">
-													<div className="d-inline-block p-0 mr-auto">Employees ({this.props.employees.length})</div>
+													<div className="d-inline-block p-0 mr-auto">Employees ({this.state.totalEmployees})</div>
 													{(this.props.employees.length > 0) ? (
 														<Fragment>
-															<div className="d-inline-block p-0 mr-1 mr-xl-2"><button type="button" className="btn btn-dark btn-icon" id="filter" title="Filter by" aria-label="Filter by" onClick={this.handleFilter}><i className="fa fa-fw fa-filter" aria-hidden="true"></i></button></div>
+															<div className="d-inline-block p-0 mr-1 mr-xl-2"><button type="button" className={`btn btn-dark btn-icon${!isEmpty(this.state.employeeName) ? ' btn-filter-active' : ''}`} id="filter" title="Filter by" aria-label="Filter by" onClick={this.handleFilter}><i className="fa fa-fw fa-filter" aria-hidden="true"></i></button></div>
 															<div className="d-inline-block p-0 mr-1 mr-xl-2"><button type="button" className="btn btn-dark btn-icon" id="sortBy" title="Sort by" aria-label="Sort by" onClick={this.handleSortBy}><i className="fa fa-fw fa-sort" aria-hidden="true"></i></button></div>
 														</Fragment>
 													) : null}
@@ -989,9 +1022,13 @@ class Employees extends Component {
 															<li><label className="pt-2 pb-1 m-0">Filter</label></li>
 														</ul>
 														<Form className="popover-menu">
-															<FormGroup className="pl-1 pr-1 pb-1 mb-0">
-																<Input type="text" name="employeeName" id="employeeName" value={this.state.employeeName} onChange={this.handleFilterEmployees} placeholder="By employee name..." autoComplete="off" tabIndex="-1" bsSize="sm" />
+															<FormGroup className="pl-1 pr-1 pb-1 mb-1">
+																<Input type="text" name="employeeName" id="employeeName" value={this.state.employeeName} onChange={event => this.handleFilterEmployees(event)} onKeyPress={event => this.handleNoEnterKeySubmit(event)} placeholder="By employee name..." autoComplete="off" tabIndex="-1" bsSize="sm" />
 															</FormGroup>
+															<div className="filter-buttons">
+																<button type="button" className="btn btn-action m-0 border-0" onClick={event => this.handleFilterEmployees(event, '')}>Clear</button>
+																<button type="button" className="btn btn-action m-0 border-0" onClick={this.handleFilter}>Close</button>
+															</div>
 														</Form>
 													</PopoverBody>
 												</Popover>
