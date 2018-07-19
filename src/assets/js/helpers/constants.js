@@ -79,7 +79,9 @@ export default {
 				},
 				CREATE: {
 					TITLE: 'Create Rota',
-					MESSAGE: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta velit in lectus efficitur hendrerit. Quisque cursus arcu sollicitudin rhoncus molestie. Donec at rhoncus enim, ut rhoncus lacus. Sed eget felis est.',
+					MESSAGE: 'Hi <FIRST_NAME>, welcome to Gig Grafter Scheduler. To get started simply choose a name for your first rota (e.g. Bar) and the start date of the first week you want to schedule.\n' +
+                    '\n' +
+                    'Take control of your labour costs by setting a budget for the rota and if you enter the remuneration details for all staff we\'ll estimate the cost of the rota and alert you if you\'re going over budget.',
 				},
 				STATUSES: {
 					DRAFT: 'DRAFT',
