@@ -8,13 +8,17 @@ const routes = constants.APP.ROUTES;
 class Home extends Component {
 	componentDidMount = () => {
 		document.title = constants.APP.TITLE;
-
+		console.log('navigator.userAgent:', navigator.userAgent);
 		if (!/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+			console.log('Called Home - Found desktop/laptop browser');
+
 			const meta = document.getElementsByTagName('meta');
 
 			meta.description.setAttribute('content', routes.HOME.META.DESCRIPTION);
 			meta.keywords.setAttribute('content', routes.HOME.META.KEYWORDS);
 			meta.author.setAttribute('content', constants.APP.AUTHOR);
+		} else {
+			console.log('Called Home - Found handheld device');
 		}
 	};
 
