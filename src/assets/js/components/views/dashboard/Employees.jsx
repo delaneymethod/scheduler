@@ -158,6 +158,8 @@ class Employees extends Component {
 
 		this.handleNoEnterKeySubmit = this.handleNoEnterKeySubmit.bind(this);
 
+		this.handleClearSortEmployees = this.handleClearSortEmployees.bind(this);
+
 		this.handleSuccessNotification = this.handleSuccessNotification.bind(this);
 
 		this.handleUpdateEmployeeOrder = this.handleUpdateEmployeeOrder.bind(this);
@@ -228,6 +230,17 @@ class Employees extends Component {
 
 			this.setState({ roleName });
 		}
+	};
+
+	handleClearSortEmployees = () => {
+		this.handleOrderable();
+
+		this.setState({
+			sort: {
+				column: null,
+				direction: 'asc',
+			},
+		});
 	};
 
 	handleSortEmployees = (event, column) => {
@@ -1049,7 +1062,7 @@ class Employees extends Component {
 													{(this.props.employees.length > 0) ? (
 														<Fragment>
 															<div className="d-inline-block p-0 mr-1 mr-xl-2"><button type="button" className={`btn btn-dark btn-icon${!isEmpty(this.state.employeeName) ? ' btn-filter-active' : ''}`} id="filter" title="Filter by" aria-label="Filter by" onClick={this.handleFilter}><i className="fa fa-fw fa-filter" aria-hidden="true"></i></button></div>
-															<div className="d-inline-block p-0 mr-1 mr-xl-2"><button type="button" className="btn btn-dark btn-icon" id="sortBy" title="Sort by" aria-label="Sort by" onClick={this.handleSortBy}><i className="fa fa-fw fa-sort" aria-hidden="true"></i></button></div>
+															<div className="d-inline-block p-0 mr-1 mr-xl-2"><button type="button" className={`btn btn-dark btn-icon${!isEmpty(this.state.sort.column) ? ' btn-filter-active' : ''}`} id="sortBy" title="Sort by" aria-label="Sort by" onClick={this.handleSortBy}><i className="fa fa-fw fa-sort" aria-hidden="true"></i></button></div>
 														</Fragment>
 													) : null}
 													<div className="d-none d-md-inline-block p-0 mr-1 mr-xl-2"><button type="button" className="btn btn-secondary btn-icon" title="Upload Employees" aria-label="Upload Employees" onClick={this.handleUploadEmployees}><i className="fa fa-fw fa-upload" aria-hidden="true"></i></button></div>
@@ -1075,8 +1088,11 @@ class Employees extends Component {
 													<PopoverBody>
 														<ul className="popover-menu">
 															<li><label className="pt-2 pb-1 m-0">Sort by</label></li>
-															<li><button type="button" title="Sort by First Name" className="btn btn-action btn-nav border-0" onClick={event => this.handleSortEmployees(event, 'firstName')}>First Name</button></li>
-															<li><button type="button" title="Sort by Last Name" className="btn btn-action btn-nav border-0" onClick={event => this.handleSortEmployees(event, 'lastName')}>Last Name</button></li>
+															<li><button type="button" title="Sort by First Name" className={`btn btn-action btn-nav border-0${(this.state.sort.column === 'firstName') ? ' text-warning' : ''}`} onClick={event => this.handleSortEmployees(event, 'firstName')}>First Name</button></li>
+															<li><button type="button" title="Sort by Last Name" className={`btn btn-action btn-nav border-0${(this.state.sort.column === 'lastName') ? ' text-warning' : ''}`} onClick={event => this.handleSortEmployees(event, 'lastName')}>Last Name</button></li>
+															{(!isEmpty(this.state.sort.column)) ? (
+																<li><button type="button" title="Clear Sort by" className="btn btn-action btn-nav border-0" onClick={this.handleClearSortEmployees}>Reset</button></li>
+															) : null}
 														</ul>
 													</PopoverBody>
 												</Popover>
