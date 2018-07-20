@@ -381,6 +381,8 @@ class ShiftForm extends Component {
 	};
 
 	handleChangeStartTime = (event) => {
+		const { endTime } = this.state;
+
 		const target = event.currentTarget;
 
 		this.setState({
@@ -401,6 +403,8 @@ class ShiftForm extends Component {
 				document.getElementById('endTime').disabled = false;
 
 				this.handleSetEndTimes();
+
+				this.setState({ endTime });
 			}
 		});
 	};
