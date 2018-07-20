@@ -173,11 +173,11 @@ class Dashboard extends Component {
 													/* No rotas match the current week so lets use the first rota we find */
 													if (isEmpty(rota)) {
 														console.log('Called Dashboard handleFetchData - No matching rotas. Week Start Date: ', moment(this.props.week.startDate).format('YYYY-MM-DD'));
-														console.log('Called Dashboard handleFetchData - No matching rotas. Sorting rotas by start date...');
+														console.log('Called Dashboard handleFetchData - No matching rotas. Sorting rotas by start date, oldest first...');
 
-														rota = orderBy(this.props.rotas, 'startDate').shift();
+														rota = orderBy(this.props.rotas, 'startDate', 'desc').shift();
 
-														console.log('Called Dashboard handleFetchData - No matching rotas. First Rota Start Date:', moment(rota.startDate).format('YYYY-MM-DD'));
+														console.log('Called Dashboard handleFetchData - No matching rotas. Oldest Rota Start Date:', moment(rota.startDate).format('YYYY-MM-DD'));
 													} else {
 														console.log('Called Dashboard handleFetchData - Found matching rota. Rota Start Date:', moment(rota.startDate).format('YYYY-MM-DD'), 'Week Start Date:', moment(this.props.week.startDate).format('YYYY-MM-DD'));
 													}

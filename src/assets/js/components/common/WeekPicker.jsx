@@ -391,9 +391,19 @@ class WeekPicker extends Component {
 	/* eslint-enable no-mixed-operators */
 
 	handleConvert = (week) => {
-		week.endDate = moment(week.endDate);
+		if (isEmpty(week)) {
+			const { firstDayOfWeek } = this.props.settings;
 
-		week.startDate = moment(week.startDate);
+			const startDate = moment().day(firstDayOfWeek);
+
+			week.endDate = moment(startDate).add(6, 'days');
+
+			week.startDate = moment(startDate);
+		} else {
+			week.endDate = moment(week.endDate);
+
+			week.startDate = moment(week.startDate);
+		}
 
 		return week;
 	};
