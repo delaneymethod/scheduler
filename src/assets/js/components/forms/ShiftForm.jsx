@@ -174,7 +174,7 @@ class ShiftForm extends Component {
 		startDates = startDates.filter(data => moment(data).isSameOrAfter(moment().format('YYYY-MM-DD')));
 
 		/* If start dates does not contain start date, swap to first start date in the list... This fixes start time issues when originally selected assign shift and then clicking create shift - start date prop is empty so the current week start date is what the start times list is based off even though the start date list is correct... */
-		if (!includes(startDates, moment(startDate))) {
+		if (isEmpty(this.props.startDate) && !includes(startDates, moment(startDate))) {
 			startDate = moment(startDates[0]).format('YYYY-MM-DD');
 		}
 
@@ -295,6 +295,8 @@ class ShiftForm extends Component {
 
 			document.getElementById('startTime').appendChild(optGroup);
 		});
+
+		return Promise.resolve(true);
 	};
 
 	handleSetEndTimes = () => {
@@ -313,8 +315,6 @@ class ShiftForm extends Component {
 
 		/* We take the start time and add time interval to it to create or base end time */
 		const endTime = moment(this.state.startTime, 'YYYY-MM-DD HH:mm:ss').add(this.timeInterval, 'minutes').seconds(0);
-
-		this.setState({ endTime });
 
 		/* Loop over the hours, creating a end time range from the start time plus 24 hours */
 		for (let i = 0; i < endTimeHours; i += 1) {
@@ -350,6 +350,10 @@ class ShiftForm extends Component {
 
 			document.getElementById('endTime').appendChild(optGroup);
 		});
+
+		this.setState({ endTime });
+
+		return Promise.resolve(true);
 	};
 
 	handleChangeStartDate = (event) => {
@@ -386,7 +390,7 @@ class ShiftForm extends Component {
 	};
 
 	handleChangeStartTime = (event) => {
-		const { endTime } = this.state;
+		const oldEndTime = this.state.endTime;
 
 		const target = event.currentTarget;
 
@@ -407,9 +411,11 @@ class ShiftForm extends Component {
 
 				document.getElementById('endTime').disabled = false;
 
-				this.handleSetEndTimes();
-
-				this.setState({ endTime });
+				this.handleSetEndTimes().then(() => {
+					if (!isEmpty(oldEndTime)) {
+						this.setState({ endTime: oldEndTime });
+					}
+				});
 			}
 		});
 	};
@@ -544,6 +550,7 @@ class ShiftForm extends Component {
 		await this.form.validateFields();
 
 		if (this.form.isValid()) {
+			console.log(this.state);
 			let { endTime, startTime } = this.state;
 
 			const {
@@ -555,12 +562,12 @@ class ShiftForm extends Component {
 				isClosingShift,
 				numberOfPositions,
 			} = this.state;
-
+			console.log(endTime);
 			/* We are just renforcing the formats */
 			endTime = moment(endTime).seconds(0).format('YYYY-MM-DD HH:mm:ss');
 
 			startTime = moment(startTime).seconds(0).format('YYYY-MM-DD HH:mm:ss');
-
+			console.log(endTime);
 			let payload = {
 				rotaId,
 				shiftId,
