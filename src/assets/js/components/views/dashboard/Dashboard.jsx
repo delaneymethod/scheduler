@@ -172,14 +172,21 @@ class Dashboard extends Component {
 
 													/* No rotas match the current week so lets use the first rota we find */
 													if (isEmpty(rota)) {
+														console.log('Called Dashboard handleFetchData - No matching rotas. Week Start Date: ', moment(this.props.week.startDate).format('YYYY-MM-DD'));
+														console.log('Called Dashboard handleFetchData - No matching rotas. Sorting rotas by start date...');
+
 														rota = orderBy(this.props.rotas, 'startDate').shift();
+
+														console.log('Called Dashboard handleFetchData - No matching rotas. First Rota Start Date:', moment(rota.startDate).format('YYYY-MM-DD'));
+													} else {
+														console.log('Called Dashboard handleFetchData - Found matching rota. Rota Start Date:', moment(rota.startDate).format('YYYY-MM-DD'), 'Week Start Date:', moment(this.props.week.startDate).format('YYYY-MM-DD'));
 													}
 
 													/* Yes we have a rota but does it also match the first day of the week start day? */
 													const rotaStartDay = moment(rota.startDate).day();
 
 													if (parseInt(rotaStartDay, 10) === parseInt(firstDayOfWeek, 10)) {
-														console.log('Called Dashboard handleFetchData switchRota - Found matching rota for first day of week');
+														console.log('Called Dashboard handleFetchData - Found matching rota for first day of week. Rota Start Day:', rotaStartDay, 'First Day of Week:', firstDayOfWeek);
 														actions.switchRota(rota).then(() => {
 															/* Then we use the current week/rota start date to set the current week start and end dates */
 															const weekStartDate = moment(rota.startDate);
