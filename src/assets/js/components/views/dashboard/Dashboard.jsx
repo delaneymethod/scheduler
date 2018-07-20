@@ -116,11 +116,13 @@ class Dashboard extends Component {
 
 		document.title = `${constants.APP.TITLE}: ${routes.DASHBOARD.HOME.TITLE}`;
 
-		const meta = document.getElementsByTagName('meta');
+		if (!/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+			const meta = document.getElementsByTagName('meta');
 
-		meta.description.setAttribute('content', routes.DASHBOARD.HOME.META.DESCRIPTION);
-		meta.keywords.setAttribute('content', routes.DASHBOARD.HOME.META.KEYWORDS);
-		meta.author.setAttribute('content', constants.APP.AUTHOR);
+			meta.description.setAttribute('content', routes.DASHBOARD.HOME.META.DESCRIPTION);
+			meta.keywords.setAttribute('content', routes.DASHBOARD.HOME.META.KEYWORDS);
+			meta.author.setAttribute('content', constants.APP.AUTHOR);
+		}
 
 		/* Wait 1.3 seconds before fetching data - prevents any race conditions */
 		delay(() => this.handleFetchData(), 1300);

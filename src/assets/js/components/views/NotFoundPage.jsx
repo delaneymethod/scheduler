@@ -9,11 +9,13 @@ class NotFoundPage extends Component {
 	componentDidMount = () => {
 		document.title = `${constants.APP.TITLE}: ${routes.PAGE_NOT_FOUND.TITLE}`;
 
-		const meta = document.getElementsByTagName('meta');
+		if (!/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+			const meta = document.getElementsByTagName('meta');
 
-		meta.description.setAttribute('content', routes.PAGE_NOT_FOUND.META.DESCRIPTION);
-		meta.keywords.setAttribute('content', routes.PAGE_NOT_FOUND.META.KEYWORDS);
-		meta.author.setAttribute('content', constants.APP.AUTHOR);
+			meta.description.setAttribute('content', routes.PAGE_NOT_FOUND.META.DESCRIPTION);
+			meta.keywords.setAttribute('content', routes.PAGE_NOT_FOUND.META.KEYWORDS);
+			meta.author.setAttribute('content', constants.APP.AUTHOR);
+		}
 	};
 
 	render = () => (

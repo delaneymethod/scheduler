@@ -201,11 +201,13 @@ class Employees extends Component {
 
 		document.title = `${constants.APP.TITLE}: ${routes.DASHBOARD.EMPLOYEES.TITLE} - ${routes.DASHBOARD.HOME.TITLE}`;
 
-		const meta = document.getElementsByTagName('meta');
+		if (!/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+			const meta = document.getElementsByTagName('meta');
 
-		meta.description.setAttribute('content', routes.DASHBOARD.EMPLOYEES.META.DESCRIPTION);
-		meta.keywords.setAttribute('content', routes.DASHBOARD.EMPLOYEES.META.KEYWORDS);
-		meta.author.setAttribute('content', constants.APP.AUTHOR);
+			meta.description.setAttribute('content', routes.DASHBOARD.EMPLOYEES.META.DESCRIPTION);
+			meta.keywords.setAttribute('content', routes.DASHBOARD.EMPLOYEES.META.KEYWORDS);
+			meta.author.setAttribute('content', constants.APP.AUTHOR);
+		}
 
 		window.addEventListener('touchmove', () => {});
 

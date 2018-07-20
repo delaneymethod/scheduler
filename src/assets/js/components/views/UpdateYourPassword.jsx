@@ -25,11 +25,13 @@ class UpdateYourPassword extends Component {
 	componentDidMount = () => {
 		document.title = `${constants.APP.TITLE}: ${routes.UPDATE_YOUR_PASSWORD.TITLE}`;
 
-		const meta = document.getElementsByTagName('meta');
+		if (!/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+			const meta = document.getElementsByTagName('meta');
 
-		meta.description.setAttribute('content', routes.UPDATE_YOUR_PASSWORD.META.DESCRIPTION);
-		meta.keywords.setAttribute('content', routes.UPDATE_YOUR_PASSWORD.META.KEYWORDS);
-		meta.author.setAttribute('content', constants.APP.AUTHOR);
+			meta.description.setAttribute('content', routes.UPDATE_YOUR_PASSWORD.META.DESCRIPTION);
+			meta.keywords.setAttribute('content', routes.UPDATE_YOUR_PASSWORD.META.KEYWORDS);
+			meta.author.setAttribute('content', constants.APP.AUTHOR);
+		}
 	};
 
 	render = () => (

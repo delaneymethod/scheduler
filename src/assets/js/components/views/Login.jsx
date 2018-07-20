@@ -35,11 +35,13 @@ class Login extends Component {
 
 		document.title = `${constants.APP.TITLE}: ${routes.LOGIN.TITLE}`;
 
-		const meta = document.getElementsByTagName('meta');
+		if (!/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+			const meta = document.getElementsByTagName('meta');
 
-		meta.description.setAttribute('content', routes.LOGIN.META.DESCRIPTION);
-		meta.keywords.setAttribute('content', routes.LOGIN.META.KEYWORDS);
-		meta.author.setAttribute('content', constants.APP.AUTHOR);
+			meta.description.setAttribute('content', routes.LOGIN.META.DESCRIPTION);
+			meta.keywords.setAttribute('content', routes.LOGIN.META.KEYWORDS);
+			meta.author.setAttribute('content', constants.APP.AUTHOR);
+		}
 	};
 
 	render = () => {
