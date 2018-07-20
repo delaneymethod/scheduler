@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
 import { bindActionCreators } from 'redux';
+import { polyfill } from 'mobile-drag-drop';
 import React, { Fragment, Component } from 'react';
 import { concat, isEmpty, isString, includes, debounce } from 'lodash';
 import { Row, Col, Form, Label, Input, Popover, FormGroup, InputGroup, InputGroupAddon, PopoverBody, PopoverHeader } from 'reactstrap';
@@ -205,6 +206,8 @@ class Employees extends Component {
 		meta.description.setAttribute('content', routes.DASHBOARD.EMPLOYEES.META.DESCRIPTION);
 		meta.keywords.setAttribute('content', routes.DASHBOARD.EMPLOYEES.META.KEYWORDS);
 		meta.author.setAttribute('content', constants.APP.AUTHOR);
+
+		window.addEventListener('touchmove', () => {});
 
 		/* We debounce this call to wait 10ms (we do not want the leading (or "immediate") flag passed because we want to wait until all the componentDidUpdate calls have finished before loading the table data again */
 		this.handleFetchData = debounce(this.handleFetchData.bind(this), 10);
@@ -895,6 +898,8 @@ class Employees extends Component {
 	handleDragStart = (event) => {
 		this.shift = event.target || event.srcElement;
 
+		event.dataTransfer.dropEffect = 'move';
+
 		event.dataTransfer.effectAllowed = 'move';
 
 		event.dataTransfer.setData('text', this.shift.id);
@@ -1052,7 +1057,7 @@ class Employees extends Component {
 				{(!isEmpty(this.state.tableData)) ? (
 					<Fragment>
 						<div className="table-wrapper">
-							<div className="table-scroller border-0 mt-0 ml-01 mr-0 mb-3 p-0 u-disable-selection">
+							<div className="table-scroller border-0 mt-0 mr-0 mb-3 p-0 u-disable-selection">
 								<table className="employees p-0 m-0">
 									<thead>
 										<tr>
