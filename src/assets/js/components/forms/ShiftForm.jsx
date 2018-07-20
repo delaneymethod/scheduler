@@ -2,8 +2,8 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { delay, isEmpty, debounce } from 'lodash';
 import React, { Fragment, Component } from 'react';
+import { delay, isEmpty, includes, debounce } from 'lodash';
 import { Row, Col, Label, Input, Button, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 
@@ -172,6 +172,11 @@ class ShiftForm extends Component {
 
 		/* Remove past dates */
 		startDates = startDates.filter(data => moment(data).isSameOrAfter(moment().format('YYYY-MM-DD')));
+
+		/* If start dates does not contain start date, swap to first start date in the list... This fixes start time issues when originally selected assign shift and then clicking create shift - start date prop is empty so the current week start date is what the start times list is based off even though the start date list is correct... */
+		if (!includes(startDates, moment(startDate))) {
+			startDate = moment(startDates[0]).format('YYYY-MM-DD');
+		}
 
 		this.setState({ startDate, startDates }, () => this.handleSetStartTimes());
 
