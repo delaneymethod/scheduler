@@ -696,10 +696,49 @@ class Employees extends Component {
 			numberOfPositions,
 		} = shift;
 
-		/* We need to make sure our new start and end values are in the correct format like 2018-06-05 18:50:00 and in UTC */
+		/**
+		 * Get date only part from both start and end times.
+		 * Shifts can be dragged back, forward, up and down. The latter two actions is moving a shift between employees within the same day.
+		 * Shifts can also flow over to the following day (E.g start at 6pm Tuesday and finish 2am Wednesday).
+		 * If the date parts are the same, this means the shift starts and ends on the same day and was dragged up or down.
+		 * If the date parts are different, means the shift finishes on the following day and if dragged forward increase the end time date by 1 day and if dragged back, decrease the end time date by 1 day.
+		 */
+		const endTimeDateOnly = moment(endTime).format('YYYY-MM-DD');
+
+		const startTimeDateOnly = moment(startTime).format('YYYY-MM-DD');
+
+		/* Append new cells date to the times */
 		endTime = `${date} ${moment(endTime).format('HH:mm:ss')}`;
 
 		startTime = `${date} ${moment(startTime).format('HH:mm:ss')}`;
+
+		if (moment(startTimeDateOnly).isSame(date)) {
+			if (startTimeDateOnly !== endTimeDateOnly) {
+				/* Shift was dragged up or down within same column and ends the following day - adding 1 day to the end time in order to keep the end time in the following day */
+				endTime = moment(endTime).add(1, 'day');
+			}
+			/* else.... Shift was dragged up or down within same column and starts and ends in the same day */
+		}
+
+		if (moment(startTimeDateOnly).isBefore(date)) {
+			if (startTimeDateOnly !== endTimeDateOnly) {
+				/* Shift was dragged forward and ends the following day - adding 1 day to the end time in order to keep the end time in the following day */
+				endTime = moment(endTime).add(1, 'day');
+			}
+			/* else.... Shift was dragged forward and starts and ends in the same day */
+		}
+
+		if (moment(startTimeDateOnly).isAfter(date)) {
+			if (startTimeDateOnly !== endTimeDateOnly) {
+				/* Shift was dragged backwards and ends the following day - adding 1 day to the end time in order to keep the end time in the following day */
+				endTime = moment(endTime).add(1, 'day');
+			}
+			/* else.... Shift was dragged backwards and starts and ends in the same day */
+		}
+
+		endTime = moment(endTime).seconds(0).format('YYYY-MM-DD HH:mm:ss');
+
+		startTime = moment(startTime).seconds(0).format('YYYY-MM-DD HH:mm:ss');
 
 		/* Put together our payload */
 		let payload = {
