@@ -168,7 +168,7 @@ class AssignShiftForm extends Component {
 		/* Check if the user wants to delete the shift */
 		let message = '<div class="text-center"><p>Please confirm that you wish to delete the Shift?</p><ul class="list-unstyled font-weight-bold">';
 
-		if (!isEmpty(shift.role.roleName)) {
+		if (!isEmpty(shift.role)) {
 			message += `<li>Role: ${shift.role.roleName}</li>`;
 		}
 
