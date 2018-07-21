@@ -12,6 +12,7 @@
 const path = require('path');
 const precss = require('precss');
 const webpack = require('webpack');
+const package = require('./package.json');
 const autoprefixer = require('autoprefixer');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
@@ -25,13 +26,22 @@ const filenames = {
 	js: '[name].bundle.js',
 };
 
+console.log('#########################################');
+
 /* Cache busted names for production */
 if (process.env.NODE_ENV === 'production') {
+	console.log('#   Gig Grafter v', package.version, ' PRODUCTION   #');
+
 	const timestamp = new Date();
 
 	filenames.css = `[name].bundle.${timestamp}.css`;
 	filenames.js = `[name].bundle.${timestamp}.js`;
+} else {
+	console.log('#   Gig Grafter v', package.version, ' DEVELOPMENT   #');
 }
+
+console.log('#########################################');
+console.log('');
 
 module.exports = (env, options) => ({
 	entry: './src/assets/js/Scheduler.jsx',
