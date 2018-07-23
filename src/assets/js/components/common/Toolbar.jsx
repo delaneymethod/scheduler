@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
 import { bindActionCreators } from 'redux';
+import { saveAs } from 'file-saver/FileSaver';
 import React, { Fragment, Component } from 'react';
 import { delay, orderBy, isEmpty, includes, debounce } from 'lodash';
-import { Col, Row, Popover, PopoverBody, PopoverHeader } from 'reactstrap';
+import { Col, Row, Tooltip, Button, Popover, ButtonGroup, PopoverBody, PopoverHeader } from 'reactstrap';
 
 import Modal from './Modal';
 
@@ -27,9 +28,9 @@ import AssignShiftForm from '../forms/AssignShiftForm';
 
 import { switchWeek } from '../../actions/weekActions';
 
-import { getShifts } from '../../actions/shiftActions';
-
 import { updateSettings } from '../../actions/settingActions';
+
+import { getShifts, downloadShifts } from '../../actions/shiftActions';
 
 import { getRotas, switchRota, updateRota } from '../../actions/rotaActions';
 
@@ -83,9 +84,17 @@ class Toolbar extends Component {
 
 		this.handlePublishRota = this.handlePublishRota.bind(this);
 
+		this.handleDownloadRota = this.handleDownloadRota.bind(this);
+
 		this.handleRotaTypeMenu = this.handleRotaTypeMenu.bind(this);
 
 		this.handleSwitchRotaType = this.handleSwitchRotaType.bind(this);
+
+		this.handleEditRotaTooltip = this.handleEditRotaTooltip.bind(this);
+
+		this.handleRotaBudgetTooltip = this.handleRotaBudgetTooltip.bind(this);
+
+		this.handleDownloadRotaTooltip = this.handleDownloadRotaTooltip.bind(this);
 
 		this.handleSuccessNotification = this.handleSuccessNotification.bind(this);
 
@@ -107,11 +116,14 @@ class Toolbar extends Component {
 		employeesIsActive: false,
 		enableShiftButton: false,
 		isEditRotaModalOpen: false,
+		isEditRotaTooltipOpen: false,
 		isCreateRotaModalOpen: false,
 		isCreateRoleModalOpen: false,
 		isCreateShiftModalOpen: false,
 		isAssignShiftModalOpen: false,
+		isRotaBudgetTooltipOpen: false,
 		hasRotaUnassignedShifts: false,
+		isDownloadRotaTooltipOpen: false,
 		isRotaTypeMenuPopoverOpen: false,
 	});
 
@@ -346,11 +358,39 @@ class Toolbar extends Component {
 			});
 	};
 
-	handleEditRota = (event, rotaId) => this.setState({ rotaId, isEditRotaModalOpen: !this.state.isEditRotaModalOpen });
+	handleDownloadRota = () => {
+		const { rota: { rotaId }, actions } = this.props;
+
+		const payload = {
+			rotaId,
+		};
+
+		actions.downloadShifts(payload)
+			.then((response) => {
+				const file = new Blob([response.data], { type: 'application/pdf' });
+
+				saveAs(file, `rota-shifts-${moment(this.props.rota.startDate).format('YYYY-MM-DD')}.pdf`);
+			})
+			.catch((error) => {
+				error.data.title = 'Download Rota';
+
+				this.setState({ error });
+
+				this.handleModal();
+			});
+	};
 
 	handleCreateRota = () => this.setState({ isCreateRotaModalOpen: !this.state.isCreateRotaModalOpen });
 
 	handleCreateRole = () => this.setState({ isCreateRoleModalOpen: !this.state.isCreateRoleModalOpen });
+
+	handleEditRotaTooltip = () => this.setState({ isEditRotaTooltipOpen: !this.state.isEditRotaTooltipOpen });
+
+	handleRotaBudgetTooltip = () => this.setState({ isRotaBudgetTooltipOpen: !this.state.isRotaBudgetTooltipOpen });
+
+	handleDownloadRotaTooltip = () => this.setState({ isDownloadRotaTooltipOpen: !this.state.isDownloadRotaTooltipOpen });
+
+	handleEditRota = (event, rotaId) => this.setState({ rotaId, isEditRotaModalOpen: !this.state.isEditRotaModalOpen });
 
 	handleCreateShift = (event, startDate) => this.setState({ startDate, isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen }, () => {
 		/* If we close the modal, reset the role name state. If the user hasnt saved, but reopens the modal, we want the correct value - not the state value */
@@ -388,7 +428,7 @@ class Toolbar extends Component {
 	render = () => (
 		<Fragment>
 			<Row>
-				<Col className="pt-3 pb-0 pt-sm-3 pb-ms-3 text-center text-md-left" xs="12" sm="12" md="5" lg="4" xl="4">
+				<Col className="pt-3 pb-0 pt-sm-3 pb-ms-3 text-center text-md-left" xs="12" sm="12" md="4" lg="4" xl="4">
 					<button type="button" className="btn btn-rotas-popover text-dark border-0 col-12 col-sm-auto" id="rotaTypeMenu" title="Toggle Rotas" aria-label="Toggle Rotas" onClick={this.handleRotaTypeMenu}>{this.props.rotaType.rotaTypeName}<i className="pl-2 fa fa-fw fa-chevron-down" aria-hidden="true"></i></button>
 					<Popover placement="bottom" isOpen={this.state.isRotaTypeMenuPopoverOpen} target="rotaTypeMenu" toggle={this.handleRotaTypeMenu}>
 						<PopoverBody>
@@ -399,7 +439,7 @@ class Toolbar extends Component {
 						</PopoverBody>
 					</Popover>
 				</Col>
-				<Col className="pt-3 pb-3 pt-sm-3 pb-ms-3 text-center text-md-right" xs="12" sm="12" md="7" lg="8" xl="8">
+				<Col className="pt-3 pb-3 pt-sm-3 pb-ms-3 text-center text-md-right" xs="12" sm="12" md="8" lg="8" xl="8">
 					{(this.state.employeesIsActive || this.state.overviewIsActive) ? (
 						<Fragment>
 							{(this.state.hasUnassignedShifts) ? (
@@ -412,16 +452,27 @@ class Toolbar extends Component {
 						<button type="button" title="Create Shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 mb-md-0 pl-4 pr-4 pl-md-4 pr-md-4 border-0" disabled={!this.state.enableShiftButton} onClick={this.handleCreateShift}><i className="pr-2 fa fa-fw fa-plus d-sm-inline-block d-md-none d-lg-inline-block" aria-hidden="true"></i>Create Shift</button>
 					)}
 					{(this.state.rotaStatus === STATUSES.DRAFT) ? (
-						<button type="button" title="Publish Rota" className="btn btn-nav btn-primary col-12 col-sm-auto pl-4 pr-4 pl-md-4 pr-md-4 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish</button>
+						<button type="button" title="Publish Rota" className="btn btn-nav btn-primary col-12 col-sm-auto pl-4 pr-4 pl-md-4 pr-md-4 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish<span className="d-sm-inline-block d-md-none d-lg-inline-block">&nbsp;Rota</span></button>
 					) : null}
 					{(this.state.rotaStatus === STATUSES.PUBLISHED) ? (
-						<button type="button" title="Rota Published" className="btn btn-nav btn-primary col-12 col-sm-auto pl-4 pr-4 pl-md-4 pr-md-4 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled>Publish</button>
+						<button type="button" title="Rota Published" className="btn btn-nav btn-primary col-12 col-sm-auto pl-4 pr-4 pl-md-4 pr-md-4 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled>Publish<span className="d-sm-inline-block d-md-none d-lg-inline-block">&nbsp;Rota</span></button>
 					) : null}
 					{(this.state.rotaStatus === STATUSES.EDITED) ? (
-						<button type="button" title="Publish Rota Changes" className="btn btn-nav btn-primary col-12 col-sm-auto pl-4 pr-4 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish Changes</button>
+						<button type="button" title="Publish Rota Changes" className="btn btn-nav btn-primary col-12 col-sm-auto pl-4 pr-4 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish&nbsp;<span className="d-sm-inline-block d-md-none d-lg-inline-block">&nbsp;Rota&nbsp;</span>Changes</button>
 					) : null}
-					<button type="button" title="Edit Rota" className="btn btn-rotas-popover text-dark border-0 col-12 col-sm-auto pl-4 pr-4 ml-sm-3 mb-3 mb-sm-0 mt-md-0" onClick={event => this.handleEditRota(event, this.props.rota.rotaId)}>Edit</button>
-					<button type="button" title="Rota Budget" className="btn bg-white text-dark col-12 col-sm-auto pl-4 pr-4 ml-sm-3 mb-sm-0 mb-md-0 border-0"><span className="d-sm-inline-block d-md-none d-lg-inline-block">Budget:&nbsp;</span>&pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
+					<ButtonGroup className="d-none d-sm-inline-block p-0 pl-sm-3 pl-md-3 pl-lg-3 pl-xl-3 m-0">
+						<button type="button" title="Download Rota" id="download-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3" onClick={event => this.handleDownloadRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-cloud-download" aria-hidden="true"></i></button>
+						<button type="button" title="Edit Rota" id="edit-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3" onClick={event => this.handleEditRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i></button>
+						<button type="button" title="Rota Budget" id="rota-budget" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3" style={{ cursor: 'default' }}>&pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
+					</ButtonGroup>
+					<div className="d-block d-sm-none">
+						<button type="button" title="Download Rota" id="download-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-3" onClick={event => this.handleDownloadRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-cloud-download" aria-hidden="true"></i> Download Rota</button>
+						<button type="button" title="Edit Rota" id="edit-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-3" onClick={event => this.handleEditRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i> Edit Rota</button>
+						<button type="button" title="Rota Budget" id="rota-budget" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-0" style={{ cursor: 'default' }}>Rota Budget: &pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
+					</div>
+					<Tooltip placement="bottom" isOpen={this.state.isDownloadRotaTooltipOpen} target="download-rota" toggle={this.handleDownloadRotaTooltip}>Creates a PDF of the current Rota</Tooltip>
+					<Tooltip placement="bottom" isOpen={this.state.isEditRotaTooltipOpen} target="edit-rota" toggle={this.handleEditRotaTooltip}>Edit the current Rota</Tooltip>
+					<Tooltip placement="bottom" isOpen={this.state.isRotaBudgetTooltipOpen} target="rota-budget" toggle={this.handleRotaBudgetTooltip}>Rota&#39;s Budget</Tooltip>
 				</Col>
 			</Row>
 			<Modal title="Create Rota" className="modal-dialog" show={this.state.isCreateRotaModalOpen} onClose={this.handleCreateRota}>
@@ -469,6 +520,7 @@ const mapDispatchToProps = dispatch => ({
 		switchRota,
 		updateRota,
 		getRotaTypes,
+		downloadShifts,
 		updateSettings,
 		switchRotaType,
 	}, dispatch),

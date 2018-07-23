@@ -48,6 +48,7 @@ const request = (method, url, expectedStatus = 200, payload = null) => {
 		headers,
 		/* cancelToken: axiosCall.token, */
 		validateStatus: status => status === expectedStatus,
+		responseType: url.includes('pdf') ? 'blob' : 'json',
 	};
 
 	const user = getState('user');
@@ -131,6 +132,8 @@ export const deleteAccount = account => request('DELETE', `/accounts/${account.a
 export const getShifts = rota => request('GET', `/shifts?rotaId=${rota.rotaId}`);
 
 export const copyShifts = rota => request('POST', `/rotas/${rota.rotaId}/copy-shifts`, 201);
+
+export const downloadShifts = rota => request('GET', `/shifts/pdf?rotaId=${rota.rotaId}`);
 
 export const getShift = shift => request('GET', `/shifts/${shift.shiftId}`);
 

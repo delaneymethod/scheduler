@@ -56,6 +56,23 @@ export const copyShifts = payload => (dispatch) => {
 		});
 };
 
+export const downloadShifts = payload => (dispatch) => {
+	dispatch(ajaxLoading(true));
+
+	return api.downloadShifts(payload)
+		.then((stream) => {
+			dispatch(ajaxLoading(false));
+
+			return stream;
+		})
+		.catch((error) => {
+			dispatch(ajaxLoading(false));
+
+			/* Bubble the error back up the rabbit hole */
+			return Promise.reject(error);
+		});
+};
+
 /* GET SPECIFIC SHIFT */
 export const getShiftSuccess = shift => ({
 	type: types.GET_SHIFT,

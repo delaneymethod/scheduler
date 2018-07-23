@@ -106,9 +106,53 @@ describe('Shift Actions', () => {
 			});
 		});
 
-		store = mockStore({ rota: [] });
+		store = mockStore({ shifts: [] });
 
 		return store.dispatch(actions.copyShifts({})).catch(error => expect(store.getActions()).not.toBeNull());
+	});
+
+	it('should create AJAX_LOADING actions on downloadShifts', () => {
+		moxios.wait(() => {
+			const request = moxios.requests.mostRecent();
+
+			request.respondWith({
+				status: 200,
+				response: {
+					data: {},
+				},
+			});
+		});
+
+		store = mockStore({ shifts: [] });
+
+		const expectedActions = [{
+			status: true,
+			type: types.AJAX_LOADING,
+		}, {
+			status: false,
+			type: types.AJAX_LOADING,
+		}];
+
+		const payload = {
+			rotaId: 1,
+		};
+
+		return store.dispatch(actions.downloadShifts(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
+	});
+
+	it('should catch error on failed downloadShifts', () => {
+		moxios.wait(() => {
+			const request = moxios.requests.mostRecent();
+
+			request.respondWith({
+				status: 400,
+				response: {},
+			});
+		});
+
+		store = mockStore({ shifts: [] });
+
+		return store.dispatch(actions.downloadShifts({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
 
 	it('should create GET_SHIFT and AJAX_LOADING actions on getShift', () => {

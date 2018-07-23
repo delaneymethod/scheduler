@@ -580,6 +580,18 @@ describe('API', () => {
 		return api.copyShifts(payload).then(data => expect(data.rota).toEqual({}));
 	});
 
+	it('should download shifts', () => {
+		mock.onGet('/shifts/pdf?rotaId=1234').reply(200, {
+			stream: {},
+		});
+
+		const payload = {
+			rotaId: 1234,
+		};
+
+		return api.downloadShifts(payload).then(data => expect(data.stream).toEqual({}));
+	});
+
 	it('should get shift', () => {
 		mock.onGet('/shifts/3').reply(200, {
 			shifts: [{
