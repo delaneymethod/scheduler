@@ -32,7 +32,7 @@ console.log('#########################################');
 if (process.env.NODE_ENV === 'production') {
 	console.log('#   Gig Grafter v', package.version, ' PRODUCTION   #');
 
-	const timestamp = new Date();
+	const timestamp = + new Date();
 
 	filenames.css = `[name].bundle.${timestamp}.css`;
 	filenames.js = `[name].bundle.${timestamp}.js`;

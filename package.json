@@ -10,7 +10,7 @@
 		"dev": "cross-env NODE_ENV='development' webpack --progress=true --cache=false --display-error-details=true --mode=development",
 		"hot": "cross-env NODE_ENV='development' webpack-dev-server --watch --open --hot=true --progress=true --display-error-details=true --mode=development",
 		"prod": "npm run production",
-		"production": "cross-env NODE_ENV='production' webpack --display-error-details=false --progress=false --hide-modules --mode production"
+		"production": "cross-env NODE_ENV='production' webpack --display-error-details=true --progress=true --hide-modules --mode production"
 	},
 	"keywords": [
 		"Scheduler",

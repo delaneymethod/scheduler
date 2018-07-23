@@ -212,9 +212,11 @@ class Employees extends Component {
 
 		window.addEventListener('touchmove', () => {}, { passive: false });
 
+		/*
 		polyfill({
 			dragImageTranslateOverride: scrollBehaviourDragImageTranslateOverride,
 		});
+		*/
 
 		/* We debounce this call to wait 10ms (we do not want the leading (or "immediate") flag passed because we want to wait until all the componentDidUpdate calls have finished before loading the table data again */
 		this.handleFetchData = debounce(this.handleFetchData.bind(this), 10);
