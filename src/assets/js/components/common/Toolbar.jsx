@@ -366,11 +366,7 @@ class Toolbar extends Component {
 		};
 
 		actions.downloadShifts(payload)
-			.then((response) => {
-				const file = new Blob([response.data], { type: 'application/pdf' });
-
-				saveAs(file, `rota-shifts-${moment(this.props.rota.startDate).format('YYYY-MM-DD')}.pdf`);
-			})
+			.then(response => saveAs(response, `rota-shifts-${moment(this.props.rota.startDate).format('YYYY-MM-DD')}.pdf`))
 			.catch((error) => {
 				error.data.title = 'Download Rota';
 
