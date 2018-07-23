@@ -482,7 +482,7 @@ class Toolbar extends Component {
 				<RotaForm rotaId={this.state.rotaId} editMode={true} firstRota={false} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleEditRota} />
 			</Modal>
 			<Modal title="Create Shift" className="modal-dialog" show={this.state.isCreateShiftModalOpen} onClose={event => this.handleCreateShift(event, this.state.startDate)}>
-				<ShiftForm startDate={this.state.startDate} roleName={this.state.roleName} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleCreateShift(event, this.state.startDate)} handleSwitchFromSelectRoleToCreateRole={this.handleSwitchFromSelectRoleToCreateRole} />
+				<ShiftForm overview={false} startDate={this.state.startDate} roleName={this.state.roleName} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleCreateShift(event, this.state.startDate)} handleSwitchFromSelectRoleToCreateRole={this.handleSwitchFromSelectRoleToCreateRole} />
 			</Modal>
 			<Modal title="Assign Shift" className="modal-dialog" show={this.state.isAssignShiftModalOpen} onClose={event => this.handleAssignShift(event, this.state.startDate)}>
 				<AssignShiftForm startDate={this.state.startDate} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleAssignShift(event, this.state.startDate)} handleSwitchFromAssignShiftToCreateShift={this.handleSwitchFromAssignShiftToCreateShift} />

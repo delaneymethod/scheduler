@@ -25,7 +25,6 @@ const routes = constants.APP.ROUTES;
 
 const propTypes = {
 	roleName: PropTypes.any,
-	editMode: PropTypes.bool,
 	shiftId: PropTypes.string,
 	startDate: PropTypes.string,
 	employeeId: PropTypes.string,
@@ -34,6 +33,8 @@ const propTypes = {
 	rota: PropTypes.object.isRequired,
 	roles: PropTypes.array.isRequired,
 	shifts: PropTypes.array.isRequired,
+	editMode: PropTypes.bool.isRequired,
+	overview: PropTypes.bool.isRequired,
 	rotaType: PropTypes.object.isRequired,
 	employees: PropTypes.array.isRequired,
 	handleClose: PropTypes.func.isRequired,
@@ -50,6 +51,7 @@ const defaultProps = {
 	shiftId: null,
 	employees: [],
 	roleName: null,
+	overview: false,
 	editMode: false,
 	startDate: null,
 	employeeId: null,
@@ -522,7 +524,7 @@ class ShiftForm extends Component {
 				actions.deleteShift(payload)
 					.then(() => {
 						/* Close the modal */
-						this.props.handleClose(event, '', moment());
+						this.props.handleClose(event, '', '', '', moment());
 
 						/* FIXME - Make messages constant */
 						message = '<p>Shift was deleted!</p>';
@@ -604,9 +606,15 @@ class ShiftForm extends Component {
 								console.log('Called ShiftForm handleSubmit deletePlacement');
 								actions.deletePlacement(payload)
 									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+									.then(() => this.handleGetShifts())
+									/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
+									.then(() => this.handleGetRotas())
+									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 									.then(() => {
 										/* Close the modal */
-										this.props.handleClose(event, '', moment());
+										if (this.props.overview) {
+											this.props.handleClose(event, '', '', '', moment());
+										}
 
 										/* FIXME - Make messages constant */
 										const message = '<p>Shift was updated!</p>';
@@ -614,10 +622,6 @@ class ShiftForm extends Component {
 										/* Pass a message back up the rabbit hole to the parent component */
 										this.props.handleSuccessNotification(message);
 									})
-									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-									.then(() => this.handleGetShifts())
-									/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
-									.then(() => this.handleGetRotas())
 									.catch(error => this.setState({ error }));
 							} else {
 								payload = {
@@ -633,9 +637,15 @@ class ShiftForm extends Component {
 								console.log('Called ShiftForm handleSubmit updatePlacement');
 								actions.updatePlacement(payload)
 									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+									.then(() => this.handleGetShifts())
+									/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
+									.then(() => this.handleGetRotas())
+									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 									.then(() => {
 										/* Close the modal */
-										this.props.handleClose(event, '', moment());
+										if (this.props.overview) {
+											this.props.handleClose(event, '', '', '', moment());
+										}
 
 										/* FIXME - Make messages constant */
 										const message = '<p>Shift was updated!</p>';
@@ -643,15 +653,13 @@ class ShiftForm extends Component {
 										/* Pass a message back up the rabbit hole to the parent component */
 										this.props.handleSuccessNotification(message);
 									})
-									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-									.then(() => this.handleGetShifts())
-									/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
-									.then(() => this.handleGetRotas())
 									.catch(error => this.setState({ error }));
 							}
 						} else {
 							/* Close the modal */
-							this.props.handleClose(event, '', moment());
+							if (this.props.overview) {
+								this.props.handleClose(event, '', '', '', moment());
+							}
 
 							const message = '<p>Shift was updated!</p>';
 
@@ -680,7 +688,7 @@ class ShiftForm extends Component {
 							actions.createPlacement(payload)
 								.then(() => {
 									/* Close the modal */
-									this.props.handleClose(event, '', moment());
+									this.props.handleClose(event, '', '', '', moment());
 
 									const message = '<p>Shift was created!</p>';
 
@@ -694,7 +702,7 @@ class ShiftForm extends Component {
 								.catch(error => this.setState({ error }));
 						} else {
 							/* Close the modal */
-							this.props.handleClose(event, '', moment());
+							this.props.handleClose(event, '', '', '', moment());
 
 							/* FIXME - Make messages constant */
 							const message = '<p>Shift was created!</p>';
@@ -836,6 +844,7 @@ const mapStateToProps = (state, props) => ({
 	shiftId: props.shiftId,
 	rotaType: state.rotaType,
 	editMode: props.editMode,
+	overview: props.overview,
 	roleName: props.roleName,
 	startDate: props.startDate,
 	employees: state.employees,
