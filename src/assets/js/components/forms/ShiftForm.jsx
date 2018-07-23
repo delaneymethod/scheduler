@@ -550,7 +550,6 @@ class ShiftForm extends Component {
 		await this.form.validateFields();
 
 		if (this.form.isValid()) {
-			console.log(this.state);
 			let { endTime, startTime } = this.state;
 
 			const {
@@ -562,12 +561,12 @@ class ShiftForm extends Component {
 				isClosingShift,
 				numberOfPositions,
 			} = this.state;
-			console.log(endTime);
+
 			/* We are just renforcing the formats */
 			endTime = moment(endTime).seconds(0).format('YYYY-MM-DD HH:mm:ss');
 
 			startTime = moment(startTime).seconds(0).format('YYYY-MM-DD HH:mm:ss');
-			console.log(endTime);
+
 			let payload = {
 				rotaId,
 				shiftId,

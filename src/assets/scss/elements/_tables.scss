@@ -160,6 +160,7 @@
 		}
 	
 		td {
+			cursor: default;
 			white-space: nowrap;
 			background-color: $gray-400;
 			background-clip: padding-box;
@@ -173,40 +174,28 @@
 				border: 0;
 				z-index: 1;
 				width: 100%;
-				cursor: move;
-				cursor: grab;
+				cursor: pointer;
 				min-height: 57px;
-				cursor: -moz-grab;
 				position: relative;
-				cursor: -webkit-grab;
 				color: $body-color-light;
 				background-color: $secondary;
 				
 				&:hover {
-					cursor: move;
-					cursor: grab;
-					cursor: -moz-grab;
-					cursor: -webkit-grab;
+					cursor: pointer;
 				}
 				
 				&:active {
-					cursor: grabbing !important;
-					cursor: -moz-grabbing !important;
-					cursor: -webkit-grabbing !important;
 				}
-
+				
 				&:not(:only-child, :last-child) {
 					border-bottom: calculateRem(3px) solid darken($secondary, 10%);
 				}
 			}
 			
 			.shift-selected {
-				cursor: grabbing !important;
-				cursor: -moz-grabbing !important;
-				cursor: -webkit-grabbing !important;
 				background-color: $secondary !important;
 			}
-
+			
 			.shift-invisible {
 				display: none !important;
 			}
@@ -218,10 +207,11 @@
 				color: $gray-900;
 				min-height: 67px;
 				position: relative;
+				cursor: pointer !important;
 				background-color: transparent;
 				
 				&:hover {
-					cursor: pointer;
+					cursor: pointer !important;
 				}
 			}
 		}
@@ -263,23 +253,22 @@
 		}
 
 		.drag-handler {
-			cursor: move;
-			cursor: grab;
-			cursor: -moz-grab;
-			cursor: -webkit-grab;
+			cursor: move !important;
 			
-			&:focus {
-				cursor: move;
-				cursor: grab;
-				cursor: -moz-grab;
-				cursor: -webkit-grab;
+			&:active,
+			&:hover {
+				cursor: move !important;
 			}
-
-			&:active {
-				cursor: grabbing !important;
-				cursor: -moz-grabbing !important;
-				cursor: -webkit-grabbing !important;
-			}
+		}
+	}
+	
+	.draggable-row,
+	.draggable-row-drag td {
+		cursor: move !important;
+		
+		&:active,
+		&:hover {
+			cursor: move !important;
 		}
 	}
 	

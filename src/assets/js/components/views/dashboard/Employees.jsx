@@ -160,11 +160,15 @@ class Employees extends Component {
 
 		this.handleNoEnterKeySubmit = this.handleNoEnterKeySubmit.bind(this);
 
+		this.handleRemoveCellStyles = this.handleRemoveCellStyles.bind(this);
+
 		this.handleClearSortEmployees = this.handleClearSortEmployees.bind(this);
 
 		this.handleSuccessNotification = this.handleSuccessNotification.bind(this);
 
 		this.handleUpdateEmployeeOrder = this.handleUpdateEmployeeOrder.bind(this);
+
+		this.handleRemoveCellHighlight = this.handleRemoveCellHighlight.bind(this);
 
 		this.handleSwitchFromSelectRoleToCreateRole = this.handleSwitchFromSelectRoleToCreateRole.bind(this);
 
@@ -644,6 +648,7 @@ class Employees extends Component {
 				dataIdAttr: 'data-account-employee-id',
 				handle: '.drag-handler',
 				draggable: '.draggable-row',
+				dragClass: 'draggable-row-drag', 
 				ghostClass: 'draggable-row-ghost',
 				store: {
 					get: () => {
@@ -880,6 +885,12 @@ class Employees extends Component {
 		[...allDraggableCells].forEach(draggableCell => removeClass(draggableCell, 'cell-highlighted'));
 	};
 
+	handleRemoveCellStyles = () => {
+		const allDraggableCells = document.querySelectorAll('.draggable-cell');
+
+		[...allDraggableCells].forEach(draggableCell => draggableCell.setAttribute('style', ''));
+	};
+
 	handleDragAndDrop = () => {
 		const shifts = document.querySelectorAll('.shift');
 
@@ -905,6 +916,8 @@ class Employees extends Component {
 	handleDragStart = (event) => {
 		this.shift = event.target || event.srcElement;
 
+		this.shift.setAttribute('style', 'cursor: move; cursor: grab; cursor:-moz-grab; cursor:-webkit-grab;');
+
 		event.dataTransfer.dropEffect = 'move';
 
 		event.dataTransfer.effectAllowed = 'move';
@@ -926,6 +939,8 @@ class Employees extends Component {
 		removeClass(element, 'shift-selected');
 
 		removeClass(element, 'shift-invisible');
+
+		element.setAttribute('style', 'cursor: move; cursor: grab; cursor:-moz-grab; cursor:-webkit-grab;');
 	};
 
 	handleDragOver = (event) => {
@@ -933,6 +948,8 @@ class Employees extends Component {
 		if (event.preventDefault) {
 			event.preventDefault();
 		}
+
+		this.shift.setAttribute('style', 'cursor: move; cursor: -webkit-grabbing; cursor: -moz-grabbing; cursor: -o-grabbing; cursor: -ms-grabbing; cursor: grabbing;');
 
 		event.dataTransfer.dropEffect = 'move';
 
@@ -949,6 +966,8 @@ class Employees extends Component {
 
 		const element = event.target || event.srcElement;
 
+		element.setAttribute('style', 'cursor: move; cursor: -webkit-grabbing; cursor: -moz-grabbing; cursor: -o-grabbing; cursor: -ms-grabbing; cursor: grabbing;');
+
 		this.handleRemoveCellHighlight();
 
 		/* We wait so DOM can update before we start adding cell highlight class as otherwise it will be cleared before UI is refreshed */
@@ -959,6 +978,8 @@ class Employees extends Component {
 
 	handleDragLeave = (event) => {
 		const element = event.target || event.srcElement;
+
+		element.setAttribute('style', 'cursor: move; cursor: -webkit-grabbing; cursor: -moz-grabbing; cursor: -o-grabbing; cursor: -ms-grabbing; cursor: grabbing;');
 
 		const targetElement = (!element.tagName) ? element.parentElement : element;
 
@@ -1019,6 +1040,8 @@ class Employees extends Component {
 		*/
 
 		this.handleRemoveCellHighlight();
+
+		this.handleRemoveCellStyles();
 
 		this.handleUpdateShift(shiftId, placementId, employeeId, date);
 
@@ -1121,9 +1144,9 @@ class Employees extends Component {
 									<tbody id="tableBody">
 										{this.state.tableData.body.rows.length > 0 && this.state.tableData.body.rows.map((row, rowIndex) => (
 											<tr key={rowIndex} className="draggable-row" data-account-employee-id={row.accountEmployee.accountEmployeeId}>
-												<td className="p-2 align-top text-left drag-handler p-0 m-0" onClick={event => this.handleEditEmployee(event, row.accountEmployee.employee.employeeId)}>
+												<td className="p-2 align-top text-left p-0 m-0" onClick={event => this.handleEditEmployee(event, row.accountEmployee.employee.employeeId)}>
 													<div className="d-flex align-items-start p-0 m-0 wrap-words">
-														<div className="d-inline-block p-0 mt-0 ml-0 mr-2 mb-0">
+														<div className="d-inline-block p-0 mt-0 ml-0 mr-2 mb-0 drag-handler">
 															<Avatar name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="39" />
 														</div>
 														<div className="d-inline-block pt-0 pl-0 pr-0 pb-0 m-0">
