@@ -10,7 +10,7 @@ import { bindActionCreators } from 'redux';
 import { polyfill } from 'mobile-drag-drop';
 import React, { Fragment, Component } from 'react';
 import { concat, isEmpty, isString, includes, debounce } from 'lodash';
-// import { scrollBehaviourDragImageTranslateOverride } from 'mobile-drag-drop/scroll-behaviour';
+import { scrollBehaviourDragImageTranslateOverride } from 'mobile-drag-drop/scroll-behaviour';
 import { Row, Col, Form, Label, Input, Popover, FormGroup, InputGroup, InputGroupAddon, PopoverBody, PopoverHeader } from 'reactstrap';
 
 import Modal from '../../common/Modal';
@@ -210,13 +210,13 @@ class Employees extends Component {
 			meta.author.setAttribute('content', constants.APP.AUTHOR);
 		}
 
-		window.addEventListener('touchmove', () => {}, { passive: false });
-
 		/*
 		polyfill({
 			dragImageTranslateOverride: scrollBehaviourDragImageTranslateOverride,
 		});
 		*/
+
+		window.addEventListener('touchmove', () => {}, { passive: false });
 
 		/* We debounce this call to wait 10ms (we do not want the leading (or "immediate") flag passed because we want to wait until all the componentDidUpdate calls have finished before loading the table data again */
 		this.handleFetchData = debounce(this.handleFetchData.bind(this), 10);
