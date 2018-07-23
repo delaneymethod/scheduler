@@ -648,7 +648,7 @@ class Employees extends Component {
 				dataIdAttr: 'data-account-employee-id',
 				handle: '.drag-handler',
 				draggable: '.draggable-row',
-				dragClass: 'draggable-row-drag', 
+				dragClass: 'draggable-row-drag',
 				ghostClass: 'draggable-row-ghost',
 				store: {
 					get: () => {
