@@ -210,11 +210,9 @@ class Employees extends Component {
 			meta.author.setAttribute('content', constants.APP.AUTHOR);
 		}
 
-		/*
 		polyfill({
 			dragImageTranslateOverride: scrollBehaviourDragImageTranslateOverride,
 		});
-		*/
 
 		window.addEventListener('touchmove', () => {}, { passive: false });
 
