@@ -4,7 +4,7 @@ export default {
 		LOGO: '/assets/img/scheduler-logo.svg',
 		AUTHOR: {
 			TITLE: 'Gig Grafter',
-			LOGO: 'http://via.placeholder.com/270x70',
+			LOGO: '//via.placeholder.com/270x70',
 		},
 		ROUTES: {
 			HOME: {
@@ -18,27 +18,27 @@ export default {
 							TITLE: 'Get Started',
 							URI: '/register',
 						},
-						IMAGE: 'http://via.placeholder.com/700x700',
+						IMAGE: '//via.placeholder.com/700x700',
 					},
 					CREATE: {
 						LEAD: 'Create',
 						OVERVIEW: '<p><strong>Create Fast and Flexible Schedules in minutes</strong></p><p>Our intuitive weekly rota calendar enables you to add and assign shifts to each employee instantly.</p><p><strong>Need to control labour costs</strong></p><p>No problem. Simply assign a budget to each weekly rota and our smart scheduling provides instant cost comparisons to keep you and your managers on track.</p>',
-						IMAGE: 'http://via.placeholder.com/430x430',
+						IMAGE: '//via.placeholder.com/430x430',
 					},
 					PUBLISH: {
 						LEAD: 'Publish',
 						OVERVIEW: '<p><strong>Publish Your Rota at the Touch of a Button</strong></p><p>Each employee receives instant notifications by SMS and email letting them know when they are scheduled to work.</p><p>No guess work, no confusion, no phone calls from staff wondering when they are working next &#8212; just more time for you and your managers to focus on growing your business.</p>',
-						IMAGE: 'http://via.placeholder.com/430x430',
+						IMAGE: '//via.placeholder.com/430x430',
 					},
 					MANAGE: {
 						LEAD: 'Manage',
 						OVERVIEW: '<p><strong>Need to Reassign Shifts at Short Notice</strong></p><p>Not a problem, with our drag and drop feature you can instantly reassign a shift to the next available employee when an employee calls in sick at short notice or their availability changes unexpectedly.</p><p>Employees receive instant notifications by SMS and email alerting them to shift changes and updates.</p><p><strong>Staff Contact Details in One Secure Application</strong></p><p>The Gig Grafter Employee Database allows your managers and supervisors to access employee details including contact details securely from any device.</p><p>As this information is stored securely online there is no need for managers to hold employee data on private phones that can be lost or stolen, ensuring improved GDPR compliance across your business.</p>',
-						IMAGE: 'http://via.placeholder.com/430x430',
+						IMAGE: '//via.placeholder.com/430x430',
 					},
 					PROMO: {
 						LEAD: '',
 						OVERVIEW: '<p>Efficient and affordable workforce management tools designed for smaller businesses.</p>',
-						IMAGE: 'http://via.placeholder.com/600x720',
+						IMAGE: '//via.placeholder.com/600x720',
 					},
 					ABOUT: {
 						LEAD: 'About Gig Grafter',
@@ -47,7 +47,7 @@ export default {
 					SMS: {
 						LEAD: '',
 						OVERVIEW: '<p>Employees receive instant notifications by SMS and email alerting them to shift changes and updates</p>',
-						IMAGE: 'http://via.placeholder.com/400x530',
+						IMAGE: '//via.placeholder.com/400x530',
 					},
 					BETA: {
 						LEAD: 'Beta Release',

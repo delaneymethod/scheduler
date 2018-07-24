@@ -113,7 +113,7 @@ class Home extends Component {
 								<div className="container">
 									<div className="card-deck">
 										{routes.HOME.CONTENT.PRICING.SUBSCRIPTIONS.map((subscription, subscriptionIndex) => (
-											<div className="card rounded border-0" style={{ width: '18rem' }}>
+											<div key={subscriptionIndex} className="card rounded border-0" style={{ width: '18rem' }}>
 												<div className="card-header border-0 bg-secondary text-center">
 													<p className="h5 text-white">{subscription.TITLE}</p>
 													<p className="h1 text-white text-uppercase">{subscription.PRICE}</p>
