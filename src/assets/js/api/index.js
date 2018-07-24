@@ -48,7 +48,7 @@ const request = (method, url, expectedStatus = 200, payload = null) => {
 		headers,
 		/* cancelToken: axiosCall.token, */
 		validateStatus: status => status === expectedStatus,
-		responseType: url.includes('pdf') ? 'blob' : 'json',
+		responseType: url.includes('pdf') ? 'blob' : null,
 	};
 
 	const user = getState('user');
