@@ -30,7 +30,7 @@ class UpdateYourPassword extends Component {
 
 			meta.description.setAttribute('content', routes.UPDATE_YOUR_PASSWORD.META.DESCRIPTION);
 			meta.keywords.setAttribute('content', routes.UPDATE_YOUR_PASSWORD.META.KEYWORDS);
-			meta.author.setAttribute('content', constants.APP.AUTHOR);
+			meta.author.setAttribute('content', constants.APP.AUTHOR.TITLE);
 		}
 	};
 
@@ -39,7 +39,7 @@ class UpdateYourPassword extends Component {
 			<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center bg-dark py-5">
 				<div className="panel-welcome">
 					<h1><a href={routes.HOME.URI} title={constants.APP.TITLE}><img src={constants.APP.LOGO} alt={constants.APP.TITLE} className="mb-4" /></a></h1>
-					<p className="h5 mb-0">{routes.UPDATE_YOUR_PASSWORD.MESSAGES.WELCOME}</p>
+					<p className="h5 mb-0">{routes.UPDATE_YOUR_PASSWORD.CONTENT.WELCOME}</p>
 				</div>
 			</Col>
 			<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center py-5">

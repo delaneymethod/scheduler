@@ -121,7 +121,7 @@ class Dashboard extends Component {
 
 			meta.description.setAttribute('content', routes.DASHBOARD.HOME.META.DESCRIPTION);
 			meta.keywords.setAttribute('content', routes.DASHBOARD.HOME.META.KEYWORDS);
-			meta.author.setAttribute('content', constants.APP.AUTHOR);
+			meta.author.setAttribute('content', constants.APP.AUTHOR.TITLE);
 		}
 
 		/* Wait 1.3 seconds before fetching data - prevents any race conditions */

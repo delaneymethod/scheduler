@@ -490,7 +490,7 @@ class RotaForm extends Component {
 						</FormGroup>
 					</Col>
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
-						<NumberField fieldName="budget" fieldLabel="Budget" fieldValue={this.state.budget} fieldPlaceholder="e.g. £2,000" handleChange={this.handleChangeBudget} handleBlur={this.handleBlur} valueMissing="Please provide a valid budget." fieldTabIndex={2} fieldRequired={false} />
+						<NumberField fieldName="budget" fieldLabel="Budget" fieldValue={this.state.budget} fieldPlaceholder="e.g. £2,000 (optional)" handleChange={this.handleChangeBudget} handleBlur={this.handleBlur} valueMissing="Please provide a valid budget." fieldTabIndex={2} fieldRequired={false} />
 					</Col>
 				</Row>
 				{(this.props.editMode) ? (

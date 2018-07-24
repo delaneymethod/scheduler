@@ -59,7 +59,7 @@ class Settings extends Component {
 
 			meta.description.setAttribute('content', routes.DASHBOARD.SETTINGS.META.DESCRIPTION);
 			meta.keywords.setAttribute('content', routes.DASHBOARD.SETTINGS.META.KEYWORDS);
-			meta.author.setAttribute('content', constants.APP.AUTHOR);
+			meta.author.setAttribute('content', constants.APP.AUTHOR.TITLE);
 		}
 	};
 

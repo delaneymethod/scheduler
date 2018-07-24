@@ -244,6 +244,18 @@ describe('API', () => {
 	});
 	*/
 
+	it('should subscribe to service updates', () => {
+		mock.onPost('/service-updates-sign-up').reply(200, {
+			emailSent: true,
+		});
+
+		const payload = {
+			email: 'hello@giggrafter.com',
+		};
+
+		return api.serviceUpdates(payload).then(data => expect(data.emailSent).toEqual(true));
+	});
+
 	it('should get subscription levels', () => {
 		mock.onGet('/subscription-levels').reply(200, {
 			subscriptionLevels: [],

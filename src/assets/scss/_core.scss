@@ -93,6 +93,8 @@ html {
 }
 
 .alert {
+	border: 0;
+	
 	p:last-child {
 		margin-bottom: 0;
 	}
@@ -119,4 +121,14 @@ html {
 
 .fa-chevron-down {
 	font-size: 0.7rem;
+}
+
+.dnd-poly-drag-image {
+    opacity: 0.5 !important;
+}
+
+.dnd-poly-drag-image.dnd-poly-snapback {
+    transition-duration: 250ms !important;
+    transition-timing-function: ease-out !important;
+    transition-property: transform, -webkit-transform !important;
 }

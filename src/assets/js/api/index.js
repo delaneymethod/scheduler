@@ -84,6 +84,9 @@ const request = (method, url, expectedStatus = 200, payload = null) => {
 		});
 };
 
+/* SERVICE UPDATES */
+export const serviceUpdates = payload => request('POST', '/service-updates-sign-up', 200, payload);
+
 /* LOGIN */
 export const login = payload => request('POST', '/login', 200, payload);
 

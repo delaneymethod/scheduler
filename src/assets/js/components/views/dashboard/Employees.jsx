@@ -211,7 +211,7 @@ class Employees extends Component {
 
 			meta.description.setAttribute('content', routes.DASHBOARD.EMPLOYEES.META.DESCRIPTION);
 			meta.keywords.setAttribute('content', routes.DASHBOARD.EMPLOYEES.META.KEYWORDS);
-			meta.author.setAttribute('content', constants.APP.AUTHOR);
+			meta.author.setAttribute('content', constants.APP.AUTHOR.TITLE);
 		}
 
 		window.addEventListener('touchmove', () => {}, { passive: false });
@@ -1110,7 +1110,7 @@ class Employees extends Component {
 														</ul>
 														<Form className="popover-menu">
 															<FormGroup className="pl-1 pr-1 pb-1 mb-1">
-																<Input type="text" name="employeeName" id="employeeName" value={this.state.employeeName} onChange={event => this.handleFilterEmployees(event)} onKeyPress={event => this.handleNoEnterKeySubmit(event)} placeholder="By employee name..." autoComplete="off" tabIndex="-1" bsSize="sm" />
+																<Input type="text" name="employeeName" id="employeeName" className="border-0" value={this.state.employeeName} onChange={event => this.handleFilterEmployees(event)} onKeyPress={event => this.handleNoEnterKeySubmit(event)} placeholder="By employee name..." autoComplete="off" tabIndex="-1" bsSize="sm" />
 															</FormGroup>
 															<div className="filter-buttons">
 																<button type="button" className="btn btn-action m-0 border-0" onClick={event => this.handleFilterEmployees(event, '')}>Clear</button>
@@ -1126,7 +1126,7 @@ class Employees extends Component {
 															<li><button type="button" title="Sort by First Name" className={`btn btn-action btn-nav border-0${(this.state.sort.column === 'firstName') ? ' text-warning' : ''}`} onClick={event => this.handleSortEmployees(event, 'firstName')}>First Name</button></li>
 															<li><button type="button" title="Sort by Last Name" className={`btn btn-action btn-nav border-0${(this.state.sort.column === 'lastName') ? ' text-warning' : ''}`} onClick={event => this.handleSortEmployees(event, 'lastName')}>Last Name</button></li>
 															{(!isEmpty(this.state.sort.column)) ? (
-																<li><button type="button" title="Clear Sort by" className="btn btn-action btn-nav border-0" onClick={this.handleClearSortEmployees}>Reset</button></li>
+																<li className="filter-buttons"><button type="button" title="Clear Sort by" className="btn btn-action m-0 border-0" style={{ borderRadius: '4px' }} onClick={this.handleClearSortEmployees}>Reset</button></li>
 															) : null}
 														</ul>
 													</PopoverBody>

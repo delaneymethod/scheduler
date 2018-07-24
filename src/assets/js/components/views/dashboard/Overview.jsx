@@ -57,7 +57,7 @@ class Overview extends Component {
 
 			meta.description.setAttribute('content', routes.DASHBOARD.OVERVIEW.META.DESCRIPTION);
 			meta.keywords.setAttribute('content', routes.DASHBOARD.OVERVIEW.META.KEYWORDS);
-			meta.author.setAttribute('content', constants.APP.AUTHOR);
+			meta.author.setAttribute('content', constants.APP.AUTHOR.TITLE);
 		}
 	};
 

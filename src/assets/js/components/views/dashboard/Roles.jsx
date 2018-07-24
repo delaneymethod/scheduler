@@ -57,7 +57,7 @@ class Roles extends Component {
 
 			meta.description.setAttribute('content', routes.DASHBOARD.ROLES.META.DESCRIPTION);
 			meta.keywords.setAttribute('content', routes.DASHBOARD.ROLES.META.KEYWORDS);
-			meta.author.setAttribute('content', constants.APP.AUTHOR);
+			meta.author.setAttribute('content', constants.APP.AUTHOR.TITLE);
 		}
 	};
 

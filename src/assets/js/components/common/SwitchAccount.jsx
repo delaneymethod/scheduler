@@ -3,7 +3,7 @@ import isEmpty from 'lodash/isEmpty';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
-import { Form, Label, Input, FormGroup, Popover, PopoverBody, PopoverHeader } from 'reactstrap';
+import { Form, Label, Input, Tooltip, FormGroup, Popover, PopoverBody, PopoverHeader } from 'reactstrap';
 
 import Modal from './Modal';
 
@@ -38,13 +38,18 @@ class SwitchAccount extends Component {
 		this.handleSwitchAccount = this.handleSwitchAccount.bind(this);
 
 		this.handleSwitchAccountMenu = this.handleSwitchAccountMenu.bind(this);
+
+		this.handleAccountNameTooltip = this.handleAccountNameTooltip.bind(this);
 	}
 
 	getInitialState = () => ({
 		error: {},
 		isErrorModalOpen: false,
+		isNavigationMenuPopoverOpen: false,
 		isSwitchAccountMenuPopoverOpen: false,
 	});
+
+	handleAccountNameTooltip = () => this.setState({ isAccountNameTooltipOpen: !this.state.isAccountNameTooltipOpen });
 
 	handleSwitchAccount = (event, accountId) => {
 		const { actions, history } = this.props;
@@ -83,7 +88,7 @@ class SwitchAccount extends Component {
 					<Fragment>
 						{(this.props.user.accounts.length > 1) ? (
 							<Fragment>
-								<button type="button" className="btn btn-nav btn-action ml-r border-0 col-12 col-sm-auto" id="switchAccountMenu" title="Switch Account Menu" aria-label="Switch Account Menu" onClick={this.handleSwitchAccountMenu}>
+								<button type="button" className="btn btn-nav btn-action ml-r border-0 col-12 col-sm-auto" id="switchAccountMenu" onClick={this.handleSwitchAccountMenu}>
 									<span className="d-inline-block d-sm-none d-md-inline-block d-lg-none">{truncateText(this.props.user.account.name)}<i className="pl-2 fa fa-fw fa-chevron-down" aria-hidden="true"></i></span>
 									<span className="d-none d-sm-inline-block d-md-none d-lg-inline-block">{this.props.user.account.name}<i className="pl-2 fa fa-fw fa-chevron-down" aria-hidden="true"></i></span>
 								</button>
@@ -94,14 +99,18 @@ class SwitchAccount extends Component {
 										</ul>
 									</PopoverBody>
 								</Popover>
+								<Tooltip className="d-none d-md-block d-lg-none" placement="auto" isOpen={this.state.isAccountNameTooltipOpen} target="switchAccountMenu" toggle={this.handleAccountNameTooltip}>{this.props.user.account.name}</Tooltip>
 							</Fragment>
 						) : (
 							<Fragment>
 								{(this.props.user.account) ? (
-									<button type="button" className="btn btn-nav btn-user btn-no-click ml-r border-0 col-12 col-sm-auto" title={this.props.user.account.name} aria-label={this.props.user.account.name}>
-										<span className="d-none d-sm-none d-md-inline-block d-lg-none">{truncateText(this.props.user.account.name)}</span>
-										<span className="d-inline-block d-sm-inline-block d-md-none d-lg-inline-block">{this.props.user.account.name}</span>
-									</button>
+									<Fragment>
+										<button type="button" className="btn btn-nav btn-user btn-no-click ml-r border-0 col-12 col-sm-auto" id="accountName">
+											<span className="d-none d-sm-none d-md-inline-block d-lg-none">{truncateText(this.props.user.account.name)}</span>
+											<span className="d-inline-block d-sm-inline-block d-md-none d-lg-inline-block">{this.props.user.account.name}</span>
+										</button>
+										<Tooltip className="d-none d-md-block d-lg-none" placement="auto" isOpen={this.state.isAccountNameTooltipOpen} target="accountName" toggle={this.handleAccountNameTooltip}>{this.props.user.account.name}</Tooltip>
+									</Fragment>
 								) : null}
 							</Fragment>
 						)}

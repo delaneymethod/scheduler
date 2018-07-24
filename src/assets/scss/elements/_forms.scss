@@ -18,7 +18,7 @@ label {
 	// font-size: 0.875em;
 	background-color: $gray-300;
 	color: $body-color !important;
-	line-height: calculateRem(44px);
+	line-height: calculateRem(34px);
 	// font-weight: $font-weight-semi;
 	border: calculateRem(1px) solid $gray-600;
 }
@@ -40,7 +40,8 @@ select.form-control:not([size]):not([multiple]) {
 .custom-select-md,
 .custom-select-lg,
 .custom-select-xl {
-	height: $custom-select-height-xl !important;
+	line-height: calculateRem(34px);
+	// height: $custom-select-height-xl !important;
 	font-size: $custom-select-font-size-xl !important;
 }
 

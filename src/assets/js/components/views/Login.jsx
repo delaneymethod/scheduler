@@ -40,7 +40,7 @@ class Login extends Component {
 
 			meta.description.setAttribute('content', routes.LOGIN.META.DESCRIPTION);
 			meta.keywords.setAttribute('content', routes.LOGIN.META.KEYWORDS);
-			meta.author.setAttribute('content', constants.APP.AUTHOR);
+			meta.author.setAttribute('content', constants.APP.AUTHOR.TITLE);
 		}
 	};
 
@@ -54,12 +54,12 @@ class Login extends Component {
 				<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center bg-dark py-5">
 					<div className="panel-welcome">
 						<h1><a href={routes.HOME.URI} title={constants.APP.TITLE}><img src={constants.APP.LOGO} alt={constants.APP.TITLE} className="mb-4" /></a></h1>
-						<p className="h5 mb-0">{routes.LOGIN.MESSAGES.WELCOME}</p>
+						<p className="h5 mb-0">{routes.LOGIN.CONTENT.WELCOME}</p>
 					</div>
 				</Col>
 				<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center py-5">
 					<div className="panel-page">
-						<a href={routes.REGISTER.URI} title={routes.REGISTER.TITLE} className="panel-page__link">Back to {routes.REGISTER.TITLE}</a>
+						<a href={routes.REGISTER.URI} title={routes.REGISTER.TITLE} className="panel-page__link"><i className="fa fa-fw fa-arrow-circle-left" aria-hidden="true"></i> Back to {routes.REGISTER.TITLE}</a>
 						<div className="card panel-page__content">
 							<h2 className="h5--title-card">{routes.LOGIN.TITLE}</h2>
 							<LoginForm history={this.props.history} />

@@ -8,6 +8,15 @@
 	outline: none !important;
 }
 
+@mixin line {
+	display: inline-block;
+	background-color: $white;
+	width: $hamburger-button-size;
+	height: $hamburger-button-size/9;
+	transition: $hamburger-button-transition;
+	border-radius: $hamburger-button-size/14;
+}
+
 @mixin grab-cursor {
 	cursor: url('https://www.google.com/intl/en_ALL/mapfiles/openhand.cur'), default;
 	cursor: -webkit-grab;

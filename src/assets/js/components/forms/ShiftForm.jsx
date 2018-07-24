@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
 import { delay, isEmpty, includes, debounce } from 'lodash';
-import { Row, Col, Label, Input, Button, FormGroup } from 'reactstrap';
+import { Row, Col, Label, Input, Button, Tooltip, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 
 import Alert from '../common/Alert';
@@ -100,6 +100,8 @@ class ShiftForm extends Component {
 		this.handleChangeStartTime = this.handleChangeStartTime.bind(this);
 
 		this.handleChangeStartDate = this.handleChangeStartDate.bind(this);
+
+		this.handleIsClosingShiftTooltip = this.handleIsClosingShiftTooltip.bind(this);
 	}
 
 	getInitialState = () => ({
@@ -115,6 +117,7 @@ class ShiftForm extends Component {
 		placementId: '',
 		numberOfPositions: 1,
 		isClosingShift: false,
+		isClosingShiftTooltipOpen: false,
 	});
 
 	componentDidMount = () => {
@@ -235,6 +238,8 @@ class ShiftForm extends Component {
 			this.setState({ roleName });
 		}
 	};
+
+	handleIsClosingShiftTooltip = () => this.setState({ isClosingShiftTooltipOpen: !this.state.isClosingShiftTooltipOpen });
 
 	handleChange = (event) => {
 		const target = event.currentTarget;
@@ -796,7 +801,7 @@ class ShiftForm extends Component {
 					</Col>
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
 						<FormGroup>
-							<Label for="isClosingShift">Is Closing Shift</Label>
+							<Label for="isClosingShift">Is Closing Shift<i className="fa fa-fw fa-info-circle" id="isClosingShiftHint" aria-hidden="true"></i></Label>
 							<Input type="select" name="isClosingShift" id="isClosingShift" className="custom-select custom-select-xl" value={this.state.isClosingShift} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="6" required>
 								<option value="false" label="No">No</option>
 								<option value="true" label="Yes">Yes</option>
@@ -804,6 +809,7 @@ class ShiftForm extends Component {
 							<FieldFeedbacks for="isClosingShift" show="all">
 								<FieldFeedback when="*">- Please select if this shift is a closing shift.</FieldFeedback>
 							</FieldFeedbacks>
+							<Tooltip placement="auto" isOpen={this.state.isClosingShiftTooltipOpen} target="isClosingShiftHint" toggle={this.handleIsClosingShiftTooltip}>If you&#39;ve ever worked in bar, the closing shifts might say 6pm - close. You might expect to finish at 2am but the cleanup on a busy night might take to 3am.</Tooltip>
 						</FormGroup>
 					</Col>
 				</Row>
