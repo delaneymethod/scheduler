@@ -4,7 +4,7 @@ export default {
 		LOGO: '/assets/img/scheduler-logo.svg',
 		AUTHOR: {
 			TITLE: 'Gig Grafter',
-			LOGO: 'https://via.placeholder.com/270x70',
+			LOGO: '/assets/img/gig-grafter-logo-light.png',
 		},
 		ROUTES: {
 			HOME: {
@@ -18,27 +18,27 @@ export default {
 							TITLE: 'Get Started',
 							URI: '/register',
 						},
-						IMAGE: 'https://via.placeholder.com/700x700',
+						IMAGE: '/assets/img/feature-image-mockup.png',
 					},
 					CREATE: {
 						LEAD: 'Create',
 						OVERVIEW: '<p><strong>Create Fast and Flexible Schedules in minutes</strong></p><p>Our intuitive weekly rota calendar enables you to add and assign shifts to each employee instantly.</p><p><strong>Need to control labour costs</strong></p><p>No problem. Simply assign a budget to each weekly rota and our smart scheduling provides instant cost comparisons to keep you and your managers on track.</p>',
-						IMAGE: 'https://via.placeholder.com/430x430',
+						IMAGE: '/assets/img/benefits-create.png',
 					},
 					PUBLISH: {
 						LEAD: 'Publish',
 						OVERVIEW: '<p><strong>Publish Your Rota at the Touch of a Button</strong></p><p>Each employee receives instant notifications by SMS and email letting them know when they are scheduled to work.</p><p>No guess work, no confusion, no phone calls from staff wondering when they are working next &#8212; just more time for you and your managers to focus on growing your business.</p>',
-						IMAGE: 'https://via.placeholder.com/430x430',
+						IMAGE: '/assets/img/benefits-publish.png',
 					},
 					MANAGE: {
 						LEAD: 'Manage',
 						OVERVIEW: '<p><strong>Need to Reassign Shifts at Short Notice</strong></p><p>Not a problem, with our drag and drop feature you can instantly reassign a shift to the next available employee when an employee calls in sick at short notice or their availability changes unexpectedly.</p><p>Employees receive instant notifications by SMS and email alerting them to shift changes and updates.</p><p><strong>Staff Contact Details in One Secure Application</strong></p><p>The Gig Grafter Employee Database allows your managers and supervisors to access employee details including contact details securely from any device.</p><p>As this information is stored securely online there is no need for managers to hold employee data on private phones that can be lost or stolen, ensuring improved GDPR compliance across your business.</p>',
-						IMAGE: 'https://via.placeholder.com/430x430',
+						IMAGE: '/assets/img/benefits-manage.png',
 					},
 					PROMO: {
 						LEAD: '',
 						OVERVIEW: '<p>Efficient and affordable workforce management tools designed for smaller businesses.</p>',
-						IMAGE: 'https://via.placeholder.com/600x720',
+						IMAGE: '/assets/img/ipad-mockup-scheduler.png',
 					},
 					ABOUT: {
 						LEAD: 'About Gig Grafter',
@@ -47,7 +47,7 @@ export default {
 					SMS: {
 						LEAD: '',
 						OVERVIEW: '<p>Employees receive instant notifications by SMS and email alerting them to shift changes and updates</p>',
-						IMAGE: 'https://via.placeholder.com/400x530',
+						IMAGE: '/assets/img/iphone-mockup-message.png',
 					},
 					BETA: {
 						LEAD: 'Beta Release',
@@ -189,7 +189,7 @@ export default {
 			PAGE_NOT_FOUND: {
 				TITLE: 'Page Not Found',
 				CONTENT: {
-					WELCOME: "<p class=\"lead\">What does this mean?</p><p>We couldn't find the page you requested on our servers.</p><p>We're really sorry about that. It's our fault, not yours.</p><p>We'll work hard to get this page back online as soon as possible.</p><p>Perhaps you would like to go back or go to our homepage?</p>",
+					WELCOME: '<p class="lead">What does this mean?</p><p>We couldn&#39;t find the page you requested on our servers.</p><p>We&#39;re really sorry about that. It&#39;s our fault, not yours.</p><p>We&#39;ll work hard to get this page back online as soon as possible.</p><p>Perhaps you would like to go back or go to our homepage?</p>',
 				},
 				META: {
 					DESCRIPTION: '',
@@ -241,6 +241,9 @@ export default {
 			TERMS_OF_SERVICE: {
 				TITLE: 'Terms of Service',
 				URI: '/terms',
+				CONTENT: {
+					WELCOME: '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>',
+				},
 				META: {
 					DESCRIPTION: '',
 					KEYWORDS: '',
@@ -249,6 +252,9 @@ export default {
 			PRIVACY_POLICY: {
 				TITLE: 'Privacy Policy',
 				URI: '/privacy',
+				CONTENT: {
+					WELCOME: '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>',
+				},
 				META: {
 					DESCRIPTION: '',
 					KEYWORDS: '',

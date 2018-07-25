@@ -20,10 +20,12 @@ const routes = constants.APP.ROUTES;
 
 const propTypes = {
 	token: PropTypes.string.isRequired,
+	email: PropTypes.string.isRequired,
 };
 
 const defaultProps = {
 	token: '',
+	email: '',
 };
 
 class UpdateYourPasswordForm extends Component {
@@ -50,9 +52,9 @@ class UpdateYourPasswordForm extends Component {
 	});
 
 	componentDidMount = () => {
-		const { token } = this.props;
+		const { token, email } = this.props;
 
-		this.setState({ token });
+		this.setState({ token, email });
 
 		/* We debounce this call to wait 1300ms (we do not want the leading (or "immediate") flag passed because we want to wait until the user has finished typing before running validation */
 		this.handleValidateFields = debounce(this.handleValidateFields.bind(this), 1300);
@@ -119,6 +121,7 @@ UpdateYourPasswordForm.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
 	token: props.token,
+	email: props.email,
 });
 
 const mapDispatchToProps = dispatch => ({

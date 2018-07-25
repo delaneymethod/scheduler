@@ -132,3 +132,74 @@ html {
     transition-timing-function: ease-out !important;
     transition-property: transform, -webkit-transform !important;
 }
+
+.lines-button {
+	cursor: pointer;
+	user-select: none;
+	transition: $hamburger-button-transition;
+	
+	.lines {
+		top: calculateRem(-2px);
+			
+		@include line;
+		
+		position: relative;
+	
+		&:after,
+		&:before {	
+			@include line;
+			
+			left: 0;
+			content: '';
+			position: absolute;
+			transform-origin: $hamburger-button-size/14 center;
+		}
+		
+		&:before {
+			top: $hamburger-button-size/4;
+		}
+		
+		&:after {
+			top: -$hamburger-button-size/4;
+		}
+	}
+	
+	&:hover {
+		opacity: 0.8;
+			
+		.lines {
+			&:before {
+				/* top: $hamburger-button-size/3.5; */
+			}
+			
+			&:after {
+				/* top: -$hamburger-button-size/3.5; */
+			}
+		}
+	}
+
+	&:active {
+		transition: 0;
+		background-color: rgba(0, 0, 0, 0.1);
+	}
+}
+
+.lines-button.x.cross .lines {
+	text-align: center;
+	background-color: transparent;
+	
+	&:before,
+	&:after {
+		top: 0;
+		transform-origin: 50% 50%;
+		width: $hamburger-button-size;
+	}
+
+	&:before {
+		transform: rotate3d(0, 0, 1, 45deg); 
+	}
+	
+	&:after {
+		transform: rotate3d(0, 0, 1, -45deg); 
+	}
+}

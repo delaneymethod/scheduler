@@ -13,6 +13,8 @@ import constants from '../../helpers/constants';
 
 import { logout } from '../../actions/authenticationActions';
 
+import { addClass, removeClass } from '../../helpers/classes';
+
 const routes = constants.APP.ROUTES;
 
 const dashboard = routes.DASHBOARD;
@@ -62,7 +64,15 @@ class Header extends Component {
 
 	handleProfileMenu = () => this.setState({ isProfileMenuPopoverOpen: !this.state.isProfileMenuPopoverOpen });
 
-	handleNavigationMenu = () => this.setState({ isNavigationMenuPopoverOpen: !this.state.isNavigationMenuPopoverOpen });
+	handleNavigationMenu = (event) => {
+		if (event.currentTarget.classList.contains('cross')) {
+			removeClass(event.currentTarget, 'cross');
+		} else {
+			addClass(event.currentTarget, 'cross');
+		}
+
+		this.setState({ isNavigationMenuPopoverOpen: !this.state.isNavigationMenuPopoverOpen });
+	};
 
 	render = () => (
 		<Row>
@@ -78,7 +88,9 @@ class Header extends Component {
 							</Col>
 							<Col className="mt-3 mt-lg-0" xs="12" sm="12" md="7" lg="7" xl="8">
 								<Navbar className="row p-0 m-0" color="dark" dark expand="xl">
-									<button type="button" className="col-12 col-sm-12 col-md-2 btn btn-nav btn-action navbar-toggler pl-3 pr-3 border-0 text-white font-weight-normal" id="navigationMenu" title="Navigation" aria-label="Navigation" onClick={this.handleNavigationMenu}><i className="fa fa-fw fa-navicon" aria-hidden="true"></i></button>
+									<button type="button" className="col-12 col-sm-12 col-md-2 btn btn-nav btn-action navbar-toggler pl-3 pr-3 border-0 lines-button x text-white font-weight-normal" id="navigationMenu" title="Navigation" aria-label="Navigation" onClick={event => this.handleNavigationMenu(event)}>
+										<span className="lines"></span>
+									</button>
 									<Popover placement="bottom" isOpen={this.state.isNavigationMenuPopoverOpen} target="navigationMenu" toggle={this.handleNavigationMenu}>
 										<PopoverBody>
 											<ul className="actions popover-menu">

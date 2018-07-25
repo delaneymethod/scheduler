@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isEmpty, debounce } from 'lodash';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
+import { isEmpty, concat, debounce } from 'lodash';
 import { Row, Col, Button, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 
@@ -20,7 +20,7 @@ import constants from '../../helpers/constants';
 
 import { getShifts } from '../../actions/shiftActions';
 
-import { createEmployee, updateEmployee, getEmployees, deleteEmployee } from '../../actions/employeeActions';
+import { createEmployee, updateEmployee, getEmployees, deleteEmployee, orderEmployees } from '../../actions/employeeActions';
 
 const routes = constants.APP.ROUTES;
 
@@ -28,6 +28,7 @@ const propTypes = {
 	editMode: PropTypes.bool,
 	employeeId: PropTypes.string,
 	rota: PropTypes.object.isRequired,
+	rotaType: PropTypes.object.isRequired,
 	employees: PropTypes.array.isRequired,
 	handleClose: PropTypes.func.isRequired,
 	handleSuccessNotification: PropTypes.func.isRequired,
@@ -35,6 +36,7 @@ const propTypes = {
 
 const defaultProps = {
 	rota: {},
+	rotaType: {},
 	employees: [],
 	editMode: false,
 	employeeId: null,
@@ -63,6 +65,8 @@ class EmployeeForm extends Component {
 		this.handleChangeMobile = this.handleChangeMobile.bind(this);
 
 		this.handleChangeSalary = this.handleChangeSalary.bind(this);
+
+		this.handleOrderEmployees = this.handleOrderEmployees.bind(this);
 
 		this.handleChangeHourlyRate = this.handleChangeHourlyRate.bind(this);
 
@@ -160,9 +164,54 @@ class EmployeeForm extends Component {
 
 	handleBlur = async event => this.handleValidateFields(event.target);
 
+	handleOrderEmployees = () => {
+		/**
+		 * Employees may have a different sort positions for different rota types,
+		 * so we loop over each employee and get its sort position for the current rota type.
+		 */
+		let orderableEmployees = this.props.employees.filter(accountEmployee => accountEmployee.rotaTypeAccountEmployees && accountEmployee.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId));
+
+		orderableEmployees = orderableEmployees.sort((a, b) => a.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId).sortPosition - b.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId).sortPosition);
+
+		/* Grab all employees without sort positions setup for rota types */
+		const nonOrderableEmployees = this.props.employees.filter(accountEmployee => !accountEmployee.rotaTypeAccountEmployees || !accountEmployee.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId));
+
+		/* Now that employees with sort positions have been ordered, add back in the non sort position employees */
+		return concat(orderableEmployees, nonOrderableEmployees);
+	};
+
 	handleGetEmployees = () => {
 		console.log('Called EmployeeForm handleGetEmployees getEmployees');
-		this.props.actions.getEmployees().catch(error => this.setState({ error }));
+		this.props.actions.getEmployees()
+			.then(() => {
+				/* This call pings /order to persist their position */
+				const orderedEmployees = this.handleOrderEmployees();
+
+				this.handleUpdateEmployeeOrder(orderedEmployees.map(employee => employee.accountEmployeeId));
+			})
+			.catch(error => this.setState({ error }));
+	};
+
+	handleUpdateEmployeeOrder = (ids) => {
+		const { actions } = this.props;
+
+		/* Get the rota type id based on current rota type */
+		const { rotaTypeId } = this.props.rotaType;
+
+		const order = ids.map(data => data);
+
+		const payload = {
+			order,
+			rotaTypeId,
+		};
+
+		console.log('Called EmployeeForm handleUpdateEmployeeOrder orderEmployees');
+		actions.orderEmployees(payload)
+			.then(() => {
+				console.log('Called EmployeeForm handleUpdateEmployeeOrder getEmployees');
+				actions.getEmployees().catch(error => this.setState({ error }));
+			})
+			.catch(error => this.setState({ error }));
 	};
 
 	handleDelete = (event) => {
@@ -346,6 +395,7 @@ EmployeeForm.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
 	rota: state.rota,
+	rotaType: state.rotaType,
 	editMode: props.editMode,
 	employees: state.employees,
 	employeeId: props.employeeId,
@@ -358,6 +408,7 @@ const mapDispatchToProps = dispatch => ({
 		createEmployee,
 		updateEmployee,
 		deleteEmployee,
+		orderEmployees,
 	}, dispatch),
 });
 

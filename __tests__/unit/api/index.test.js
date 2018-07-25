@@ -152,7 +152,7 @@ describe('API', () => {
 
 		const expectedError = {
 			data: {
-				message: '<p>undefined</p>',
+				message: '<p><strong>The following error occurred:</strong> undefined</p>',
 			},
 		};
 

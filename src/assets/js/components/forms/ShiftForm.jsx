@@ -536,11 +536,16 @@ class ShiftForm extends Component {
 
 						/* Pass a message back up the rabbit hole to the parent component */
 						this.props.handleSuccessNotification(message);
+
+						/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+						this.handleGetShifts();
+
+						/* The user can select or create a role so we need to get roles each time we update or create a shift */
+						this.handleGetRoles();
+
+						/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
+						this.handleGetRotas();
 					})
-					/* Updating a shift or placement will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-					.then(() => this.handleGetShifts())
-					/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
-					.then(() => this.handleGetRotas())
 					.catch(error => this.setState({ error }));
 			}, (result) => {
 				/* We do nothing */
@@ -611,11 +616,7 @@ class ShiftForm extends Component {
 								console.log('Called ShiftForm handleSubmit deletePlacement');
 								actions.deletePlacement(payload)
 									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-									.then(() => this.handleGetShifts())
-									/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
-									.then(() => this.handleGetRotas())
-									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-									.then(() => {
+									.then((response) => {
 										/* Close the modal */
 										if (this.props.overview) {
 											this.props.handleClose(event, '', '', '', moment());
@@ -626,6 +627,15 @@ class ShiftForm extends Component {
 
 										/* Pass a message back up the rabbit hole to the parent component */
 										this.props.handleSuccessNotification(message);
+
+										/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+										this.handleGetShifts();
+
+										/* The user can select or create a role so we need to get roles each time we update or create a shift */
+										this.handleGetRoles();
+
+										/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
+										this.handleGetRotas();
 									})
 									.catch(error => this.setState({ error }));
 							} else {
@@ -642,10 +652,6 @@ class ShiftForm extends Component {
 								console.log('Called ShiftForm handleSubmit updatePlacement');
 								actions.updatePlacement(payload)
 									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-									.then(() => this.handleGetShifts())
-									/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
-									.then(() => this.handleGetRotas())
-									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 									.then(() => {
 										/* Close the modal */
 										if (this.props.overview) {
@@ -657,6 +663,15 @@ class ShiftForm extends Component {
 
 										/* Pass a message back up the rabbit hole to the parent component */
 										this.props.handleSuccessNotification(message);
+
+										/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+										this.handleGetShifts();
+
+										/* The user can select or create a role so we need to get roles each time we update or create a shift */
+										this.handleGetRoles();
+
+										/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
+										this.handleGetRotas();
 									})
 									.catch(error => this.setState({ error }));
 							}
@@ -670,14 +685,17 @@ class ShiftForm extends Component {
 
 							/* Pass a message back up the rabbit hole to the parent component */
 							this.props.handleSuccessNotification(message);
+
+							/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+							this.handleGetShifts();
+
+							/* The user can select or create a role so we need to get roles each time we update or create a shift */
+							this.handleGetRoles();
+
+							/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
+							this.handleGetRotas();
 						}
 					})
-					/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-					.then(() => this.handleGetShifts())
-					/* The user can select or create a role so we need to get roles each time we update or create a shift */
-					.then(() => this.handleGetRoles())
-					/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
-					.then(() => this.handleGetRotas())
 					.catch(error => this.setState({ error }));
 			} else {
 				console.log('Called ShiftForm handleSubmit createShift');
@@ -699,11 +717,16 @@ class ShiftForm extends Component {
 
 									/* Pass a message back up the rabbit hole to the parent component */
 									this.props.handleSuccessNotification(message);
+
+									/* The user can select or create a role so we need to get roles each time we update or create a shift */
+									this.handleGetShifts();
+
+									/* Creating a placement updates a rotas status so we need to refresh our rotas list too */
+									this.handleGetRotas();
+
+									/* The user can select or create a role so we need to get roles each time we update or create a shift */
+									this.handleGetRoles();
 								})
-								/* The user can select or create a role so we need to get roles each time we update or create a shift */
-								.then(() => this.handleGetShifts())
-								/* Creating a placement updates a rotas status so we need to refresh our rotas list too */
-								.then(() => this.handleGetRotas())
 								.catch(error => this.setState({ error }));
 						} else {
 							/* Close the modal */
@@ -720,12 +743,11 @@ class ShiftForm extends Component {
 
 							/* Creating a shift updates a rotas status so we need to refresh our rotas list too */
 							this.handleGetRotas();
+
+							/* The user can select or create a role so we need to get roles each time we update or create a shift */
+							this.handleGetRoles();
 						}
 					})
-					/* The user can select or create a role so we need to get roles each time we update or create a shift */
-					.then(() => this.handleGetRoles())
-					/* Creating a shift updates a rotas status so we need to refresh our rotas list too */
-					.then(() => this.handleGetRotas())
 					.catch(error => this.setState({ error }));
 			}
 		}

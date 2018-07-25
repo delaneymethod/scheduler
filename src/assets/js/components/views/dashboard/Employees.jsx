@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import { bindActionCreators } from 'redux';
 import { polyfill } from 'mobile-drag-drop';
 import React, { Fragment, Component } from 'react';
-import { concat, isEmpty, isString, includes, debounce } from 'lodash';
+import { delay, concat, isEmpty, isString, includes, debounce } from 'lodash';
 import { scrollBehaviourDragImageTranslateOverride } from 'mobile-drag-drop/scroll-behaviour';
 import { Row, Col, Form, Label, Input, Popover, FormGroup, InputGroup, InputGroupAddon, PopoverBody, PopoverHeader } from 'reactstrap';
 

@@ -86,15 +86,16 @@
 }
 
 @media #{$rt-mobile} {
-    .#{$rt-namespace}__toast-container {
-		margin: 0;
-		top: auto;
-		left: auto;
-		padding: 0;
-		right: auto;
-		display: block !important;
-		width: calculateRem(368px);
-		bottom: calculateRem(15px);
-    }
+	.#{$rt-namespace}__toast-container {
+		margin-bottom: 0;
+		top:0 !important;
+		left:0 !important;
+		border: 0 !important;
+		border-radius: 0 !important;
+		
+		.#{$rt-namespace}__toast {
+    		border-radius: 0 !important;
+		}
+	}
 }
 

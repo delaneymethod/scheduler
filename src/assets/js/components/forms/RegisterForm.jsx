@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import debounce from 'lodash/debounce';
+import { delay, debounce } from 'lodash';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
 import { Row, Col, Label, Input, Button, FormGroup } from 'reactstrap';
@@ -119,7 +119,7 @@ class RegisterForm extends Component {
 
 			console.log('Called RegisterForm handleSubmit register');
 			actions.register(payload)
-				.then(() => this.setState(Object.assign(this.getInitialState(), { email, emailSent: true })))
+				.then(() => this.setState(Object.assign(this.getInitialState(), { email, emailSent: true }), () => delay(() => this.form.reset(), 30)))
 				.catch(error => this.setState({ error }));
 
 			scrollToTop();

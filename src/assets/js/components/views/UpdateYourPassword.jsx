@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { Col, Row } from 'reactstrap';
 import { connect } from 'react-redux';
+import queryString from 'query-string';
 import React, { Component } from 'react';
 
 import Alert from '../common/Alert';
@@ -57,7 +58,7 @@ class UpdateYourPassword extends Component {
 						<a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} className="panel-page__link">Back to {routes.LOGIN.TITLE}</a>
 						<div className="card panel-page__content">
 							<h2 className="h5--title-card">{routes.UPDATE_YOUR_PASSWORD.TITLE}</h2>
-							<UpdateYourPasswordForm token={this.props.token} history={this.props.history} />
+							<UpdateYourPasswordForm token={this.props.token} email={queryString.parse(this.props.location.search).email} history={this.props.history} />
 						</div>
 					</div>
 				)}

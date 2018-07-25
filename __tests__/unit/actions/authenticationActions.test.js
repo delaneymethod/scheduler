@@ -74,7 +74,7 @@ describe('Authentication Actions', () => {
 
 		const expectedError = {
 			data: {
-				message: '<p>Email address was not found.</p>',
+				message: '<p><strong>The following error occurred:</strong> Email address was not found.</p>',
 			},
 		};
 
@@ -194,7 +194,7 @@ describe('Authentication Actions', () => {
 
 		const expectedError = {
 			data: {
-				message: '<p>Email address already exists.</p>',
+				message: '<p><strong>The following error occurred:</strong> Email address already exists.</p>',
 			},
 		};
 
@@ -241,7 +241,7 @@ describe('Authentication Actions', () => {
 
 		const expectedError = {
 			data: {
-				message: '<p>Email address already exists.</p>',
+				message: '<p><strong>The following error occurred:</strong> Email address already exists.</p>',
 			},
 		};
 
@@ -300,7 +300,7 @@ describe('Authentication Actions', () => {
 
 		const expectedError = {
 			data: {
-				message: '<p>Email address was not found.</p>',
+				message: '<p><strong>The following error occurred:</strong> Email address was not found.</p>',
 			},
 		};
 
@@ -363,7 +363,7 @@ describe('Authentication Actions', () => {
 
 		const expectedError = {
 			data: {
-				message: '<p>Email address was not found.</p>',
+				message: '<p><strong>The following error occurred:</strong> Email address was not found.</p>',
 			},
 		};
 
@@ -427,7 +427,7 @@ describe('Authentication Actions', () => {
 
 		const expectedError = {
 			data: {
-				message: '<p>Email address was not found.</p>',
+				message: '<p><strong>The following error occurred:</strong> Email address was not found.</p>',
 			},
 		};
 
