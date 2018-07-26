@@ -681,14 +681,8 @@ class ShiftForm extends Component {
 					/* The user can select or create a role so we need to get roles each time we update or create a shift */
 					.then(() => this.handleGetRoles())
 					.then(() => {
-						/**
-						 * Seems to be a flow issue somewhere - editing shift from shift button, closes this form without calling handleClose.
-						 * However editing the shift from the shiftoverview required this handleClose call.
-						 */
-						if (this.props.overview) {
-							/* Close the modal */
-							this.props.handleClose(event, '', '', '', moment());
-						}
+						/* Close the modal */
+						this.props.handleClose(event, '', '', '', moment());
 
 						/* FIXME - Make messages constant */
 						const message = '<p>Shift was created!</p>';
