@@ -10,11 +10,11 @@ import Alert from '../common/Alert';
 
 import EmailField from '../fields/EmailField';
 
-import constants from '../../helpers/constants';
+import config from '../../helpers/config';
 
 import { forgottenYourPassword } from '../../actions/authenticationActions';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 const propTypes = {};
 

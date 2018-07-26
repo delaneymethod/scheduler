@@ -5,9 +5,9 @@ import React, { Component } from 'react';
 
 import LoginForm from '../forms/LoginForm';
 
-import constants from '../../helpers/constants';
+import config from '../../helpers/config';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 const propTypes = {
 	authenticated: PropTypes.bool.isRequired,
@@ -33,14 +33,14 @@ class Login extends Component {
 			return;
 		}
 
-		document.title = `${constants.APP.TITLE}: ${routes.LOGIN.TITLE}`;
+		document.title = `${config.APP.TITLE}: ${routes.LOGIN.TITLE}`;
 
 		if (!/iPad|iPhone|iPod/.test(navigator.userAgent)) {
 			const meta = document.getElementsByTagName('meta');
 
 			meta.description.setAttribute('content', routes.LOGIN.META.DESCRIPTION);
 			meta.keywords.setAttribute('content', routes.LOGIN.META.KEYWORDS);
-			meta.author.setAttribute('content', constants.APP.AUTHOR.TITLE);
+			meta.author.setAttribute('content', config.APP.AUTHOR.TITLE);
 		}
 	};
 
@@ -53,7 +53,7 @@ class Login extends Component {
 			<Row className="d-flex flex-md-row flex-column login-page-container">
 				<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center bg-dark py-5">
 					<div className="panel-welcome">
-						<h1><a href={routes.HOME.URI} title={constants.APP.TITLE}><img src={constants.APP.LOGO} alt={constants.APP.TITLE} className="mb-4" /></a></h1>
+						<h1><a href={routes.HOME.URI} title={config.APP.TITLE}><img src={config.APP.LOGO} alt={config.APP.TITLE} className="mb-4" /></a></h1>
 						<p className="h5 mb-0">{routes.LOGIN.CONTENT.WELCOME}</p>
 					</div>
 				</Col>

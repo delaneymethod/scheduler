@@ -10,11 +10,11 @@ import Alert from '../common/Alert';
 
 import TextField from '../fields/TextField';
 
-import constants from '../../helpers/constants';
+import config from '../../helpers/config';
 
 import { getRoles, createRole } from '../../actions/roleActions';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 const propTypes = {
 	roles: PropTypes.array.isRequired,
@@ -106,7 +106,7 @@ class RoleForm extends Component {
 						/* Close the modal */
 						this.props.handleClose(roleName);
 
-						/* FIXME - Make messages constant */
+						/* FIXME - Make messages constants in config */
 						const message = '<p>Role was created!</p>';
 
 						/* Pass a message back up the rabbit hole to the parent component */

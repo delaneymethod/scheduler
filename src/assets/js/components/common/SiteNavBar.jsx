@@ -1,11 +1,11 @@
 import { Col, Row } from 'reactstrap';
 import React, { Component } from 'react';
 
-import constants from '../../helpers/constants';
+import config from '../../helpers/config';
 
 import { addClass, removeClass } from '../../helpers/classes';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 class SiteNavBar extends Component {
 	constructor(props) {
@@ -37,7 +37,7 @@ class SiteNavBar extends Component {
 						</ul>
 					</div>
 					<div className="p-0 pt-3 p-md-0 m-0 text-center order-3 order-sm-3 order-md-2 order-lg-1 order-xl-1 col-12 col-md-auto">
-						<a href={routes.HOME.URI} title={constants.APP.AUTHOR.TITLE} className="p-0 m-0 navbar-brand"><img src={constants.APP.AUTHOR.LOGO} alt={constants.APP.AUTHOR.TITLE} className="img-fluid border-0 p-0 m-0" /></a>
+						<a href={routes.HOME.URI} title={config.APP.AUTHOR.TITLE} className="p-0 m-0 navbar-brand"><img src={config.APP.AUTHOR.LOGO} alt={config.APP.AUTHOR.TITLE} className="img-fluid border-0 p-0 m-0" /></a>
 					</div>
 					<div className="p-0 m-0 text-center order-1 order-sm-1 order-md-3 col-12 col-md-auto">
 						<button type="button" className="text-center mt-0 pt-2 pl-2 pr-2 pb-2 border-0 rounded-0 lines-button x navbar-toggler" role="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" onClick={event => this.handleClick(event)}>

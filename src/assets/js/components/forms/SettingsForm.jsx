@@ -7,11 +7,11 @@ import React, { Fragment, Component } from 'react';
 import { Row, Col, Input, Label, Button, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 
-import constants from '../../helpers/constants';
+import config from '../../helpers/config';
 
 import { updateSettings } from '../../actions/settingActions';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 const propTypes = {
 	settings: PropTypes.object.isRequired,

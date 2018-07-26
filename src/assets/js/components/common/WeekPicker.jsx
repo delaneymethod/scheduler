@@ -10,7 +10,7 @@ import Modal from './Modal';
 
 import confirm from '../../helpers/confirm';
 
-import constants from '../../helpers/constants';
+import config from '../../helpers/config';
 
 import { switchWeek } from '../../actions/weekActions';
 
@@ -20,7 +20,7 @@ import { getShifts, copyShifts } from '../../actions/shiftActions';
 
 import { getRotas, createRota, switchRota } from '../../actions/rotaActions';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 const { STATUSES } = routes.ROTAS;
 

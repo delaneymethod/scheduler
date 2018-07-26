@@ -131,6 +131,25 @@ export const deleteRota = payload => (dispatch) => {
 		});
 };
 
+export const publishRota = payload => (dispatch) => {
+	dispatch(ajaxLoading(true));
+
+	return api.publishRota(payload)
+		.then((rota) => {
+			dispatch(ajaxLoading(false));
+
+			dispatch(updateRotaSuccess(rota));
+
+			return rota;
+		})
+		.catch((error) => {
+			dispatch(ajaxLoading(false));
+
+			/* Bubble the error back up the rabbit hole */
+			return Promise.reject(error);
+		});
+};
+
 /* SWITCH BETWEEN ROTAS */
 export const switchRotaSuccess = rota => ({
 	type: types.SWITCH_ROTA,

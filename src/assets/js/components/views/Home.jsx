@@ -4,22 +4,22 @@ import React, { Fragment, Component } from 'react';
 
 import SiteNavBar from '../common/SiteNavBar';
 
-import constants from '../../helpers/constants';
+import config from '../../helpers/config';
 
 import ServiceUpdatesForm from '../forms/ServiceUpdatesForm';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 class Home extends Component {
 	componentDidMount = () => {
-		document.title = constants.APP.TITLE;
+		document.title = config.APP.TITLE;
 
 		if (!/iPad|iPhone|iPod/.test(navigator.userAgent)) {
 			const meta = document.getElementsByTagName('meta');
 
 			meta.description.setAttribute('content', routes.HOME.META.DESCRIPTION);
 			meta.keywords.setAttribute('content', routes.HOME.META.KEYWORDS);
-			meta.author.setAttribute('content', constants.APP.AUTHOR.TITLE);
+			meta.author.setAttribute('content', config.APP.AUTHOR.TITLE);
 		}
 	};
 
@@ -29,7 +29,7 @@ class Home extends Component {
 				<SiteNavBar />
 				<Row className="introduction d-flex justify-content-center">
 					<Col xs="12" sm="12" md="7" lg="7" xl="7" className="align-self-start align-self-lg-center text-center text-md-left m-0 p-4 p-lg-5">
-						<h1><img src={constants.APP.LOGO} alt={constants.APP.TITLE} className="mb-4 img-fluid" /></h1>
+						<h1><img src={config.APP.LOGO} alt={config.APP.TITLE} className="mb-4 img-fluid" /></h1>
 						<p className="h2 mb-4 text-white" dangerouslySetInnerHTML={{ __html: routes.HOME.CONTENT.INTRODUCTION.LEAD }} />
 						<div className="h5 mb-4 text-white" dangerouslySetInnerHTML={{ __html: routes.HOME.CONTENT.INTRODUCTION.OVERVIEW }} />
 						<p className="p-0 m-0"><a href={routes.HOME.CONTENT.INTRODUCTION.CALL_TO_ACTION.URI} title={routes.HOME.CONTENT.INTRODUCTION.CALL_TO_ACTION.TITLE} className="btn btn-primary border-0 d-block d-sm-inline-block pl-5 pr-5 mb-0">{routes.HOME.CONTENT.INTRODUCTION.CALL_TO_ACTION.TITLE}</a></p>
@@ -139,7 +139,7 @@ class Home extends Component {
 							<li className="list-inline-item pl-3 pr-3"><a href={routes.TERMS_OF_SERVICE.URI} title={routes.TERMS_OF_SERVICE.TITLE}>{routes.TERMS_OF_SERVICE.TITLE}</a></li>
 							<li className="list-inline-item pl-3 pr-3"><a href={routes.PRIVACY_POLICY.URI} title={routes.PRIVACY_POLICY.TITLE}>{routes.PRIVACY_POLICY.TITLE}</a></li>
 						</ul>
-						<p className="p-0 m-0">&copy; {moment().format('YYYY')} {constants.APP.AUTHOR.TITLE}. All rights reserved.</p>
+						<p className="p-0 m-0">&copy; {moment().format('YYYY')} {config.APP.AUTHOR.TITLE}. All rights reserved.</p>
 					</Col>
 				</Row>
 			</Col>

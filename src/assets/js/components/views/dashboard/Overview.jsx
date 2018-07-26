@@ -9,9 +9,9 @@ import Header from '../../common/Header';
 
 import Toolbar from '../../common/Toolbar';
 
-import constants from '../../../helpers/constants';
+import config from '../../../helpers/config';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 const propTypes = {
 	week: PropTypes.object.isRequired,
@@ -50,14 +50,14 @@ class Overview extends Component {
 			return;
 		}
 
-		document.title = `${constants.APP.TITLE}: ${routes.DASHBOARD.OVERVIEW.TITLE} - ${routes.DASHBOARD.HOME.TITLE}`;
+		document.title = `${config.APP.TITLE}: ${routes.DASHBOARD.OVERVIEW.TITLE} - ${routes.DASHBOARD.HOME.TITLE}`;
 
 		if (!/iPad|iPhone|iPod/.test(navigator.userAgent)) {
 			const meta = document.getElementsByTagName('meta');
 
 			meta.description.setAttribute('content', routes.DASHBOARD.OVERVIEW.META.DESCRIPTION);
 			meta.keywords.setAttribute('content', routes.DASHBOARD.OVERVIEW.META.KEYWORDS);
-			meta.author.setAttribute('content', constants.APP.AUTHOR.TITLE);
+			meta.author.setAttribute('content', config.APP.AUTHOR.TITLE);
 		}
 	};
 

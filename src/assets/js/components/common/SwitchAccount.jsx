@@ -7,7 +7,7 @@ import { Form, Label, Input, Tooltip, FormGroup, Popover, PopoverBody, PopoverHe
 
 import Modal from './Modal';
 
-import constants from '../../helpers/constants';
+import config from '../../helpers/config';
 
 import { updateUser } from '../../actions/userActions';
 
@@ -15,7 +15,7 @@ import { switchAccount } from '../../actions/accountActions';
 
 import truncateText from '../../helpers/stringManipulations';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 const propTypes = {
 	inline: PropTypes.bool.isRequired,

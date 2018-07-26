@@ -152,7 +152,7 @@ describe('API', () => {
 
 		const expectedError = {
 			data: {
-				message: '<p><strong>The following error occurred:</strong> undefined</p>',
+				message: '<p><strong>The following error occurred:</strong></p><ul><li>undefined</li></ul>',
 			},
 		};
 
@@ -566,6 +566,21 @@ describe('API', () => {
 		};
 
 		return api.deleteRota(payload).then(data => expect(data.deleted).toBe(true));
+	});
+
+	it('should publish rota', () => {
+		mock.onPost('/rotas/2/publish').reply(201, {
+			rotas: [{
+				rotaId: 2,
+				rotaTypeId: 1,
+			}],
+		});
+
+		const payload = {
+			rotaId: 2,
+		};
+
+		return api.publishRota(payload).then(data => expect(data.rotas[0].rotaTypeId).toEqual(1));
 	});
 
 	it('should get shifts', () => {

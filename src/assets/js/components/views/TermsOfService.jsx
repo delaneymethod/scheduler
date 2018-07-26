@@ -4,22 +4,22 @@ import React, { Fragment, Component } from 'react';
 
 import SiteNavBar from '../common/SiteNavBar';
 
-import constants from '../../helpers/constants';
+import config from '../../helpers/config';
 
 import ServiceUpdatesForm from '../forms/ServiceUpdatesForm';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 class TermsOfService extends Component {
 	componentDidMount = () => {
-		document.title = constants.APP.TITLE;
+		document.title = config.APP.TITLE;
 
 		if (!/iPad|iPhone|iPod/.test(navigator.userAgent)) {
 			const meta = document.getElementsByTagName('meta');
 
 			meta.description.setAttribute('content', routes.HOME.META.DESCRIPTION);
 			meta.keywords.setAttribute('content', routes.HOME.META.KEYWORDS);
-			meta.author.setAttribute('content', constants.APP.AUTHOR.TITLE);
+			meta.author.setAttribute('content', config.APP.AUTHOR.TITLE);
 		}
 	};
 
@@ -47,7 +47,7 @@ class TermsOfService extends Component {
 							<li className="list-inline-item pl-3 pr-3"><a href={routes.TERMS_OF_SERVICE.URI} title={routes.TERMS_OF_SERVICE.TITLE}>{routes.TERMS_OF_SERVICE.TITLE}</a></li>
 							<li className="list-inline-item pl-3 pr-3"><a href={routes.PRIVACY_POLICY.URI} title={routes.PRIVACY_POLICY.TITLE}>{routes.PRIVACY_POLICY.TITLE}</a></li>
 						</ul>
-						<p className="p-0 m-0">&copy; {moment().format('YYYY')} {constants.APP.AUTHOR.TITLE}. All rights reserved.</p>
+						<p className="p-0 m-0">&copy; {moment().format('YYYY')} {config.APP.AUTHOR.TITLE}. All rights reserved.</p>
 					</Col>
 				</Row>
 			</Col>

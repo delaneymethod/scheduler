@@ -1,23 +1,6 @@
 .#{$rt-namespace}__toast-container {
-	&--top-right {
-		top: 6.5em;
-			
-		@include media-breakpoint-down(lg) {
-			top: 6.5em;
-		}
-		
-		@include media-breakpoint-down(md) {
-			top: 10em;
-		}
-			
-		@include media-breakpoint-down(sm) {
-			top: 18.5em;
-		}
-        
-        @include media-breakpoint-down(xs) {
-			top: 23em;
-		}		
-	}
+	width: auto;
+	min-width: 400px;
 	
 	.#{$rt-namespace}__toast {
     	padding: 0;

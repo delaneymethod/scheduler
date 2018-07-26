@@ -19,7 +19,7 @@ describe('Errors', () => {
 
 		const formattedError = {
 			data: {
-				message: '<p><strong>The following error occurred:</strong> Email address was not found.</p>',
+				message: '<p><strong>The following error occurred:</strong></p><ul><li>Email address was not found.</li></ul>',
 			},
 		};
 
@@ -37,7 +37,7 @@ describe('Errors', () => {
 
 		const formattedError = {
 			data: {
-				message: '<p><strong>The following error occurred:</strong> A 404 status code indicates that the requested resource was not found at the URL given, and the server has no idea how long for.</p>',
+				message: '<p><strong>The following error occurred:</strong></p><ul><li>A 404 status code indicates that the requested resource was not found at the URL given, and the server has no idea how long for.</li></ul>',
 			},
 		};
 
@@ -53,7 +53,7 @@ describe('Errors', () => {
 
 		const formattedError = {
 			data: {
-				message: '<p><strong>The following error occurred:</strong> Test error message</p>',
+				message: '<p><strong>The following error occurred:</strong></p><ul><li>Test error message</li></ul>',
 			},
 		};
 
@@ -68,7 +68,7 @@ describe('Errors', () => {
 
 		const formattedError = {
 			data: {
-				message: '<p><strong>A network error has occurred:</strong> Please try again in a few minutes.</p>',
+				message: '<p><strong>A network error has occurred:</strong></p><ul><li>Please try again in a few minutes.</li></ul>',
 			},
 		};
 
@@ -82,7 +82,7 @@ describe('Errors', () => {
 
 		const formattedError = {
 			data: {
-				message: '<p><strong>The following error occurred:</strong> Test error message</p>',
+				message: '<p><strong>The following error occurred:</strong></p><ul><li>Test error message</li></ul>',
 			},
 		};
 

@@ -10,11 +10,11 @@ import Alert from '../common/Alert';
 
 import FileField from '../fields/FileField';
 
-import constants from '../../helpers/constants';
+import config from '../../helpers/config';
 
 import { getEmployees, orderEmployees, uploadEmployees } from '../../actions/employeeActions';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 const propTypes = {
 	rotaType: PropTypes.object.isRequired,
@@ -113,11 +113,12 @@ class UploadEmployeesForm extends Component {
 					}
 
 					if (response.failedEmployees.length > 0) {
-						message += `<p>${response.failedEmployees.length} employee${(response.failedEmployees.length === 1) ? ' was' : 's were'} not uploaded! See reason${(response.failedEmployees.length === 1) ? '' : 's'} below:</p>`;
+						message += `<p>${response.failedEmployees.length} employee${(response.failedEmployees.length === 1) ? ' was' : 's were'} not uploaded!</p>`;
+						message += `<p>See reason${(response.failedEmployees.length === 1) ? '' : 's'} below:</p>`;
 						message += '<ul class="list-unstyled">';
 
 						response.failedEmployees.forEach((failedEmployee) => {
-							message += `<li>&bullet; ${failedEmployee.data[0]} ${failedEmployee.data[1]} - <i>${failedEmployee.reason}</i></li>`;
+							message += `<li><i class="fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i> ${failedEmployee.data[0]} ${failedEmployee.data[1]} - <i>${failedEmployee.reason}</i></li>`;
 						});
 
 						message += '</ul>';

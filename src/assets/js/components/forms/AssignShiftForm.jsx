@@ -11,7 +11,7 @@ import Alert from '../common/Alert';
 
 import confirm from '../../helpers/confirm';
 
-import constants from '../../helpers/constants';
+import config from '../../helpers/config';
 
 import { getRotas, switchRota } from '../../actions/rotaActions';
 
@@ -19,7 +19,7 @@ import { createPlacement } from '../../actions/placementActions';
 
 import { getShifts, deleteShift } from '../../actions/shiftActions';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 const propTypes = {
 	startDate: PropTypes.string,
@@ -211,7 +211,7 @@ class AssignShiftForm extends Component {
 						/* Close the modal */
 						this.props.handleClose(event, '', moment());
 
-						/* FIXME - Make messages constant */
+						/* FIXME - Make messages constants in config */
 						message = '<p>Shift was deleted!</p>';
 
 						/* Pass a message back up the rabbit hole to the parent component */
@@ -295,7 +295,7 @@ class AssignShiftForm extends Component {
 					/* Close the modal */
 					this.props.handleClose(event, '', moment());
 
-					/* FIXME - Make messages constant */
+					/* FIXME - Make messages constants in config */
 					const message = '<p>Shift was assigned!</p>';
 
 					/* Pass a message back up the rabbit hole to the parent component */

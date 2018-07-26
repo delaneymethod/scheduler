@@ -3,7 +3,7 @@ import jwtDecode from 'jwt-decode';
 
 import formatError from '../helpers/errors';
 
-import constants from '../helpers/constants';
+import config from '../helpers/config';
 
 import { getState } from '../store/persistedState';
 
@@ -41,7 +41,7 @@ const request = (method, url, expectedStatus = 200, payload = null) => {
 
 	const headers = requestHeaders();
 
-	const config = {
+	const axiosConfig = {
 		url,
 		data,
 		method,
@@ -65,10 +65,10 @@ const request = (method, url, expectedStatus = 200, payload = null) => {
 		}
 	}
 
-	axios.defaults.baseURL = (process.env.NODE_ENV === 'development') ? constants.API.HOST.DEV : constants.API.HOST.PROD;
+	axios.defaults.baseURL = (process.env.NODE_ENV === 'development') ? config.API.HOST.DEV : config.API.HOST.PROD;
 
 	/* If the response is an array of data, the data array will be wrapped in a data attribute. Confusing I know! */
-	return axios.request(config)
+	return axios.request(axiosConfig)
 		.then(response => ((response.data.data) ? response.data.data : response.data))
 		.catch((thrown) => {
 			/*
@@ -156,6 +156,8 @@ export const createRota = rota => request('POST', '/rotas', 201, rota);
 export const updateRota = rota => request('PUT', `/rotas/${rota.rotaId}`, 200, rota);
 
 export const deleteRota = rota => request('DELETE', `/rotas/${rota.rotaId}`, 204);
+
+export const publishRota = rota => request('POST', `/rotas/${rota.rotaId}/publish`, 201);
 
 /* ROTA TYPES */
 export const getRotaTypes = () => request('GET', '/rota-types');

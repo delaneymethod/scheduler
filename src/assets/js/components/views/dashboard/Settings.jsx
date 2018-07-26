@@ -9,11 +9,11 @@ import Header from '../../common/Header';
 
 import Toolbar from '../../common/Toolbar';
 
-import constants from '../../../helpers/constants';
+import config from '../../../helpers/config';
 
 import SettingsForm from '../../forms/SettingsForm';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 const propTypes = {
 	user: PropTypes.object.isRequired,
@@ -52,14 +52,14 @@ class Settings extends Component {
 			return;
 		}
 
-		document.title = `${constants.APP.TITLE}: ${routes.DASHBOARD.SETTINGS.TITLE} - ${routes.DASHBOARD.HOME.TITLE}`;
+		document.title = `${config.APP.TITLE}: ${routes.DASHBOARD.SETTINGS.TITLE} - ${routes.DASHBOARD.HOME.TITLE}`;
 
 		if (!/iPad|iPhone|iPod/.test(navigator.userAgent)) {
 			const meta = document.getElementsByTagName('meta');
 
 			meta.description.setAttribute('content', routes.DASHBOARD.SETTINGS.META.DESCRIPTION);
 			meta.keywords.setAttribute('content', routes.DASHBOARD.SETTINGS.META.KEYWORDS);
-			meta.author.setAttribute('content', constants.APP.AUTHOR.TITLE);
+			meta.author.setAttribute('content', config.APP.AUTHOR.TITLE);
 		}
 	};
 

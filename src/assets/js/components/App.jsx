@@ -3,7 +3,9 @@ import { hot } from 'react-hot-loader';
 import { Route, Switch } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 
-import constants from '../helpers/constants';
+import config from '../helpers/config';
+
+import AjaxLoading from './AjaxLoading';
 
 import ErrorBoundary from './ErrorBoundary';
 
@@ -22,7 +24,7 @@ import Overview from './views/dashboard/Overview';
 import Dashboard from './views/dashboard/Dashboard';
 import Employees from './views/dashboard/Employees';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 const App = () => (
 	<ErrorBoundary>
@@ -41,6 +43,7 @@ const App = () => (
 			<Route exact path={routes.DASHBOARD.SETTINGS.URI} component={Settings} />
 			<Route path="*" component={NotFoundPage} />
 		</Switch>
+		<AjaxLoading />
 		<ToastContainer className="p-0" draggable={false} newestOnTop={true} transition={Slide} hideProgressBar={true} />
 	</ErrorBoundary>
 );

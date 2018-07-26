@@ -244,6 +244,51 @@ describe('Rota Actions', () => {
 		return store.dispatch(actions.deleteRota({})).catch(error => expect(store.getActions()).not.toBeNull());
 	});
 
+	it('should create UPDATE_ROTA and AJAX_LOADING actions on publishRota', () => {
+		moxios.wait(() => {
+			const request = moxios.requests.mostRecent();
+
+			request.respondWith({
+				status: 201,
+				response: {},
+			});
+		});
+
+		store = mockStore({ rota: {} });
+
+		const expectedActions = [{
+			status: true,
+			type: types.AJAX_LOADING,
+		}, {
+			status: false,
+			type: types.AJAX_LOADING,
+		}, {
+			rota: {},
+			type: types.UPDATE_ROTA,
+		}];
+
+		const payload = {
+			rotaId: 2,
+		};
+
+		return store.dispatch(actions.publishRota(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
+	});
+
+	it('should catch error on failed publishRota', () => {
+		moxios.wait(() => {
+			const request = moxios.requests.mostRecent();
+
+			request.respondWith({
+				status: 400,
+				response: {},
+			});
+		});
+
+		store = mockStore({ rota: {} });
+
+		return store.dispatch(actions.publishRota({})).catch(error => expect(store.getActions()).not.toBeNull());
+	});
+
 	it('should create SWITCH_ROTA action on switchRota', () => {
 		moxios.wait(() => {
 			const request = moxios.requests.mostRecent();

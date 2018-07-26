@@ -1,5 +1,5 @@
 import 'element-closest';
-import moment from 'moment';
+import Moment from 'moment';
 import Avatar from 'react-avatar';
 import jwtDecode from 'jwt-decode';
 import Orderable from 'sortablejs';
@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
 import { bindActionCreators } from 'redux';
 import { polyfill } from 'mobile-drag-drop';
+import { extendMoment } from 'moment-range';
 import React, { Fragment, Component } from 'react';
 import { delay, concat, isEmpty, isString, includes, debounce } from 'lodash';
 import { scrollBehaviourDragImageTranslateOverride } from 'mobile-drag-drop/scroll-behaviour';
@@ -27,7 +28,7 @@ import ShiftButton from '../../common/ShiftButton';
 
 import CloseButton from '../../common/CloseButton';
 
-import constants from '../../../helpers/constants';
+import config from '../../../helpers/config';
 
 import EmployeeForm from '../../forms/EmployeeForm';
 
@@ -53,9 +54,11 @@ import { getShifts, updateShift } from '../../../actions/shiftActions';
 
 import { getEmployees, orderEmployees } from '../../../actions/employeeActions';
 
-const routes = constants.APP.ROUTES;
+const moment = extendMoment(Moment);
 
-const notifications = constants.APP.NOTIFICATIONS;
+const routes = config.APP.ROUTES;
+
+const notifications = config.APP.NOTIFICATIONS;
 
 const propTypes = {
 	week: PropTypes.object.isRequired,
@@ -162,6 +165,8 @@ class Employees extends Component {
 
 		this.handleRemoveCellStyles = this.handleRemoveCellStyles.bind(this);
 
+		this.handleShiftConflictModal = this.handleShiftConflictModal.bind(this);
+
 		this.handleClearSortEmployees = this.handleClearSortEmployees.bind(this);
 
 		this.handleSuccessNotification = this.handleSuccessNotification.bind(this);
@@ -186,6 +191,7 @@ class Employees extends Component {
 		employeeId: '',
 		placementId: '',
 		employeeName: '',
+		shiftConflict: {},
 		totalEmployees: 0,
 		startDate: moment(),
 		isErrorModalOpen: false,
@@ -195,6 +201,7 @@ class Employees extends Component {
 		isAssignShiftModalOpen: false,
 		isCreateShiftModalOpen: false,
 		isEditEmployeeModalOpen: false,
+		isShiftConflictModalOpen: false,
 		isCreateEmployeeModalOpen: false,
 		isUploadEmployeesModalOpen: false,
 	});
@@ -204,14 +211,14 @@ class Employees extends Component {
 			return;
 		}
 
-		document.title = `${constants.APP.TITLE}: ${routes.DASHBOARD.EMPLOYEES.TITLE} - ${routes.DASHBOARD.HOME.TITLE}`;
+		document.title = `${config.APP.TITLE}: ${routes.DASHBOARD.EMPLOYEES.TITLE} - ${routes.DASHBOARD.HOME.TITLE}`;
 
 		if (!/iPad|iPhone|iPod/.test(navigator.userAgent)) {
 			const meta = document.getElementsByTagName('meta');
 
 			meta.description.setAttribute('content', routes.DASHBOARD.EMPLOYEES.META.DESCRIPTION);
 			meta.keywords.setAttribute('content', routes.DASHBOARD.EMPLOYEES.META.KEYWORDS);
-			meta.author.setAttribute('content', constants.APP.AUTHOR.TITLE);
+			meta.author.setAttribute('content', config.APP.AUTHOR.TITLE);
 		}
 
 		window.addEventListener('touchmove', () => {}, { passive: false });
@@ -322,6 +329,8 @@ class Employees extends Component {
 	handleSortBy = () => this.setState({ isSortByPopoverOpen: !this.state.isSortByPopoverOpen });
 
 	handleFilter = () => this.setState({ isFilterPopoverOpen: !this.state.isFilterPopoverOpen });
+
+	handleShiftConflictModal = () => this.setState({ isShiftConflictModalOpen: !this.state.isShiftConflictModalOpen });
 
 	handleInfoNotification = (message) => {
 		if (!toast.isActive(this.toastId)) {
@@ -696,9 +705,10 @@ class Employees extends Component {
 	};
 
 	handleUpdateShift = (shiftId, placementId, employeeId, date) => {
-		console.log(shiftId, placementId);
+		this.setState({ shiftConflict: {} });
 
 		const {
+			shifts,
 			actions,
 			rota: {
 				rotaId,
@@ -709,7 +719,7 @@ class Employees extends Component {
 		} = this.props;
 
 		/* Get the shift based on shift id */
-		const shift = this.props.shifts.filter(data => data.shiftId === shiftId).shift();
+		const shift = shifts.filter(data => data.shiftId === shiftId).shift();
 
 		/* The shift start and end times dont change so we can grab these to create the new start and end time values that will be based off the new date */
 		let { endTime, startTime } = shift;
@@ -766,55 +776,89 @@ class Employees extends Component {
 
 		startTime = moment(startTime).seconds(0).format('YYYY-MM-DD HH:mm:ss');
 
-		/* Put together our payload */
-		let payload = {
-			rotaId,
-			shiftId,
-			endTime,
-			startTime,
-			isClosingShift,
-			numberOfPositions,
-			roleName: ((!isEmpty(roleName)) ? roleName : ''),
-		};
+		/* Check for conflicts - We need to grab all shifts for selected date and check that they dont overlap */
+		let totalConflicts = 0;
 
-		console.log('Called Employees handleUpdateShift updateShift');
-		actions.updateShift(payload)
-			/* Check if we need to update the placement */
-			.then(() => {
-				/* Get the matching placement (based on the employee id) */
-				const placement = shift.placements.filter(data => data.employee.employeeId === employeeId).shift();
+		/* This gets all shifts for selected date */
+		let currentDateShifts = shifts.filter(data => (moment(data.startTime).format('YYYY-MM-DD') === date));
 
-				/**
-				 * If the placement is empty, this means that no matching placement was found for the employee id for the dropped cell, so we need to update the placement.
-				 * If there was a match, the shift belongs to same employee id of the dropped cell.
-				 */
-				if (isEmpty(placement)) {
-					payload = {
-						shiftId,
-						employeeId,
-						placementId,
-					};
+		if (currentDateShifts.length > 0) {
+			/* For each shift found for the current date, check its employee id against the cells employee id */
+			currentDateShifts = currentDateShifts.filter(currentDateShiftData => currentDateShiftData.placements.filter(placementData => placementData.employee.employeeId === employeeId).length);
+
+			/* For the remaining shifts in the current date, loop over and check start / end time ranges */
+			currentDateShifts.forEach((currentDateShift, currentDateShiftIndex) => {
+				/* The startTime and endTime are belong to the shift we are dragging! */
+				if (moment.range(startTime, endTime).overlaps(moment.range(currentDateShift.startTime, currentDateShift.endTime), { adjacent: true })) {
+					totalConflicts += 1;
+				}
+			});
+		}
+
+		if (totalConflicts === 0) {
+			/* Put together our payload */
+			let payload = {
+				rotaId,
+				shiftId,
+				endTime,
+				startTime,
+				isClosingShift,
+				numberOfPositions,
+				roleName: ((!isEmpty(roleName)) ? roleName : ''),
+			};
+
+			console.log('Called Employees handleUpdateShift updateShift');
+			actions.updateShift(payload)
+				/* Check if we need to update the placement */
+				.then(() => {
+					/* Get the matching placement (based on the employee id) */
+					const placement = shift.placements.filter(data => data.employee.employeeId === employeeId).shift();
 
 					/**
-					 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
-					 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
+					 * If the placement is empty, this means that no matching placement was found for the employee id for the dropped cell, so we need to update the placement.
+					 * If there was a match, the shift belongs to same employee id of the dropped cell.
 					 */
-					console.log('Called Employees handleUpdateShift updatePlacement');
-					return actions.updatePlacement(payload).catch(error => Promise.reject(error));
-				}
+					if (isEmpty(placement)) {
+						payload = {
+							shiftId,
+							placementId,
+							employeeId,
+						};
 
-				return true;
-			})
-			/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-			.then(() => this.handleGetShifts(rotaId))
-			.then(() => this.handleGetRotas(rotaTypeId))
-			.catch((error) => {
-				error.data.title = 'Edit Shift';
+						/**
+						 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
+						 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
+						 */
+						console.log('Called Employees handleUpdateShift updatePlacement');
+						return actions.updatePlacement(payload).catch(error => Promise.reject(error));
+					}
 
-				this.setState({ error });
+					return true;
+				})
+				/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+				.then(() => this.handleGetShifts(rotaId))
+				.then(() => this.handleGetRotas(rotaTypeId))
+				.catch((error) => {
+					error.data.title = 'Edit Shift';
 
-				this.handleModal();
-			});
+					this.setState({ error });
+
+					this.handleModal();
+				});
+		} else {
+			/* Show conflict error */
+			const shiftConflict = {
+				data: {
+					title: 'Edit Shift',
+					/* FIXME - Make messages constants in config */
+					message: '<p><strong>The following error occurred:</strong></p><ul><li>The employee is already placed in another shift at this time.</li></ul>',
+				},
+			};
+
+			this.setState({ shiftConflict });
+
+			this.handleShiftConflictModal();
+		}
 	};
 
 	handleGetShifts = (rotaId) => {
@@ -1120,7 +1164,7 @@ class Employees extends Component {
 									<tbody id="tableBody">
 										{this.state.tableData.body.rows.length > 0 && this.state.tableData.body.rows.map((row, rowIndex) => (
 											<tr key={rowIndex} className="draggable-row" data-account-employee-id={row.accountEmployee.accountEmployeeId}>
-												<td className="p-2 align-top text-left p-0 m-0" onClick={event => this.handleEditEmployee(event, row.accountEmployee.employee.employeeId)}>
+												<td className="p-2 align-top text-left p-0 m-0 edit-employee" onClick={event => this.handleEditEmployee(event, row.accountEmployee.employee.employeeId)}>
 													<div className="d-flex align-items-start p-0 m-0 wrap-words">
 														<div className="d-inline-block p-0 mt-0 ml-0 mr-2 mb-0 drag-handler">
 															<Avatar name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="39" />
@@ -1217,6 +1261,11 @@ class Employees extends Component {
 				{(this.state.error.data) ? (
 					<Modal title={this.state.error.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isErrorModalOpen} onClose={this.handleModal}>
 						<div dangerouslySetInnerHTML={{ __html: this.state.error.data.message }} />
+					</Modal>
+				) : null}
+				{(this.state.shiftConflict.data) ? (
+					<Modal title={this.state.shiftConflict.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isShiftConflictModalOpen} onClose={this.handleShiftConflictModal}>
+						<div dangerouslySetInnerHTML={{ __html: this.state.shiftConflict.data.message }} />
 					</Modal>
 				) : null}
 			</Fragment>

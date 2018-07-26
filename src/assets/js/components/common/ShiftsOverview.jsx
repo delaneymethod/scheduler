@@ -12,13 +12,13 @@ import Notification from './Notification';
 
 import ShiftForm from '../forms/ShiftForm';
 
-import constants from '../../helpers/constants';
+import config from '../../helpers/config';
 
 import AssignShiftForm from '../forms/AssignShiftForm';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
-const notifications = constants.APP.NOTIFICATIONS;
+const notifications = config.APP.NOTIFICATIONS;
 
 const propTypes = {
 	past: PropTypes.bool.isRequired,

@@ -9,13 +9,13 @@ import Modal from './Modal';
 
 import ShiftForm from '../forms/ShiftForm';
 
-import constants from '../../helpers/constants';
+import config from '../../helpers/config';
 
 import CloseButton from '../common/CloseButton';
 
 import Notification from '../common/Notification';
 
-const notifications = constants.APP.NOTIFICATIONS;
+const notifications = config.APP.NOTIFICATIONS;
 
 const propTypes = {
 	roleName: PropTypes.string,

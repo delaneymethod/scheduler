@@ -95,7 +95,12 @@ html {
 .alert {
 	border: 0;
 	
-	p:last-child {
+	p {
+		margin-bottom: 5px;
+	}
+
+	ul,
+	li:last-child {
 		margin-bottom: 0;
 	}
 }

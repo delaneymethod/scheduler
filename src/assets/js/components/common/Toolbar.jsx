@@ -18,7 +18,7 @@ import ShiftForm from '../forms/ShiftForm';
 
 import confirm from '../../helpers/confirm';
 
-import constants from '../../helpers/constants';
+import config from '../../helpers/config';
 
 import CloseButton from '../common/CloseButton';
 
@@ -32,17 +32,17 @@ import { updateSettings } from '../../actions/settingActions';
 
 import { getShifts, downloadShifts } from '../../actions/shiftActions';
 
-import { getRotas, switchRota, updateRota } from '../../actions/rotaActions';
-
 import { getRotaTypes, switchRotaType } from '../../actions/rotaTypeActions';
 
-const routes = constants.APP.ROUTES;
+import { getRotas, switchRota, updateRota, publishRota } from '../../actions/rotaActions';
+
+const routes = config.APP.ROUTES;
 
 const { STATUSES } = routes.ROTAS;
 
 const dashboard = routes.DASHBOARD;
 
-const notifications = constants.APP.NOTIFICATIONS;
+const notifications = config.APP.NOTIFICATIONS;
 
 const propTypes = {
 	week: PropTypes.object.isRequired,
@@ -336,12 +336,12 @@ class Toolbar extends Component {
 
 				console.log('Called Toolbar handleSwitchRota updateRota');
 				console.log('Called Toolbar handleSwitchRota switchRota');
-				actions.updateRota(payload)
+				actions.publishRota(payload)
 					/* We switch the rota again even though its not really updating anything related to it - e.g week, shifts, first day of week etc. Only change is the status which we need to reflect below hence this call. */
 					.then((updatedRota) => {
 						actions.switchRota(updatedRota);
 
-						/* FIXME - Make messages constant */
+						/* FIXME - Make messages constants in config */
 						message = '<p>Rota was published!</p>';
 
 						this.handleSuccessNotification(message);
@@ -412,7 +412,7 @@ class Toolbar extends Component {
 			});
 		}
 
-		/* FIXME - Make messages constant */
+		/* FIXME - Make messages constants in config */
 		/* If the message has come from deleting a rota, we need to redirect back to dashboard to reload all data again */
 		if (message === '<p>Rota was deleted!</p>') {
 			this.props.history.push(routes.DASHBOARD.HOME.URI);
@@ -515,6 +515,7 @@ const mapDispatchToProps = dispatch => ({
 		switchWeek,
 		switchRota,
 		updateRota,
+		publishRota,
 		getRotaTypes,
 		downloadShifts,
 		updateSettings,

@@ -33,7 +33,7 @@ const ConfirmDialog = ({
 		</ModalBody>
 		<ModalFooter className="text-center">
 			<Button color={options.colors.proceed} title={options.labels.proceed} className="pl-5 pr-5 ml-auto" onClick={() => proceed(options.values.proceed)}>{options.labels.proceed}</Button>
-			<Button color="secondary" title={options.labels.cancel} className="pl-5 pr-5 mr-auto" onClick={() => cancel(options.values.cancel)}>{options.labels.cancel}</Button>
+			<Button color="light" title={options.labels.cancel} className="text-dark pl-5 pr-5 mr-auto" onClick={() => cancel(options.values.cancel)}>{options.labels.cancel}</Button>
 		</ModalFooter>
 	</Modal>
 );

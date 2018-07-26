@@ -8,11 +8,11 @@ import Alert from '../common/Alert';
 
 import LoginForm from '../forms/LoginForm';
 
-import constants from '../../helpers/constants';
+import config from '../../helpers/config';
 
 import UpdateYourPasswordForm from '../forms/UpdateYourPasswordForm';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 const propTypes = {
 	token: PropTypes.string.isRequired,
@@ -24,14 +24,14 @@ const defaultProps = {
 
 class UpdateYourPassword extends Component {
 	componentDidMount = () => {
-		document.title = `${constants.APP.TITLE}: ${routes.UPDATE_YOUR_PASSWORD.TITLE}`;
+		document.title = `${config.APP.TITLE}: ${routes.UPDATE_YOUR_PASSWORD.TITLE}`;
 
 		if (!/iPad|iPhone|iPod/.test(navigator.userAgent)) {
 			const meta = document.getElementsByTagName('meta');
 
 			meta.description.setAttribute('content', routes.UPDATE_YOUR_PASSWORD.META.DESCRIPTION);
 			meta.keywords.setAttribute('content', routes.UPDATE_YOUR_PASSWORD.META.KEYWORDS);
-			meta.author.setAttribute('content', constants.APP.AUTHOR.TITLE);
+			meta.author.setAttribute('content', config.APP.AUTHOR.TITLE);
 		}
 	};
 
@@ -39,7 +39,7 @@ class UpdateYourPassword extends Component {
 		<Row className="d-flex flex-md-row flex-column update-your-password-page-container">
 			<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center bg-dark py-5">
 				<div className="panel-welcome">
-					<h1><a href={routes.HOME.URI} title={constants.APP.TITLE}><img src={constants.APP.LOGO} alt={constants.APP.TITLE} className="mb-4" /></a></h1>
+					<h1><a href={routes.HOME.URI} title={config.APP.TITLE}><img src={config.APP.LOGO} alt={config.APP.TITLE} className="mb-4" /></a></h1>
 					<p className="h5 mb-0">{routes.UPDATE_YOUR_PASSWORD.CONTENT.WELCOME}</p>
 				</div>
 			</Col>

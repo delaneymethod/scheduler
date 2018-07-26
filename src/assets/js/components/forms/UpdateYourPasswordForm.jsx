@@ -12,11 +12,11 @@ import EmailField from '../fields/EmailField';
 
 import PasswordField from '../fields/PasswordField';
 
-import constants from '../../helpers/constants';
+import config from '../../helpers/config';
 
 import { updateYourPassword } from '../../actions/authenticationActions';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 const propTypes = {
 	token: PropTypes.string.isRequired,
@@ -106,9 +106,8 @@ class UpdateYourPasswordForm extends Component {
 		<Fragment>
 			{this.errorMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
-				<EmailField fieldValue={this.state.email} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={1} fieldAutoComplete={'on'} fieldRequired={true} />
-				<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={2} showPasswordStrength showPasswordCommon fieldRequired={true} />
-				<PasswordField fieldLabel="Confirm Password" fieldName="confirmPassword" fieldValue={this.state.confirmPassword} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={3} fieldRequired={true} />
+				<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={1} showPasswordStrength showPasswordCommon fieldRequired={true} />
+				<PasswordField fieldLabel="Confirm Password" fieldName="confirmPassword" fieldValue={this.state.confirmPassword} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={2} fieldRequired={true} />
 				<Button type="submit" color="primary" className="mt-4" title={routes.UPDATE_YOUR_PASSWORD.TITLE} tabIndex="3" block>{routes.UPDATE_YOUR_PASSWORD.TITLE}</Button>
 			</FormWithConstraints>
 		</Fragment>

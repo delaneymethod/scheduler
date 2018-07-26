@@ -15,7 +15,7 @@ import TextField from '../fields/TextField';
 
 import NumberField from '../fields/NumberField';
 
-import constants from '../../helpers/constants';
+import config from '../../helpers/config';
 
 import { getShifts } from '../../actions/shiftActions';
 
@@ -27,7 +27,7 @@ import { getRotas, createRota, updateRota, switchRota } from '../../actions/rota
 
 import { getRotaTypes, createRotaType, updateRotaType, deleteRotaType, switchRotaType } from '../../actions/rotaTypeActions';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 const { STATUSES } = routes.ROTAS;
 
@@ -274,7 +274,7 @@ class RotaForm extends Component {
 						/* Close the modal */
 						this.props.handleClose();
 
-						/* FIXME - Make messages constant */
+						/* FIXME - Make messages constants in config */
 						message = '<p>Rota was deleted!</p>';
 
 						/* Pass a message back up the rabbit hole to the parent component */
@@ -376,7 +376,7 @@ class RotaForm extends Component {
 																		/* Close the modal */
 																		this.props.handleClose();
 
-																		/* FIXME - Make messages constant */
+																		/* FIXME - Make messages constants in config */
 																		const message = '<p>Rota was updated!</p>';
 
 																		/* Pass a message back up the rabbit hole to the parent component */
@@ -463,7 +463,7 @@ class RotaForm extends Component {
 																/* Close the modal */
 																this.props.handleClose();
 
-																/* FIXME - Make messages constant */
+																/* FIXME - Make messages constants in config */
 																const message = '<p>Rota was updated!</p>';
 
 																/* Pass a message back up the rabbit hole to the parent component */

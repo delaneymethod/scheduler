@@ -12,7 +12,7 @@ import TextField from '../fields/TextField';
 
 import EmailField from '../fields/EmailField';
 
-import constants from '../../helpers/constants';
+import config from '../../helpers/config';
 
 import scrollToTop from '../../helpers/animations';
 
@@ -22,7 +22,7 @@ import { register } from '../../actions/authenticationActions';
 
 import { getSubscriptionLevels } from '../../actions/subscriptionLevelActions';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 const propTypes = {
 	subscriptionLevels: PropTypes.array.isRequired,

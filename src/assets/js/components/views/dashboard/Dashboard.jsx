@@ -1,6 +1,8 @@
 import moment from 'moment';
+import Loader from 'react-loaders';
 import jwtDecode from 'jwt-decode';
 import PropTypes from 'prop-types';
+import { Col, Row } from 'reactstrap';
 import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
 import { bindActionCreators } from 'redux';
@@ -15,7 +17,7 @@ import RotaForm from '../../forms/RotaForm';
 
 import CloseButton from '../../common/CloseButton';
 
-import constants from '../../../helpers/constants';
+import config from '../../../helpers/config';
 
 import Notification from '../../common/Notification';
 
@@ -35,11 +37,11 @@ import { createRota, getRotas, switchRota } from '../../../actions/rotaActions';
 
 import { getRotaTypes, switchRotaType } from '../../../actions/rotaTypeActions';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 const { STATUSES } = routes.ROTAS;
 
-const notifications = constants.APP.NOTIFICATIONS;
+const notifications = config.APP.NOTIFICATIONS;
 
 const propTypes = {
 	week: PropTypes.object.isRequired,
@@ -50,7 +52,6 @@ const propTypes = {
 	settings: PropTypes.object.isRequired,
 	rotaTypes: PropTypes.array.isRequired,
 	employees: PropTypes.array.isRequired,
-	ajaxLoading: PropTypes.bool.isRequired,
 	authenticated: PropTypes.bool.isRequired,
 };
 
@@ -63,7 +64,6 @@ const defaultProps = {
 	settings: {},
 	rotaTypes: [],
 	employees: [],
-	ajaxLoading: true,
 	authenticated: false,
 };
 
@@ -114,14 +114,14 @@ class Dashboard extends Component {
 			return;
 		}
 
-		document.title = `${constants.APP.TITLE}: ${routes.DASHBOARD.HOME.TITLE}`;
+		document.title = `${config.APP.TITLE}: ${routes.DASHBOARD.HOME.TITLE}`;
 
 		if (!/iPad|iPhone|iPod/.test(navigator.userAgent)) {
 			const meta = document.getElementsByTagName('meta');
 
 			meta.description.setAttribute('content', routes.DASHBOARD.HOME.META.DESCRIPTION);
 			meta.keywords.setAttribute('content', routes.DASHBOARD.HOME.META.KEYWORDS);
-			meta.author.setAttribute('content', constants.APP.AUTHOR.TITLE);
+			meta.author.setAttribute('content', config.APP.AUTHOR.TITLE);
 		}
 
 		/* Wait 1.3 seconds before fetching data - prevents any race conditions */
@@ -396,9 +396,11 @@ class Dashboard extends Component {
 	render = () => (
 		<Fragment>
 			<Header history={this.props.history} />
-			{(!this.props.ajaxLoading) ? (
-				<div className="pt-3 pb-3 pl-0 pr-0 m-0 font-italic">Loading&hellip;</div>
-			) : null}
+			<Row>
+				<Col xs="12">
+					<p className="lead m-0 pt-3 text-primary">Please wait while we load your data&hellip;</p>
+				</Col>
+			</Row>
 			{(this.state.error.data) ? (
 				<Modal title={this.state.error.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isErrorModalOpen} onClose={this.handleModal}>
 					<div dangerouslySetInnerHTML={{ __html: this.state.error.data.message }} />
@@ -424,7 +426,6 @@ const mapStateToProps = (state, props) => ({
 	settings: state.settings,
 	rotaTypes: state.rotaTypes,
 	employees: state.employees,
-	ajaxLoading: state.ajaxLoading,
 	authenticated: state.authenticated,
 });
 

@@ -9,13 +9,13 @@ import WeekPicker from './WeekPicker';
 
 import SwitchAccount from './SwitchAccount';
 
-import constants from '../../helpers/constants';
+import config from '../../helpers/config';
 
 import { logout } from '../../actions/authenticationActions';
 
 import { addClass, removeClass } from '../../helpers/classes';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 const dashboard = routes.DASHBOARD;
 
@@ -81,7 +81,7 @@ class Header extends Component {
 					<nav className="p-0 m-0">
 						<Row>
 							<Col className="d-flex justify-content-center justify-content-lg-start" xs="12" sm="12" md="12" lg="2" xl="2">
-								<h1 className="m-0 p-0 align-self-center text-lg-left"><a className="d-block" href={routes.HOME.URI} title={constants.APP.TITLE}>{constants.APP.TITLE}<span>.</span></a></h1>
+								<h1 className="m-0 p-0 align-self-center text-lg-left"><a className="d-block" href={routes.HOME.URI} title={config.APP.TITLE}>{config.APP.TITLE}<span>.</span></a></h1>
 							</Col>
 							<Col className="ml-lg-0 mr-lg-0 pl-lg-0 pr-lg-0 mt-3 mt-lg-0" xs="12" sm="12" md="5" lg="3" xl="2">
 								<WeekPicker history={this.props.history} />

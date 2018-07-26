@@ -16,13 +16,13 @@ import EmailField from '../fields/EmailField';
 
 import NumberField from '../fields/NumberField';
 
-import constants from '../../helpers/constants';
+import config from '../../helpers/config';
 
 import { getShifts } from '../../actions/shiftActions';
 
 import { createEmployee, updateEmployee, getEmployees, deleteEmployee, orderEmployees } from '../../actions/employeeActions';
 
-const routes = constants.APP.ROUTES;
+const routes = config.APP.ROUTES;
 
 const propTypes = {
 	editMode: PropTypes.bool,
@@ -251,7 +251,7 @@ class EmployeeForm extends Component {
 						/* Close the modal */
 						this.props.handleClose();
 
-						/* FIXME - Make messages constant */
+						/* FIXME - Make messages constants in config */
 						message = '<p>Employee was deleted!</p>';
 
 						/* Pass a message back up the rabbit hole to the parent component */
@@ -309,7 +309,7 @@ class EmployeeForm extends Component {
 						/* Close the modal */
 						this.props.handleClose();
 
-						/* FIXME - Make messages constant */
+						/* FIXME - Make messages constants in config */
 						const message = '<p>Employee was updated!</p>';
 
 						/* Pass a message back up the rabbit hole to the parent component */
@@ -330,7 +330,7 @@ class EmployeeForm extends Component {
 						/* Close the modal */
 						this.props.handleClose();
 
-						/* FIXME - Make messages constant */
+						/* FIXME - Make messages constants in config */
 						const message = '<p>Employee was created!</p>';
 
 						/* Pass a message back up the rabbit hole to the parent component */
