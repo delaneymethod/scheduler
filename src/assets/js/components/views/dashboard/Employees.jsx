@@ -220,8 +220,8 @@ class Employees extends Component {
 			dragImageTranslateOverride: scrollBehaviourDragImageTranslateOverride,
 		});
 
-		/* We debounce this call to wait 10ms (we do not want the leading (or "immediate") flag passed because we want to wait until all the componentDidUpdate calls have finished before loading the table data again */
-		this.handleFetchData = debounce(this.handleFetchData.bind(this), 10);
+		/* We debounce this call to wait 30ms (we do not want the leading (or "immediate") flag passed because we want to wait until all the componentDidUpdate calls have finished before loading the table data again */
+		this.handleFetchData = debounce(this.handleFetchData.bind(this), 30);
 
 		/* We debounce this call to wait 10ms (we do not want the leading (or "immediate") flag passed because we want to wait the user has finished ordering all rows before saving the order */
 		this.handleUpdateEmployeeOrder = debounce(this.handleUpdateEmployeeOrder.bind(this), 10);
@@ -665,6 +665,11 @@ class Employees extends Component {
 		}
 	};
 
+	handleGetEmployees = () => {
+		console.log('Called Employee handleGetEmployees getEmployees');
+		return this.props.actions.getEmployees().catch(error => Promise.reject(error));
+	};
+
 	handleUpdateEmployeeOrder = (ids) => {
 		const { actions } = this.props;
 
@@ -680,16 +685,7 @@ class Employees extends Component {
 
 		console.log('Called Employees handleUpdateEmployeeOrder orderEmployees');
 		actions.orderEmployees(payload)
-			.then(() => {
-				console.log('Called Employees handleUpdateEmployeeOrder getEmployees');
-				actions.getEmployees().catch((error) => {
-					error.data.title = 'Get Employees';
-
-					this.setState({ error });
-
-					this.handleModal();
-				});
-			})
+			.then(() => this.handleGetEmployees())
 			.catch((error) => {
 				error.data.title = 'Order Employees';
 
@@ -700,6 +696,8 @@ class Employees extends Component {
 	};
 
 	handleUpdateShift = (shiftId, placementId, employeeId, date) => {
+		console.log(shiftId, placementId);
+
 		const {
 			actions,
 			rota: {
@@ -802,24 +800,14 @@ class Employees extends Component {
 					 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
 					 */
 					console.log('Called Employees handleUpdateShift updatePlacement');
-					actions.updatePlacement(payload)
-						/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-						.then(() => this.handleGetShifts(rotaId))
-						.then(() => this.handleGetRotas(rotaTypeId))
-						.catch((error) => {
-							error.data.title = 'Edit Placement';
-
-							this.setState({ error });
-
-							this.handleModal();
-						});
-				} else {
-					/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-					this.handleGetShifts(rotaId);
-
-					this.handleGetRotas(rotaTypeId);
+					return actions.updatePlacement(payload).catch(error => Promise.reject(error));
 				}
+
+				return true;
 			})
+			/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+			.then(() => this.handleGetShifts(rotaId))
+			.then(() => this.handleGetRotas(rotaTypeId))
 			.catch((error) => {
 				error.data.title = 'Edit Shift';
 
@@ -837,13 +825,7 @@ class Employees extends Component {
 		};
 
 		console.log('Called Employees handleGetShifts getShifts');
-		actions.getShifts(payload).catch((error) => {
-			error.data.title = 'Get Shifts';
-
-			this.setState({ error });
-
-			this.handleModal();
-		});
+		return actions.getShifts(payload).catch(error => Promise.reject(error));
 	};
 
 	handleGetRotas = (rotaTypeId) => {
@@ -854,21 +836,15 @@ class Employees extends Component {
 		};
 
 		console.log('Called Employees handleGetRotas getRotas');
-		actions.getRotas(payload)
+		return actions.getRotas(payload)
 			.then((allRotas) => {
 				/* After we get all rotas, we need to find our current rota again and switch it so its details are also updated */
 				const currentRota = allRotas.filter(data => data.rotaId === rota.rotaId).shift();
 
 				console.log('Called Employees handleGetRotas switchRota');
-				actions.switchRota(currentRota);
+				return actions.switchRota(currentRota);
 			})
-			.catch((error) => {
-				error.data.title = 'Get Rotas';
-
-				this.setState({ error });
-
-				this.handleModal();
-			});
+			.catch(error => Promise.reject(error));
 	};
 
 	handleAddCellHighlight = (element) => {

@@ -79,7 +79,11 @@ class RotaForm extends Component {
 
 		this.handleChange = this.handleChange.bind(this);
 
+		this.handleGetRotas = this.handleGetRotas.bind(this);
+
 		this.handleChangeBudget = this.handleChangeBudget.bind(this);
+
+		this.handleGetRotaTypes = this.handleGetRotaTypes.bind(this);
 	}
 
 	getInitialState = () => ({
@@ -211,6 +215,22 @@ class RotaForm extends Component {
 
 	handleBlur = async event => this.handleValidateFields(event.currentTarget);
 
+	handleGetRotaTypes = () => {
+		console.log('Called RotaForm handleGetRotaTypes getRotaTypes');
+		return this.props.actions.getRotaTypes().catch(error => Promise.reject(error));
+	};
+
+	handleGetRotas = () => {
+		const { rotaType: { rotaTypeId }, actions } = this.props;
+
+		const payload = {
+			rotaTypeId,
+		};
+
+		console.log('Called RotaForm handleGetRotas getRotas');
+		return actions.getRotas(payload).catch(error => Promise.reject(error));
+	};
+
 	handleDelete = (event) => {
 		const rotaType = this.props.rotaTypes.filter(data => data.rotaTypeId === this.state.rotaTypeId).shift();
 
@@ -248,6 +268,8 @@ class RotaForm extends Component {
 
 				console.log('Called RotaForm handleDelete deleteRotaType');
 				actions.deleteRotaType(payload)
+					.then(() => this.handleGetRotaTypes())
+					.then(() => this.handleGetRotas())
 					.then(() => {
 						/* Close the modal */
 						this.props.handleClose();

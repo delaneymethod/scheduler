@@ -43,6 +43,8 @@ class RoleForm extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 
 		this.handleChange = this.handleChange.bind(this);
+
+		this.handleGetRoles = this.handleGetRoles.bind(this);
 	}
 
 	getInitialState = () => ({
@@ -67,6 +69,11 @@ class RoleForm extends Component {
 	};
 
 	handleBlur = async event => this.handleValidateFields(event.currentTarget);
+
+	handleGetRoles = () => {
+		console.log('Called RoleForm handleGetRoles getRoles');
+		return this.props.actions.getRoles().catch(error => Promise.reject(error));
+	};
 
 	handleDelete = event => console.log('FIXME - Delete Role');
 
@@ -94,20 +101,16 @@ class RoleForm extends Component {
 				/* Creates a new role */
 				console.log('Called RoleForm handleSubmit createRole');
 				actions.createRole(payload)
+					.then(() => this.handleGetRoles())
 					.then(() => {
-						console.log('Called RoleForm handleSubmit getRoles');
-						actions.getRoles()
-							.then(() => {
-								/* Close the modal */
-								this.props.handleClose(roleName);
+						/* Close the modal */
+						this.props.handleClose(roleName);
 
-								/* FIXME - Make messages constant */
-								const message = '<p>Role was created!</p>';
+						/* FIXME - Make messages constant */
+						const message = '<p>Role was created!</p>';
 
-								/* Pass a message back up the rabbit hole to the parent component */
-								this.props.handleSuccessNotification(message);
-							})
-							.catch(error => this.setState({ error }));
+						/* Pass a message back up the rabbit hole to the parent component */
+						this.props.handleSuccessNotification(message);
 					})
 					.catch(error => this.setState({ error }));
 			}

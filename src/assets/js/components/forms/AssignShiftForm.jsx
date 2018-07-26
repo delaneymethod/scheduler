@@ -205,6 +205,8 @@ class AssignShiftForm extends Component {
 
 				console.log('Called ShiftForm handleDelete deleteShifts');
 				actions.deleteShift(payload)
+					.then(() => this.handleGetShifts())
+					.then(() => this.handleGetRotas())
 					.then(() => {
 						/* Close the modal */
 						this.props.handleClose(event, '', moment());
@@ -215,8 +217,6 @@ class AssignShiftForm extends Component {
 						/* Pass a message back up the rabbit hole to the parent component */
 						this.props.handleSuccessNotification(message);
 					})
-					.then(() => this.handleGetShifts())
-					.then(() => this.handleGetRotas())
 					.catch(error => this.setState({ error }));
 			}, (result) => {
 				/* We do nothing */
@@ -241,7 +241,7 @@ class AssignShiftForm extends Component {
 		};
 
 		console.log('Called AssignShiftForm handleGetShifts getShifts');
-		actions.getShifts(payload).catch(error => this.setState({ error }));
+		return actions.getShifts(payload).catch(error => Promise.reject(error));
 	};
 
 	handleGetRotas = () => {
@@ -258,15 +258,15 @@ class AssignShiftForm extends Component {
 		};
 
 		console.log('Called AssignShiftForm handleGetRotas getRotas');
-		actions.getRotas(payload)
+		return actions.getRotas(payload)
 			.then((allRotas) => {
 				/* After we get all rotas, we need to find our current rota again and switch it so its details are also updated */
 				const currentRota = allRotas.filter(data => data.rotaId === rota.rotaId).shift();
 
 				console.log('Called ShiftForm handleGetRotas switchRota');
-				actions.switchRota(currentRota);
+				return actions.switchRota(currentRota);
 			})
-			.catch(error => this.setState({ error }));
+			.catch(error => Promise.reject(error));
 	};
 
 	handleSubmit = async (event) => {
@@ -289,9 +289,11 @@ class AssignShiftForm extends Component {
 			console.log('Called AssignShiftForm handleSubmit createPlacement');
 			actions.createPlacement(payload)
 				/* Creating a placement will not update the store so we need to do another call to get all the shifts back into the store again */
+				.then(() => this.handleGetShifts())
+				.then(() => this.handleGetRotas())
 				.then(() => {
 					/* Close the modal */
-					this.props.handleClose();
+					this.props.handleClose(event, '', moment());
 
 					/* FIXME - Make messages constant */
 					const message = '<p>Shift was assigned!</p>';
@@ -299,8 +301,6 @@ class AssignShiftForm extends Component {
 					/* Pass a message back up the rabbit hole to the parent component */
 					this.props.handleSuccessNotification(message);
 				})
-				.then(() => this.handleGetShifts())
-				.then(() => this.handleGetRotas())
 				.catch(error => this.setState({ error }));
 		}
 	};

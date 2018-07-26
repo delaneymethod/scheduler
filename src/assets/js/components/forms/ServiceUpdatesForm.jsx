@@ -1,7 +1,7 @@
-import { debounce } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
 import { connect } from 'react-redux';
+import { delay, debounce } from 'lodash';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
 import { FormWithConstraints } from 'react-form-with-constraints';
@@ -77,7 +77,7 @@ class ServiceUpdatesForm extends Component {
 
 			console.log('Called ServiceUpdateForm handleSubmit registerServiceUpdates');
 			actions.serviceUpdates(payload)
-				.then(() => this.setState(Object.assign(this.getInitialState(), { email: '', emailSent: true })))
+				.then(() => this.setState(Object.assign(this.getInitialState(), { email, emailSent: true }), () => delay(() => this.form.reset(), 30)))
 				.catch(error => this.setState({ error }));
 		}
 	};

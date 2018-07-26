@@ -62,13 +62,15 @@ class EmployeeForm extends Component {
 
 		this.handleGetShifts = this.handleGetShifts.bind(this);
 
+		this.handleGetEmployees = this.handleGetEmployees.bind(this);
+
 		this.handleChangeMobile = this.handleChangeMobile.bind(this);
 
 		this.handleChangeSalary = this.handleChangeSalary.bind(this);
 
-		this.handleOrderEmployees = this.handleOrderEmployees.bind(this);
-
 		this.handleChangeHourlyRate = this.handleChangeHourlyRate.bind(this);
+
+		this.handleUpdateEmployeeOrder = this.handleUpdateEmployeeOrder.bind(this);
 
 		this.handleChangeWeeklyContractHours = this.handleChangeWeeklyContractHours.bind(this);
 	}
@@ -143,17 +145,6 @@ class EmployeeForm extends Component {
 		});
 	};
 
-	handleGetShifts = () => {
-		const { actions, rota: { rotaId } } = this.props;
-
-		const payload = {
-			rotaId,
-		};
-
-		console.log('Called EmployeeForm handleGetShifts getShifts');
-		actions.getShifts(payload).catch(error => this.setState({ error }));
-	};
-
 	handleChangeMobile = (event, values) => this.setState({ mobile: values.value });
 
 	handleChangeSalary = (event, values) => this.setState({ salary: values.floatValue });
@@ -164,41 +155,28 @@ class EmployeeForm extends Component {
 
 	handleBlur = async event => this.handleValidateFields(event.target);
 
-	handleOrderEmployees = () => {
+	handleUpdateEmployeeOrder = () => {
+		const { actions, rotaType, employees } = this.props;
+
 		/**
 		 * Employees may have a different sort positions for different rota types,
 		 * so we loop over each employee and get its sort position for the current rota type.
 		 */
-		let orderableEmployees = this.props.employees.filter(accountEmployee => accountEmployee.rotaTypeAccountEmployees && accountEmployee.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId));
+		let orderableEmployees = employees.filter(accountEmployee => accountEmployee.rotaTypeAccountEmployees && accountEmployee.rotaTypeAccountEmployees.find(({ rotaTypeId }) => rotaType.rotaTypeId === rotaTypeId));
 
-		orderableEmployees = orderableEmployees.sort((a, b) => a.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId).sortPosition - b.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId).sortPosition);
+		orderableEmployees = orderableEmployees.sort((a, b) => a.rotaTypeAccountEmployees.find(({ rotaTypeId }) => rotaType.rotaTypeId === rotaTypeId).sortPosition - b.rotaTypeAccountEmployees.find(({ rotaTypeId }) => rotaType.rotaTypeId === rotaTypeId).sortPosition);
 
 		/* Grab all employees without sort positions setup for rota types */
-		const nonOrderableEmployees = this.props.employees.filter(accountEmployee => !accountEmployee.rotaTypeAccountEmployees || !accountEmployee.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId));
+		const nonOrderableEmployees = employees.filter(accountEmployee => !accountEmployee.rotaTypeAccountEmployees || !accountEmployee.rotaTypeAccountEmployees.find(({ rotaTypeId }) => rotaType.rotaTypeId === rotaTypeId));
 
 		/* Now that employees with sort positions have been ordered, add back in the non sort position employees */
-		return concat(orderableEmployees, nonOrderableEmployees);
-	};
+		const orderedEmployees = concat(orderableEmployees, nonOrderableEmployees);
 
-	handleGetEmployees = () => {
-		console.log('Called EmployeeForm handleGetEmployees getEmployees');
-		this.props.actions.getEmployees()
-			.then(() => {
-				/* This call pings /order to persist their position */
-				const orderedEmployees = this.handleOrderEmployees();
-
-				this.handleUpdateEmployeeOrder(orderedEmployees.map(employee => employee.accountEmployeeId));
-			})
-			.catch(error => this.setState({ error }));
-	};
-
-	handleUpdateEmployeeOrder = (ids) => {
-		const { actions } = this.props;
-
-		/* Get the rota type id based on current rota type */
-		const { rotaTypeId } = this.props.rotaType;
+		const ids = orderedEmployees.map(employee => employee.accountEmployeeId);
 
 		const order = ids.map(data => data);
+
+		const { rotaTypeId } = rotaType;
 
 		const payload = {
 			order,
@@ -206,16 +184,29 @@ class EmployeeForm extends Component {
 		};
 
 		console.log('Called EmployeeForm handleUpdateEmployeeOrder orderEmployees');
-		actions.orderEmployees(payload)
-			.then(() => {
-				console.log('Called EmployeeForm handleUpdateEmployeeOrder getEmployees');
-				actions.getEmployees().catch(error => this.setState({ error }));
-			})
-			.catch(error => this.setState({ error }));
+		return actions.orderEmployees(payload).catch(error => Promise.reject(error));
+	};
+
+	handleGetEmployees = () => {
+		console.log('Called EmployeeForm handleGetEmployees getEmployees');
+		return this.props.actions.getEmployees().catch(error => Promise.reject(error));
+	};
+
+	handleGetShifts = () => {
+		const { actions, rota: { rotaId } } = this.props;
+
+		const payload = {
+			rotaId,
+		};
+
+		console.log('Called EmployeeForm handleGetShifts getShifts');
+		return actions.getShifts(payload).catch(error => Promise.reject(error));
 	};
 
 	handleDelete = (event) => {
-		const accountEmployee = this.props.employees.filter(data => data.employee.employeeId === this.state.employeeId).shift();
+		const { actions, employees } = this.props;
+
+		const accountEmployee = employees.filter(data => data.employee.employeeId === this.state.employeeId).shift();
 
 		/* Check if the user wants to delete the employee */
 		let message = `<div class="text-center"><p>Please confirm that you wish to delete the Employee?</p><ul class="list-unstyled font-weight-bold"><li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li></ul><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
@@ -241,8 +232,6 @@ class EmployeeForm extends Component {
 		/* If the user has clicked the cancel button, we do nothing */
 		confirm(options)
 			.then((result) => {
-				const { actions } = this.props;
-
 				const { employeeId } = this.state;
 
 				const payload = {
@@ -251,6 +240,13 @@ class EmployeeForm extends Component {
 
 				console.log('Called EmployeeForm handleDelete deleteEmployees');
 				actions.deleteEmployee(payload)
+					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
+					.then(() => this.handleGetEmployees())
+					.then(() => this.handleUpdateEmployeeOrder())
+					/* I guess the API could return the ordered list of employees so we dont need to make this extra call */
+					.then(() => this.handleGetEmployees())
+					/* Updating a shift or placement will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+					.then(() => this.handleGetShifts())
 					.then(() => {
 						/* Close the modal */
 						this.props.handleClose();
@@ -261,10 +257,6 @@ class EmployeeForm extends Component {
 						/* Pass a message back up the rabbit hole to the parent component */
 						this.props.handleSuccessNotification(message);
 					})
-					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
-					.then(() => this.handleGetEmployees())
-					/* Updating a shift or placement will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-					.then(() => this.handleGetShifts())
 					.catch(error => this.setState({ error }));
 			}, (result) => {
 				/* We do nothing */
@@ -306,6 +298,13 @@ class EmployeeForm extends Component {
 			if (this.props.editMode) {
 				console.log('Called EmployeeForm handleSubmit updateEmployee');
 				actions.updateEmployee(payload)
+					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
+					.then(() => this.handleGetEmployees())
+					.then(() => this.handleUpdateEmployeeOrder())
+					/* I guess the API could return the ordered list of employees so we dont need to make this extra call */
+					.then(() => this.handleGetEmployees())
+					/* Updating a shift or placement will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+					.then(() => this.handleGetShifts())
 					.then(() => {
 						/* Close the modal */
 						this.props.handleClose();
@@ -316,14 +315,17 @@ class EmployeeForm extends Component {
 						/* Pass a message back up the rabbit hole to the parent component */
 						this.props.handleSuccessNotification(message);
 					})
-					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
-					.then(() => this.handleGetEmployees())
-					/* Updating a shift or placement will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-					.then(() => this.handleGetShifts())
 					.catch(error => this.setState({ error }));
 			} else {
 				console.log('Called EmployeeForm handleSubmit createEmployee');
 				actions.createEmployee(payload)
+					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
+					.then(() => this.handleGetEmployees())
+					.then(() => this.handleUpdateEmployeeOrder())
+					/* I guess the API could return the ordered list of employees so we dont need to make this extra call */
+					.then(() => this.handleGetEmployees())
+					/* Updating a shift or placement will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+					.then(() => this.handleGetShifts())
 					.then(() => {
 						/* Close the modal */
 						this.props.handleClose();
@@ -334,10 +336,6 @@ class EmployeeForm extends Component {
 						/* Pass a message back up the rabbit hole to the parent component */
 						this.props.handleSuccessNotification(message);
 					})
-					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
-					.then(() => this.handleGetEmployees())
-					/* Updating a shift or placement will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-					.then(() => this.handleGetShifts())
 					.catch(error => this.setState({ error }));
 			}
 		}

@@ -79,10 +79,16 @@ class ShiftButton extends Component {
 	handleShiftMenu = () => this.setState({ isShiftPopoverOpen: !this.state.isShiftPopoverOpen });
 
 	/* If we close the modal, reset the role name state. If the user hasnt saved, but reopens the modal, we want the correct value - not the state value */
-	handleCreateShift = () => this.setState({ roleName: '', isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen });
+	handleCreateShift = () => this.setState({ isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen }, () => {
+		/* If we close the modal, reset the role name state. If the user hasnt saved, but reopens the modal, we want the correct value - not the state value */
+		this.setState({ roleName: '' });
+	});
 
 	/* If we close the modal, reset the role name state. If the user hasnt saved, but reopens the modal, we want the correct value - not the state value */
-	handleEditShift = (event, shiftId, employeeId, placementId, startDate) => this.setState({ roleName: '', isEditShiftModalOpen: !this.state.isEditShiftModalOpen });
+	handleEditShift = (event, shiftId, employeeId, placementId, startDate) => this.setState({ isEditShiftModalOpen: !this.state.isEditShiftModalOpen }, () => {
+		/* If we close the modal, reset the role name state. If the user hasnt saved, but reopens the modal, we want the correct value - not the state value */
+		this.setState({ roleName: '' });
+	});
 
 	handleSuccessNotification = (message) => {
 		if (!toast.isActive(this.toastId)) {

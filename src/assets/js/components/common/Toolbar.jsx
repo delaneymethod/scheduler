@@ -388,12 +388,12 @@ class Toolbar extends Component {
 
 	handleEditRota = (event, rotaId) => this.setState({ rotaId, isEditRotaModalOpen: !this.state.isEditRotaModalOpen });
 
-	handleCreateShift = (event, startDate) => this.setState({ startDate, isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen }, () => {
+	handleCreateShift = (event, shiftId, employeeId, placementId, startDate) => this.setState({ startDate, isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen }, () => {
 		/* If we close the modal, reset the role name state. If the user hasnt saved, but reopens the modal, we want the correct value - not the state value */
 		this.setState({ roleName: '' });
 	});
 
-	handleAssignShift = (event, startDate) => this.setState({ startDate, isAssignShiftModalOpen: !this.state.isAssignShiftModalOpen }, () => {
+	handleAssignShift = (event, employeeId, startDate) => this.setState({ startDate, isAssignShiftModalOpen: !this.state.isAssignShiftModalOpen }, () => {
 		/* If we close the modal, reset the role name state. If the user hasnt saved, but reopens the modal, we want the correct value - not the state value */
 		this.setState({ roleName: '' });
 	});
@@ -477,11 +477,11 @@ class Toolbar extends Component {
 			<Modal title="Edit Rota" className="modal-dialog" show={this.state.isEditRotaModalOpen} onClose={this.handleEditRota}>
 				<RotaForm rotaId={this.state.rotaId} editMode={true} firstRota={false} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleEditRota} />
 			</Modal>
-			<Modal title="Create Shift" className="modal-dialog" show={this.state.isCreateShiftModalOpen} onClose={event => this.handleCreateShift(event, this.state.startDate)}>
-				<ShiftForm overview={false} startDate={this.state.startDate} roleName={this.state.roleName} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleCreateShift(event, this.state.startDate)} handleSwitchFromSelectRoleToCreateRole={this.handleSwitchFromSelectRoleToCreateRole} />
+			<Modal title="Create Shift" className="modal-dialog" show={this.state.isCreateShiftModalOpen} onClose={event => this.handleCreateShift(event, null, null, null, this.state.startDate)}>
+				<ShiftForm overview={false} startDate={this.state.startDate} roleName={this.state.roleName} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleCreateShift(event, null, null, null, this.state.startDate)} handleSwitchFromSelectRoleToCreateRole={this.handleSwitchFromSelectRoleToCreateRole} />
 			</Modal>
-			<Modal title="Assign Shift" className="modal-dialog" show={this.state.isAssignShiftModalOpen} onClose={event => this.handleAssignShift(event, this.state.startDate)}>
-				<AssignShiftForm startDate={this.state.startDate} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleAssignShift(event, this.state.startDate)} handleSwitchFromAssignShiftToCreateShift={this.handleSwitchFromAssignShiftToCreateShift} />
+			<Modal title="Assign Shift" className="modal-dialog" show={this.state.isAssignShiftModalOpen} onClose={event => this.handleAssignShift(event, null, this.state.startDate)}>
+				<AssignShiftForm startDate={this.state.startDate} handleSuccessNotification={this.handleSuccessNotification} handleClose={event => this.handleAssignShift(event, null, this.state.startDate)} handleSwitchFromAssignShiftToCreateShift={this.handleSwitchFromAssignShiftToCreateShift} />
 			</Modal>
 			<Modal title="Create Role" className="modal-dialog" show={this.state.isCreateRoleModalOpen} onClose={this.handleSwitchFromSelectRoleToCreateRole}>
 				<RoleForm handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleSwitchFromSelectRoleToCreateRole} />

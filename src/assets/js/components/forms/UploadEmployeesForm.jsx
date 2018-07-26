@@ -1,3 +1,4 @@
+import concat from 'lodash/concat';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -11,16 +12,20 @@ import FileField from '../fields/FileField';
 
 import constants from '../../helpers/constants';
 
-import { getEmployees, uploadEmployees } from '../../actions/employeeActions';
+import { getEmployees, orderEmployees, uploadEmployees } from '../../actions/employeeActions';
 
 const routes = constants.APP.ROUTES;
 
 const propTypes = {
+	rotaType: PropTypes.object.isRequired,
+	employees: PropTypes.array.isRequired,
 	handleClose: PropTypes.func.isRequired,
 	handleInfoNoification: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
+	rotaType: {},
+	employees: [],
 	handleClose: () => {},
 	handleInfoNoification: () => {},
 };
@@ -34,12 +39,53 @@ class UploadEmployeesForm extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 
 		this.handleChange = this.handleChange.bind(this);
+
+		this.handleGetEmployees = this.handleGetEmployees.bind(this);
+
+		this.handleUpdateEmployeeOrder = this.handleUpdateEmployeeOrder.bind(this);
 	}
 
 	getInitialState = () => ({
 		error: {},
 		file: null,
 	});
+
+	handleUpdateEmployeeOrder = () => {
+		const { actions, rotaType, employees } = this.props;
+
+		/**
+		 * Employees may have a different sort positions for different rota types,
+		 * so we loop over each employee and get its sort position for the current rota type.
+		 */
+		let orderableEmployees = employees.filter(accountEmployee => accountEmployee.rotaTypeAccountEmployees && accountEmployee.rotaTypeAccountEmployees.find(({ rotaTypeId }) => rotaType.rotaTypeId === rotaTypeId));
+
+		orderableEmployees = orderableEmployees.sort((a, b) => a.rotaTypeAccountEmployees.find(({ rotaTypeId }) => rotaType.rotaTypeId === rotaTypeId).sortPosition - b.rotaTypeAccountEmployees.find(({ rotaTypeId }) => rotaType.rotaTypeId === rotaTypeId).sortPosition);
+
+		/* Grab all employees without sort positions setup for rota types */
+		const nonOrderableEmployees = employees.filter(accountEmployee => !accountEmployee.rotaTypeAccountEmployees || !accountEmployee.rotaTypeAccountEmployees.find(({ rotaTypeId }) => rotaType.rotaTypeId === rotaTypeId));
+
+		/* Now that employees with sort positions have been ordered, add back in the non sort position employees */
+		const orderedEmployees = concat(orderableEmployees, nonOrderableEmployees);
+
+		const ids = orderedEmployees.map(employee => employee.accountEmployeeId);
+
+		const order = ids.map(data => data);
+
+		const { rotaTypeId } = rotaType;
+
+		const payload = {
+			order,
+			rotaTypeId,
+		};
+
+		console.log('Called UploadEmployeesForm handleUpdateEmployeeOrder orderEmployees');
+		return actions.orderEmployees(payload).catch(error => Promise.reject(error));
+	};
+
+	handleGetEmployees = () => {
+		console.log('Called UploadEmployeesForm handleSubmit getEmployees');
+		return this.props.actions.getEmployees().catch(error => Promise.reject(error));
+	};
 
 	handleChange = file => this.setState({ file, error: {} });
 
@@ -51,6 +97,8 @@ class UploadEmployeesForm extends Component {
 		this.setState({ error: {} });
 
 		if (this.form.isValid()) {
+			let message = '';
+
 			const { file } = this.state;
 
 			const payload = {
@@ -60,8 +108,6 @@ class UploadEmployeesForm extends Component {
 			console.log('Called UploadEmployeesForm handleSubmit uploadEmployees');
 			actions.uploadEmployees(payload)
 				.then((response) => {
-					let message = '';
-
 					if (response.loadedEmployees.length > 0) {
 						message += `<p>${response.loadedEmployees.length} employee${(response.loadedEmployees.length === 1) ? ' was' : 's were'} uploaded successfully!</p>`;
 					}
@@ -77,16 +123,19 @@ class UploadEmployeesForm extends Component {
 						message += '</ul>';
 					}
 
-					console.log('Called UploadEmployeesForm handleSubmit getEmployees');
-					actions.getEmployees()
-						.then(() => {
-							/* Close the modal */
-							this.props.handleClose();
+					return true;
+				})
+				/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
+				.then(() => this.handleGetEmployees())
+				.then(() => this.handleUpdateEmployeeOrder())
+				/* I guess the API could return the ordered list of employees so we dont need to make this extra call */
+				.then(() => this.handleGetEmployees())
+				.then(() => {
+					/* Close the modal */
+					this.props.handleClose();
 
-							/* Pass a message back up the rabbit hole to the parent component */
-							this.props.handleInfoNotification(message);
-						})
-						.catch(error => this.setState({ error }));
+					/* Pass a message back up the rabbit hole to the parent component */
+					this.props.handleInfoNotification(message);
 				})
 				.catch(error => this.setState({ error }));
 		}
@@ -109,11 +158,15 @@ UploadEmployeesForm.propTypes = propTypes;
 
 UploadEmployeesForm.defaultProps = defaultProps;
 
-const mapStateToProps = (state, props) => ({});
+const mapStateToProps = (state, props) => ({
+	rotaType: state.rotaType,
+	employees: state.employees,
+});
 
 const mapDispatchToProps = dispatch => ({
 	actions: bindActionCreators({
 		getEmployees,
+		orderEmployees,
 		uploadEmployees,
 	}, dispatch),
 });
