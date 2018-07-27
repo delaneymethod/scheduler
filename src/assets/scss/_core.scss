@@ -218,3 +218,11 @@ html {
 		-webkit-transform: rotate3d(0, 0, 1, -45deg);
 	}
 }
+
+.anchor {
+	padding-top: 0 !important;
+	
+	@include media-breakpoint-up(lg) {
+		padding-top: 48px !important;
+	}
+}

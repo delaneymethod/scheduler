@@ -148,8 +148,23 @@ header {
 				}
 			}
 		}
-	}
+
+		.fixed {
+	    	@include media-breakpoint-up(lg) {
+				top: 0;
+				left: 0;
+				right: 0;
+				z-index: 1030;
+				position: fixed;
+				padding: 1rem !important;
+			}
+		}
 		
+		@include media-breakpoint-up(lg) {
+			margin-bottom: calculateRem(48px) !important;
+		}
+	}
+	
 	@include media-breakpoint-down(md) {
 		.header {
 			.navbar-nav {

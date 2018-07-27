@@ -36,7 +36,10 @@ class Home extends Component {
 					</Col>
 					<Col xs="12" sm="12" md="5" lg="5" xl="5" className="d-none d-md-block text-center p-0 m-0 introduction-image" style={{ backgroundImage: `url('${routes.HOME.CONTENT.INTRODUCTION.IMAGE}')` }}></Col>
 				</Row>
-				<Row id="benefits" className="benefits create bg-white d-flex justify-content-center">
+				<Row className="benefits create bg-white d-flex justify-content-center">
+					<Col xs="12" className="m-0 p-0">
+						<a className="anchor" id="benefits" style={{ height: '0 !important' }}>&nbsp;</a>
+					</Col>
 					<Col xs="12" sm="12" md="5" lg="5" xl="5" className="d-none d-md-block align-self-start align-self-lg-center m-0 p-0 p-md-4 p-lg-5 order-2 order-md-1">
 						<img src={routes.HOME.CONTENT.CREATE.IMAGE} alt="Create Preview" className="p-5 pt-0 pb-0 p-md-0 m-0 img-fluid" />
 					</Col>
@@ -73,7 +76,10 @@ class Home extends Component {
 					</Col>
 					<Col xs="12" sm="12" md="6" lg="6" xl="6" className="p-0 m-0 promo-image" style={{ backgroundImage: `url('${routes.HOME.CONTENT.PROMO.IMAGE}')` }}></Col>
 				</Row>
-				<Row id="about" className="about bg-white">
+				<Row className="about bg-white">
+					<Col xs="12" className="m-0 p-0">
+						<a className="anchor" id="about" style={{ height: '0 !important' }}>&nbsp;</a>
+					</Col>
 					<Col xs="12" sm="12" md="1" lg="1" xl="2" className="d-none d-md-block"></Col>
 					<Col xs="12" sm="12" md="10" lg="10" xl="8" className="text-center m-0 p-4 p-lg-5">
 						<p className="lead-text h2 mt-sm-0 mt-md-3 mt-lg-3 mb-4 pb-4 position-relative text-dark" dangerouslySetInnerHTML={{ __html: routes.HOME.CONTENT.ABOUT.LEAD }} />
@@ -88,7 +94,10 @@ class Home extends Component {
 						<div className="h2 ml-5 mr-5 mb-5 mb-md-0 p-0 text-white" dangerouslySetInnerHTML={{ __html: routes.HOME.CONTENT.SMS.OVERVIEW }} />
 					</Col>
 				</Row>
-				<Row id="beta" className="beta bg-light">
+				<Row className="beta bg-light">
+					<Col xs="12" className="m-0 p-0">
+						<a className="anchor" id="beta" style={{ height: '0 !important' }}>&nbsp;</a>
+					</Col>
 					<Col xs="12" sm="12" md="1" lg="1" xl="2" className="d-none d-md-block"></Col>
 					<Col xs="12" sm="12" md="10" lg="10" xl="8" className="m-0 p-4 p-lg-5">
 						<p className="lead-text text-center h2 mt-sm-0 mt-md-3 mt-lg-3 mb-4 pb-4 position-relative text-dark" dangerouslySetInnerHTML={{ __html: routes.HOME.CONTENT.BETA.LEAD }} />
@@ -96,9 +105,12 @@ class Home extends Component {
 					</Col>
 					<Col xs="12" sm="12" md="1" lg="1" xl="2" className="d-none d-md-block"></Col>
 				</Row>
-				<Row id="pricing" className="pricing bg-white">
+				<Row className="pricing bg-white">
+					<Col xs="12" className="m-0 p-0">
+						<a className="anchor" id="pricing" style={{ height: '0 !important' }}>&nbsp;</a>
+					</Col>
 					<Col xs="12" sm="12" md="12" lg="12" xl="12" className="m-0 p-4 p-lg-5">
-						<p className="lead-text text-center h2 position-relative text-dark" dangerouslySetInnerHTML={{ __html: routes.HOME.CONTENT.PRICING.LEAD }} />
+						<p className="text-center lead-text h2 mt-sm-0 mt-md-3 mt-lg-3 mb-4 pb-4 position-relative text-dark" dangerouslySetInnerHTML={{ __html: routes.HOME.CONTENT.PRICING.LEAD }} />
 						<div className="d-flex justify-content-center p-5 m-0">
 							<div className="align-self-center">
 								<div className="container">

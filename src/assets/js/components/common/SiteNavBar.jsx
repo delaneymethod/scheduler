@@ -25,7 +25,7 @@ class SiteNavBar extends Component {
 	render = () => (
 		<Row className="header">
 			<Col xs="12" sm="12" md="12" lg="12" xl="12" className="p-3 m-0">
-				<nav className="row no-gutters p-0 m-0 navbar navbar-expand-lg navbar-dark bg-dark">
+				<nav className="fixed row no-gutters p-0 m-0 navbar navbar-expand-lg navbar-dark bg-dark">
 					<div className="navbar-collapse collapse w-100 p-0 m-0 order-2 order-sm-2 order-md-1 order-lg-2 order-xl-2" id="navbar">
 						<ul className="p-0 m-0 nav navbar-nav ml-auto w-100 justify-content-end">
 							<li className="nav-item p-0 m-0 pl-1 pr-1"><a href="#benefits" title="Benefits" className="nav-link">Benefits</a></li>
