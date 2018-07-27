@@ -34,7 +34,7 @@ class Home extends Component {
 						<div className="h5 mb-4 text-white" dangerouslySetInnerHTML={{ __html: routes.HOME.CONTENT.INTRODUCTION.OVERVIEW }} />
 						<p className="p-0 m-0"><a href={routes.HOME.CONTENT.INTRODUCTION.CALL_TO_ACTION.URI} title={routes.HOME.CONTENT.INTRODUCTION.CALL_TO_ACTION.TITLE} className="btn btn-primary border-0 d-block d-sm-inline-block pl-5 pr-5 mb-0">{routes.HOME.CONTENT.INTRODUCTION.CALL_TO_ACTION.TITLE}</a></p>
 					</Col>
-					<Col xs="12" sm="12" md="5" lg="5" xl="5" className="text-center p-0 m-0 introduction-image" style={{ backgroundImage: `url('${routes.HOME.CONTENT.INTRODUCTION.IMAGE}')` }}></Col>
+					<Col xs="12" sm="12" md="5" lg="5" xl="5" className="d-none d-md-block text-center p-0 m-0 introduction-image" style={{ backgroundImage: `url('${routes.HOME.CONTENT.INTRODUCTION.IMAGE}')` }}></Col>
 				</Row>
 				<Row id="benefits" className="benefits create bg-white d-flex justify-content-center">
 					<Col xs="12" sm="12" md="5" lg="5" xl="5" className="d-none d-md-block align-self-start align-self-lg-center m-0 p-0 p-md-4 p-lg-5 order-2 order-md-1">
@@ -136,8 +136,8 @@ class Home extends Component {
 				<Row className="footer">
 					<Col xs="12" sm="12" md="12" lg="12" xl="12" className="text-center m-0 p-4 p-lg-5">
 						<ul className="list-inline">
-							<li className="list-inline-item pl-3 pr-3"><a href={routes.TERMS_OF_SERVICE.URI} title={routes.TERMS_OF_SERVICE.TITLE}>{routes.TERMS_OF_SERVICE.TITLE}</a></li>
-							<li className="list-inline-item pl-3 pr-3"><a href={routes.PRIVACY_POLICY.URI} title={routes.PRIVACY_POLICY.TITLE}>{routes.PRIVACY_POLICY.TITLE}</a></li>
+							<li className="list-inline-item pl-md-3 pr-md-3"><a href={routes.TERMS_OF_SERVICE.URI} title={routes.TERMS_OF_SERVICE.TITLE}>{routes.TERMS_OF_SERVICE.TITLE}</a></li>
+							<li className="list-inline-item pl-md-3 pr-md-3"><a href={routes.PRIVACY_POLICY.URI} title={routes.PRIVACY_POLICY.TITLE}>{routes.PRIVACY_POLICY.TITLE}</a></li>
 						</ul>
 						<p className="p-0 m-0">&copy; {moment().format('YYYY')} {config.APP.AUTHOR.TITLE}. All rights reserved.</p>
 					</Col>

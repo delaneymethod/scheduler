@@ -1,16 +1,19 @@
 {
 	"name": "scheduler",
-	"version": "0.0.41",
+	"version": "0.0.42",
 	"description": "Scheduler is an on-demand shift allocation platform that enables employers and event planners to match shifts with available workers in real-time for immediate fulfilment.",
 	"main": "src/assets/js/Scheduler.jsx",
 	"scripts": {
 		"pretest": "npm run lint",
 		"lint": "./node_modules/.bin/eslint .",
 		"test": "./node_modules/.bin/jest --coverage",
-		"dev": "cross-env NODE_ENV='development' webpack --progress=true --cache=false --display-error-details=true --mode=development",
-		"hot": "cross-env NODE_ENV='development' webpack-dev-server --watch --open --hot=true --progress=true --display-error-details=true --mode=development",
+		"analyze-main": "source-map-explorer public/assets/js/main.bundle.*.js",
+		"analyze-runtime": "source-map-explorer public/assets/js/runtime.bundle.*.js",
+		"analyze-vendors": "source-map-explorer public/assets/js/vendors.bundle.*.js",
+		"dev": "cross-env NODE_ENV='development' webpack --colors=true --progress=true --cache=false --display-error-details=true --mode=development",
+		"hot": "cross-env NODE_ENV='development' webpack-dev-server --watch --open --hot=true --colors=true --progress=true --display-error-details=true --mode=development",
 		"prod": "npm run production",
-		"production": "cross-env NODE_ENV='production' webpack --display-error-details=true --progress=true --hide-modules --mode production"
+		"production": "cross-env NODE_ENV='production' webpack --display-error-details=true --progress=true --hide-modules --optimize-minimize --mode production"
 	},
 	"keywords": [
 		"Scheduler",
@@ -27,7 +30,7 @@
 		"email": "barry.lynch@giggrafter.com",
 		"url": "https://www.giggrafter.com"
 	},
-	"homepage": "https://git-codecommit.eu-west-1.amazonaws.com/v1/repos/scheduler-client-side",
+	"homepage": "https://www.giggrafter.com",
 	"private": true,
 	"license": "UNLICENSED",
 	"devDependencies": {
@@ -40,7 +43,7 @@
 		"babel-jest": "^22.4.4",
 		"babel-loader": "^7.1.5",
 		"babel-plugin-transform-class-properties": "^6.24.1",
-		"babel-preset-airbnb": "^2.5.2",
+		"babel-preset-airbnb": "^2.5.3",
 		"babel-preset-env": "^1.7.0",
 		"babel-preset-react": "^6.24.1",
 		"babel-preset-stage-2": "^6.24.1",
@@ -125,6 +128,7 @@
 		"redux-logger": "^3.0.6",
 		"redux-thunk": "^2.3.0",
 		"sortablejs": "^1.7.0",
+		"source-map-explorer": "^1.5.0",
 		"vanilla-autofill-event": "^1.0.3",
 		"zxcvbn": "^4.4.2"
 	}

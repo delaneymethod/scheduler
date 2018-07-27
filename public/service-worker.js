@@ -6,6 +6,7 @@
 		'main.bundle.js',
 		'crossdomain.xml',
 		'main.bundle.css',
+		'runtime.bundle.js',
 		'vendors.bundle.js',
 		'service-worker.js',
 	];

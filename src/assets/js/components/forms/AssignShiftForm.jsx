@@ -264,7 +264,7 @@ class AssignShiftForm extends Component {
 				const currentRota = allRotas.filter(data => data.rotaId === rota.rotaId).shift();
 
 				console.log('Called ShiftForm handleGetRotas switchRota');
-				return actions.switchRota(currentRota);
+				return actions.switchRota(currentRota).catch(error => Promise.reject(error));
 			})
 			.catch(error => Promise.reject(error));
 	};

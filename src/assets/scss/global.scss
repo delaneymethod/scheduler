@@ -224,6 +224,12 @@ header {
 					margin: calculateRem(10px) auto 0;
 				}
 			}
+			
+			img {
+				width: 70%;
+				text-align: center;
+				margin: 0 auto !important;
+			}
 		}
 		
 		img {
@@ -455,3 +461,11 @@ header {
 		font-size: 1.21875rem;
 	}
 }	
+
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+	input,
+	select,
+	textarea {
+		font-size: calculateRem(16px);
+	}
+}

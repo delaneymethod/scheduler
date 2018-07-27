@@ -10,7 +10,7 @@ import { bindActionCreators } from 'redux';
 import { polyfill } from 'mobile-drag-drop';
 import { extendMoment } from 'moment-range';
 import React, { Fragment, Component } from 'react';
-import { delay, concat, isEmpty, isString, includes, debounce } from 'lodash';
+import { delay, concat, sortBy, isEmpty, isString, includes, debounce } from 'lodash';
 import { scrollBehaviourDragImageTranslateOverride } from 'mobile-drag-drop/scroll-behaviour';
 import { Row, Col, Form, Label, Input, Popover, FormGroup, InputGroup, InputGroupAddon, PopoverBody, PopoverHeader } from 'reactstrap';
 
@@ -472,7 +472,7 @@ class Employees extends Component {
 				const shiftsPlacements = [];
 
 				/* Loop over all the shifts and get current date shifts */
-				const shifts = this.props.shifts.filter(data => moment(data.startTime).format('YYYY-MM-DD') === moment(weekDate).format('YYYY-MM-DD'));
+				const shifts = sortBy(this.props.shifts, 'startTime').filter(data => moment(data.startTime).format('YYYY-MM-DD') === moment(weekDate).format('YYYY-MM-DD'));
 
 				/* Now we have to loop over all the shifts, grabbing the shifts belong to the current employee since the shifts API has all shifts not just those assigned to employees */
 				shifts.forEach((shift) => {
@@ -784,12 +784,12 @@ class Employees extends Component {
 
 		if (currentDateShifts.length > 0) {
 			/* For each shift found for the current date, check its employee id against the cells employee id */
-			currentDateShifts = currentDateShifts.filter(currentDateShiftData => currentDateShiftData.placements.filter(placementData => placementData.employee.employeeId === employeeId).length);
+			currentDateShifts = currentDateShifts.filter(currentDateShiftData => (currentDateShiftData.placements && currentDateShiftData.placements.filter(placementData => placementData.employee.employeeId === employeeId).length));
 
 			/* For the remaining shifts in the current date, loop over and check start / end time ranges */
 			currentDateShifts.forEach((currentDateShift, currentDateShiftIndex) => {
 				/* The startTime and endTime are belong to the shift we are dragging! */
-				if (moment.range(startTime, endTime).overlaps(moment.range(currentDateShift.startTime, currentDateShift.endTime), { adjacent: true })) {
+				if (moment.range(startTime, endTime).overlaps(moment.range(currentDateShift.startTime, currentDateShift.endTime), { adjacent: false })) {
 					totalConflicts += 1;
 				}
 			});
@@ -886,7 +886,7 @@ class Employees extends Component {
 				const currentRota = allRotas.filter(data => data.rotaId === rota.rotaId).shift();
 
 				console.log('Called Employees handleGetRotas switchRota');
-				return actions.switchRota(currentRota);
+				return actions.switchRota(currentRota).catch(error => Promise.reject(error));
 			})
 			.catch(error => Promise.reject(error));
 	};

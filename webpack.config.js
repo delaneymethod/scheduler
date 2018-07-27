@@ -32,10 +32,13 @@ console.log('#########################################');
 if (process.env.NODE_ENV === 'production') {
 	console.log('#   Gig Grafter v', packageJson.version, ' PRODUCTION   #');
 
+	/*
+	Removed as production pipeline is already adding caching to assets via CloudFront.
 	const timestamp = +new Date();
 
 	filenames.css = `[name].bundle.${timestamp}.css`;
 	filenames.js = `[name].bundle.${timestamp}.js`;
+	*/
 } else {
 	console.log('#   Gig Grafter v', packageJson.version, ' DEVELOPMENT   #');
 }
@@ -194,6 +197,10 @@ module.exports = (env, options) => ({
 		],
 	},
 	plugins: [
+		/* Ignore all locale files of moment.js */
+		new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+		/* Only load moment/locale/en-gb.js */
+		new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /en-gb/),
 		new MiniCssExtractPlugin({
 			filename: `assets/css/${filenames.css}`,
 		}),

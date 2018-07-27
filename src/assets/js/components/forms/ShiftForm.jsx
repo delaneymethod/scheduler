@@ -506,7 +506,7 @@ class ShiftForm extends Component {
 				const currentRota = allRotas.filter(data => data.rotaId === rota.rotaId).shift();
 
 				console.log('Called ShiftForm handleGetRotas switchRota');
-				return actions.switchRota(currentRota);
+				return actions.switchRota(currentRota).catch(error => Promise.reject(error));
 			})
 			.catch(error => Promise.reject(error));
 	};
@@ -623,30 +623,20 @@ class ShiftForm extends Component {
 			/* Check for conflicts - We need to grab all shifts for selected date and check that they dont overlap */
 			let totalConflicts = 0;
 
-			let runConflictChecks = true;
+			/* This gets all shifts for selected date, minus the shift we are editing - we dont want to compare the edit shift with with edit shift */
+			let currentDateShifts = shifts.filter(data => (data.shiftId !== shiftId)).filter(shiftData => (moment(shiftData.startTime).format('YYYY-MM-DD') === startDate));
 
-			/* If in edit more, and the start time or end time has not changed, skip the conflict checks */
-			/* console.log(this.props.editMode, !this.state.startTimeWasChanged, !this.state.endTimeWasChanged); */
-			if (this.props.editMode) {
-				runConflictChecks = false;
-			}
+			if (currentDateShifts.length > 0) {
+				/* For each shift found for the current date, check its employee id against the cells employee id */
+				currentDateShifts = currentDateShifts.filter(currentDateShiftData => (currentDateShiftData.placements && currentDateShiftData.placements.filter(placementData => placementData.employee.employeeId === employeeId).length));
 
-			if (runConflictChecks) {
-				/* This gets all shifts for selected date */
-				let currentDateShifts = shifts.filter(shiftData => (moment(shiftData.startTime).format('YYYY-MM-DD') === startDate));
-
-				if (currentDateShifts.length > 0) {
-					/* For each shift found for the current date, check its employee id against the cells employee id */
-					currentDateShifts = currentDateShifts.filter(currentDateShiftData => currentDateShiftData.placements.filter(placementData => placementData.employee.employeeId === employeeId).length);
-
-					/* For the remaining shifts in the current date, loop over and check start / end time ranges */
-					currentDateShifts.forEach((currentDateShift, currentDateShiftIndex) => {
-						/* The startTime and endTime are belong to the shift we are dragging! */
-						if (moment.range(startTime, endTime).overlaps(moment.range(currentDateShift.startTime, currentDateShift.endTime), { adjacent: true })) {
-							totalConflicts += 1;
-						}
-					});
-				}
+				/* For the remaining shifts in the current date, loop over and check start / end time ranges */
+				currentDateShifts.forEach((currentDateShift, currentDateShiftIndex) => {
+					/* The startTime and endTime are belong to the shift we are dragging! */
+					if (moment.range(startTime, endTime).overlaps(moment.range(currentDateShift.startTime, currentDateShift.endTime), { adjacent: false })) {
+						totalConflicts += 1;
+					}
+				});
 			}
 
 			if (totalConflicts === 0) {
