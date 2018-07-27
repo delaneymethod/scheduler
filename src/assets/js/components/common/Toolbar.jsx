@@ -34,7 +34,7 @@ import { getShifts, downloadShifts } from '../../actions/shiftActions';
 
 import { getRotaTypes, switchRotaType } from '../../actions/rotaTypeActions';
 
-import { getRotas, switchRota, updateRota, publishRota } from '../../actions/rotaActions';
+import { getRota, getRotas, switchRota, updateRota, publishRota } from '../../actions/rotaActions';
 
 const routes = config.APP.ROUTES;
 
@@ -72,7 +72,13 @@ class Toolbar extends Component {
 
 		this.handleModal = this.handleModal.bind(this);
 
+		this.handleGetRota = this.handleGetRota.bind(this);
+
 		this.handleEditRota = this.handleEditRota.bind(this);
+
+		this.handleGetRotas = this.handleGetRotas.bind(this);
+
+		this.handleGetShifts = this.handleGetShifts.bind(this);
 
 		this.handleCreateRole = this.handleCreateRole.bind(this);
 
@@ -141,6 +147,42 @@ class Toolbar extends Component {
 		if (prevProps.week !== this.props.week || prevProps.shifts !== this.props.shifts || prevProps.rotaType !== this.props.rotaType || prevProps.rota !== this.props.rota || prevProps.settings !== this.props.settings) {
 			this.handleToggleButtonStates();
 		}
+	};
+
+	handleGetRota = () => {
+		const { actions, rota: { rotaId } } = this.props;
+
+		const payload = {
+			rotaId,
+		};
+
+		console.log('Called Toolbar handleGetRota getRota');
+		console.log('Called Toolbar handleGetRota switchRota');
+		return actions.getRota(payload)
+			.then(rota => actions.switchRota(rota))
+			.catch(error => Promise.reject(error));
+	};
+
+	handleGetRotas = () => {
+		const { actions, rotaType: { rotaTypeId } } = this.props;
+
+		const payload = {
+			rotaTypeId,
+		};
+
+		console.log('Called Toolbar handleGetRotas getRotas');
+		return actions.getRotas(payload).catch(error => Promise.reject(error));
+	};
+
+	handleGetShifts = () => {
+		const { actions, rota: { rotaId } } = this.props;
+
+		const payload = {
+			rotaId,
+		};
+
+		console.log('Called Toolbar handleGetShifts getShifts');
+		return actions.getShifts(payload).catch(error => Promise.reject(error));
 	};
 
 	handleToggleButtonStates = () => {
@@ -316,31 +358,18 @@ class Toolbar extends Component {
 		/* If the user has clicked the cancel button, we do nothing */
 		confirm(options)
 			.then((result) => {
-				const { rota, rotaType: { rotaTypeId }, actions } = this.props;
-
-				let { startDate } = rota;
-
-				const { rotaId, budget } = rota;
-
-				const status = STATUSES.PUBLISHED;
-
-				startDate = moment(startDate).format('YYYY-MM-DD');
+				const { rota: { rotaId }, actions } = this.props;
 
 				const payload = {
 					rotaId,
-					budget,
-					status,
-					startDate,
-					rotaTypeId,
 				};
 
-				console.log('Called Toolbar handleSwitchRota updateRota');
-				console.log('Called Toolbar handleSwitchRota switchRota');
+				console.log('Called Toolbar handleSwitchRota publishRota');
 				actions.publishRota(payload)
-					/* We switch the rota again even though its not really updating anything related to it - e.g week, shifts, first day of week etc. Only change is the status which we need to reflect below hence this call. */
-					.then((updatedRota) => {
-						actions.switchRota(updatedRota);
-
+					.then(() => this.handleGetRota())
+					.then(() => this.handleGetRotas())
+					.then(() => this.handleGetShifts())
+					.then(() => {
 						/* FIXME - Make messages constants in config */
 						message = '<p>Rota was published!</p>';
 
@@ -454,7 +483,7 @@ class Toolbar extends Component {
 						<button type="button" title="Rota Published" className="btn btn-nav btn-primary col-12 col-sm-auto pl-4 pr-4 pl-md-4 pr-md-4 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled>Publish<span className="d-sm-inline-block d-md-none d-lg-inline-block">&nbsp;Rota</span></button>
 					) : null}
 					{(this.state.rotaStatus === STATUSES.EDITED) ? (
-						<button type="button" title="Publish Rota Changes" className="btn btn-nav btn-primary col-12 col-sm-auto pl-4 pr-4 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish&nbsp;<span className="d-sm-inline-block d-md-none d-lg-inline-block">&nbsp;Rota&nbsp;</span>Changes</button>
+						<button type="button" title="Publish Rota Changes" className="btn btn-nav btn-primary col-12 col-sm-auto pl-4 pr-4 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish<span className="d-sm-inline-block d-md-none d-lg-inline-block">&nbsp;Rota&nbsp;</span>Changes</button>
 					) : null}
 					<ButtonGroup className="d-none d-sm-inline-block p-0 pl-sm-3 pl-md-3 pl-lg-3 pl-xl-3 m-0">
 						<button type="button" title="Download Rota" id="download-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3" onClick={event => this.handleDownloadRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-cloud-download" aria-hidden="true"></i></button>
@@ -510,6 +539,7 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = dispatch => ({
 	actions: bindActionCreators({
+		getRota,
 		getRotas,
 		getShifts,
 		switchWeek,
