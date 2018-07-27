@@ -54,9 +54,11 @@ import { getShifts, updateShift } from '../../../actions/shiftActions';
 
 import { getEmployees, orderEmployees } from '../../../actions/employeeActions';
 
-const moment = extendMoment(Moment);
-
 const routes = config.APP.ROUTES;
+
+const { STATUSES } = routes.SHIFTS;
+
+const moment = extendMoment(Moment);
 
 const notifications = config.APP.NOTIFICATIONS;
 
@@ -409,7 +411,7 @@ class Employees extends Component {
 		/* Loop over each day in the week and build our table header and footer data */
 		weekDates.forEach((weekDate) => {
 			/* Loop over all the shifts and get current date shifts */
-			const shifts = this.props.shifts.filter(data => moment(data.startTime).format('YYYY-MM-DD') === moment(weekDate).format('YYYY-MM-DD'));
+			const shifts = this.props.shifts.filter(data => (moment(data.startTime).format('YYYY-MM-DD') === moment(weekDate).format('YYYY-MM-DD')) && (data.status !== STATUSES.DELETED));
 
 			/* Loop over all shifts for current date and total up the number of positions available */
 			const total = shifts.map(data => data.numberOfPositions).reduce((prev, next) => prev + next, 0);
@@ -472,13 +474,13 @@ class Employees extends Component {
 				const shiftsPlacements = [];
 
 				/* Loop over all the shifts and get current date shifts */
-				const shifts = sortBy(this.props.shifts, 'startTime').filter(data => moment(data.startTime).format('YYYY-MM-DD') === moment(weekDate).format('YYYY-MM-DD'));
+				const shifts = sortBy(this.props.shifts, 'startTime').filter(data => (moment(data.startTime).format('YYYY-MM-DD') === moment(weekDate).format('YYYY-MM-DD')) && (data.status !== STATUSES.DELETED));
 
 				/* Now we have to loop over all the shifts, grabbing the shifts belong to the current employee since the shifts API has all shifts not just those assigned to employees */
 				shifts.forEach((shift) => {
 					/* If the shift has placements, we can assume its been assigned to an employee */
 					if (shift.placements !== null) {
-						const placement = shift.placements.filter(data => data.employee.employeeId === accountEmployee.employee.employeeId).shift();
+						const placement = shift.placements.filter(data => (data.employee.employeeId === accountEmployee.employee.employeeId) && (data.status !== STATUSES.DELETED)).shift();
 
 						/* So we've found a matching placement for the current employee so lets build up the shift/placement data for the column */
 						if (!isEmpty(placement)) {
@@ -565,7 +567,7 @@ class Employees extends Component {
 				tableData.header.columns[weekDateIndex].draggable = draggable;
 
 				/* Loop over all shifts and get the unassigned ones for current week date */
-				const unassignedShifts = this.props.shifts.filter(data => (moment(data.startTime).format('YYYY-MM-DD') === moment(weekDate).format('YYYY-MM-DD')) && (data.placements === null || data.placements.length === 0));
+				const unassignedShifts = this.props.shifts.filter(data => (moment(data.startTime).format('YYYY-MM-DD') === moment(weekDate).format('YYYY-MM-DD')) && (data.placements === null || data.placements.length === 0) && (data.status !== STATUSES.DELETED));
 
 				/* This is our column structure so we can drag and drop */
 				row.columns.push({
@@ -719,7 +721,7 @@ class Employees extends Component {
 		} = this.props;
 
 		/* Get the shift based on shift id */
-		const shift = shifts.filter(data => data.shiftId === shiftId).shift();
+		const shift = shifts.filter(data => (data.shiftId === shiftId) && (data.status !== STATUSES.DELETED)).shift();
 
 		/* The shift start and end times dont change so we can grab these to create the new start and end time values that will be based off the new date */
 		let { endTime, startTime } = shift;
@@ -784,7 +786,7 @@ class Employees extends Component {
 
 		if (currentDateShifts.length > 0) {
 			/* For each shift found for the current date, check its employee id against the cells employee id */
-			currentDateShifts = currentDateShifts.filter(currentDateShiftData => (currentDateShiftData.placements && currentDateShiftData.placements.filter(placementData => placementData.employee.employeeId === employeeId).length));
+			currentDateShifts = currentDateShifts.filter(currentDateShiftData => (currentDateShiftData.placements && currentDateShiftData.placements.filter(placementData => (placementData.employee.employeeId === employeeId) && (placementData.status !== STATUSES.DELETED)).length));
 
 			/* For the remaining shifts in the current date, loop over and check start / end time ranges */
 			currentDateShifts.forEach((currentDateShift, currentDateShiftIndex) => {
@@ -812,7 +814,7 @@ class Employees extends Component {
 				/* Check if we need to update the placement */
 				.then(() => {
 					/* Get the matching placement (based on the employee id) */
-					const placement = shift.placements.filter(data => data.employee.employeeId === employeeId).shift();
+					const placement = shift.placements.filter(data => (data.employee.employeeId === employeeId) && (data.status !== STATUSES.DELETED)).shift();
 
 					/**
 					 * If the placement is empty, this means that no matching placement was found for the employee id for the dropped cell, so we need to update the placement.

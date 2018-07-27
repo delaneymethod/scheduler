@@ -24,6 +24,8 @@ import { createPlacement, updatePlacement, deletePlacement } from '../../actions
 
 const routes = config.APP.ROUTES;
 
+const { STATUSES } = routes.SHIFTS;
+
 const moment = extendMoment(Moment);
 
 const propTypes = {
@@ -192,7 +194,7 @@ class ShiftForm extends Component {
 
 		/* If we are in edit mode, we basically need to overwrite most of the above except for the shift id, placement id, employee id */
 		if (this.props.editMode && !isEmpty(this.props.shiftId)) {
-			const shift = this.props.shifts.filter(data => data.shiftId === this.props.shiftId).shift();
+			const shift = this.props.shifts.filter(data => (data.shiftId === this.props.shiftId) && (data.status !== STATUSES.DELETED)).shift();
 
 			/* Override role name */
 			if (!isEmpty(shift.role)) {
@@ -517,7 +519,7 @@ class ShiftForm extends Component {
 	};
 
 	handleDelete = (event) => {
-		const shift = this.props.shifts.filter(data => data.shiftId === this.state.shiftId).shift();
+		const shift = this.props.shifts.filter(data => (data.shiftId === this.state.shiftId) && (data.status !== STATUSES.DELETED)).shift();
 
 		const accountEmployee = this.props.employees.filter(data => data.employee.employeeId === this.state.employeeId).shift();
 
@@ -624,11 +626,11 @@ class ShiftForm extends Component {
 			let totalConflicts = 0;
 
 			/* This gets all shifts for selected date, minus the shift we are editing - we dont want to compare the edit shift with with edit shift */
-			let currentDateShifts = shifts.filter(data => (data.shiftId !== shiftId)).filter(shiftData => (moment(shiftData.startTime).format('YYYY-MM-DD') === startDate));
+			let currentDateShifts = shifts.filter(data => data.shiftId !== shiftId).filter(shiftData => (moment(shiftData.startTime).format('YYYY-MM-DD') === startDate) && (shiftData.status !== STATUSES.DELETED));
 
 			if (currentDateShifts.length > 0) {
 				/* For each shift found for the current date, check its employee id against the cells employee id */
-				currentDateShifts = currentDateShifts.filter(currentDateShiftData => (currentDateShiftData.placements && currentDateShiftData.placements.filter(placementData => placementData.employee.employeeId === employeeId).length));
+				currentDateShifts = currentDateShifts.filter(currentDateShiftData => (currentDateShiftData.placements && currentDateShiftData.placements.filter(placementData => (placementData.employee.employeeId === employeeId) && (placementData.status !== STATUSES.DELETED)).length));
 
 				/* For the remaining shifts in the current date, loop over and check start / end time ranges */
 				currentDateShifts.forEach((currentDateShift, currentDateShiftIndex) => {
@@ -658,10 +660,10 @@ class ShiftForm extends Component {
 					actions.updateShift(payload)
 						.then(() => {
 							/* Get the edit shift again based on shift id. Updated shift doesnt have placments included */
-							const oldShift = oldShifts.filter(data => data.shiftId === shiftId).shift();
+							const oldShift = oldShifts.filter(data => (data.shiftId === shiftId) && (data.status !== STATUSES.DELETED)).shift();
 
 							/* Get the matching placement (based on the employee id) */
-							const oldPlacement = oldShift.placements.filter(data => data.employee.employeeId === employeeId).shift();
+							const oldPlacement = oldShift.placements.filter(data => (data.employee.employeeId === employeeId) && (data.status !== STATUSES.DELETED)).shift();
 
 							/**
 							 * If the placement is empty, this means that no matching placement was found for the employee id, so we need to update the placement.
