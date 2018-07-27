@@ -21,8 +21,6 @@ import { getShifts, deleteShift } from '../../actions/shiftActions';
 
 const routes = config.APP.ROUTES;
 
-const { STATUSES } = routes.SHIFTS;
-
 const propTypes = {
 	startDate: PropTypes.string,
 	employeeId: PropTypes.string,
@@ -165,7 +163,7 @@ class AssignShiftForm extends Component {
 	};
 
 	handleDelete = (event) => {
-		const shift = this.props.shifts.filter(data => (data.shiftId === this.state.shiftId) && (data.status !== STATUSES.DELETED)).shift();
+		const shift = this.props.shifts.filter(data => data.shiftId === this.state.shiftId).shift();
 
 		/* Check if the user wants to delete the shift */
 		let message = '<div class="text-center"><p>Please confirm that you wish to delete the Shift?</p><ul class="list-unstyled font-weight-bold">';
@@ -311,7 +309,7 @@ class AssignShiftForm extends Component {
 
 	handleUnassignedShifts = (startDate) => {
 		/* First of all, lets get all shifts that match the start date */
-		let shifts = this.props.shifts.filter(data => (moment(data.startTime).format('YYYY-MM-DD') === moment(startDate).format('YYYY-MM-DD')) && (data.placements === null || data.placements.length === 0) && (data.status !== STATUSES.DELETED));
+		let shifts = this.props.shifts.filter(data => (moment(data.startTime).format('YYYY-MM-DD') === moment(startDate).format('YYYY-MM-DD')) && (data.placements === null || data.placements.length === 0));
 
 		/* Now we need to filter all shifts for the start date and only return those that have not pasted */
 		shifts = shifts.filter(data => moment(data.startTime).isSameOrAfter(moment().format('YYYY-MM-DD')));

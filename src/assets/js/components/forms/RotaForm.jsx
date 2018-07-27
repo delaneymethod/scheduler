@@ -29,9 +29,7 @@ import { getRotaTypes, createRotaType, updateRotaType, deleteRotaType, switchRot
 
 const routes = config.APP.ROUTES;
 
-const { ROTA_STATUSES } = routes.ROTAS;
-
-const { SHIFT_STATUSES } = routes.SHIFTS;
+const { STATUSES } = routes.ROTAS;
 
 const propTypes = {
 	title: PropTypes.string,
@@ -184,7 +182,7 @@ class RotaForm extends Component {
 			if (this.props.rotas.length === 1) {
 				startDateReadOnly = false;
 
-				if (this.props.shifts.filter(data => data.status !== SHIFT_STATUSES.DELETED).length > 0) {
+				if (this.props.shifts.length > 0) {
 					startDateReadOnly = true;
 				}
 			} else {
@@ -405,7 +403,7 @@ class RotaForm extends Component {
 						/* Set the current rota type */
 						console.log('Called RotaForm handleSubmit switchRotaType');
 						actions.switchRotaType(rotaType).then(() => {
-							const status = ROTA_STATUSES.DRAFT;
+							const status = STATUSES.DRAFT;
 
 							const { budget, startDate } = this.state;
 

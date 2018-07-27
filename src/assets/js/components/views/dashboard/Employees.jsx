@@ -10,8 +10,8 @@ import { bindActionCreators } from 'redux';
 import { polyfill } from 'mobile-drag-drop';
 import { extendMoment } from 'moment-range';
 import React, { Fragment, Component } from 'react';
-import { delay, concat, sortBy, isEmpty, isString, includes, debounce } from 'lodash';
 import { scrollBehaviourDragImageTranslateOverride } from 'mobile-drag-drop/scroll-behaviour';
+import { has, omitBy, delay, concat, sortBy, isEmpty, isString, includes, debounce } from 'lodash';
 import { Row, Col, Form, Label, Input, Popover, FormGroup, InputGroup, InputGroupAddon, PopoverBody, PopoverHeader } from 'reactstrap';
 
 import Modal from '../../common/Modal';
@@ -55,8 +55,6 @@ import { getShifts, updateShift } from '../../../actions/shiftActions';
 import { getEmployees, orderEmployees } from '../../../actions/employeeActions';
 
 const routes = config.APP.ROUTES;
-
-const { STATUSES } = routes.SHIFTS;
 
 const moment = extendMoment(Moment);
 
@@ -108,6 +106,14 @@ class Employees extends Component {
 		this.toastId = null;
 
 		/* this.oldDraggableCell = null; */
+
+		this.oldShift = {
+			endTime: '',
+			roleName: '',
+			startTime: '',
+			numberOfPositions: 1,
+			isClosingShift: false,
+		};
 
 		this.state = this.getInitialState();
 
@@ -229,8 +235,8 @@ class Employees extends Component {
 			dragImageTranslateOverride: scrollBehaviourDragImageTranslateOverride,
 		});
 
-		/* We debounce this call to wait 30ms (we do not want the leading (or "immediate") flag passed because we want to wait until all the componentDidUpdate calls have finished before loading the table data again */
-		this.handleFetchData = debounce(this.handleFetchData.bind(this), 30);
+		/* We debounce this call to wait 100ms (we do not want the leading (or "immediate") flag passed because we want to wait until all the componentDidUpdate calls have finished before loading the table data again */
+		this.handleFetchData = debounce(this.handleFetchData.bind(this), 100);
 
 		/* We debounce this call to wait 10ms (we do not want the leading (or "immediate") flag passed because we want to wait the user has finished ordering all rows before saving the order */
 		this.handleUpdateEmployeeOrder = debounce(this.handleUpdateEmployeeOrder.bind(this), 10);
@@ -411,7 +417,7 @@ class Employees extends Component {
 		/* Loop over each day in the week and build our table header and footer data */
 		weekDates.forEach((weekDate) => {
 			/* Loop over all the shifts and get current date shifts */
-			const shifts = this.props.shifts.filter(data => (moment(data.startTime).format('YYYY-MM-DD') === moment(weekDate).format('YYYY-MM-DD')) && (data.status !== STATUSES.DELETED));
+			const shifts = this.props.shifts.filter(data => moment(data.startTime).format('YYYY-MM-DD') === moment(weekDate).format('YYYY-MM-DD'));
 
 			/* Loop over all shifts for current date and total up the number of positions available */
 			const total = shifts.map(data => data.numberOfPositions).reduce((prev, next) => prev + next, 0);
@@ -474,13 +480,13 @@ class Employees extends Component {
 				const shiftsPlacements = [];
 
 				/* Loop over all the shifts and get current date shifts */
-				const shifts = sortBy(this.props.shifts, 'startTime').filter(data => (moment(data.startTime).format('YYYY-MM-DD') === moment(weekDate).format('YYYY-MM-DD')) && (data.status !== STATUSES.DELETED));
+				const shifts = sortBy(this.props.shifts, 'startTime').filter(data => moment(data.startTime).format('YYYY-MM-DD') === moment(weekDate).format('YYYY-MM-DD'));
 
 				/* Now we have to loop over all the shifts, grabbing the shifts belong to the current employee since the shifts API has all shifts not just those assigned to employees */
 				shifts.forEach((shift) => {
 					/* If the shift has placements, we can assume its been assigned to an employee */
 					if (shift.placements !== null) {
-						const placement = shift.placements.filter(data => (data.employee.employeeId === accountEmployee.employee.employeeId) && (data.status !== STATUSES.DELETED)).shift();
+						const placement = shift.placements.filter(data => data.employee.employeeId === accountEmployee.employee.employeeId).shift();
 
 						/* So we've found a matching placement for the current employee so lets build up the shift/placement data for the column */
 						if (!isEmpty(placement)) {
@@ -567,7 +573,7 @@ class Employees extends Component {
 				tableData.header.columns[weekDateIndex].draggable = draggable;
 
 				/* Loop over all shifts and get the unassigned ones for current week date */
-				const unassignedShifts = this.props.shifts.filter(data => (moment(data.startTime).format('YYYY-MM-DD') === moment(weekDate).format('YYYY-MM-DD')) && (data.placements === null || data.placements.length === 0) && (data.status !== STATUSES.DELETED));
+				const unassignedShifts = this.props.shifts.filter(data => (moment(data.startTime).format('YYYY-MM-DD') === moment(weekDate).format('YYYY-MM-DD')) && (data.placements === null || data.placements.length === 0));
 
 				/* This is our column structure so we can drag and drop */
 				row.columns.push({
@@ -721,7 +727,7 @@ class Employees extends Component {
 		} = this.props;
 
 		/* Get the shift based on shift id */
-		const shift = shifts.filter(data => (data.shiftId === shiftId) && (data.status !== STATUSES.DELETED)).shift();
+		const shift = shifts.filter(data => data.shiftId === shiftId).shift();
 
 		/* The shift start and end times dont change so we can grab these to create the new start and end time values that will be based off the new date */
 		let { endTime, startTime } = shift;
@@ -733,6 +739,18 @@ class Employees extends Component {
 			isClosingShift,
 			numberOfPositions,
 		} = shift;
+
+		const shiftPlacement = shift.placements.filter(data => data.placementId === placementId).shift();
+
+		/* Lets create our old shift object so we can compare changes */
+		this.oldShift = {
+			roleName,
+			endTime,
+			startTime,
+			isClosingShift,
+			numberOfPositions,
+			employeeId: shiftPlacement.employee.employeeId,
+		};
 
 		/**
 		 * Get date only part from both start and end times.
@@ -786,7 +804,7 @@ class Employees extends Component {
 
 		if (currentDateShifts.length > 0) {
 			/* For each shift found for the current date, check its employee id against the cells employee id */
-			currentDateShifts = currentDateShifts.filter(currentDateShiftData => (currentDateShiftData.placements && currentDateShiftData.placements.filter(placementData => (placementData.employee.employeeId === employeeId) && (placementData.status !== STATUSES.DELETED)).length));
+			currentDateShifts = currentDateShifts.filter(currentDateShiftData => (currentDateShiftData.placements && currentDateShiftData.placements.filter(placementData => placementData.employee.employeeId === employeeId).length));
 
 			/* For the remaining shifts in the current date, loop over and check start / end time ranges */
 			currentDateShifts.forEach((currentDateShift, currentDateShiftIndex) => {
@@ -809,44 +827,147 @@ class Employees extends Component {
 				roleName: ((!isEmpty(roleName)) ? roleName : ''),
 			};
 
-			console.log('Called Employees handleUpdateShift updateShift');
-			actions.updateShift(payload)
-				/* Check if we need to update the placement */
-				.then(() => {
-					/* Get the matching placement (based on the employee id) */
-					const placement = shift.placements.filter(data => (data.employee.employeeId === employeeId) && (data.status !== STATUSES.DELETED)).shift();
+			/* This logic is used to decide which API calls we need to make since there were changes found */
+			const tempPayload = {
+				endTime,
+				startTime,
+				employeeId,
+				isClosingShift,
+				numberOfPositions,
+				roleName: ((!isEmpty(roleName)) ? roleName : ''),
+			};
 
-					/**
-					 * If the placement is empty, this means that no matching placement was found for the employee id for the dropped cell, so we need to update the placement.
-					 * If there was a match, the shift belongs to same employee id of the dropped cell.
-					 */
-					if (isEmpty(placement)) {
-						payload = {
-							shiftId,
-							placementId,
-							employeeId,
-						};
+			const payloadDifferences = omitBy(tempPayload, (value, key) => this.oldShift[key] === value);
+
+			let updateBoth = false;
+
+			let updateShiftOnly = false;
+
+			let updatePlacementOnly = false;
+
+			/* If the total differences is only 1 */
+			if (Object.keys(payloadDifferences).length === 1) {
+				/* and if the only different is the employee then we only need to update the placement */
+				if (has(payloadDifferences, 'employeeId')) {
+					updateBoth = false;
+
+					updateShiftOnly = false;
+
+					updatePlacementOnly = true;
+				/* and if the only different but its not the employee then we only need to update the shift */
+				} else {
+					updateBoth = false;
+
+					updateShiftOnly = true;
+
+					updatePlacementOnly = false;
+				}
+			/* else if the total differences are more than 1 and includes the employee then we need to update both */
+			} else if (Object.keys(payloadDifferences).length > 1) {
+				if (has(payloadDifferences, 'employeeId')) {
+					updateBoth = true;
+
+					updateShiftOnly = false;
+
+					updatePlacementOnly = false;
+				/* and does not include the employee, then we only need to update shift */
+				} else {
+					updateBoth = false;
+
+					updateShiftOnly = true;
+
+					updatePlacementOnly = false;
+				}
+			}
+
+			if (updateBoth) {
+				console.log('Called Employees handleUpdateShift updateBoth');
+				console.log('Called Employees handleUpdateShift updateShift');
+				actions.updateShift(payload)
+					/* Check if we need to update the placement */
+					.then(() => {
+						/* Get the matching placement (based on the employee id) */
+						const placement = shift.placements.filter(data => data.employee.employeeId === employeeId).shift();
 
 						/**
-						 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
-						 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
+						 * If the placement is empty, this means that no matching placement was found for the employee id for the dropped cell, so we need to update the placement.
+						 * If there was a match, the shift belongs to same employee id of the dropped cell.
 						 */
-						console.log('Called Employees handleUpdateShift updatePlacement');
-						return actions.updatePlacement(payload).catch(error => Promise.reject(error));
-					}
+						if (isEmpty(placement)) {
+							payload = {
+								shiftId,
+								placementId,
+								employeeId,
+							};
 
-					return true;
-				})
-				/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-				.then(() => this.handleGetShifts(rotaId))
-				.then(() => this.handleGetRotas(rotaTypeId))
-				.catch((error) => {
-					error.data.title = 'Edit Shift';
+							/**
+							 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
+							 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
+							 */
+							console.log('Called Employees handleUpdateShift updatePlacement');
+							return actions.updatePlacement(payload).catch(error => Promise.reject(error));
+						}
 
-					this.setState({ error });
+						return true;
+					})
+					/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+					.then(() => this.handleGetShifts(rotaId))
+					.then(() => this.handleGetRotas(rotaTypeId))
+					.catch((error) => {
+						error.data.title = 'Edit Shift';
 
-					this.handleModal();
-				});
+						this.setState({ error });
+
+						this.handleModal();
+					});
+			} else if (updateShiftOnly) {
+				console.log('Called Employees handleUpdateShift updateShiftOnly');
+				console.log('Called Employees handleUpdateShift updateShift');
+				actions.updateShift(payload)
+					/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+					.then(() => this.handleGetShifts(rotaId))
+					.then(() => this.handleGetRotas(rotaTypeId))
+					.catch((error) => {
+						error.data.title = 'Edit Shift';
+
+						this.setState({ error });
+
+						this.handleModal();
+					});
+			} else if (updatePlacementOnly) {
+				console.log('Called Employees handleUpdateShift updatePlacementOnly');
+				/* Get the matching placement (based on the employee id) */
+				const placement = shift.placements.filter(data => data.employee.employeeId === employeeId).shift();
+
+				/**
+				 * If the placement is empty, this means that no matching placement was found for the employee id for the dropped cell, so we need to update the placement.
+				 * If there was a match, the shift belongs to same employee id of the dropped cell.
+				 */
+				if (isEmpty(placement)) {
+					payload = {
+						shiftId,
+						placementId,
+						employeeId,
+					};
+
+					/**
+					 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
+					 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
+					 */
+					console.log('Called Employees handleUpdateShift updatePlacement');
+					actions.updatePlacement(payload)
+						/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+						.then(() => this.handleGetShifts(rotaId))
+						.then(() => this.handleGetRotas(rotaTypeId))
+						.catch((error) => {
+							error.data.title = 'Edit Shift';
+
+							this.setState({ error });
+
+							this.handleModal();
+						});
+				}
+			}
 		} else {
 			/* Show conflict error */
 			const shiftConflict = {
@@ -888,7 +1009,7 @@ class Employees extends Component {
 				const currentRota = allRotas.filter(data => data.rotaId === rota.rotaId).shift();
 
 				console.log('Called Employees handleGetRotas switchRota');
-				return actions.switchRota(currentRota).catch(error => Promise.reject(error));
+				return actions.switchRota(currentRota);
 			})
 			.catch(error => Promise.reject(error));
 	};

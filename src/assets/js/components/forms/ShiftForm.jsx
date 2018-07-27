@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { extendMoment } from 'moment-range';
 import React, { Fragment, Component } from 'react';
-import { delay, isEmpty, includes, orderBy, debounce } from 'lodash';
 import { Row, Col, Label, Input, Button, Tooltip, FormGroup } from 'reactstrap';
+import { has, delay, isEmpty, isEqual, includes, omitBy, orderBy, debounce } from 'lodash';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 
 import Alert from '../common/Alert';
@@ -23,8 +23,6 @@ import { getShifts, createShift, updateShift, deleteShift } from '../../actions/
 import { createPlacement, updatePlacement, deletePlacement } from '../../actions/placementActions';
 
 const routes = config.APP.ROUTES;
-
-const { STATUSES } = routes.SHIFTS;
 
 const moment = extendMoment(Moment);
 
@@ -75,6 +73,14 @@ class ShiftForm extends Component {
 		this.endTimes = {};
 
 		this.startTimes = {};
+
+		this.oldShift = {
+			endTime: '',
+			roleName: '',
+			startTime: '',
+			numberOfPositions: 1,
+			isClosingShift: false,
+		};
 
 		this.timeInterval = 15;
 
@@ -194,13 +200,25 @@ class ShiftForm extends Component {
 
 		/* If we are in edit mode, we basically need to overwrite most of the above except for the shift id, placement id, employee id */
 		if (this.props.editMode && !isEmpty(this.props.shiftId)) {
-			const shift = this.props.shifts.filter(data => (data.shiftId === this.props.shiftId) && (data.status !== STATUSES.DELETED)).shift();
+			const shift = this.props.shifts.filter(data => data.shiftId === this.props.shiftId).shift();
+
+			/* Update old shift info - used when checking whether we send a call to update shifts and placements or just placements */
+			this.oldShift = {
+				endTime: shift.endTime,
+				startTime: shift.startTime,
+				employeeId: this.props.employeeId,
+				isClosingShift: shift.isClosingShift,
+				numberOfPositions: shift.numberOfPositions,
+			};
 
 			/* Override role name */
 			if (!isEmpty(shift.role)) {
 				const { roleName } = shift.role;
 
 				this.setState({ roleName });
+
+				/* Dont forget to add the rolename to the old shift object if one exists */
+				this.oldShift.roleName = roleName;
 			}
 
 			const { isClosingShift, numberOfPositions } = shift;
@@ -508,7 +526,7 @@ class ShiftForm extends Component {
 				const currentRota = allRotas.filter(data => data.rotaId === rota.rotaId).shift();
 
 				console.log('Called ShiftForm handleGetRotas switchRota');
-				return actions.switchRota(currentRota).catch(error => Promise.reject(error));
+				return actions.switchRota(currentRota);
 			})
 			.catch(error => Promise.reject(error));
 	};
@@ -519,7 +537,7 @@ class ShiftForm extends Component {
 	};
 
 	handleDelete = (event) => {
-		const shift = this.props.shifts.filter(data => (data.shiftId === this.state.shiftId) && (data.status !== STATUSES.DELETED)).shift();
+		const shift = this.props.shifts.filter(data => data.shiftId === this.state.shiftId).shift();
 
 		const accountEmployee = this.props.employees.filter(data => data.employee.employeeId === this.state.employeeId).shift();
 
@@ -574,14 +592,8 @@ class ShiftForm extends Component {
 					/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
 					.then(() => this.handleGetRotas())
 					.then(() => {
-						/**
-						 * Seems to be a flow issue somewhere - editing shift from shift button, closes this form without calling handleClose.
-						 * However editing the shift from the shiftoverview required this handleClose call.
-						 */
-						if (this.props.overview) {
-							/* Close the modal */
-							this.props.handleClose(event, '', '', '', moment());
-						}
+						/* Close the modal */
+						this.props.handleClose(event, '', '', '', moment());
 
 						/* FIXME - Make messages constants in config */
 						message = '<p>Shift was deleted!</p>';
@@ -626,11 +638,11 @@ class ShiftForm extends Component {
 			let totalConflicts = 0;
 
 			/* This gets all shifts for selected date, minus the shift we are editing - we dont want to compare the edit shift with with edit shift */
-			let currentDateShifts = shifts.filter(data => data.shiftId !== shiftId).filter(shiftData => (moment(shiftData.startTime).format('YYYY-MM-DD') === startDate) && (shiftData.status !== STATUSES.DELETED));
+			let currentDateShifts = shifts.filter(data => data.shiftId !== shiftId).filter(shiftData => moment(shiftData.startTime).format('YYYY-MM-DD') === startDate);
 
 			if (currentDateShifts.length > 0) {
 				/* For each shift found for the current date, check its employee id against the cells employee id */
-				currentDateShifts = currentDateShifts.filter(currentDateShiftData => (currentDateShiftData.placements && currentDateShiftData.placements.filter(placementData => (placementData.employee.employeeId === employeeId) && (placementData.status !== STATUSES.DELETED)).length));
+				currentDateShifts = currentDateShifts.filter(currentDateShiftData => (currentDateShiftData.placements && currentDateShiftData.placements.filter(placementData => placementData.employee.employeeId === employeeId).length));
 
 				/* For the remaining shifts in the current date, loop over and check start / end time ranges */
 				currentDateShifts.forEach((currentDateShift, currentDateShiftIndex) => {
@@ -653,33 +665,187 @@ class ShiftForm extends Component {
 				};
 
 				if (this.props.editMode) {
-					/* Keep track of old shifts before updating so we can do checks on the employee/placement */
-					const oldShifts = shifts;
+					/* Checks whats was change so we can skip certain/if not all API calls */
+					const tempPayload = {
+						endTime,
+						startTime,
+						employeeId,
+						isClosingShift,
+						numberOfPositions,
+						roleName: ((!isEmpty(roleName)) ? roleName : ''),
+					};
 
-					console.log('Called ShiftForm handleSubmit updateShift');
-					actions.updateShift(payload)
-						.then(() => {
-							/* Get the edit shift again based on shift id. Updated shift doesnt have placments included */
-							const oldShift = oldShifts.filter(data => (data.shiftId === shiftId) && (data.status !== STATUSES.DELETED)).shift();
+					if (isEqual(this.oldShift, tempPayload)) {
+						const noChangesError = {
+							data: {
+								/* FIXME - Make messages constants in config */
+								message: '<p><strong>The following error occurred:</strong></p><ul><li>No changes where found.</li></ul>',
+							},
+						};
 
-							/* Get the matching placement (based on the employee id) */
-							const oldPlacement = oldShift.placements.filter(data => (data.employee.employeeId === employeeId) && (data.status !== STATUSES.DELETED)).shift();
+						this.setState({ error: noChangesError });
+					} else {
+						/* This logic is used to decide which API calls we need to make since there were changes found */
+						const payloadDifferences = omitBy(tempPayload, (value, key) => this.oldShift[key] === value);
 
-							/**
-							 * If the placement is empty, this means that no matching placement was found for the employee id, so we need to update the placement.
-							 * If there was a match, the shift belongs to same employee id.
-							 */
-							if (isEmpty(oldPlacement)) {
-								if (isEmpty(employeeId)) {
-									payload = {
-										placementId,
-									};
+						let updateBoth = false;
 
-									/* Employee Id was unselected so lets delete the placement for the shift */
-									console.log('Called ShiftForm handleSubmit deletePlacement');
-									return actions.deletePlacement(payload).catch(error => Promise.reject(error));
-								}
+						let updateShiftOnly = false;
 
+						let updatePlacementOnly = false;
+
+						/* If the total differences is only 1 */
+						if (Object.keys(payloadDifferences).length === 1) {
+							/* and if the only different is the employee then we only need to update the placement */
+							if (has(payloadDifferences, 'employeeId')) {
+								updateBoth = false;
+
+								updateShiftOnly = false;
+
+								updatePlacementOnly = true;
+							/* and if the only different but its not the employee then we only need to update the shift */
+							} else {
+								updateBoth = false;
+
+								updateShiftOnly = true;
+
+								updatePlacementOnly = false;
+							}
+						/* else if the total differences are more than 1 and includes the employee then we need to update both */
+						} else if (Object.keys(payloadDifferences).length > 1) {
+							if (has(payloadDifferences, 'employeeId')) {
+								updateBoth = true;
+
+								updateShiftOnly = false;
+
+								updatePlacementOnly = false;
+							/* and does not include the employee, then we only need to update shift */
+							} else {
+								updateBoth = false;
+
+								updateShiftOnly = true;
+
+								updatePlacementOnly = false;
+							}
+						}
+
+						if (updateBoth) {
+							/* Keep track of old shifts before updating so we can do checks on the employee/placement */
+							const oldShifts = shifts;
+
+							console.log('Called ShiftForm handleSubmit updateBoth');
+							console.log('Called ShiftForm handleSubmit updateShift');
+							actions.updateShift(payload)
+								.then(() => {
+									/* Get the edit shift again based on shift id. Updated shift doesnt have placments included */
+									const oldShift = oldShifts.filter(data => data.shiftId === shiftId).shift();
+
+									/* Get the matching placement (based on the employee id) */
+									const oldPlacement = oldShift.placements.filter(data => data.employee.employeeId === employeeId).shift();
+
+									/**
+									 * If the placement is empty, this means that no matching placement was found for the employee id, so we need to update the placement.
+									 * If there was a match, the shift belongs to same employee id.
+									 */
+									if (isEmpty(oldPlacement)) {
+										if (isEmpty(employeeId)) {
+											payload = {
+												placementId,
+											};
+
+											/* Employee Id was unselected so lets delete the placement for the shift */
+											console.log('Called ShiftForm handleSubmit deletePlacement');
+											return actions.deletePlacement(payload).catch(error => Promise.reject(error));
+										}
+
+										payload = {
+											shiftId,
+											employeeId,
+											placementId,
+										};
+
+										/**
+										 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
+										 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
+										 */
+										console.log('Called ShiftForm handleSubmit updatePlacement');
+										return actions.updatePlacement(payload).catch(error => Promise.reject(error));
+									}
+
+									return true;
+								})
+								/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+								.then(() => this.handleGetShifts())
+								/* The user can select or create a role so we need to get roles each time we update or create a shift */
+								.then(() => this.handleGetRoles())
+								/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
+								.then(() => this.handleGetRotas())
+								.then(() => {
+									/**
+									 * Seems to be a flow issue somewhere - editing shift from shift button, closes this form without calling handleClose.
+									 * However editing the shift from the shiftoverview required this handleClose call.
+									 */
+									if (this.props.overview) {
+										/* Close the modal */
+										this.props.handleClose(event, '', '', '', moment());
+									}
+
+									/* FIXME - Make messages constants in config */
+									const message = '<p>Shift was updated!</p>';
+
+									/* Pass a message back up the rabbit hole to the parent component */
+									this.props.handleSuccessNotification(message);
+								})
+								.catch(error => this.setState({ error }));
+						} else if (updateShiftOnly) {
+							console.log('Called ShiftForm handleSubmit updateShiftOnly');
+							console.log('Called ShiftForm handleSubmit updateShift');
+							actions.updateShift(payload)
+								/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+								.then(() => this.handleGetShifts())
+								/* The user can select or create a role so we need to get roles each time we update or create a shift */
+								.then(() => this.handleGetRoles())
+								/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
+								.then(() => this.handleGetRotas())
+								.then(() => {
+									/* Close the modal */
+									this.props.handleClose(event, '', '', '', moment());
+
+									/* FIXME - Make messages constants in config */
+									const message = '<p>Shift was updated!</p>';
+
+									/* Pass a message back up the rabbit hole to the parent component */
+									this.props.handleSuccessNotification(message);
+								})
+								.catch(error => this.setState({ error }));
+						} else if (updatePlacementOnly) {
+							console.log('Called ShiftForm handleSubmit updatePlacementOnly');
+							if (isEmpty(employeeId)) {
+								payload = {
+									placementId,
+								};
+
+								/* Employee Id was unselected so lets delete the placement for the shift */
+								console.log('Called ShiftForm handleSubmit deletePlacement');
+								actions.deletePlacement(payload)
+									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+									.then(() => this.handleGetShifts())
+									/* The user can select or create a role so we need to get roles each time we update or create a shift */
+									.then(() => this.handleGetRoles())
+									/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
+									.then(() => this.handleGetRotas())
+									.then(() => {
+										/* Close the modal */
+										this.props.handleClose(event, '', '', '', moment());
+
+										/* FIXME - Make messages constants in config */
+										const message = '<p>Shift was updated!</p>';
+
+										/* Pass a message back up the rabbit hole to the parent component */
+										this.props.handleSuccessNotification(message);
+									})
+									.catch(error => this.setState({ error }));
+							} else {
 								payload = {
 									shiftId,
 									employeeId,
@@ -691,34 +857,27 @@ class ShiftForm extends Component {
 								 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
 								 */
 								console.log('Called ShiftForm handleSubmit updatePlacement');
-								return actions.updatePlacement(payload).catch(error => Promise.reject(error));
+								actions.updatePlacement(payload)
+									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+									.then(() => this.handleGetShifts())
+									/* The user can select or create a role so we need to get roles each time we update or create a shift */
+									.then(() => this.handleGetRoles())
+									/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
+									.then(() => this.handleGetRotas())
+									.then(() => {
+										/* Close the modal */
+										this.props.handleClose(event, '', '', '', moment());
+
+										/* FIXME - Make messages constants in config */
+										const message = '<p>Shift was updated!</p>';
+
+										/* Pass a message back up the rabbit hole to the parent component */
+										this.props.handleSuccessNotification(message);
+									})
+									.catch(error => this.setState({ error }));
 							}
-
-							return true;
-						})
-						/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-						.then(() => this.handleGetShifts())
-						/* The user can select or create a role so we need to get roles each time we update or create a shift */
-						.then(() => this.handleGetRoles())
-						/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
-						.then(() => this.handleGetRotas())
-						.then(() => {
-							/**
-							 * Seems to be a flow issue somewhere - editing shift from shift button, closes this form without calling handleClose.
-							 * However editing the shift from the shiftoverview required this handleClose call.
-							 */
-							if (this.props.overview) {
-								/* Close the modal */
-								this.props.handleClose(event, '', '', '', moment());
-							}
-
-							/* FIXME - Make messages constants in config */
-							const message = '<p>Shift was updated!</p>';
-
-							/* Pass a message back up the rabbit hole to the parent component */
-							this.props.handleSuccessNotification(message);
-						})
-						.catch(error => this.setState({ error }));
+						}
+					}
 				} else {
 					console.log('Called ShiftForm handleSubmit createShift');
 					actions.createShift(payload)

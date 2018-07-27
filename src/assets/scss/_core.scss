@@ -158,6 +158,7 @@ html {
 			content: '';
 			position: absolute;
 			transform-origin: $hamburger-button-size/14 center;
+			-webkit-transform-origin: $hamburger-button-size/14 center;
 		}
 		
 		&:before {
@@ -198,13 +199,22 @@ html {
 		top: 0;
 		transform-origin: 50% 50%;
 		width: $hamburger-button-size;
+		-webkit-transform-origin: 50% 50%;
 	}
 
 	&:before {
-		transform: rotate3d(0, 0, 1, 45deg); 
+		transform: rotate3d(0, 0, 1, 45deg);
+		-o-transform: rotate3d(0, 0, 1, 45deg);
+		-ms-transform: rotate3d(0, 0, 1, 45deg);
+		-moz-transform: rotate3d(0, 0, 1, 45deg);
+		-webkit-transform: rotate3d(0, 0, 1, 45deg);
 	}
 	
 	&:after {
-		transform: rotate3d(0, 0, 1, -45deg); 
+		transform: rotate3d(0, 0, 1, -45deg);
+		-o-transform: rotate3d(0, 0, 1, -45deg);
+		-ms-transform: rotate3d(0, 0, 1, -45deg);
+		-moz-transform: rotate3d(0, 0, 1, -45deg);
+		-webkit-transform: rotate3d(0, 0, 1, -45deg);
 	}
 }

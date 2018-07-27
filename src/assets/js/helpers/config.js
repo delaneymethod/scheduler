@@ -135,11 +135,6 @@ export default {
 				ASSIGN: {
 					TITLE: 'Assign Shift',
 				},
-				STATUSES: {
-					DRAFT: 'DRAFT',
-					EDITED: 'EDITED',
-					DELETED: 'DELETED',
-				},
 			},
 			ROTAS: {
 				DELETE: {
