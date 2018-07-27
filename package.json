@@ -1,6 +1,6 @@
 {
 	"name": "scheduler",
-	"version": "0.0.46",
+	"version": "0.0.47",
 	"description": "Scheduler is an on-demand shift allocation platform that enables employers and event planners to match shifts with available workers in real-time for immediate fulfilment.",
 	"main": "src/assets/js/Scheduler.jsx",
 	"scripts": {
