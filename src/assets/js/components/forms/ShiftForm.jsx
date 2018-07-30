@@ -106,6 +106,8 @@ class ShiftForm extends Component {
 
 		this.handleSetStartTimes = this.handleSetStartTimes.bind(this);
 
+		this.handleCreateOptions = this.handleCreateOptions.bind(this);
+
 		this.handleChangeStartTime = this.handleChangeStartTime.bind(this);
 
 		this.handleChangeStartDate = this.handleChangeStartDate.bind(this);
@@ -123,11 +125,11 @@ class ShiftForm extends Component {
 		startTime: '',
 		startDates: [],
 		employeeId: '',
+		oldEndTime: '',
 		placementId: '',
+		oldStartTime: '',
 		numberOfPositions: 1,
 		isClosingShift: false,
-		endTimeWasChanged: false,
-		startTimeWasChanged: false,
 		isClosingShiftTooltipOpen: false,
 	});
 
@@ -194,8 +196,6 @@ class ShiftForm extends Component {
 			startDate = moment(startDates[0]).format('YYYY-MM-DD');
 		}
 
-		this.setState({ startDate, startDates }, () => this.handleSetStartTimes());
-
 		/* If we are in edit mode, we basically need to overwrite most of the above except for the shift id, placement id, employee id */
 		if (this.props.editMode && !isEmpty(this.props.shiftId)) {
 			const shift = this.props.shifts.filter(data => data.shiftId === this.props.shiftId).shift();
@@ -219,38 +219,48 @@ class ShiftForm extends Component {
 				this.oldShift.roleName = roleName;
 			}
 
+			let { endTime, startTime } = shift;
+
 			const { isClosingShift, numberOfPositions } = shift;
 
-			const endTime = moment(shift.endTime).seconds(0).format('YYYY-MM-DD HH:mm:ss');
+			const oldEndTime = endTime;
 
-			const startTime = moment(shift.startTime).seconds(0).format('YYYY-MM-DD HH:mm:ss');
+			const oldStartTime = startTime;
 
 			/* We already have the start date passed in as a prop, but lets set it again, just to be safe */
-			startDate = moment(shift.startTime).format('YYYY-MM-DD');
+			startDate = moment(startTime).format('YYYY-MM-DD');
 
 			/* Update the state with all the edit shift details */
 			this.setState({
+				endTime,
 				startTime,
 				startDate,
+				startDates,
+				oldEndTime,
+				oldStartTime,
 				isClosingShift,
 				numberOfPositions,
 			}, () => {
-				this.endTimes = [];
-
-				this.startTimes = [];
+				document.getElementById('startTime').innerHTML = '';
 
 				document.getElementById('endTime').innerHTML = '';
 
-				document.getElementById('startTime').innerHTML = '';
-
 				document.getElementById('endTime').disabled = false;
 
-				this.handleSetStartTimes();
+				this.handleSetStartTimes().then(() => {
+					startTime = `${this.state.startDate} ${moment(oldStartTime).seconds(0).format('HH:mm:ss')}`;
 
-				this.handleSetEndTimes();
+					this.setState({ startTime }, () => {
+						this.handleSetEndTimes().then(() => {
+							endTime = `${this.state.startDate} ${moment(oldEndTime).seconds(0).format('HH:mm:ss')}`;
 
-				this.setState({ endTime, startTime });
+							this.setState({ endTime });
+						});
+					});
+				});
 			});
+		} else {
+			this.setState({ startDate, startDates }, () => this.handleSetStartTimes());
 		}
 	};
 
@@ -268,6 +278,113 @@ class ShiftForm extends Component {
 		const target = event.currentTarget;
 
 		this.setState({
+			[target.name]: target.value,
+		});
+	};
+
+	handleChangeStartDate = (event) => {
+		const target = event.currentTarget;
+
+		const oldEndTime = this.state.endTime;
+
+		const oldStartTime = this.state.startTime;
+
+		this.setState({
+			oldEndTime,
+			endTime: '',
+			oldStartTime,
+			startTime: '',
+			[target.name]: target.value,
+		}, () => {
+			this.form.reset();
+
+			if (isEmpty(oldStartTime) && isEmpty(oldEndTime)) {
+				document.getElementById('startTime').innerHTML = '';
+
+				document.getElementById('endTime').innerHTML = '';
+
+				document.getElementById('endTime').disabled = true;
+
+				this.handleSetStartTimes();
+			} else {
+				document.getElementById('startTime').innerHTML = '';
+
+				document.getElementById('endTime').innerHTML = '';
+
+				document.getElementById('endTime').disabled = false;
+
+				this.handleSetStartTimes().then(() => {
+					const startTime = `${this.state.startDate} ${moment(oldStartTime).seconds(0).format('HH:mm:ss')}`;
+
+					if (moment(startTime).isSameOrAfter(moment())) {
+						this.setState({ startTime }, () => {
+							this.handleSetEndTimes().then(() => {
+								const endTime = `${this.state.startDate} ${moment(oldEndTime).seconds(0).format('HH:mm:ss')}`;
+
+								this.setState({ endTime });
+							});
+						});
+					} else {
+						document.getElementById('startTime').innerHTML = '';
+
+						document.getElementById('endTime').innerHTML = '';
+
+						document.getElementById('endTime').disabled = true;
+
+						this.handleSetStartTimes();
+					}
+				});
+			}
+		});
+	};
+
+	handleChangeStartTime = (event) => {
+		const target = event.currentTarget;
+
+		const oldStartTime = this.state.startTime;
+
+		const oldEndTime = this.state.endTime;
+
+		this.setState({
+			oldEndTime,
+			oldStartTime,
+			[target.name]: target.value,
+		}, () => {
+			if (!isEmpty(this.state.startTime)) {
+				document.getElementById('endTime').innerHTML = '';
+
+				document.getElementById('endTime').disabled = false;
+
+				this.handleSetEndTimes().then(() => {
+					let endTime = '';
+
+					if (isEmpty(oldEndTime)) {
+						endTime = moment(this.state.startTime, 'YYYY-MM-DD HH:mm:ss').add(this.timeInterval, 'minutes').seconds(0);
+
+						endTime = `${this.state.startDate} ${moment(endTime).seconds(0).format('HH:mm:ss')}`;
+					} else {
+						endTime = `${this.state.startDate} ${moment(oldEndTime).seconds(0).format('HH:mm:ss')}`;
+					}
+
+					this.setState({ endTime });
+				});
+			} else {
+				document.getElementById('endTime').innerHTML = '';
+
+				document.getElementById('endTime').disabled = true;
+
+				this.setState({ endTime: '' });
+			}
+		});
+	};
+
+	handleChangeEndTime = (event) => {
+		const target = event.currentTarget;
+
+		const oldEndTime = this.state.endTime;
+
+		this.setState({
+			oldEndTime,
 			[target.name]: target.value,
 		});
 	};
@@ -312,35 +429,11 @@ class ShiftForm extends Component {
 			}
 		}
 
-		/* Dont forget to add the start time of the shift we are editing to the list */
-		if (this.props.editMode && !isEmpty(this.state.startTime)) {
-			const option = {
-				label: moment(this.state.startTime).format('HH:mm'),
-				day: moment(this.state.startTime).format('ddd, Do MMMM'),
-				value: moment(this.state.startTime).format('YYYY-MM-DD HH:mm:ss'),
-			};
+		document.getElementById('startTime').innerHTML = '';
 
-			this.startTimes[option.day].push(option);
+		document.getElementById('startTime').appendChild(new Option('', ''));
 
-			this.startTimes[option.day] = uniqBy(this.startTimes[option.day], object => object.label);
-		}
-
-		/* Make sure the start times are ordered correctly. In edit mode, we add in the shifts start time even though its time might be in the past */
-		this.startTimes[moment(this.state.startTime).format('ddd, Do MMMM')] = orderBy(this.startTimes[moment(this.state.startTime).format('ddd, Do MMMM')], 'label');
-
-		/* Create our select with optgroup and options */
-		Object.entries(this.startTimes).forEach((day) => {
-			/* Set the optgroup label to be the day - e.g Thur 19th July */
-			const [label] = day;
-
-			const optGroup = document.createElement('optgroup');
-
-			optGroup.label = label;
-
-			day[1].forEach(data => optGroup.appendChild(new Option(data.label, data.value)));
-
-			document.getElementById('startTime').appendChild(optGroup);
-		});
+		this.handleCreateOptions('startTime', this.startTimes);
 
 		return Promise.resolve(true);
 	};
@@ -380,107 +473,33 @@ class ShiftForm extends Component {
 			/* Add the day if it doesn't exist */
 			this.endTimes[option.day] = this.endTimes[option.day] || [];
 
-			this.endTimes[option.day].push(option);
+			if (moment(option.value, 'YYYY-MM-DD').isSame(moment().format('YYYY-MM-DD'))) {
+				if (moment(option.label, 'HH:mm').isSameOrAfter(moment())) {
+					this.endTimes[option.day].push(option);
+				}
+			} else {
+				this.endTimes[option.day].push(option);
+			}
 		}
 
+		this.handleCreateOptions('endTime', this.endTimes);
+
+		return Promise.resolve(true);
+	};
+
+	handleCreateOptions = (fieldId, options) => {
 		/* Create our select with optgroup and options */
-		Object.entries(this.endTimes).forEach((day) => {
+		Object.entries(options).forEach((option) => {
 			/* Set the optgroup label to be the day - e.g Thur 19th July */
-			const [label] = day;
+			const [label] = option;
 
 			const optGroup = document.createElement('optgroup');
 
 			optGroup.label = label;
 
-			day[1].forEach(data => optGroup.appendChild(new Option(data.label, data.value)));
+			option[1].forEach(data => optGroup.appendChild(new Option(data.label, data.value)));
 
-			document.getElementById('endTime').appendChild(optGroup);
-		});
-
-		this.setState({ endTime });
-
-		return Promise.resolve(true);
-	};
-
-	handleChangeStartDate = (event) => {
-		const target = event.currentTarget;
-
-		/* If the user changes the start date, we need to redo all start and end times again so reset the states and start time and clear the end times array. We also need to reset the forms validation listeners */
-		this.setState({
-			endTime: '',
-			startTime: '',
-			[target.name]: target.value,
-		}, () => {
-			this.endTimes = [];
-
-			this.startTimes = [];
-
-			document.getElementById('endTime').innerHTML = '';
-
-			document.getElementById('endTime').disabled = true;
-
-			document.getElementById('startTime').innerHTML = '';
-
-			document.getElementById('startTime').appendChild(new Option('', ''));
-
-			this.handleSetStartTimes();
-
-			const field = this.form.fieldsStore.getField('startTime');
-
-			field.clearValidations();
-
-			this.form.emitResetEvent();
-		});
-	};
-
-	handleChangeStartTime = (event) => {
-		const oldEndTime = this.state.endTime;
-
-		const oldStartTime = this.state.startTime;
-
-		const target = event.currentTarget;
-
-		this.setState({
-			[target.name]: target.value,
-		}, () => {
-			if (oldStartTime !== target.value) {
-				this.setState({ startTimeWasChanged: !this.state.startTimeWasChanged });
-			}
-
-			if (isEmpty(target.value)) {
-				this.endTimes = [];
-
-				this.setState({ endTime: '' });
-
-				document.getElementById('endTime').innerHTML = '';
-
-				document.getElementById('endTime').disabled = true;
-			} else {
-				/* We set the end times based on the start times */
-				document.getElementById('endTime').innerHTML = '';
-
-				document.getElementById('endTime').disabled = false;
-
-				this.handleSetEndTimes().then(() => {
-					if (!isEmpty(oldEndTime) && this.props.editMode) {
-						this.setState({ endTime: oldEndTime });
-					}
-				});
-			}
-		});
-	};
-
-	handleChangeEndTime = (event) => {
-		const target = event.currentTarget;
-
-		const oldEndTime = this.state.endTime;
-
-		this.setState({
-			[target.name]: target.value,
-		}, () => {
-			if (oldEndTime !== target.value) {
-				this.setState({ endTimeWasChanged: !this.state.endTimeWasChanged });
-			}
+			document.getElementById(fieldId).appendChild(optGroup);
 		});
 	};
 
@@ -792,8 +811,9 @@ class ShiftForm extends Component {
 								.then(() => this.handleGetRotas())
 								.then(() => {
 									/* Close the modal */
-									console.log('updateShift handleClose', this.props);
-									this.props.handleClose();
+									if (this.props.overview) {
+										this.props.handleClose();
+									}
 
 									/* FIXME - Make messages constants in config */
 									const message = '<p>Shift was updated!</p>';
@@ -1031,6 +1051,7 @@ const mapStateToProps = (state, props) => ({
 	shiftId: props.shiftId,
 	rotaType: state.rotaType,
 	editMode: props.editMode,
+	overview: props.overview,
 	roleName: props.roleName,
 	startDate: props.startDate,
 	employees: state.employees,
