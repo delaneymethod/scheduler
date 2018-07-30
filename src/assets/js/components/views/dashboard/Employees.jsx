@@ -252,6 +252,8 @@ class Employees extends Component {
 		/* If the current week, current rota, current rota type, employees, settings or shifts had any changes, re/load the table */
 		if (prevProps.employees !== this.props.employees || prevProps.week !== this.props.week || prevProps.rota !== this.props.rota || prevProps.rotaType !== this.props.rotaType || prevProps.shifts !== this.props.shifts || prevProps.settings !== this.props.settings) {
 			this.handleFetchData();
+
+			this.setState({ totalEmployees: this.props.employees.length });
 		}
 
 		if (prevState.roleName !== this.state.roleName) {
