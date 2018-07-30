@@ -264,9 +264,21 @@
 			}
 		}
 		
-		.edit-employee:hover {
-			cursor: pointer;
-			background-color: darken($gray-400, 5%);
+		.edit-employee {
+			.edit-handler {
+				display: none;
+			}
+		
+			&:hover {
+				cursor: pointer;
+				background-color: darken($gray-400, 5%);
+			
+				.edit-handler {
+					top: 0;
+					right: 0;
+					display: inline-block;
+				}
+			}
 		}
 	}
 	

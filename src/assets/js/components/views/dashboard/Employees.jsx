@@ -1241,12 +1241,12 @@ class Employees extends Component {
 													<div className="d-inline-block p-0 mr-auto">Employees ({this.state.totalEmployees})</div>
 													{(this.props.employees.length > 0) ? (
 														<Fragment>
-															<div className="d-inline-block p-0 mr-1 mr-xl-2"><button type="button" className={`btn btn-dark btn-icon${!isEmpty(this.state.employeeName) ? ' btn-filter-active' : ''}`} id="filter" title="Filter by" aria-label="Filter by" onClick={this.handleFilter}><i className="fa fa-fw fa-filter" aria-hidden="true"></i></button></div>
-															<div className="d-inline-block p-0 mr-1 mr-xl-2"><button type="button" className={`btn btn-dark btn-icon${!isEmpty(this.state.sort.column) ? ' btn-filter-active' : ''}`} id="sortBy" title="Sort by" aria-label="Sort by" onClick={this.handleSortBy}><i className="fa fa-fw fa-sort" aria-hidden="true"></i></button></div>
+															<div className="d-inline-block p-0 mr-1 mr-xl-2"><button type="button" className={`btn btn-dark border-0 btn-icon${!isEmpty(this.state.employeeName) ? ' btn-filter-active' : ''}`} id="filter" title="Filter by" aria-label="Filter by" onClick={this.handleFilter}><i className="fa fa-fw fa-filter" aria-hidden="true"></i></button></div>
+															<div className="d-inline-block p-0 mr-1 mr-xl-2"><button type="button" className={`btn btn-dark border-0 btn-icon${!isEmpty(this.state.sort.column) ? ' btn-filter-active' : ''}`} id="sortBy" title="Sort by" aria-label="Sort by" onClick={this.handleSortBy}><i className="fa fa-fw fa-sort" aria-hidden="true"></i></button></div>
 														</Fragment>
 													) : null}
-													<div className="d-none d-md-inline-block p-0 mr-1 mr-xl-2"><button type="button" className="btn btn-secondary btn-icon" title="Upload Employees" aria-label="Upload Employees" onClick={this.handleUploadEmployees}><i className="fa fa-fw fa-upload" aria-hidden="true"></i></button></div>
-													<div className="d-inline-block p-0 m-0"><button type="button" className="btn btn-secondary btn-icon" title="Add New Employee" aria-label="Add New Employee" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-user-plus" aria-hidden="true"></i></button></div>
+													<div className="d-none d-md-inline-block p-0 mr-1 mr-xl-2"><button type="button" className="btn btn-secondary border-0 btn-icon" title="Upload Employees" aria-label="Upload Employees" onClick={this.handleUploadEmployees}><i className="fa fa-fw fa-upload" aria-hidden="true"></i></button></div>
+													<div className="d-inline-block p-0 m-0"><button type="button" className="btn btn-secondary border-0 btn-icon" title="Add New Employee" aria-label="Add New Employee" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-user-plus" aria-hidden="true"></i></button></div>
 												</div>
 												<Popover placement="bottom" isOpen={this.state.isFilterPopoverOpen} target="filter" toggle={this.handleFilter}>
 													<PopoverBody>
@@ -1289,9 +1289,9 @@ class Employees extends Component {
 									<tbody id="tableBody">
 										{this.state.tableData.body.rows.length > 0 && this.state.tableData.body.rows.map((row, rowIndex) => (
 											<tr key={rowIndex} className="draggable-row" data-account-employee-id={row.accountEmployee.accountEmployeeId}>
-												<td className="p-2 align-top text-left p-0 m-0 edit-employee" onClick={event => this.handleEditEmployee(event, row.accountEmployee.employee.employeeId)}>
-													<div className="d-flex align-items-start p-0 m-0 wrap-words">
-														<div className="d-inline-block p-0 mt-0 ml-0 mr-2 mb-0 drag-handler">
+												<td className="p-2 align-top text-left p-0 m-0 edit-employee">
+													<div className="d-flex align-items-start p-0 m-0 wrap-words drag-handler position-relative">
+														<div className="d-inline-block p-0 mt-0 ml-0 mr-2 mb-0">
 															<Avatar name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="39" />
 														</div>
 														<div className="d-inline-block pt-0 pl-0 pr-0 pb-0 m-0">
@@ -1301,6 +1301,9 @@ class Employees extends Component {
 																<i className={`align-middle p-0 ml-1 fa fa-fw fa-envelope ${(row.accountEmployee.employee.email) ? 'complete' : ''}`} aria-hidden="true"></i>
 																<i className={`align-middle p-0 ml-1 fa fa-fw fa-phone ${(row.accountEmployee.employee.mobile) ? 'complete' : ''}`} aria-hidden="true"></i>
 															</div>
+														</div>
+														<div className="position-absolute p-0 m-0 edit-handler">
+															<button type="button" className="btn border-0 btn-secondary btn-icon" title="Edit employee" aria-label="Edit employee" onClick={event => this.handleEditEmployee(event, row.accountEmployee.employee.employeeId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i></button>
 														</div>
 													</div>
 												</td>
