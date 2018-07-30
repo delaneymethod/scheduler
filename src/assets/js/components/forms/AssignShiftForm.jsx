@@ -209,7 +209,7 @@ class AssignShiftForm extends Component {
 					.then(() => this.handleGetRotas())
 					.then(() => {
 						/* Close the modal */
-						this.props.handleClose(event, '', moment());
+						this.props.handleClose();
 
 						/* FIXME - Make messages constants in config */
 						message = '<p>Shift was deleted!</p>';
@@ -293,7 +293,7 @@ class AssignShiftForm extends Component {
 				.then(() => this.handleGetRotas())
 				.then(() => {
 					/* Close the modal */
-					this.props.handleClose(event, '', moment());
+					this.props.handleClose();
 
 					/* FIXME - Make messages constants in config */
 					const message = '<p>Shift was assigned!</p>';

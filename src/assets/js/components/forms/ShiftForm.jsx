@@ -5,8 +5,8 @@ import { bindActionCreators } from 'redux';
 import { extendMoment } from 'moment-range';
 import React, { Fragment, Component } from 'react';
 import { Row, Col, Label, Input, Button, Tooltip, FormGroup } from 'reactstrap';
-import { has, delay, isEmpty, isEqual, includes, omitBy, orderBy, debounce } from 'lodash';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
+import { has, delay, isEmpty, isEqual, includes, omitBy, uniqBy, orderBy, debounce } from 'lodash';
 
 import Alert from '../common/Alert';
 
@@ -36,7 +36,6 @@ const propTypes = {
 	rota: PropTypes.object.isRequired,
 	roles: PropTypes.array.isRequired,
 	shifts: PropTypes.array.isRequired,
-	overview: PropTypes.bool.isRequired,
 	editMode: PropTypes.bool.isRequired,
 	rotaType: PropTypes.object.isRequired,
 	employees: PropTypes.array.isRequired,
@@ -54,7 +53,6 @@ const defaultProps = {
 	shiftId: null,
 	employees: [],
 	roleName: null,
-	overview: false,
 	editMode: false,
 	startDate: null,
 	employeeId: null,
@@ -291,19 +289,6 @@ class ShiftForm extends Component {
 		/* Set default start and end times, to nearest time intervals so we have some default times */
 		const start = moment(this.state.startDate, 'YYYY-MM-DD').startOf('day');
 
-		/* Dont forget to add the shifts start time that we are editing to the list */
-		if (this.props.editMode) {
-			const option = {
-				label: moment(this.state.startTime).format('HH:mm'),
-				day: moment(this.state.startTime).format('ddd, Do MMMM'),
-				value: moment(this.state.startTime).format('YYYY-MM-DD HH:mm:ss'),
-			};
-
-			this.startTimes[option.day] = this.startTimes[option.day] || [];
-
-			this.startTimes[option.day].push(option);
-		}
-
 		/* Loop over the hours, creating a start time range from current day 00:00 to next day midnight */
 		for (let i = 0; i < startTimeHours; i += 1) {
 			const minutes = moment(start).add(this.timeInterval * i, 'minutes').seconds(0);
@@ -314,11 +299,7 @@ class ShiftForm extends Component {
 				value: minutes.format('YYYY-MM-DD HH:mm:ss'),
 			};
 
-			/* If not in edit more, define our array */
-			if (!this.props.editMode) {
-				/* Add the day if it doesn't exist */
-				this.startTimes[option.day] = this.startTimes[option.day] || [];
-			}
+			this.startTimes[option.day] = this.startTimes[option.day] || [];
 
 			/* Now add the time but removing past times e.g we dont want the user being able to select 2pm, Thur 19th July if its 4pm, Thur 19th July */
 			/* But if we are in edit mode, show all times so the shift start time is picked correctly. E.g start time might be 6:15pm but if you edit at 6:20, 6:15 will not longer be available... */
@@ -326,10 +307,22 @@ class ShiftForm extends Component {
 				if (moment(option.label, 'HH:mm').isSameOrAfter(moment())) {
 					this.startTimes[option.day].push(option);
 				}
-				/* This just makes sure we dont add the shift we are editing to the list twice */
-			} else if (moment(this.state.startTime).format('HH:mm') !== option.label) {
+			} else {
 				this.startTimes[option.day].push(option);
 			}
+		}
+
+		/* Dont forget to add the start time of the shift we are editing to the list */
+		if (this.props.editMode && !isEmpty(this.state.startTime)) {
+			const option = {
+				label: moment(this.state.startTime).format('HH:mm'),
+				day: moment(this.state.startTime).format('ddd, Do MMMM'),
+				value: moment(this.state.startTime).format('YYYY-MM-DD HH:mm:ss'),
+			};
+
+			this.startTimes[option.day].push(option);
+
+			this.startTimes[option.day] = uniqBy(this.startTimes[option.day], object => object.label);
 		}
 
 		/* Make sure the start times are ordered correctly. In edit mode, we add in the shifts start time even though its time might be in the past */
@@ -434,11 +427,9 @@ class ShiftForm extends Component {
 
 			const field = this.form.fieldsStore.getField('startTime');
 
-			field.validations = [];
+			field.clearValidations();
 
-			this.form.forceUpdate();
-
-			this.form.reset();
+			this.form.emitResetEvent();
 		});
 	};
 
@@ -536,7 +527,7 @@ class ShiftForm extends Component {
 		return this.props.actions.getRoles().catch(error => Promise.reject(error));
 	};
 
-	handleDelete = (event) => {
+	handleDelete = () => {
 		const shift = this.props.shifts.filter(data => data.shiftId === this.state.shiftId).shift();
 
 		const accountEmployee = this.props.employees.filter(data => data.employee.employeeId === this.state.employeeId).shift();
@@ -592,9 +583,6 @@ class ShiftForm extends Component {
 					/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
 					.then(() => this.handleGetRotas())
 					.then(() => {
-						/* Close the modal */
-						this.props.handleClose(event, '', '', '', moment());
-
 						/* FIXME - Make messages constants in config */
 						message = '<p>Shift was deleted!</p>';
 
@@ -781,14 +769,9 @@ class ShiftForm extends Component {
 								/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
 								.then(() => this.handleGetRotas())
 								.then(() => {
-									/**
-									 * Seems to be a flow issue somewhere - editing shift from shift button, closes this form without calling handleClose.
-									 * However editing the shift from the shiftoverview required this handleClose call.
-									 */
-									if (this.props.overview) {
-										/* Close the modal */
-										this.props.handleClose(event, '', '', '', moment());
-									}
+									/* Close the modal */
+									console.log('updateShift/updatePlacement handleClose', this.props);
+									this.props.handleClose();
 
 									/* FIXME - Make messages constants in config */
 									const message = '<p>Shift was updated!</p>';
@@ -809,7 +792,8 @@ class ShiftForm extends Component {
 								.then(() => this.handleGetRotas())
 								.then(() => {
 									/* Close the modal */
-									this.props.handleClose(event, '', '', '', moment());
+									console.log('updateShift handleClose', this.props);
+									this.props.handleClose();
 
 									/* FIXME - Make messages constants in config */
 									const message = '<p>Shift was updated!</p>';
@@ -836,7 +820,8 @@ class ShiftForm extends Component {
 									.then(() => this.handleGetRotas())
 									.then(() => {
 										/* Close the modal */
-										this.props.handleClose(event, '', '', '', moment());
+										console.log('deletePlacement handleClose', this.props);
+										this.props.handleClose();
 
 										/* FIXME - Make messages constants in config */
 										const message = '<p>Shift was updated!</p>';
@@ -866,7 +851,8 @@ class ShiftForm extends Component {
 									.then(() => this.handleGetRotas())
 									.then(() => {
 										/* Close the modal */
-										this.props.handleClose(event, '', '', '', moment());
+										console.log('updatePlacement handleClose', this.props);
+										this.props.handleClose();
 
 										/* FIXME - Make messages constants in config */
 										const message = '<p>Shift was updated!</p>';
@@ -902,7 +888,7 @@ class ShiftForm extends Component {
 						.then(() => this.handleGetRoles())
 						.then(() => {
 							/* Close the modal */
-							this.props.handleClose(event, '', '', '', moment());
+							this.props.handleClose();
 
 							/* FIXME - Make messages constants in config */
 							const message = '<p>Shift was created!</p>';
@@ -967,7 +953,7 @@ class ShiftForm extends Component {
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
 						<FormGroup>
 							<Label for="startTime">Start Time</Label>
-							<Input type="select" name="startTime" id="startTime" className="custom-select custom-select-xl" value={this.state.startTime} onChange={this.handleChangeStartTime} onBlur={this.handleBlur} tabIndex="3" required>
+							<Input type="select" name="startTime" id="startTime" className="custom-select custom-select-xl" value={this.state.startTime} onChange={this.handleChangeStartTime} tabIndex="3" required>
 								<option value="" label=""></option>
 							</Input>
 							<FieldFeedbacks for="startTime" show="all">
@@ -978,7 +964,7 @@ class ShiftForm extends Component {
 					<Col xs="12" sm="12" md="12" lg="6" xl="6">
 						<FormGroup>
 							<Label for="endTime">End Time</Label>
-							<Input type="select" name="endTime" id="endTime" className="custom-select custom-select-xl" value={this.state.endTime} onChange={this.handleChangeEndTime} onBlur={this.handleBlur} tabIndex="4" required disabled />
+							<Input type="select" name="endTime" id="endTime" className="custom-select custom-select-xl" value={this.state.endTime} onChange={this.handleChangeEndTime} tabIndex="4" required disabled />
 						</FormGroup>
 					</Col>
 				</Row>
@@ -1044,7 +1030,6 @@ const mapStateToProps = (state, props) => ({
 	shifts: state.shifts,
 	shiftId: props.shiftId,
 	rotaType: state.rotaType,
-	overview: props.overview,
 	editMode: props.editMode,
 	roleName: props.roleName,
 	startDate: props.startDate,
