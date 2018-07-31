@@ -63,9 +63,10 @@ header {
 		background-color: $body-color-light;
 		
 		.btn-toggle {
-			font-size: 0.80rem;
+			// font-size: 0.80rem;
+			font-size: inherit;
 			background-color: transparent;
-			line-height: calculateRem(44px);
+			line-height: calculateRem(42px);
 	
 			&:hover {
 				cursor: pointer;

@@ -15,6 +15,7 @@ label {
 
 .custom-select,
 .form-control {
+	font-size: 100%;
 	// font-size: 0.875em;
 	background-color: $gray-300;
 	color: $body-color !important;
@@ -26,7 +27,7 @@ label {
 
 .form-control-md,
 .form-control-sm {
-	line-height: calculateRem(24px);
+	line-height: calculateRem(24px) !important;
 }
 
 .form-control-sm {
@@ -44,7 +45,7 @@ select.form-control:not([size]):not([multiple]) {
 	height: auto !important;
 	line-height: calculateRem(34px);
 	// height: $custom-select-height-xl !important;
-	font-size: $custom-select-font-size-xl !important;
+	// font-size: $custom-select-font-size-xl !important;
 }
 
 input:disabled,

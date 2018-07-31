@@ -1241,11 +1241,11 @@ class Employees extends Component {
 													<div className="d-inline-block p-0 mr-auto">Employees ({this.state.totalEmployees})</div>
 													{(this.props.employees.length > 0) ? (
 														<Fragment>
-															<div className="d-inline-block p-0 mr-1 mr-xl-2"><button type="button" className={`btn btn-dark border-0 btn-icon${!isEmpty(this.state.employeeName) ? ' btn-filter-active' : ''}`} id="filter" title="Filter by" aria-label="Filter by" onClick={this.handleFilter}><i className="fa fa-fw fa-filter" aria-hidden="true"></i></button></div>
-															<div className="d-inline-block p-0 mr-1 mr-xl-2"><button type="button" className={`btn btn-dark border-0 btn-icon${!isEmpty(this.state.sort.column) ? ' btn-filter-active' : ''}`} id="sortBy" title="Sort by" aria-label="Sort by" onClick={this.handleSortBy}><i className="fa fa-fw fa-sort" aria-hidden="true"></i></button></div>
+															<div className="d-inline-block p-0 m-0 mr-1 mr-xl-1"><button type="button" className={`btn btn-dark border-0 btn-icon${!isEmpty(this.state.employeeName) ? ' btn-filter-active' : ''}`} id="filter" title="Filter by" aria-label="Filter by" onClick={this.handleFilter}><i className="fa fa-fw fa-filter" aria-hidden="true"></i></button></div>
+															<div className="d-inline-block p-0 m-0 mr-1 mr-xl-1"><button type="button" className={`btn btn-dark border-0 btn-icon${!isEmpty(this.state.sort.column) ? ' btn-filter-active' : ''}`} id="sortBy" title="Sort by" aria-label="Sort by" onClick={this.handleSortBy}><i className="fa fa-fw fa-sort" aria-hidden="true"></i></button></div>
 														</Fragment>
 													) : null}
-													<div className="d-none d-md-inline-block p-0 mr-1 mr-xl-2"><button type="button" className="btn btn-secondary border-0 btn-icon" title="Upload Employees" aria-label="Upload Employees" onClick={this.handleUploadEmployees}><i className="fa fa-fw fa-upload" aria-hidden="true"></i></button></div>
+													<div className="d-none d-md-inline-block p-0 m-0 mr-1 mr-xl-1"><button type="button" className="btn btn-secondary border-0 btn-icon" title="Upload Employees" aria-label="Upload Employees" onClick={this.handleUploadEmployees}><i className="fa fa-fw fa-upload" aria-hidden="true"></i></button></div>
 													<div className="d-inline-block p-0 m-0"><button type="button" className="btn btn-secondary border-0 btn-icon" title="Add New Employee" aria-label="Add New Employee" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-user-plus" aria-hidden="true"></i></button></div>
 												</div>
 												<Popover placement="bottom" isOpen={this.state.isFilterPopoverOpen} target="filter" toggle={this.handleFilter}>
@@ -1332,7 +1332,7 @@ class Employees extends Component {
 													<div className="d-flex align-items-center">
 														<div className="w-100">
 															<div>{row.hours.toFixed(2)} hrs</div>
-															<div>(&pound;{row.cost.toFixed(2)})</div>
+															<div>(&pound;{row.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })})</div>
 														</div>
 													</div>
 												</td>
@@ -1351,13 +1351,13 @@ class Employees extends Component {
 												</div>
 											</th>
 											{this.state.tableData.footer.columns.map((column, columnIndex) => (
-												<th key={columnIndex} className="text-center">
-													<div className="d-flex align-items-center">
-														<div className="flex-column">
-															<div className="p-2 flex-row">{column.hours}</div>
-															<div className="p-2 flex-row">{column.shifts}</div>
+												<th key={columnIndex} className={(columnIndex < this.state.tableData.footer.columns.length - 1) ? 'text-center' : 'text-center last'}>
+													<div className="d-flex align-items-center p-0 m-0">
+														<div className="flex-column p-0 m-0">
+															<div className="p-2 m-0 flex-row">{column.hours}</div>
+															<div className="p-2 m-0 flex-row">{column.shifts}</div>
 														</div>
-														<div className="flex-column text-danger">&pound;{column.cost.toFixed(2)}</div>
+														<div className="flex-column p-2 m-0 text-danger">&pound;{column.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
 													</div>
 												</th>
 											))}
