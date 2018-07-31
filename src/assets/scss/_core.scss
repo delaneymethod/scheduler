@@ -27,46 +27,33 @@ html {
 	background: $dark;
 }
 
-/* - Chrome ≤56,
-   - Safari 5-10.0
-   - iOS Safari 4.2-10.2
-   - Opera 15-43
-   - Opera Mobile >12
-   - Android Browser 2.1-4.4.4
-   - Samsung Internet
-   - QQ Browser */
 ::-webkit-input-placeholder {
 	color: #cccccc;
 	font-weight: 400;
 }
 
-/* Firefox 4-18 */
 :-moz-placeholder {
 	opacity: 1;
 	color: #cccccc;
 	font-weight: 400;
 }
 
-/* Firefox 19-50 */
 ::-moz-placeholder {
 	opacity: 1;
 	color: #cccccc;
 	font-weight: 400;
 }
 
-/* Internet Explorer 10–11 and Internet Explorer Mobile 10-11 */
 :-ms-input-placeholder {
 	color: #cccccc !important;
 	font-weight: 400 !important;
 }
 
-/* Edge (also supports ::-webkit-input-placeholder) */
 ::-ms-input-placeholder {
 	color: #cccccc !important;
 	font-weight: 400;
 }
 
-/* CSS Pseudo-Elements Level 4 Editor's Draft */
 ::placeholder {
 	color: #cccccc !important;
 	font-weight: 400;

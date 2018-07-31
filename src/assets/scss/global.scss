@@ -241,7 +241,7 @@ header {
 			}
 			
 			img {
-				width: 70%;
+				width: 90%;
 				text-align: center;
 				margin: 0 auto !important;
 			}
@@ -461,12 +461,12 @@ header {
 	.custom-select,
 	.form-control {
 		line-height: normal;
-		height: calculateRem(58px);
+		height: calculateRem(48px);
 	}
 	
 	.form-control-sm {
-		line-height: normal;
 		height: auto;
+		line-height: normal;
 	}
 }	
 
@@ -475,6 +475,17 @@ header {
 	.close {
 		font-size: 1.21875rem;
 	}
+	
+	.custom-select,
+	.form-control {
+		line-height: normal !important;
+		height: calculateRem(48px) !important;
+	}
+	
+	.form-control-sm {
+		height: auto !important;;
+		line-height: normal !important;;
+	}
 }	
 
 @media screen and (-webkit-min-device-pixel-ratio:0) { 
@@ -482,5 +493,13 @@ header {
 	select,
 	textarea {
 		font-size: calculateRem(16px);
+	}
+}
+
+@include media-breakpoint-down(md) {
+	.lines-button {
+		.lines {
+			margin-top: -5px;
+		}
 	}
 }

@@ -19,7 +19,7 @@ label {
 	background-color: $gray-300;
 	color: $body-color !important;
 	height: auto !important;
-	line-height: calculateRem(34px);
+	line-height: calculateRem(34px) !important;
 	// font-weight: $font-weight-semi;
 	border: calculateRem(1px) solid $gray-600;
 }
