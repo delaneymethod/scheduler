@@ -305,8 +305,12 @@ class WeekPicker extends Component {
 	handleSwitchOrCreateRota = (weekStartDate) => {
 		const { actions, history, rotaType: { rotaTypeId } } = this.props;
 
+		console.log('Called WeekPicker handleSwitchOrCreateRota - week start date:', weekStartDate.format('YYYY-MM-DD'));
+
 		/* Find the rota for the week start date */
 		const matchingRota = this.props.rotas.filter(rota => moment(rota.startDate).format('YYYY-MM-DD') === weekStartDate.format('YYYY-MM-DD')).shift();
+
+		console.log('Called WeekPicker handleSwitchOrCreateRota - matching rota:', matchingRota);
 
 		/* If we don't have a rota that matches the start date of the week, then lets create a new rota but only if the start date is after the earliest rota start date. (FYI, If the dates where the same, we'd have a rota...) */
 		if (isEmpty(matchingRota)) {
@@ -350,6 +354,9 @@ class WeekPicker extends Component {
 								this.handleModal();
 							});
 					}, result => this.handleCreateRota(weekStartDate));
+			} else {
+				/* Selected week is before the earlest rota start date so user has gone back in time - lets create a blank rota in case its start date is still after or same as current date. In this case the user could create a shift would wont work as no rota exists. */
+				this.handleCreateRota(weekStartDate);
 			}
 
 			/* We also need to check if the current day is before the start of week day. E.g start of week is Wednesday, but today is Tuesday, we need to go back to last Wednesday, not tomorrow as Tuesday sits in the previous week range and check for a rota. This fixes any issues where the users first day of week if before the current day of the week and there are no rotas! */
