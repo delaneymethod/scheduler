@@ -8,7 +8,15 @@
 		'main.bundle.css',
 		'runtime.bundle.js',
 		'vendors.bundle.js',
-		'service-worker.js',
+		'proximanova-light-webfont.woff2',
+		'proximanova-light-webfont.woff',
+		'proximanova-regular-webfont.woff2',
+		'proximanova-regular-webfont.woff',
+		'proximanova-semibold-webfont.woff2',
+		'proximanova-semibold-webfont.woff',
+		'proximanova-bold-webfont.woff2',
+		'proximanova-bold-webfont.woff',
+		'fontawesome-webfont.woff2?v=4.7.0',
 	];
 
 	/* Will use cache, falling back to network. */
