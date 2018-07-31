@@ -142,10 +142,14 @@
 		.column {
 			width: auto;
 			min-width: 140px;
+			
+			@include media-breakpoint-down(md) {
+				width: 120px;
+			}
 		}
 		
 		.column.first {
-			width: 250px;
+			width: 255px;
 			max-width: 300px;
 			
 			.flex-column {
@@ -155,11 +159,23 @@
 					width: 50%;
 				}
 			}
+			
+			@include media-breakpoint-down(md) {
+				width: 255px;
+			}
+			
+			@include media-breakpoint-down(sm) {
+				width: 165px;
+			}
 		}
 		
 		.column.last {
 			width: auto;
 			max-width: 100px;
+			
+			@include media-breakpoint-down(md) {
+				width: 100px;
+			}
 		}
 	
 		td {
@@ -193,6 +209,10 @@
 				&:not(:only-child, :last-child) {
 					border-bottom: calculateRem(3px) solid darken($secondary, 10%);
 				}
+				
+				@include media-breakpoint-down(md) {
+					min-height: 37px;
+				}
 			}
 			
 			.shift-selected {
@@ -217,6 +237,10 @@
 					cursor: pointer !important;
 					border: 1px dashed $gray-900 !important;
 					box-sizing: border-box !important;
+				}
+				
+				@include media-breakpoint-down(md) {
+					min-height: 45px;
 				}
 			}
 		}

@@ -1,9 +1,14 @@
+@include media-breakpoint-down(sm) {
+	html, body {
+		font-size: calculateRem(12px);
+	}
+}
+
 @include media-breakpoint-up(xl) {
 	.modal-xl {
 		max-width: $modal-xl;
 	}
 }
-
 
 @include media-breakpoint-down(sm) {
 	.btn-block-sm-only {

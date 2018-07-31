@@ -1,3 +1,3 @@
-const truncateText = data => ((data.length > 12) ? data.substr(0, 12).concat('...') : data);
+const truncateText = data => ((data.length > 14) ? data.substr(0, 14).concat('...') : data);
 
 export default truncateText;

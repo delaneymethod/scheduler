@@ -1292,7 +1292,8 @@ class Employees extends Component {
 												<td className="p-2 align-top text-left p-0 m-0 edit-employee">
 													<div className="d-flex align-items-start p-0 m-0 wrap-words position-relative">
 														<div className="d-inline-block p-0 mt-0 ml-0 mr-2 mb-0 drag-handler">
-															<Avatar name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="39" />
+															<Avatar className="d-none d-md-block" name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="39" />
+															<Avatar className="d-block d-md-none" name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="29" />
 														</div>
 														<div className="d-inline-block pt-0 pl-0 pr-0 pb-0 m-0">
 															<div id="fullname">{row.accountEmployee.employee.firstName} {row.accountEmployee.employee.lastName}</div>
@@ -1332,7 +1333,7 @@ class Employees extends Component {
 													<div className="d-flex align-items-center">
 														<div className="w-100">
 															<div>{row.hours.toFixed(2)} hrs</div>
-															<div>(&pound;{row.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })})</div>
+															<div title={`${row.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}`} className="text-truncate">(&pound;{row.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })})</div>
 														</div>
 													</div>
 												</td>
@@ -1357,7 +1358,7 @@ class Employees extends Component {
 															<div className="p-2 m-0 flex-row">{column.hours}</div>
 															<div className="p-2 m-0 flex-row">{column.shifts}</div>
 														</div>
-														<div className="flex-column p-2 m-0 text-danger">&pound;{column.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
+														<div title={`${column.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}`} className="flex-column p-2 m-0 text-danger text-truncate">&pound;{column.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
 													</div>
 												</th>
 											))}
