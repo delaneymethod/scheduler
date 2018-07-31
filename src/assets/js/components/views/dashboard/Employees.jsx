@@ -1290,8 +1290,8 @@ class Employees extends Component {
 										{this.state.tableData.body.rows.length > 0 && this.state.tableData.body.rows.map((row, rowIndex) => (
 											<tr key={rowIndex} className="draggable-row" data-account-employee-id={row.accountEmployee.accountEmployeeId}>
 												<td className="p-2 align-top text-left p-0 m-0 edit-employee">
-													<div className="d-flex align-items-start p-0 m-0 wrap-words drag-handler position-relative">
-														<div className="d-inline-block p-0 mt-0 ml-0 mr-2 mb-0">
+													<div className="d-flex align-items-start p-0 m-0 wrap-words position-relative">
+														<div className="d-inline-block p-0 mt-0 ml-0 mr-2 mb-0 drag-handler">
 															<Avatar name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="39" />
 														</div>
 														<div className="d-inline-block pt-0 pl-0 pr-0 pb-0 m-0">
