@@ -498,9 +498,11 @@ header {
 }
 
 @include media-breakpoint-down(md) {
-	.lines-button {
-		.lines {
-			margin-top: -5px;
+	header {
+		.lines-button {
+			.lines {
+				top: -0.16rem !important;
+			}
 		}
 	}
 }
