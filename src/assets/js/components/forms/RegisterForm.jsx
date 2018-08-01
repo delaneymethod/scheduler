@@ -60,7 +60,7 @@ class RegisterForm extends Component {
 		businessName: '',
 		emailSent: false,
 		confirmPassword: '',
-		termsOfService: false,
+		termsOfUseAgreed: false,
 		subscriptionLevelId: '',
 	});
 
@@ -118,7 +118,7 @@ class RegisterForm extends Component {
 				lastName,
 				firstName,
 				businessName,
-				termsOfService,
+				termsOfUseAgreed,
 				subscriptionLevelId,
 			} = this.state;
 
@@ -128,7 +128,7 @@ class RegisterForm extends Component {
 				lastName,
 				firstName,
 				businessName,
-				termsOfService,
+				termsOfUseAgreed,
 				subscriptionLevelId,
 			};
 
@@ -175,21 +175,21 @@ class RegisterForm extends Component {
 				<EmailField fieldValue={this.state.email} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={5} fieldRequired={true} />
 				<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={6} showPasswordStrength showPasswordCommon fieldRequired={true} />
 				<PasswordField fieldLabel="Confirm Password" fieldName="confirmPassword" fieldValue={this.state.confirmPassword} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={7} fieldRequired={true} />
-				<Row>
-					<Col xs="12" sm="12" md="12" lg="12" xl="12" className="mt-2 mb-2">
-						<FormGroup check inline>
-							<Label check for="termsOfService" className="p-0 m-0">
-								<Input type="checkbox" name="termsOfService" id="termsOfService" className="form-check-input align-midde p-0 m-0 mr-2" onChange={this.handleChange} onBlur={this.handleBlur} tabIndex={8} required />
-								I&#39;ve read and accept the <a href={routes.TERMS_OF_SERVICE.URI} title={routes.TERMS_OF_SERVICE.TITLE} target="_blank" className="text-secondary">{routes.TERMS_OF_SERVICE.TITLE}</a>
-							</Label>
-						</FormGroup>
-					</Col>
-					<Col xs="12" sm="12" md="12" lg="12" xl="12">
-						<FieldFeedbacks for="termsOfService" show="all">
-							<FieldFeedback when="*">- Please read and accept the {routes.TERMS_OF_SERVICE.TITLE}.</FieldFeedback>
-						</FieldFeedbacks>
-					</Col>
-				</Row>
+				<FormGroup check>
+					<Row>
+						<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 mt-2 mb-2">
+							<Input type="checkbox" name="termsOfUseAgreed" id="termsOfUseAgreed" className="form-check-input align-midde p-0 m-0 mr-2" onChange={this.handleChange} onBlur={this.handleBlur} tabIndex={8} required />
+						</Col>
+						<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 mt-2 mb-2">
+							<Label check for="termsOfUseAgreed" className="p-0 m-0 terms-of-use-agreed">{routes.REGISTER.CONTENT.TERMS_OF_USE_AGREED} <a href={routes.TERMS_OF_SERVICE.URI} title={routes.TERMS_OF_SERVICE.TITLE} target="_blank" className="text-secondary">{routes.TERMS_OF_SERVICE.TITLE}</a>.</Label>
+						</Col>
+						<Col xs="12" sm="12" md="12" lg="12" xl="12" className="p-0">
+							<FieldFeedbacks for="termsOfUseAgreed" show="all">
+								<FieldFeedback when="*">- Please read and accept the {routes.TERMS_OF_SERVICE.TITLE}.</FieldFeedback>
+							</FieldFeedbacks>
+						</Col>
+					</Row>
+				</FormGroup>
 				<Button type="submit" color="primary" className="mt-4" title={routes.REGISTER.TITLE} tabIndex="9" disabled={this.state.emailSent} block>{routes.REGISTER.TITLE}</Button>
 			</FormWithConstraints>
 		</Fragment>

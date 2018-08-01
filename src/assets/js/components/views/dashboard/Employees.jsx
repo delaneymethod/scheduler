@@ -1233,7 +1233,7 @@ class Employees extends Component {
 					<Fragment>
 						<div className="table-wrapper">
 							<div className="table-scroller border-0 mt-0 mr-0 mb-3 p-0 u-disable-selection">
-								<table className="employees p-0 m-0">
+								<table className="employees p-0 m-0 mb-3">
 									<thead>
 										<tr>
 											<th className="p-2 text-left column first sortable text-uppercase">
