@@ -163,7 +163,7 @@ module.exports = (env, options) => ({
 			use: {
 				loader: 'html-loader',
 				options: {
-					minimize: true,
+					minimize: false,
 				},
 			},
 		}, {
