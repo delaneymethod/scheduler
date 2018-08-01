@@ -9,13 +9,13 @@ import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-w
 
 import Alert from '../common/Alert';
 
+import config from '../../helpers/config';
+
 import confirm from '../../helpers/confirm';
 
 import TextField from '../fields/TextField';
 
 import NumberField from '../fields/NumberField';
-
-import config from '../../helpers/config';
 
 import { getShifts } from '../../actions/shiftActions';
 
@@ -198,7 +198,7 @@ class RotaForm extends Component {
 				haystackRotaTypes,
 				startDateReadOnly,
 				rotaName: rotaTypeName,
-				budget: (budget === '') ? 0 : budget,
+				budget: (budget === '' || budget === undefined) ? 0 : budget,
 			});
 		}
 	};
@@ -321,7 +321,7 @@ class RotaForm extends Component {
 								rotaId,
 								startDate,
 								rotaTypeId,
-								budget: (budget === '') ? 0 : budget,
+								budget: (budget === '' || budget === undefined) ? 0 : budget,
 							};
 
 							/* Now we create a new rota */
@@ -411,7 +411,7 @@ class RotaForm extends Component {
 								status,
 								startDate,
 								rotaTypeId: rotaType.rotaTypeId,
-								budget: (budget === '') ? 0 : budget,
+								budget: (budget === '' || budget === undefined) ? 0 : budget,
 							};
 
 							/* Now we create a new rota */

@@ -15,9 +15,9 @@ import Header from '../../common/Header';
 
 import RotaForm from '../../forms/RotaForm';
 
-import CloseButton from '../../common/CloseButton';
-
 import config from '../../../helpers/config';
+
+import CloseButton from '../../common/CloseButton';
 
 import Notification from '../../common/Notification';
 

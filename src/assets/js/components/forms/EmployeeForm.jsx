@@ -8,6 +8,8 @@ import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-w
 
 import Alert from '../common/Alert';
 
+import config from '../../helpers/config';
+
 import confirm from '../../helpers/confirm';
 
 import TextField from '../fields/TextField';
@@ -15,8 +17,6 @@ import TextField from '../fields/TextField';
 import EmailField from '../fields/EmailField';
 
 import NumberField from '../fields/NumberField';
-
-import config from '../../helpers/config';
 
 import { getShifts } from '../../actions/shiftActions';
 

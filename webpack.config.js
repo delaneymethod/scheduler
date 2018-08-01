@@ -18,6 +18,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const MinifyPlugin = require('babel-minify-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
@@ -191,9 +192,10 @@ module.exports = (env, options) => ({
 			new UglifyJsPlugin({
 				cache: true,
 				parallel: true,
-				sourceMap: true,
+				sourceMap: false,
 			}),
 			new OptimizeCSSAssetsPlugin(),
+			new MinifyPlugin(),
 		],
 	},
 	plugins: [

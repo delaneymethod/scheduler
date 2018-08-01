@@ -2,9 +2,9 @@ import moment from 'moment';
 import { Col, Row } from 'reactstrap';
 import React, { Fragment, Component } from 'react';
 
-import SiteNavBar from '../common/SiteNavBar';
-
 import config from '../../helpers/config';
+
+import SiteNavBar from '../common/SiteNavBar';
 
 import ServiceUpdatesForm from '../forms/ServiceUpdatesForm';
 

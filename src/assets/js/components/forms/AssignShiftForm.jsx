@@ -9,9 +9,9 @@ import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-w
 
 import Alert from '../common/Alert';
 
-import confirm from '../../helpers/confirm';
-
 import config from '../../helpers/config';
+
+import confirm from '../../helpers/confirm';
 
 import { getRotas, switchRota } from '../../actions/rotaActions';
 

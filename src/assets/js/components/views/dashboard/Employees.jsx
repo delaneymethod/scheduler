@@ -20,6 +20,8 @@ import Header from '../../common/Header';
 
 import Toolbar from '../../common/Toolbar';
 
+import config from '../../../helpers/config';
+
 import RoleForm from '../../forms/RoleForm';
 
 import ShiftForm from '../../forms/ShiftForm';
@@ -27,8 +29,6 @@ import ShiftForm from '../../forms/ShiftForm';
 import ShiftButton from '../../common/ShiftButton';
 
 import CloseButton from '../../common/CloseButton';
-
-import config from '../../../helpers/config';
 
 import EmployeeForm from '../../forms/EmployeeForm';
 

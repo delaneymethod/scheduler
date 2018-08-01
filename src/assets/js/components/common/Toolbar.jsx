@@ -10,6 +10,8 @@ import { Col, Row, Tooltip, Button, Popover, ButtonGroup, PopoverBody, PopoverHe
 
 import Modal from './Modal';
 
+import config from '../../helpers/config';
+
 import RotaForm from '../forms/RotaForm';
 
 import RoleForm from '../forms/RoleForm';
@@ -17,8 +19,6 @@ import RoleForm from '../forms/RoleForm';
 import ShiftForm from '../forms/ShiftForm';
 
 import confirm from '../../helpers/confirm';
-
-import config from '../../helpers/config';
 
 import CloseButton from '../common/CloseButton';
 

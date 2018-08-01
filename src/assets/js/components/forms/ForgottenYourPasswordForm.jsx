@@ -8,9 +8,11 @@ import { FormWithConstraints } from 'react-form-with-constraints';
 
 import Alert from '../common/Alert';
 
+import config from '../../helpers/config';
+
 import EmailField from '../fields/EmailField';
 
-import config from '../../helpers/config';
+import scriptCache from '../../helpers/scriptCache';
 
 import { forgottenYourPassword } from '../../actions/authenticationActions';
 
@@ -25,6 +27,8 @@ class ForgottenYourPasswordForm extends Component {
 		super(props);
 
 		this.form = null;
+
+		this.scriptCache = null;
 
 		this.state = this.getInitialState();
 
@@ -41,7 +45,15 @@ class ForgottenYourPasswordForm extends Component {
 		emailSent: false,
 	});
 
+	componentWillMount = () => {
+		this.scriptCache = scriptCache({
+			zxcvbn: '/assets/js/helpers/zxcvbn.js',
+		});
+	};
+
 	componentDidMount = () => {
+		this.scriptCache.zxcvbn.onLoad(() => console.log('Called ForgottenYourPasswordForm - zxcvbn was loaded.'));
+
 		/* We debounce this call to wait 1300ms (we do not want the leading (or "immediate") flag passed because we want to wait until the user has finished typing before running validation */
 		this.handleValidateFields = debounce(this.handleValidateFields.bind(this), 1300);
 

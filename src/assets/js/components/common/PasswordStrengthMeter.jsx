@@ -1,4 +1,3 @@
-import zxcvbn from 'zxcvbn';
 import React, { Fragment } from 'react';
 
 const PasswordStrengthMeter = ({ password }) => {
@@ -10,7 +9,9 @@ const PasswordStrengthMeter = ({ password }) => {
 
 	let progressCSS = 'progress-bar';
 
+	/* eslint-disable no-undef */
 	const evaluation = zxcvbn(password);
+	/* eslint-enable no-undef */
 
 	progressBar = Math.floor((evaluation.score / 4) * 100);
 

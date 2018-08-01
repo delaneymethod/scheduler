@@ -8,11 +8,13 @@ import { FormWithConstraints } from 'react-form-with-constraints';
 
 import Alert from '../common/Alert';
 
+import config from '../../helpers/config';
+
 import EmailField from '../fields/EmailField';
 
 import PasswordField from '../fields/PasswordField';
 
-import config from '../../helpers/config';
+import scriptCache from '../../helpers/scriptCache';
 
 import { updateYourPassword } from '../../actions/authenticationActions';
 
@@ -34,6 +36,8 @@ class UpdateYourPasswordForm extends Component {
 
 		this.form = null;
 
+		this.scriptCache = null;
+
 		this.state = this.getInitialState();
 
 		this.handleBlur = this.handleBlur.bind(this);
@@ -51,10 +55,18 @@ class UpdateYourPasswordForm extends Component {
 		confirmPassword: '',
 	});
 
+	componentWillMount = () => {
+		this.scriptCache = scriptCache({
+			zxcvbn: '/assets/js/helpers/zxcvbn.js',
+		});
+	};
+
 	componentDidMount = () => {
 		const { token, email } = this.props;
 
 		this.setState({ token, email });
+
+		this.scriptCache.zxcvbn.onLoad(() => console.log('Called UpdateYourPasswordForm - zxcvbn was loaded.'));
 
 		/* We debounce this call to wait 1300ms (we do not want the leading (or "immediate") flag passed because we want to wait until the user has finished typing before running validation */
 		this.handleValidateFields = debounce(this.handleValidateFields.bind(this), 1300);

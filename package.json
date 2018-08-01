@@ -1,6 +1,6 @@
 {
 	"name": "scheduler",
-	"version": "0.0.70",
+	"version": "0.0.71",
 	"description": "Scheduler is an on-demand shift allocation platform that enables employers and event planners to match shifts with available workers in real-time for immediate fulfilment.",
 	"main": "src/assets/js/Scheduler.jsx",
 	"scripts": {
@@ -42,6 +42,7 @@
 		"babel-eslint": "^8.2.6",
 		"babel-jest": "^22.4.4",
 		"babel-loader": "^7.1.5",
+		"babel-minify-webpack-plugin": "^0.3.1",
 		"babel-plugin-transform-class-properties": "^6.24.1",
 		"babel-preset-airbnb": "^2.5.3",
 		"babel-preset-env": "^1.7.0",
@@ -107,7 +108,7 @@
 		"moment": "^2.22.2",
 		"moment-range": "^4.0.1",
 		"prop-types": "^15.6.2",
-		"query-string": "^6.1.0",
+		"query-string": "^5.1.1",
 		"raf": "^3.4.0",
 		"react": "^16.4.1",
 		"react-avatar": "^3.1.2",
@@ -129,7 +130,6 @@
 		"redux-thunk": "^2.3.0",
 		"sortablejs": "^1.7.0",
 		"source-map-explorer": "^1.5.0",
-		"vanilla-autofill-event": "^1.0.3",
-		"zxcvbn": "^4.4.2"
+		"vanilla-autofill-event": "^1.0.3"
 	}
 }

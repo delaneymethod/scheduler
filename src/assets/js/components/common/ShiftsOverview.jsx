@@ -8,11 +8,11 @@ import { Popover, PopoverBody, PopoverHeader } from 'reactstrap';
 
 import Modal from './Modal';
 
+import config from '../../helpers/config';
+
 import Notification from './Notification';
 
 import ShiftForm from '../forms/ShiftForm';
-
-import config from '../../helpers/config';
 
 import AssignShiftForm from '../forms/AssignShiftForm';
 

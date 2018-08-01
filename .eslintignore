@@ -2,3 +2,5 @@ node_modules
 public
 coverage
 src/assets/js/vendors
+src/assets/js/helpers/zxcvbn.js
+src/assets/js/helpers/scriptCache.js

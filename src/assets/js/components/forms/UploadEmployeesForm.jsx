@@ -8,9 +8,9 @@ import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-w
 
 import Alert from '../common/Alert';
 
-import FileField from '../fields/FileField';
-
 import config from '../../helpers/config';
+
+import FileField from '../fields/FileField';
 
 import { getEmployees, orderEmployees, uploadEmployees } from '../../actions/employeeActions';
 

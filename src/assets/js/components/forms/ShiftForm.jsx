@@ -10,9 +10,9 @@ import { has, delay, isEmpty, isEqual, includes, omitBy, uniqBy, orderBy, deboun
 
 import Alert from '../common/Alert';
 
-import confirm from '../../helpers/confirm';
-
 import config from '../../helpers/config';
+
+import confirm from '../../helpers/confirm';
 
 import { getRoles } from '../../actions/roleActions';
 
@@ -970,7 +970,7 @@ class ShiftForm extends Component {
 					</Col>
 				</Row>
 				<Row>
-					<Col xs="12" sm="12" md="12" lg="6" xl="6">
+					<Col xs="12" sm="12" md="12" lg="4" xl="4">
 						<FormGroup>
 							<Label for="startTime">Start Time</Label>
 							<Input type="select" name="startTime" id="startTime" className="custom-select custom-select-xl" value={this.state.startTime} onChange={this.handleChangeStartTime} tabIndex="3" required>
@@ -981,15 +981,13 @@ class ShiftForm extends Component {
 							</FieldFeedbacks>
 						</FormGroup>
 					</Col>
-					<Col xs="12" sm="12" md="12" lg="6" xl="6">
+					<Col xs="12" sm="12" md="12" lg="4" xl="4">
 						<FormGroup>
 							<Label for="endTime">End Time</Label>
 							<Input type="select" name="endTime" id="endTime" className="custom-select custom-select-xl" value={this.state.endTime} onChange={this.handleChangeEndTime} tabIndex="4" required disabled />
 						</FormGroup>
 					</Col>
-				</Row>
-				<Row>
-					<Col xs="12" sm="12" md="12" lg="6" xl="6">
+					<Col xs="12" sm="12" md="12" lg="6" xl="6" className="d-none">
 						<FormGroup>
 							<Label for="numberOfPositions">Number Of Positions</Label>
 							<Input type="select" name="numberOfPositions" id="numberOfPositions" className="custom-select custom-select-xl" value={this.state.numberOfPositions} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="5" required>
@@ -1000,7 +998,7 @@ class ShiftForm extends Component {
 							</FieldFeedbacks>
 						</FormGroup>
 					</Col>
-					<Col xs="12" sm="12" md="12" lg="6" xl="6">
+					<Col xs="12" sm="12" md="12" lg="4" xl="4">
 						<FormGroup>
 							<Label for="isClosingShift">Is Closing Shift<i className="fa fa-fw fa-info-circle" id="isClosingShiftHint" aria-hidden="true"></i></Label>
 							<Input type="select" name="isClosingShift" id="isClosingShift" className="custom-select custom-select-xl" value={this.state.isClosingShift} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="6" required>

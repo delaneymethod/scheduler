@@ -6,9 +6,9 @@ import React, { Component } from 'react';
 
 import Alert from '../common/Alert';
 
-import LoginForm from '../forms/LoginForm';
-
 import config from '../../helpers/config';
+
+import LoginForm from '../forms/LoginForm';
 
 import UpdateYourPasswordForm from '../forms/UpdateYourPasswordForm';
 

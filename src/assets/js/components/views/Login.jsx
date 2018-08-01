@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { Col, Row } from 'reactstrap';
 import React, { Component } from 'react';
 
-import LoginForm from '../forms/LoginForm';
-
 import config from '../../helpers/config';
+
+import LoginForm from '../forms/LoginForm';
 
 const routes = config.APP.ROUTES;
 

@@ -8,9 +8,9 @@ import { has, orderBy, isEmpty, includes } from 'lodash';
 
 import Modal from './Modal';
 
-import confirm from '../../helpers/confirm';
-
 import config from '../../helpers/config';
+
+import confirm from '../../helpers/confirm';
 
 import { switchWeek } from '../../actions/weekActions';
 

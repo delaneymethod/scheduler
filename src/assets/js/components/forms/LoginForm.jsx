@@ -9,9 +9,9 @@ import { FormWithConstraints } from 'react-form-with-constraints';
 
 import Alert from '../common/Alert';
 
-import EmailField from '../fields/EmailField';
-
 import config from '../../helpers/config';
+
+import EmailField from '../fields/EmailField';
 
 import PasswordField from '../fields/PasswordField';
 

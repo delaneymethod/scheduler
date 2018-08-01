@@ -7,9 +7,9 @@ import { Popover, PopoverBody, PopoverHeader } from 'reactstrap';
 
 import Modal from './Modal';
 
-import ShiftForm from '../forms/ShiftForm';
-
 import config from '../../helpers/config';
+
+import ShiftForm from '../forms/ShiftForm';
 
 import CloseButton from '../common/CloseButton';
 
