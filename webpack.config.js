@@ -163,7 +163,7 @@ module.exports = (env, options) => ({
 			use: {
 				loader: 'html-loader',
 				options: {
-					minimize: false,
+					minimize: true,
 				},
 			},
 		}, {
@@ -189,15 +189,13 @@ module.exports = (env, options) => ({
 			},
 		},
 		minimizer: [
-			/*
 			new UglifyJsPlugin({
 				cache: true,
 				parallel: true,
 				sourceMap: false,
 			}),
-			*/
 			new OptimizeCSSAssetsPlugin(),
-			/* new MinifyPlugin(), */
+			new MinifyPlugin(),
 		],
 	},
 	plugins: [
@@ -245,6 +243,11 @@ module.exports = (env, options) => ({
 				cache: true,
 				to: 'assets/fonts',
 				from: 'node_modules/font-awesome/fonts',
+			}, {
+				force: true,
+				cache: true,
+				to: 'assets/js/zxcvbn.js',
+				from: 'src/assets/js/helpers/zxcvbn.js',
 			},
 		]),
 	],

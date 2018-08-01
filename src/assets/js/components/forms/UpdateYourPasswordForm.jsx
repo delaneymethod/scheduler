@@ -57,7 +57,7 @@ class UpdateYourPasswordForm extends Component {
 
 	componentWillMount = () => {
 		this.scriptCache = scriptCache({
-			zxcvbn: '/assets/js/helpers/zxcvbn.js',
+			zxcvbn: '/assets/js/zxcvbn.js',
 		});
 	};
 
