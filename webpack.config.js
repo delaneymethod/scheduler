@@ -189,13 +189,15 @@ module.exports = (env, options) => ({
 			},
 		},
 		minimizer: [
+			/*
 			new UglifyJsPlugin({
 				cache: true,
 				parallel: true,
 				sourceMap: false,
 			}),
+			*/
 			new OptimizeCSSAssetsPlugin(),
-			new MinifyPlugin(),
+			/* new MinifyPlugin(), */
 		],
 	},
 	plugins: [
