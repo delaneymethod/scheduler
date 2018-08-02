@@ -74,7 +74,7 @@ class Home extends Component {
 						<p className="lead-text h2 ml-5 mr-5 mt-5 mt-md-0 mb-md-3 p-0 pb-4 position-relative text-white" dangerouslySetInnerHTML={{ __html: routes.HOME.CONTENT.PROMO.LEAD }} />
 						<div className="h2 ml-5 mr-5 mb-5 mb-md-0 p-0 text-white" dangerouslySetInnerHTML={{ __html: routes.HOME.CONTENT.PROMO.OVERVIEW }} />
 					</Col>
-					<Col xs="12" sm="12" md="6" lg="6" xl="6" className="p-0 m-0 promo-image" style={{ backgroundImage: `url('${routes.HOME.CONTENT.PROMO.IMAGE}')` }}></Col>
+					<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-none d-md-block p-0 pt-md-5 pb-md-5 m-0 promo-image" style={{ backgroundImage: `url('${routes.HOME.CONTENT.PROMO.IMAGE}')` }}></Col>
 				</Row>
 				<Row className="about bg-white">
 					<Col xs="12" className="m-0 p-0">
@@ -88,7 +88,7 @@ class Home extends Component {
 					<Col xs="12" sm="12" md="1" lg="1" xl="2" className="d-none d-md-block"></Col>
 				</Row>
 				<Row className="sms d-flex justify-content-center">
-					<Col xs="12" sm="12" md="6" lg="5" xl="5" className="p-5 m-0 sms-image order-2 order-md-1" style={{ backgroundImage: `url('${routes.HOME.CONTENT.SMS.IMAGE}')` }}></Col>
+					<Col xs="12" sm="12" md="6" lg="5" xl="5" className="d-none d-md-block p-5 m-0 sms-image order-2 order-md-1" style={{ backgroundImage: `url('${routes.HOME.CONTENT.SMS.IMAGE}')` }}></Col>
 					<Col xs="12" sm="12" md="6" lg="7" xl="7" className="align-self-center text-center text-md-left p-0 m-0 order-1 order-md-2">
 						<p className="lead-text h2 ml-5 mr-5 mt-5 mt-md-0 mb-md-3 p-0 pb-4 position-relative text-white" dangerouslySetInnerHTML={{ __html: routes.HOME.CONTENT.SMS.LEAD }} />
 						<div className="h2 ml-5 mr-5 mb-5 mb-md-0 p-0 text-white" dangerouslySetInnerHTML={{ __html: routes.HOME.CONTENT.SMS.OVERVIEW }} />

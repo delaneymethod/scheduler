@@ -14,6 +14,7 @@ const precss = require('precss');
 const webpack = require('webpack');
 const packageJson = require('./package.json');
 const autoprefixer = require('autoprefixer');
+const BabelEnginePlugin = require('babel-engine-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
@@ -199,6 +200,13 @@ module.exports = (env, options) => ({
 		],
 	},
 	plugins: [
+		/*
+		new BabelEnginePlugin({
+			presets: ['env'],
+		}, {
+			verbose: false,
+		}),
+		*/
 		/* Ignore all locale files of moment.js */
 		new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
 		/* Only load moment/locale/en-gb.js */

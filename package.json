@@ -1,6 +1,6 @@
 {
 	"name": "scheduler",
-	"version": "0.0.75",
+	"version": "0.0.76",
 	"description": "Scheduler is an on-demand shift allocation platform that enables employers and event planners to match shifts with available workers in real-time for immediate fulfilment.",
 	"main": "src/assets/js/Scheduler.jsx",
 	"scripts": {
@@ -39,6 +39,7 @@
 		"autoprefixer": "^8.6.5",
 		"axios-mock-adapter": "^1.15.0",
 		"babel-core": "^6.26.3",
+		"babel-engine-plugin": "^0.2.1",
 		"babel-eslint": "^8.2.6",
 		"babel-jest": "^22.4.4",
 		"babel-loader": "^7.1.5",
