@@ -141,11 +141,17 @@ header {
 		.navbar-nav {
 			.nav-item {
 				.nav-link {
+					font-size: inherit;
+					line-height: 30px;
 					color: $white !important;
 					
 					&:hover {
 						color: $text-muted !important;
 					}
+				}
+				
+				.register {
+					margin-right: -3px !important;
 				}
 			}
 		}
@@ -162,7 +168,7 @@ header {
 		}
 		
 		@include media-breakpoint-up(lg) {
-			margin-bottom: calculateRem(48px) !important;
+			margin-bottom: calculateRem(35px) !important;
 		}
 	}
 	
