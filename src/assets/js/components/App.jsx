@@ -17,6 +17,7 @@ import PrivacyPolicy from './views/PrivacyPolicy';
 import TermsOfService from './views/TermsOfService';
 import UpdateYourPassword from './views/UpdateYourPassword';
 import ForgottenYourPassword from './views/ForgottenYourPassword';
+import EndUserLicenseAgreement from './views/EndUserLicenseAgreement';
 
 import Roles from './views/dashboard/Roles';
 import Settings from './views/dashboard/Settings';
@@ -34,6 +35,7 @@ const App = () => (
 			<Route exact path={routes.REGISTER.URI} component={Register} />
 			<Route exact path={routes.PRIVACY_POLICY.URI} component={PrivacyPolicy} />
 			<Route exact path={routes.TERMS_OF_SERVICE.URI} component={TermsOfService} />
+			<Route exact path={routes.END_USER_LICENSE_AGREEMENT.URI} component={EndUserLicenseAgreement} />
 			<Route exact path={`${routes.UPDATE_YOUR_PASSWORD.URI}/:token`} component={UpdateYourPassword} />
 			<Route exact path={routes.FORGOTTEN_YOUR_PASSWORD.URI} component={ForgottenYourPassword} />
 			<Route exact path={routes.DASHBOARD.HOME.URI} component={Dashboard} />

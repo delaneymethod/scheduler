@@ -59,7 +59,8 @@ class ForgottenYourPassword extends Component {
 				</Col>
 				<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center py-5">
 					<div className="panel-page">
-						<a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} className="panel-page__link"><i className="fa fa-fw fa-arrow-circle-left" aria-hidden="true"></i> Back to {routes.LOGIN.TITLE}</a>
+						<a href={routes.HOME.URI} title={routes.HOME.TITLE} className="panel-page__link"><i className="fa fa-fw fa-arrow-circle-left" aria-hidden="true"></i>Back to {routes.HOME.TITLE}</a>
+						<a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} className="panel-page__link pull-right">Already a member? {routes.LOGIN.TITLE}</a>
 						<div className="card panel-page__content">
 							<h2 className="h5--title-card">{routes.FORGOTTEN_YOUR_PASSWORD.TITLE}</h2>
 							<ForgottenYourPasswordForm history={this.props.history} />

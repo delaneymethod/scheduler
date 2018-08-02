@@ -123,6 +123,69 @@ header {
 	}
 }
 
+.header {
+	.navbar-brand {
+		width: 200px;	
+	}
+	
+	.navbar-nav {
+		.nav-item {
+			.nav-link {
+				font-size: inherit;
+				line-height: 30px;
+				color: $white !important;
+				
+				&:hover {
+					color: $text-muted !important;
+				}
+			}
+		}
+	}
+	
+	.spacer {
+		height: 5px !important;
+	}
+
+	.fixed {
+    	@include media-breakpoint-up(lg) {
+			top: 0;
+			left: 0;
+			right: 0;
+			z-index: 1030;
+			position: fixed;
+			padding: 1rem !important;
+		}
+	}
+	
+	@include media-breakpoint-up(lg) {
+		margin-bottom: calculateRem(35px) !important;
+	}
+}
+
+@include media-breakpoint-down(md) {
+	.header {
+		.navbar-nav {
+			display: inline-block;
+			text-align: center !important;
+			margin: calculateRem(5px) auto !important;
+			
+			.nav-item {
+				text-align: center;
+				display: inline-block;
+				padding: 0 calculateRem(15px) !important;
+				
+				.nav-link {
+					color: $white !important;
+					
+					&:hover {
+						color: $text-muted !important;
+					}
+				}
+			}
+		}
+	}
+}
+
 /* Marketing site styles */
 .home-page-container {
 	color: #343E48;
@@ -132,69 +195,6 @@ header {
 	min-height: -moz-min-content;
 	font-size: calculateRem(16px);
 	min-height: -webkit-min-content;
-	
-	.header {
-		.navbar-brand {
-			width: 200px;	
-		}
-		
-		.navbar-nav {
-			.nav-item {
-				.nav-link {
-					font-size: inherit;
-					line-height: 30px;
-					color: $white !important;
-					
-					&:hover {
-						color: $text-muted !important;
-					}
-				}
-				
-				.register {
-					margin-right: -3px !important;
-				}
-			}
-		}
-
-		.fixed {
-	    	@include media-breakpoint-up(lg) {
-				top: 0;
-				left: 0;
-				right: 0;
-				z-index: 1030;
-				position: fixed;
-				padding: 1rem !important;
-			}
-		}
-		
-		@include media-breakpoint-up(lg) {
-			margin-bottom: calculateRem(35px) !important;
-		}
-	}
-	
-	@include media-breakpoint-down(md) {
-		.header {
-			.navbar-nav {
-				display: inline-block;
-				text-align: center !important;
-				margin: calculateRem(5px) auto !important;
-				
-				.nav-item {
-					text-align: center;
-					display: inline-block;
-					padding: 0 calculateRem(15px) !important;
-					
-					.nav-link {
-						color: $white !important;
-						
-						&:hover {
-							color: $text-muted !important;
-						}
-					}
-				}
-			}
-		}
-	}
 	
 	.introduction {
 		.introduction-image {

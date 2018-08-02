@@ -11,15 +11,15 @@ import ServiceUpdatesForm from '../forms/ServiceUpdatesForm';
 
 const routes = config.APP.ROUTES;
 
-class PrivacyPolicy extends Component {
+class EndUserLicenseAgreement extends Component {
 	componentDidMount = () => {
 		document.title = config.APP.TITLE;
 
 		if (!/iPad|iPhone|iPod/.test(navigator.userAgent)) {
 			const meta = document.getElementsByTagName('meta');
 
-			meta.description.setAttribute('content', routes.PRIVACY_POLICY.META.DESCRIPTION);
-			meta.keywords.setAttribute('content', routes.PRIVACY_POLICY.META.KEYWORDS);
+			meta.description.setAttribute('content', routes.END_USER_LICENSE_AGREEMENT.META.DESCRIPTION);
+			meta.keywords.setAttribute('content', routes.END_USER_LICENSE_AGREEMENT.META.KEYWORDS);
 			meta.author.setAttribute('content', config.APP.AUTHOR.TITLE);
 		}
 	};
@@ -30,8 +30,8 @@ class PrivacyPolicy extends Component {
 				<SiteNavBar />
 				<Row className="introduction bg-white d-flex justify-content-center">
 					<Col xs="12" sm="12" md="10" lg="10" xl="10" className="align-self-start align-self-lg-center text-center text-md-left m-0 p-4 p-lg-5">
-						<h1 className="p-0 pt-3 pb-4">{routes.PRIVACY_POLICY.TITLE}</h1>
-						<div className="p-0 m-0" dangerouslySetInnerHTML={{ __html: routes.PRIVACY_POLICY.CONTENT.WELCOME }} />
+						<h1 className="p-0 pt-3 pb-4">{routes.END_USER_LICENSE_AGREEMENT.TITLE}</h1>
+						<div className="p-0 m-0" dangerouslySetInnerHTML={{ __html: routes.END_USER_LICENSE_AGREEMENT.CONTENT.WELCOME }} />
 					</Col>
 				</Row>
 				<Row className="service-updates">
@@ -48,4 +48,4 @@ class PrivacyPolicy extends Component {
 	);
 }
 
-export default PrivacyPolicy;
+export default EndUserLicenseAgreement;
