@@ -22,6 +22,8 @@ import confirm from '../../helpers/confirm';
 
 import CloseButton from '../common/CloseButton';
 
+import EmployeeForm from '../forms/EmployeeForm';
+
 import Notification from '../common/Notification';
 
 import AssignShiftForm from '../forms/AssignShiftForm';
@@ -96,6 +98,8 @@ class Toolbar extends Component {
 
 		this.handleSwitchRotaType = this.handleSwitchRotaType.bind(this);
 
+		this.handleCreateEmployee = this.handleCreateEmployee.bind(this);
+
 		this.handleEditRotaTooltip = this.handleEditRotaTooltip.bind(this);
 
 		this.handleRotaBudgetTooltip = this.handleRotaBudgetTooltip.bind(this);
@@ -131,6 +135,7 @@ class Toolbar extends Component {
 		hasRotaUnassignedShifts: false,
 		isDownloadRotaTooltipOpen: false,
 		isRotaTypeMenuPopoverOpen: false,
+		isCreateEmployeeModalOpen: false,
 	});
 
 	componentDidMount = () => {
@@ -408,6 +413,8 @@ class Toolbar extends Component {
 			});
 	};
 
+	handleCreateEmployee = () => this.setState({ isCreateEmployeeModalOpen: !this.state.isCreateEmployeeModalOpen });
+
 	handleCreateRota = () => this.setState({ isCreateRotaModalOpen: !this.state.isCreateRotaModalOpen });
 
 	handleCreateRole = () => this.setState({ isCreateRoleModalOpen: !this.state.isCreateRoleModalOpen });
@@ -462,6 +469,7 @@ class Toolbar extends Component {
 					</Popover>
 				</Col>
 				<Col className="pt-3 pb-3 pt-sm-3 pb-ms-3 text-center text-md-right" xs="12" sm="12" md="8" lg="8" xl="8">
+					<button type="button" title="Create Employee" className="d-inline-block d-md-none btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 mb-md-0 pl-4 pr-4 pl-md-4 pr-md-4 border-0" disabled={!this.state.enableShiftButton} onClick={this.handleCreateShift}><i className="pr-2 fa fa-fw fa-plus d-sm-inline-block d-md-none d-lg-inline-block" aria-hidden="true"></i>Create Shift</button>
 					{(this.state.employeesIsActive || this.state.overviewIsActive) ? (
 						<Fragment>
 							{(this.state.hasUnassignedShifts) ? (
@@ -471,7 +479,7 @@ class Toolbar extends Component {
 							)}
 						</Fragment>
 					) : (
-						<button type="button" title="Create Shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 mb-md-0 pl-4 pr-4 pl-md-4 pr-md-4 border-0" disabled={!this.state.enableShiftButton} onClick={this.handleCreateShift}><i className="pr-2 fa fa-fw fa-plus d-sm-inline-block d-md-none d-lg-inline-block" aria-hidden="true"></i>Create Shift</button>
+						<button type="button" title="Create Shift" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-3" onClick={this.handleCreateEmployee}>Create Employee</button>
 					)}
 					{(this.state.rotaStatus === STATUSES.DRAFT) ? (
 						<button type="button" title="Publish Rota" className="btn btn-nav btn-primary col-12 col-sm-auto pl-4 pr-4 pl-md-4 pr-md-4 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish<span className="d-sm-inline-block d-md-none d-lg-inline-block">&nbsp;Rota</span></button>
@@ -511,6 +519,9 @@ class Toolbar extends Component {
 			</Modal>
 			<Modal title="Create Role" className="modal-dialog" show={this.state.isCreateRoleModalOpen} onClose={this.handleSwitchFromSelectRoleToCreateRole}>
 				<RoleForm handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleSwitchFromSelectRoleToCreateRole} />
+			</Modal>
+			<Modal title="Create Employee" className="modal-dialog" show={this.state.isCreateEmployeeModalOpen} onClose={this.handleCreateEmployee}>
+				<EmployeeForm editMode={false} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateEmployee} />
 			</Modal>
 			{(this.state.error.data) ? (
 				<Modal title={this.state.error.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isErrorModalOpen} onClose={this.handleModal}>

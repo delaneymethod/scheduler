@@ -131,8 +131,8 @@ header {
 	.navbar-nav {
 		.nav-item {
 			.nav-link {
-				font-size: inherit;
 				line-height: 30px;
+				font-size: 0.8125rem;
 				color: $white !important;
 				
 				&:hover {
