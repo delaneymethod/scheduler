@@ -128,8 +128,8 @@ class RegisterForm extends Component {
 				lastName,
 				firstName,
 				businessName,
-				termsOfUseAgreed,
 				subscriptionLevelId,
+				termsOfUseAgreed: (termsOfUseAgreed === 'on'),
 			};
 
 			console.log('Called RegisterForm handleSubmit register');
