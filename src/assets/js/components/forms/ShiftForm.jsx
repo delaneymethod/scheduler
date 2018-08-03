@@ -403,8 +403,17 @@ class ShiftForm extends Component {
 			startTimeHours = 24 * 2;
 		}
 
+		let { startDate } = this.state;
+
+		/* If start date is in the past, switch/override to current date to set times and update the state */
+		if (moment(startDate).isBefore(moment().format('YYYY-MM-DD'))) {
+			startDate = moment().format('YYYY-MM-DD');
+
+			this.setState({ startDate });
+		}
+
 		/* Set default start and end times, to nearest time intervals so we have some default times */
-		const start = moment(this.state.startDate, 'YYYY-MM-DD').startOf('day');
+		const start = moment(startDate, 'YYYY-MM-DD').startOf('day');
 
 		/* Loop over the hours, creating a start time range from current day 00:00 to next day midnight */
 		for (let i = 0; i < startTimeHours; i += 1) {
@@ -789,8 +798,9 @@ class ShiftForm extends Component {
 								.then(() => this.handleGetRotas())
 								.then(() => {
 									/* Close the modal */
-									console.log('updateShift/updatePlacement handleClose', this.props);
-									this.props.handleClose();
+									if (this.props.overview) {
+										this.props.handleClose();
+									}
 
 									/* FIXME - Make messages constants in config */
 									const message = '<p>Shift was updated!</p>';
@@ -840,8 +850,9 @@ class ShiftForm extends Component {
 									.then(() => this.handleGetRotas())
 									.then(() => {
 										/* Close the modal */
-										console.log('deletePlacement handleClose', this.props);
-										this.props.handleClose();
+										if (this.props.overview) {
+											this.props.handleClose();
+										}
 
 										/* FIXME - Make messages constants in config */
 										const message = '<p>Shift was updated!</p>';
@@ -871,8 +882,9 @@ class ShiftForm extends Component {
 									.then(() => this.handleGetRotas())
 									.then(() => {
 										/* Close the modal */
-										console.log('updatePlacement handleClose', this.props);
-										this.props.handleClose();
+										if (this.props.overview) {
+											this.props.handleClose();
+										}
 
 										/* FIXME - Make messages constants in config */
 										const message = '<p>Shift was updated!</p>';

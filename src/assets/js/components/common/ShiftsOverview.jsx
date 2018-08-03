@@ -83,7 +83,7 @@ class ShiftsOverview extends Component {
 
 	handleCreateShift = () => this.setState({ isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen });
 
-	handleAssignShift = () => this.setState({ isAssignShiftModalOpen: !this.state.isAssignShiftModalOpen });
+	handleAssignShift = (event, shiftId) => this.setState({ shiftId, isAssignShiftModalOpen: !this.state.isAssignShiftModalOpen });
 
 	handleSwitchFromAssignShiftToCreateShift = () => this.setState({ isCreateShiftModalOpen: true, isAssignShiftModalOpen: false });
 
@@ -108,7 +108,7 @@ class ShiftsOverview extends Component {
 							<li style={{ minWidth: '264px' }}><label className="pt-2 pb-1 m-0">Overview - {moment(this.props.weekDate).format('ddd, Do')}</label></li>
 							{this.props.unassignedShifts.map((unassignedShift, unassignedShiftIndex) => (
 								<li key={unassignedShiftIndex} className="p-0" style={{ minWidth: '264px' }}>
-									<button type="button" className="btn btn-action border-0 p-0 font-weight-normal" id={`unassigned-shift-${unassignedShiftIndex}`} style={{ lineHeight: 'normal', fontSize: '0.7rem' }} onClick={this.handleAssignShift}>
+									<button type="button" className="btn btn-action border-0 p-0 font-weight-normal" id={`unassigned-shift-${unassignedShiftIndex}`} style={{ lineHeight: 'normal', fontSize: '0.7rem' }} onClick={event => this.handleAssignShift(event, unassignedShift.shiftId)}>
 										<div className="d-flex align-items-start pt-1 pl-2 pr-2 pb-1 m-0">
 											<div className="d-inline-block p-0 mr-2 mb-0">
 												<Avatar name="" round={true} size="27" />
@@ -147,7 +147,7 @@ class ShiftsOverview extends Component {
 				<ShiftForm editMode={false} startDate={moment(this.props.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateShift} />
 			</Modal>
 			<Modal title="Assign Shift" className="modal-dialog" show={this.state.isAssignShiftModalOpen} onClose={this.handleAssignShift}>
-				<AssignShiftForm startDate={moment(this.props.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleAssignShift} handleSwitchFromAssignShiftToCreateShift={this.handleSwitchFromAssignShiftToCreateShift} />
+				<AssignShiftForm overview={true} shiftId={this.state.shiftId} startDate={moment(this.props.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleAssignShift} handleSwitchFromAssignShiftToCreateShift={this.handleSwitchFromAssignShiftToCreateShift} />
 			</Modal>
 		</Fragment>
 	) : (

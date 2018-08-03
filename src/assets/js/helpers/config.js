@@ -15,7 +15,7 @@ export default {
 						LEAD: 'Drive your business forward with fast and flexible employee&nbsp;scheduling.',
 						OVERVIEW: '<p>Our <strong>Online Rota Software</strong> lets you quickly create <strong>budgeted schedules</strong> to meet changing demand and <strong>employee&nbsp;availability</strong>.</p><p><strong><u>Try Now for Free - No Credit Card or Debit Card Required</u></strong></p><p>Why not dive on in and create your <strong>first&nbsp;Rota</strong>.</p>',
 						CALL_TO_ACTION: {
-							TITLE: 'Start Scheduling for Free',
+							TITLE: 'Start Scheduling for FREE',
 							URI: '/register',
 						},
 						IMAGE: '/assets/img/feature-image-mockup.png',

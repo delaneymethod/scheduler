@@ -132,7 +132,7 @@ header {
 		.nav-item {
 			.nav-link {
 				line-height: 30px;
-				font-size: 0.8125rem;
+				font-size: inherit;
 				color: $white !important;
 				
 				&:hover {
@@ -195,29 +195,39 @@ header {
 	min-height: -moz-min-content;
 	font-size: calculateRem(16px);
 	min-height: -webkit-min-content;
-	
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	// -webkit-text-stroke: 0.45px rgba(0, 0, 0, 0.1);
+	// text-shadow: #fff 0px 1px 1px;
+
 	.introduction {
 		.introduction-image {
-			height: calculateRem(700px);
+			background-size: cover;
+			height: calculateRem(680px);
 			background-repeat: no-repeat;
-			background-position: top left;
 			background-origin: content-box;
 			max-height: calculateRem(700px);
+			background-position: top left;
+		}
+		
+		.register {
+			font-size: inherit;
 		}
 		
 		@include media-breakpoint-down(md) {
 			.introduction-image {
-				height: calculateRem(500px);
-				background-position: top left;
-				max-height: calculateRem(500px);
+				height: calculateRem(600px);
+				max-height: calculateRem(600px);
+				background-position: bottom left;
 			}
 		}
 		
 		@include media-breakpoint-down(sm) {
 			.introduction-image {
 				height: calculateRem(500px);
-				background-position: top left;
 				max-height: calculateRem(500px);
+				background-position: bottom left;
 			}
 		}
 	}
@@ -420,6 +430,9 @@ header {
 	min-height: min-content;
 	min-height: -moz-min-content;
 	min-height: -webkit-min-content;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 	
 	@include media-breakpoint-up(md) {
 		height: 100vh;
@@ -461,6 +474,10 @@ header {
 			text-align: center;
 		}
 	}
+}
+
+.lead-text {
+	font-weight: 900;
 }
 
 /* IE only */

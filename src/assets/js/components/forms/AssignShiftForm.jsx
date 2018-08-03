@@ -22,6 +22,7 @@ import { getShifts, deleteShift } from '../../actions/shiftActions';
 const routes = config.APP.ROUTES;
 
 const propTypes = {
+	shiftId: PropTypes.string,
 	startDate: PropTypes.string,
 	employeeId: PropTypes.string,
 	rota: PropTypes.object.isRequired,
@@ -39,6 +40,7 @@ const defaultProps = {
 	week: {},
 	shifts: [],
 	rotaType: {},
+	shiftId: null,
 	employees: [],
 	startDate: null,
 	employeeId: null,
@@ -137,10 +139,14 @@ class AssignShiftForm extends Component {
 			unassignedShifts = this.handleUnassignedShifts(unassignedShiftDate);
 
 			if (unassignedShifts.length > 0) {
-				const { shiftId } = unassignedShifts[0];
+				/* However, if shift id was passed in as a prop, make sure we use this instead of the state/first unassigned shift. */
+				if (!isEmpty(this.props.shiftId)) {
+					this.setState({ shiftId: this.props.shiftId });
+				} else {
+					this.setState({ shiftId: unassignedShifts[0] });
+				}
 
 				this.setState({
-					shiftId,
 					unassignedShifts,
 					unassignedShiftDate,
 					unassignedShiftDates,
@@ -155,9 +161,11 @@ class AssignShiftForm extends Component {
 			const unassignedShifts = this.handleUnassignedShifts(this.state.unassignedShiftDate);
 
 			if (unassignedShifts.length > 0) {
-				const { shiftId } = unassignedShifts[0];
-
-				this.setState({ shiftId, unassignedShifts });
+				if (!isEmpty(this.props.shiftId)) {
+					this.setState({ shiftId: this.props.shiftId, unassignedShifts });
+				} else {
+					this.setState({ shiftId: unassignedShifts[0], unassignedShifts });
+				}
 			}
 		}
 	};
@@ -209,6 +217,7 @@ class AssignShiftForm extends Component {
 					.then(() => this.handleGetRotas())
 					.then(() => {
 						/* Close the modal */
+						console.log('deleteShift handleClose', this.props);
 						this.props.handleClose();
 
 						/* FIXME - Make messages constants in config */
@@ -293,7 +302,9 @@ class AssignShiftForm extends Component {
 				.then(() => this.handleGetRotas())
 				.then(() => {
 					/* Close the modal */
-					this.props.handleClose();
+					if (this.props.overview) {
+						this.props.handleClose();
+					}
 
 					/* FIXME - Make messages constants in config */
 					const message = '<p>Shift was assigned!</p>';
@@ -379,7 +390,10 @@ const mapStateToProps = (state, props) => ({
 	rota: state.rota,
 	week: state.week,
 	shifts: state.shifts,
+	shiftId: props.shiftId,
 	rotaType: state.rotaType,
+	overview: props.overview,
+	startDate: props.startDate,
 	employees: state.employees,
 });
 

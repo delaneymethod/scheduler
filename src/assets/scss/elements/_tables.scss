@@ -161,7 +161,7 @@
 			}
 			
 			@include media-breakpoint-down(md) {
-				width: 255px;
+				width: 185px;
 			}
 			
 			@include media-breakpoint-down(sm) {
@@ -303,6 +303,56 @@
 					top: 0;
 					right: 0;
 					display: inline-block;
+				}
+			}
+		}
+	}
+	
+	tr.open-shifts {
+		td {
+			cursor: default;
+			white-space: nowrap;
+			background-color: #EBEBEB;
+			background-clip: padding-box;
+			border-bottom: calculateRem(5px) solid #e0e0e0;
+			
+			.shift {
+				background-color: lighten($dark, 30%);
+				
+				&:not(:only-child, :last-child) {
+					border-bottom: calculateRem(3px) solid darken($dark, 10%);
+				}
+			}
+		}
+		
+		th.non-draggable-cell {
+			color: $dark;
+			cursor: no-drop;
+			background-color: $gray-700;
+			background-image: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255, 255, 255, 0.2) 3px, rgba(255, 255, 255, 0.1) 6px);
+		}
+		
+		th.today {
+			color: $dark;
+			background-color: $gray-900;
+		}
+		
+		td.non-draggable-cell {
+			z-index: 1;
+			cursor: no-drop;
+			color: $white;
+			background-color: $gray-200;
+			background-image: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255, 255, 255, 0.5) 3px, rgba(255, 255, 255, 0.5) 6px);
+		}
+	
+		.draggable-cell {
+			z-index: 1;
+				
+			&:hover {
+				z-index: 2;
+				
+				.add-shift {
+					opacity: 1;
 				}
 			}
 		}

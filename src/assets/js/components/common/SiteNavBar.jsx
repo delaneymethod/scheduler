@@ -33,7 +33,7 @@ class SiteNavBar extends Component {
 							<li className="nav-item p-0 m-0"><a href="#beta" title="Beta" className="nav-link pt-0 pb-0 pl-sm-3 pr-sm-3 m-0 ml-md-2 btn btn-dark border-0">Beta</a></li>
 							<li className="nav-item p-0 m-0"><a href="#pricing" title="Pricing" className="nav-link pt-0 pb-0 pl-sm-3 pr-sm-3 m-0 ml-md-2 btn btn-dark border-0">Pricing</a></li>
 							<li className="d-block d-sm-none nav-item p-0 m-0 spacer">&nbsp;</li>
-							<li className="nav-item p-0 m-0"><a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-primary border-0">{routes.LOGIN.TITLE}</a></li>
+							<li className="nav-item p-0 m-0"><a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-secondary border-0">{routes.LOGIN.TITLE}</a></li>
 							<li className="nav-item p-0 m-0"><a href={routes.REGISTER.URI} title={routes.REGISTER.TITLE} className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-primary border-0">{routes.REGISTER.TITLE}</a></li>
 							<li className="d-block d-sm-none nav-item p-0 m-0 spacer">&nbsp;</li>
 							<li className="d-block d-sm-none nav-item p-0 m-0 spacer">&nbsp;</li>

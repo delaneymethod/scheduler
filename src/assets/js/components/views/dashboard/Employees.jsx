@@ -48,11 +48,11 @@ import UploadEmployeesForm from '../../forms/UploadEmployeesForm';
 
 import { getRotas, switchRota } from '../../../actions/rotaActions';
 
-import { updatePlacement } from '../../../actions/placementActions';
-
 import { getShifts, updateShift } from '../../../actions/shiftActions';
 
 import { getEmployees, orderEmployees } from '../../../actions/employeeActions';
+
+import { createPlacement, updatePlacement } from '../../../actions/placementActions';
 
 const routes = config.APP.ROUTES;
 
@@ -203,6 +203,7 @@ class Employees extends Component {
 		totalEmployees: 0,
 		startDate: moment(),
 		isErrorModalOpen: false,
+		totalUnassignedShifts: 0,
 		isFilterPopoverOpen: false,
 		isSortByPopoverOpen: false,
 		isCreateRoleModalOpen: false,
@@ -296,7 +297,7 @@ class Employees extends Component {
 		});
 
 		/* Sort ascending */
-		const sortedBodyRows = tableData.body.rows.sort((a, b) => {
+		const sortedBodyRows = tableData.body.rowsAssigned.sort((a, b) => {
 			if (column === 'firstName') {
 				return collator.compare(a.accountEmployee.employee.firstName, b.accountEmployee.employee.firstName);
 			} else if (column === 'lastName') {
@@ -311,7 +312,7 @@ class Employees extends Component {
 			sortedBodyRows.reverse();
 		}
 
-		tableData.body.rows = sortedBodyRows;
+		tableData.body.rowsAssigned = sortedBodyRows;
 
 		this.setState({
 			tableData,
@@ -394,9 +395,12 @@ class Employees extends Component {
 
 		const weekDates = [];
 
+		let totalUnassignedShifts = 0;
+
 		const tableData = {
 			body: {
-				rows: [],
+				rowsAssigned: [],
+				rowsUnassigned: [],
 			},
 			header: {
 				columns: [],
@@ -461,22 +465,26 @@ class Employees extends Component {
 		/* Loop over each employee and build our table body data */
 		employees.forEach((accountEmployee, accountEmployeeIndex) => {
 			/* Each row holds employee info */
-			const row = {};
+			const rowAssigned = {};
+
+			const rowUnassigned = {};
 
 			/* When we loop over each day in the week, we use this to build up our columns with shifts info */
-			row.columns = [];
+			rowAssigned.columns = [];
+
+			rowUnassigned.columns = [];
 
 			/* First column has our employee info */
-			row.accountEmployee = accountEmployee;
+			rowAssigned.accountEmployee = accountEmployee;
 
 			/**
 			 * Last column in each row has our totals per employee as per below.
 			 * This is the total cost per employee.
 			 */
-			row.cost = 0;
+			rowAssigned.cost = 0;
 
 			/* This is the total hours per employee */
-			row.hours = 0;
+			rowAssigned.hours = 0;
 
 			weekDates.forEach((weekDate, weekDateIndex) => {
 				const shiftsPlacements = [];
@@ -508,7 +516,7 @@ class Employees extends Component {
 								numberOfPositions,
 							} = shift;
 
-							const { roleName } = (!isEmpty(shift.role)) ? shift.role : '';
+							const roleName = (!isEmpty(shift.role)) ? shift.role.roleName : '';
 
 							let hours = moment.duration(moment(endTime).diff(moment(startTime))).asHours();
 
@@ -530,9 +538,9 @@ class Employees extends Component {
 							};
 
 							/* Keeping track of totals per row/employee */
-							row.cost = parseFloat(row.cost) + parseFloat(cost);
+							rowAssigned.cost = parseFloat(rowAssigned.cost) + parseFloat(cost);
 
-							row.hours = parseFloat(row.hours) + parseFloat(hours);
+							rowAssigned.hours = parseFloat(rowAssigned.hours) + parseFloat(hours);
 
 							/* Add shift/placement column */
 							shiftsPlacements.push(shiftPlacement);
@@ -577,8 +585,10 @@ class Employees extends Component {
 				/* Loop over all shifts and get the unassigned ones for current week date */
 				const unassignedShifts = this.props.shifts.filter(data => (moment(data.startTime).format('YYYY-MM-DD') === moment(weekDate).format('YYYY-MM-DD')) && (data.placements === null || data.placements.length === 0));
 
+				totalUnassignedShifts += unassignedShifts.length;
+
 				/* This is our column structure so we can drag and drop */
-				row.columns.push({
+				rowAssigned.columns.push({
 					today,
 					weekDate,
 					draggable,
@@ -586,13 +596,24 @@ class Employees extends Component {
 					shiftsPlacements,
 					unassignedShifts,
 				});
+
+				rowUnassigned.columns.push({
+					today,
+					weekDate,
+					draggable,
+					unassignedShifts,
+				});
 			});
 
-			tableData.body.rows.push(row);
+			tableData.body.rowsAssigned.push(rowAssigned);
+
+			if (totalUnassignedShifts > 0) {
+				tableData.body.rowsUnassigned.push(rowUnassigned);
+			}
 		});
 
 		/* Stick everything into the state */
-		this.setState({ tableData });
+		this.setState({ tableData, totalUnassignedShifts });
 
 		/* Add Orderable event listeners to table rows */
 		this.handleOrderable();
@@ -751,7 +772,7 @@ class Employees extends Component {
 			startTime,
 			isClosingShift,
 			numberOfPositions,
-			employeeId: shiftPlacement.employee.employeeId,
+			employeeId: (shiftPlacement) ? shiftPlacement.employee.employeeId : null,
 		};
 
 		/**
@@ -839,125 +860,81 @@ class Employees extends Component {
 				roleName: ((!isEmpty(roleName)) ? roleName : ''),
 			};
 
-			const payloadDifferences = omitBy(tempPayload, (value, key) => this.oldShift[key] === value);
+			/* If placement Id passed in is empty, user has dragged unassigned shift from open shifts into a employee cell so we need to create instead of update */
+			if (!isEmpty(placementId)) {
+				const payloadDifferences = omitBy(tempPayload, (value, key) => this.oldShift[key] === value);
 
-			let updateBoth = false;
+				let updateBoth = false;
 
-			let updateShiftOnly = false;
+				let updateShiftOnly = false;
 
-			let updatePlacementOnly = false;
+				let updatePlacementOnly = false;
 
-			/* If the total differences is only 1 */
-			if (Object.keys(payloadDifferences).length === 1) {
-				/* and if the only different is the employee then we only need to update the placement */
-				if (has(payloadDifferences, 'employeeId')) {
-					updateBoth = false;
+				/* If the total differences is only 1 */
+				if (Object.keys(payloadDifferences).length === 1) {
+					/* and if the only different is the employee then we only need to update the placement */
+					if (has(payloadDifferences, 'employeeId')) {
+						updateBoth = false;
 
-					updateShiftOnly = false;
+						updateShiftOnly = false;
 
-					updatePlacementOnly = true;
-				/* and if the only different but its not the employee then we only need to update the shift */
-				} else {
-					updateBoth = false;
+						updatePlacementOnly = true;
+					/* and if the only different but its not the employee then we only need to update the shift */
+					} else {
+						updateBoth = false;
 
-					updateShiftOnly = true;
+						updateShiftOnly = true;
 
-					updatePlacementOnly = false;
+						updatePlacementOnly = false;
+					}
+				/* else if the total differences are more than 1 and includes the employee then we need to update both */
+				} else if (Object.keys(payloadDifferences).length > 1) {
+					if (has(payloadDifferences, 'employeeId')) {
+						updateBoth = true;
+
+						updateShiftOnly = false;
+
+						updatePlacementOnly = false;
+					/* and does not include the employee, then we only need to update shift */
+					} else {
+						updateBoth = false;
+
+						updateShiftOnly = true;
+
+						updatePlacementOnly = false;
+					}
 				}
-			/* else if the total differences are more than 1 and includes the employee then we need to update both */
-			} else if (Object.keys(payloadDifferences).length > 1) {
-				if (has(payloadDifferences, 'employeeId')) {
-					updateBoth = true;
 
-					updateShiftOnly = false;
-
-					updatePlacementOnly = false;
-				/* and does not include the employee, then we only need to update shift */
-				} else {
-					updateBoth = false;
-
-					updateShiftOnly = true;
-
-					updatePlacementOnly = false;
-				}
-			}
-
-			if (updateBoth) {
-				console.log('Called Employees handleUpdateShift updateBoth');
-				console.log('Called Employees handleUpdateShift updateShift');
-				actions.updateShift(payload)
-					/* Check if we need to update the placement */
-					.then(() => {
-						/* Get the matching placement (based on the employee id) */
-						const placement = shift.placements.filter(data => data.employee.employeeId === employeeId).shift();
-
-						/**
-						 * If the placement is empty, this means that no matching placement was found for the employee id for the dropped cell, so we need to update the placement.
-						 * If there was a match, the shift belongs to same employee id of the dropped cell.
-						 */
-						if (isEmpty(placement)) {
-							payload = {
-								shiftId,
-								placementId,
-								employeeId,
-							};
+				if (updateBoth) {
+					console.log('Called Employees handleUpdateShift updateBoth');
+					console.log('Called Employees handleUpdateShift updateShift');
+					actions.updateShift(payload)
+						/* Check if we need to update the placement */
+						.then(() => {
+							/* Get the matching placement (based on the employee id) */
+							const placement = shift.placements.filter(data => data.employee.employeeId === employeeId).shift();
 
 							/**
-							 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
-							 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
+							 * If the placement is empty, this means that no matching placement was found for the employee id for the dropped cell, so we need to update the placement.
+							 * If there was a match, the shift belongs to same employee id of the dropped cell.
 							 */
-							console.log('Called Employees handleUpdateShift updatePlacement');
-							return actions.updatePlacement(payload).catch(error => Promise.reject(error));
-						}
+							if (isEmpty(placement)) {
+								payload = {
+									shiftId,
+									placementId,
+									employeeId,
+								};
 
-						return true;
-					})
-					/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-					.then(() => this.handleGetShifts(rotaId))
-					.then(() => this.handleGetRotas(rotaTypeId))
-					.catch((error) => {
-						error.data.title = 'Edit Shift';
+								/**
+								 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
+								 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
+								 */
+								console.log('Called Employees handleUpdateShift updatePlacement');
+								return actions.updatePlacement(payload).catch(error => Promise.reject(error));
+							}
 
-						this.setState({ error });
-
-						this.handleModal();
-					});
-			} else if (updateShiftOnly) {
-				console.log('Called Employees handleUpdateShift updateShiftOnly');
-				console.log('Called Employees handleUpdateShift updateShift');
-				actions.updateShift(payload)
-					/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-					.then(() => this.handleGetShifts(rotaId))
-					.then(() => this.handleGetRotas(rotaTypeId))
-					.catch((error) => {
-						error.data.title = 'Edit Shift';
-
-						this.setState({ error });
-
-						this.handleModal();
-					});
-			} else if (updatePlacementOnly) {
-				console.log('Called Employees handleUpdateShift updatePlacementOnly');
-				/* Get the matching placement (based on the employee id) */
-				const placement = shift.placements.filter(data => data.employee.employeeId === employeeId).shift();
-
-				/**
-				 * If the placement is empty, this means that no matching placement was found for the employee id for the dropped cell, so we need to update the placement.
-				 * If there was a match, the shift belongs to same employee id of the dropped cell.
-				 */
-				if (isEmpty(placement)) {
-					payload = {
-						shiftId,
-						placementId,
-						employeeId,
-					};
-
-					/**
-					 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
-					 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
-					 */
-					console.log('Called Employees handleUpdateShift updatePlacement');
-					actions.updatePlacement(payload)
+							return true;
+						})
 						/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 						.then(() => this.handleGetShifts(rotaId))
 						.then(() => this.handleGetRotas(rotaTypeId))
@@ -968,7 +945,72 @@ class Employees extends Component {
 
 							this.handleModal();
 						});
+				} else if (updateShiftOnly) {
+					console.log('Called Employees handleUpdateShift updateShiftOnly');
+					console.log('Called Employees handleUpdateShift updateShift');
+					actions.updateShift(payload)
+						/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+						.then(() => this.handleGetShifts(rotaId))
+						.then(() => this.handleGetRotas(rotaTypeId))
+						.catch((error) => {
+							error.data.title = 'Edit Shift';
+
+							this.setState({ error });
+
+							this.handleModal();
+						});
+				} else if (updatePlacementOnly) {
+					console.log('Called Employees handleUpdateShift updatePlacementOnly');
+					/* Get the matching placement (based on the employee id) */
+					const placement = shift.placements.filter(data => data.employee.employeeId === employeeId).shift();
+
+					/**
+					 * If the placement is empty, this means that no matching placement was found for the employee id for the dropped cell, so we need to update the placement.
+					 * If there was a match, the shift belongs to same employee id of the dropped cell.
+					 */
+					if (isEmpty(placement)) {
+						payload = {
+							shiftId,
+							placementId,
+							employeeId,
+						};
+
+						/**
+						 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
+						 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
+						 */
+						console.log('Called Employees handleUpdateShift updatePlacement');
+						actions.updatePlacement(payload)
+							/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+							.then(() => this.handleGetShifts(rotaId))
+							.then(() => this.handleGetRotas(rotaTypeId))
+							.catch((error) => {
+								error.data.title = 'Edit Shift';
+
+								this.setState({ error });
+
+								this.handleModal();
+							});
+					}
 				}
+			} else {
+				payload = {
+					shiftId,
+					employeeId,
+				};
+
+				console.log('Called Employees handleUpdateShift createPlacement');
+				actions.createPlacement(payload)
+					/* Updating the shift and or creating a placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+					.then(() => this.handleGetShifts(rotaId))
+					.then(() => this.handleGetRotas(rotaTypeId))
+					.catch((error) => {
+						error.data.title = 'Edit Shift';
+
+						this.setState({ error });
+
+						this.handleModal();
+					});
 			}
 		} else {
 			/* Show conflict error */
@@ -1233,7 +1275,7 @@ class Employees extends Component {
 					<Fragment>
 						<div className="table-wrapper">
 							<div className="table-scroller border-0 mt-0 mr-0 mb-3 p-0 u-disable-selection">
-								<table className="employees p-0 m-0 mb-3">
+								<table className="employees p-0 m-0">
 									<thead>
 										<tr>
 											<th className="p-2 text-left column first sortable text-uppercase">
@@ -1245,8 +1287,8 @@ class Employees extends Component {
 															<div className="d-inline-block p-0 m-0 mr-1 mr-xl-1"><button type="button" className={`btn btn-dark border-0 btn-icon${!isEmpty(this.state.sort.column) ? ' btn-filter-active' : ''}`} id="sortBy" title="Sort by" aria-label="Sort by" onClick={this.handleSortBy}><i className="fa fa-fw fa-sort" aria-hidden="true"></i></button></div>
 														</Fragment>
 													) : null}
-													<div className="d-none d-md-inline-block p-0 m-0 mr-1 mr-xl-1"><button type="button" className="btn btn-secondary border-0 btn-icon" title="Upload Employees" aria-label="Upload Employees" onClick={this.handleUploadEmployees}><i className="fa fa-fw fa-upload" aria-hidden="true"></i></button></div>
-													<div className="d-none d-md-inline-block p-0 m-0"><button type="button" className="btn btn-secondary border-0 btn-icon" title="Add New Employee" aria-label="Add New Employee" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-user-plus" aria-hidden="true"></i></button></div>
+													<div className="d-none d-lg-inline-block p-0 m-0 mr-1 mr-xl-1"><button type="button" className="btn btn-secondary border-0 btn-icon" title="Upload Employees" aria-label="Upload Employees" onClick={this.handleUploadEmployees}><i className="fa fa-fw fa-upload" aria-hidden="true"></i></button></div>
+													<div className="d-none d-lg-inline-block p-0 m-0"><button type="button" className="btn btn-secondary border-0 btn-icon" title="Add New Employee" aria-label="Add New Employee" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-user-plus" aria-hidden="true"></i></button></div>
 												</div>
 												<Popover placement="bottom" isOpen={this.state.isFilterPopoverOpen} target="filter" toggle={this.handleFilter}>
 													<PopoverBody>
@@ -1287,7 +1329,30 @@ class Employees extends Component {
 										</tr>
 									</thead>
 									<tbody id="tableBody">
-										{this.state.tableData.body.rows.length > 0 && this.state.tableData.body.rows.map((row, rowIndex) => (
+										{(this.state.totalUnassignedShifts > 0) ? (
+											<tr className="open-shifts">
+												<td className="p-2 align-middle text-left p-0 m-0">
+													<div className="d-flex align-items-center p-0 m-0">
+														<div className="d-inline-block p-0 m-0 font-italic">Open Shifts</div>
+													</div>
+												</td>
+												{this.state.tableData.body.rowsUnassigned[0].columns.map((column, columnIndex) => ((column.draggable) ? (
+													<td key={columnIndex} className="p-0 align-top non-draggable-cell" data-date={moment(column.weekDate).format('YYYY-MM-DD')}>
+														{(column.unassignedShifts.length > 0) ? column.unassignedShifts.map((shiftPlacement, shiftPlacementIndex) => (
+															<ShiftButton key={shiftPlacementIndex} unassigned={true} past={true} shiftPlacement={shiftPlacement} id={`shift_0_${columnIndex}_${shiftPlacementIndex}`} roleName={this.state.roleName} handleSwitchFromSelectRoleToCreateRole={this.handleSwitchFromSelectRoleToCreateRole} />
+														)) : null}
+													</td>
+												) : (
+													<td key={columnIndex} className="p-0 align-top non-draggable-cell" data-date={moment(column.weekDate).format('YYYY-MM-DD')}>
+														{(column.unassignedShifts.length > 0) ? column.unassignedShifts.map((shiftPlacement, shiftPlacementIndex) => (
+															<ShiftButton key={shiftPlacementIndex} unassigned={true} past={false} shiftPlacement={shiftPlacement} id={`shift_0_${columnIndex}_${shiftPlacementIndex}`} roleName={this.state.roleName} handleSwitchFromSelectRoleToCreateRole={this.handleSwitchFromSelectRoleToCreateRole} />
+														)) : null}
+													</td>
+												)))}
+												<td className="p-2 align-top text-center"></td>
+											</tr>
+										) : null}
+										{this.state.tableData.body.rowsAssigned.length > 0 && this.state.tableData.body.rowsAssigned.map((row, rowIndex) => (
 											<tr key={rowIndex} className="draggable-row" data-account-employee-id={row.accountEmployee.accountEmployeeId}>
 												<td className="p-2 align-top text-left p-0 m-0 edit-employee">
 													<div className="d-flex align-items-start p-0 m-0 wrap-words position-relative">
@@ -1311,13 +1376,13 @@ class Employees extends Component {
 												{row.columns.map((column, columnIndex) => ((column.draggable) ? (
 													<td key={columnIndex} className="p-0 align-top non-draggable-cell" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId}>
 														{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
-															<ShiftButton key={shiftPlacementIndex} past={true} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} roleName={this.state.roleName} handleSwitchFromSelectRoleToCreateRole={this.handleSwitchFromSelectRoleToCreateRole} />
+															<ShiftButton key={shiftPlacementIndex} unassigned={false} past={true} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} roleName={this.state.roleName} handleSwitchFromSelectRoleToCreateRole={this.handleSwitchFromSelectRoleToCreateRole} />
 														)) : null}
 													</td>
 												) : (
 													<td key={columnIndex} className="p-0 align-top draggable-cell" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId}>
 														{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
-															<ShiftButton key={shiftPlacementIndex} past={false} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} roleName={this.state.roleName} handleSwitchFromSelectRoleToCreateRole={this.handleSwitchFromSelectRoleToCreateRole} />
+															<ShiftButton key={shiftPlacementIndex} unassigned={false} past={false} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} roleName={this.state.roleName} handleSwitchFromSelectRoleToCreateRole={this.handleSwitchFromSelectRoleToCreateRole} />
 														)) : (
 															<Fragment>
 																{(column.unassignedShifts.length > 0) ? (
@@ -1425,6 +1490,7 @@ const mapDispatchToProps = dispatch => ({
 		updateShift,
 		getEmployees,
 		orderEmployees,
+		createPlacement,
 		updatePlacement,
 	}, dispatch),
 });
