@@ -21,7 +21,11 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MinifyPlugin = require('babel-minify-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlCriticalPlugin = require('html-critical-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+/* eslint-disable prefer-destructuring */
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+/* eslint-enable prefer-destructuring */
 
 const filenames = {
 	css: '[name].bundle.css',
@@ -178,13 +182,25 @@ module.exports = (env, options) => ({
 	performance: {
 		hints: false,
 	},
+	stats: {
+		colors: false,
+		hash: true,
+		timings: true,
+		assets: true,
+		chunks: true,
+		chunkModules: true,
+		modules: true,
+		children: true,
+	},
 	optimization: {
 		runtimeChunk: 'single',
 		splitChunks: {
 			cacheGroups: {
+				default: false,
 				commons: {
 					name: 'vendors',
-					chunks: 'initial',
+					chunks: 'all',
+					/* minChunks: 2, */
 					test: /node_modules/,
 				},
 			},
@@ -194,6 +210,11 @@ module.exports = (env, options) => ({
 				cache: true,
 				parallel: true,
 				sourceMap: false,
+				uglifyOptions: {
+					compress: {
+						inline: false,
+					},
+				},
 			}),
 			new OptimizeCSSAssetsPlugin(),
 			new MinifyPlugin(),
@@ -240,7 +261,7 @@ module.exports = (env, options) => ({
 				force: true,
 				cache: true,
 				to: 'assets/img',
-				from: 'src/assets/img',
+				from: 'src/assets/img/compressed',
 			}, {
 				force: true,
 				cache: true,
@@ -258,5 +279,21 @@ module.exports = (env, options) => ({
 				from: 'src/assets/js/helpers/zxcvbn.js',
 			},
 		]),
+		new HtmlCriticalPlugin({
+			base: path.join(path.resolve(__dirname), 'public/'),
+			src: 'index.html',
+			dest: 'index.html',
+			inline: true,
+			minify: true,
+			extract: true,
+			width: 1200,
+			height: 950,
+			penthouse: {
+				blockJSRequests: false,
+			},
+		}),
+		/*
+		new BundleAnalyzerPlugin(),
+		*/
 	],
 });

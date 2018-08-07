@@ -131,9 +131,10 @@ header {
 	.navbar-nav {
 		.nav-item {
 			.nav-link {
-				line-height: 30px;
-				font-size: inherit;
+				line-height: 30px !important;
+				font-size: 14px !important;
 				color: $white !important;
+				font-weight: $font-weight-semi;
 				
 				&:hover {
 					color: $text-muted !important;
@@ -197,11 +198,17 @@ header {
 	min-height: -webkit-min-content;
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
+	-moz-font-smoothing: antialiased;
+	-o-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	// -webkit-text-stroke: 0.45px rgba(0, 0, 0, 0.1);
 	// text-shadow: #fff 0px 1px 1px;
 
 	.introduction {
+		.h2 {
+			font-weight: $font-weight-semi;
+		}
+		
 		.introduction-image {
 			background-size: cover;
 			height: calculateRem(680px);
@@ -237,6 +244,10 @@ header {
 	.manage {
 		border-bottom: 1px solid $gray-400;
 		
+		.h2 {
+			font-weight: $font-weight-semi;
+		}
+		
 		.lead-text {
 			&::after {
 				bottom: 0;
@@ -270,6 +281,10 @@ header {
 	}
 	
 	.promo {
+		.h2 {
+			font-weight: $font-weight-semi;
+		}
+		
 		.promo-image {
 			background-size: cover;
 			height: calculateRem(600px);
@@ -319,6 +334,10 @@ header {
 	.about,
 	.beta,
 	.pricing {
+		.h2 {
+			font-weight: $font-weight-semi;
+		}
+		
 		.lead-text {
 			&::after {
 				bottom: 0;
@@ -334,6 +353,10 @@ header {
 	}
 	
 	.sms {
+		.h2 {
+			font-weight: $font-weight-semi;
+		}
+		
 		.sms-image {
 			background-size: cover;
 			height: calculateRem(400px);
@@ -372,12 +395,20 @@ header {
 	}
 	
 	.beta {
+		.h2 {
+			font-weight: $font-weight-semi;
+		}
+		
 		.question {
 			color: $secondary;
 		}
 	}
 	
 	.pricing {
+		.h2 {
+			font-weight: $font-weight-semi;
+		}
+		
 		.card {
 			.card-header {
 				.h5 {
@@ -398,6 +429,10 @@ header {
 	}
 	
 	.service-updates {
+		.h2 {
+			font-weight: $font-weight-semi;
+		}
+		
 		label {
 			display: none;
 		}
@@ -477,7 +512,7 @@ header {
 }
 
 .lead-text {
-	font-weight: 900;
+	font-weight: 600;
 }
 
 /* IE only */

@@ -32,7 +32,8 @@
 	cursor: not-allowed !important;
 }
 
-.btn-tertiary {
+.btn-lines {
+	font-size: calculateRem(16px);
 }
 
 .btn-rotas-popover {

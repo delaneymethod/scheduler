@@ -18,9 +18,12 @@ class PrivacyPolicy extends Component {
 		if (!/iPad|iPhone|iPod/.test(navigator.userAgent)) {
 			const meta = document.getElementsByTagName('meta');
 
-			meta.description.setAttribute('content', routes.PRIVACY_POLICY.META.DESCRIPTION);
-			meta.keywords.setAttribute('content', routes.PRIVACY_POLICY.META.KEYWORDS);
 			meta.author.setAttribute('content', config.APP.AUTHOR.TITLE);
+			meta.keywords.setAttribute('content', routes.PRIVACY_POLICY.META.KEYWORDS);
+			meta.description.setAttribute('content', routes.PRIVACY_POLICY.META.DESCRIPTION);
+
+			document.querySelector('link[rel="home"]').setAttribute('href', `${window.location.protocol}//${window.location.host}`);
+			document.querySelector('link[rel="canonical"]').setAttribute('href', `${window.location.protocol}//${window.location.host}${window.location.pathname}`);
 		}
 	};
 

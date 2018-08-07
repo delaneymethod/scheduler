@@ -1,17 +1,25 @@
 import 'element-closest';
 import Moment from 'moment';
+import has from 'lodash/has';
+import delay from 'lodash/delay';
 import Avatar from 'react-avatar';
+import omitBy from 'lodash/omitBy';
 import jwtDecode from 'jwt-decode';
 import Orderable from 'sortablejs';
 import PropTypes from 'prop-types';
+import concat from 'lodash/concat';
+import sortBy from 'lodash/sortBy';
+import isEmpty from 'lodash/isEmpty';
 import { connect } from 'react-redux';
+import isString from 'lodash/isString';
+import includes from 'lodash/includes';
+import debounce from 'lodash/debounce';
 import { toast } from 'react-toastify';
 import { bindActionCreators } from 'redux';
 import { polyfill } from 'mobile-drag-drop';
 import { extendMoment } from 'moment-range';
 import React, { Fragment, Component } from 'react';
 import { scrollBehaviourDragImageTranslateOverride } from 'mobile-drag-drop/scroll-behaviour';
-import { has, omitBy, delay, concat, sortBy, isEmpty, isString, includes, debounce } from 'lodash';
 import { Row, Col, Form, Label, Input, Popover, FormGroup, InputGroup, InputGroupAddon, PopoverBody, PopoverHeader } from 'reactstrap';
 
 import Modal from '../../common/Modal';
@@ -49,6 +57,8 @@ import UploadEmployeesForm from '../../forms/UploadEmployeesForm';
 import { getRotas, switchRota } from '../../../actions/rotaActions';
 
 import { getShifts, updateShift } from '../../../actions/shiftActions';
+
+import UnassignedShiftsOverview from '../../common/UnassignedShiftsOverview';
 
 import { getEmployees, orderEmployees } from '../../../actions/employeeActions';
 
@@ -228,6 +238,9 @@ class Employees extends Component {
 			meta.description.setAttribute('content', routes.DASHBOARD.EMPLOYEES.META.DESCRIPTION);
 			meta.keywords.setAttribute('content', routes.DASHBOARD.EMPLOYEES.META.KEYWORDS);
 			meta.author.setAttribute('content', config.APP.AUTHOR.TITLE);
+
+			document.querySelector('link[rel="home"]').setAttribute('href', `${window.location.protocol}//${window.location.host}`);
+			document.querySelector('link[rel="canonical"]').setAttribute('href', `${window.location.protocol}//${window.location.host}${window.location.pathname}`);
 		}
 
 		window.addEventListener('touchmove', () => {}, { passive: false });
@@ -236,11 +249,11 @@ class Employees extends Component {
 			dragImageTranslateOverride: scrollBehaviourDragImageTranslateOverride,
 		});
 
-		/* We debounce this call to wait 10ms (we do not want the leading (or "immediate") flag passed because we want to wait until all the componentDidUpdate calls have finished before loading the table data again */
-		this.handleFetchData = debounce(this.handleFetchData.bind(this), 10);
+		/* We debounce this call to wait 500ms (we do not want the leading (or "immediate") flag passed because we want to wait until all the componentDidUpdate calls have finished before loading the table data again */
+		this.handleFetchData = debounce(this.handleFetchData.bind(this), 500);
 
-		/* We debounce this call to wait 10ms (we do not want the leading (or "immediate") flag passed because we want to wait the user has finished ordering all rows before saving the order */
-		this.handleUpdateEmployeeOrder = debounce(this.handleUpdateEmployeeOrder.bind(this), 10);
+		/* We debounce this call to wait 500ms (we do not want the leading (or "immediate") flag passed because we want to wait the user has finished ordering all rows before saving the order */
+		this.handleUpdateEmployeeOrder = debounce(this.handleUpdateEmployeeOrder.bind(this), 500);
 
 		this.setState({ totalEmployees: this.props.employees.length });
 	};
@@ -1320,7 +1333,7 @@ class Employees extends Component {
 												</Popover>
 											</th>
 											{this.state.tableData.header.columns.map((column, index) => (
-												<th key={index} width="195" className={`p-2 m-0 text-center column${((column.draggable) ? ' non-draggable-cell' : '')}${((column.today) ? ' today' : '')}`}>
+												<th key={index} className={`p-2 m-0 text-center column${((column.draggable) ? ' non-draggable-cell' : '')}${((column.today) ? ' today' : '')}`}>
 													<ShiftsOverview past={column.draggable} weekDate={column.weekDate} count={column.count} total={column.total} placementStatus={column.placementStatus} assignedShifts={column.assignedShifts} unassignedShifts={column.unassignedShifts} />
 													<div className="p-0 m-0">{moment(column.weekDate).format('ddd Do')}</div>
 												</th>
@@ -1331,34 +1344,26 @@ class Employees extends Component {
 									<tbody id="tableBody">
 										{(this.state.totalUnassignedShifts > 0) ? (
 											<tr className="open-shifts">
-												<td className="p-2 align-middle text-left p-0 m-0">
+												<td className="p-2 align-middle text-left p-0 m-0 column first">
 													<div className="d-flex align-items-center p-0 m-0">
-														<div className="d-inline-block p-0 m-0 font-italic">Open Shifts</div>
+														<div className="d-inline-block p-0 m-0 font-italic">Unassigned Shifts</div>
 													</div>
 												</td>
-												{this.state.tableData.body.rowsUnassigned[0].columns.map((column, columnIndex) => ((column.draggable) ? (
-													<td key={columnIndex} className="p-0 align-top non-draggable-cell" data-date={moment(column.weekDate).format('YYYY-MM-DD')}>
-														{(column.unassignedShifts.length > 0) ? column.unassignedShifts.map((shiftPlacement, shiftPlacementIndex) => (
-															<ShiftButton key={shiftPlacementIndex} unassigned={true} past={true} shiftPlacement={shiftPlacement} id={`shift_0_${columnIndex}_${shiftPlacementIndex}`} roleName={this.state.roleName} handleSwitchFromSelectRoleToCreateRole={this.handleSwitchFromSelectRoleToCreateRole} />
-														)) : null}
+												{this.state.tableData.header.columns.map((column, index) => (
+													<td key={index} className="p-0 align-top text-left non-draggable-cell1 column">
+														{(column.unassignedShifts.length > 0) ? <UnassignedShiftsOverview weekDate={column.weekDate} unassignedShifts={column.unassignedShifts} /> : null}
 													</td>
-												) : (
-													<td key={columnIndex} className="p-0 align-top non-draggable-cell" data-date={moment(column.weekDate).format('YYYY-MM-DD')}>
-														{(column.unassignedShifts.length > 0) ? column.unassignedShifts.map((shiftPlacement, shiftPlacementIndex) => (
-															<ShiftButton key={shiftPlacementIndex} unassigned={true} past={false} shiftPlacement={shiftPlacement} id={`shift_0_${columnIndex}_${shiftPlacementIndex}`} roleName={this.state.roleName} handleSwitchFromSelectRoleToCreateRole={this.handleSwitchFromSelectRoleToCreateRole} />
-														)) : null}
-													</td>
-												)))}
-												<td className="p-2 align-top text-center"></td>
+												))}
+												<td className="p-2 align-top text-center column last">&nbsp;</td>
 											</tr>
 										) : null}
 										{this.state.tableData.body.rowsAssigned.length > 0 && this.state.tableData.body.rowsAssigned.map((row, rowIndex) => (
-											<tr key={rowIndex} className="draggable-row" data-account-employee-id={row.accountEmployee.accountEmployeeId}>
-												<td className="p-2 align-top text-left p-0 m-0 edit-employee">
+											<tr key={rowIndex} className="draggable-row" data-position={row.accountEmployee.rotaTypeAccountEmployees[0].sortPosition} data-account-employee-id={row.accountEmployee.accountEmployeeId}>
+												<td className="p-2 align-top text-left p-0 m-0 edit-employee column first">
 													<div className="d-flex align-items-start p-0 m-0 wrap-words position-relative">
 														<div className="d-inline-block p-0 mt-0 ml-0 mr-2 mb-0 drag-handler">
-															<Avatar className="d-none d-md-block" fgColor="#ffffff" name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="39" />
-															<Avatar className="d-block d-md-none" fgColor="#ffffff" name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="29" />
+															<Avatar className="d-none d-md-block" color="#1CA3AE" fgColor="#ffffff" email={row.accountEmployee.employee.email} name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="39" />
+															<Avatar className="d-block d-md-none" color="#1CA3AE" fgColor="#ffffff" email={row.accountEmployee.employee.email} name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="29" />
 														</div>
 														<div className="d-inline-block pt-0 pl-0 pr-0 pb-0 m-0">
 															<div id="fullname">{row.accountEmployee.employee.firstName} {row.accountEmployee.employee.lastName}</div>
@@ -1374,13 +1379,13 @@ class Employees extends Component {
 													</div>
 												</td>
 												{row.columns.map((column, columnIndex) => ((column.draggable) ? (
-													<td key={columnIndex} className="p-0 align-top non-draggable-cell" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId}>
+													<td key={columnIndex} className="p-0 align-top non-draggable-cell column" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId}>
 														{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
 															<ShiftButton key={shiftPlacementIndex} unassigned={false} past={true} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} roleName={this.state.roleName} handleSwitchFromSelectRoleToCreateRole={this.handleSwitchFromSelectRoleToCreateRole} />
 														)) : null}
 													</td>
 												) : (
-													<td key={columnIndex} className="p-0 align-top draggable-cell" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId}>
+													<td key={columnIndex} className="p-0 align-top draggable-cell column" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId}>
 														{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
 															<ShiftButton key={shiftPlacementIndex} unassigned={false} past={false} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} roleName={this.state.roleName} handleSwitchFromSelectRoleToCreateRole={this.handleSwitchFromSelectRoleToCreateRole} />
 														)) : (
@@ -1394,7 +1399,7 @@ class Employees extends Component {
 														)}
 													</td>
 												)))}
-												<td className="p-2 align-top text-center">
+												<td className="p-2 align-top text-center column last">
 													<div className="d-flex align-items-center">
 														<div className="w-100">
 															<div>{row.hours.toFixed(2)} hrs</div>
@@ -1417,7 +1422,7 @@ class Employees extends Component {
 												</div>
 											</th>
 											{this.state.tableData.footer.columns.map((column, columnIndex) => (
-												<th key={columnIndex} className={(columnIndex < this.state.tableData.footer.columns.length - 1) ? 'text-center' : 'text-center last'}>
+												<th key={columnIndex} className={(columnIndex < this.state.tableData.footer.columns.length - 1) ? 'column text-center' : 'column text-center last'}>
 													<div className="d-flex align-items-center p-0 m-0">
 														<div className="flex-column p-0 m-0">
 															<div className="p-2 m-0 flex-row">{column.hours}</div>

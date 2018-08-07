@@ -1,12 +1,14 @@
 import moment from 'moment';
+import delay from 'lodash/delay';
 import Loader from 'react-loaders';
 import jwtDecode from 'jwt-decode';
 import PropTypes from 'prop-types';
+import isEmpty from 'lodash/isEmpty';
+import orderBy from 'lodash/orderBy';
 import { Col, Row } from 'reactstrap';
 import { connect } from 'react-redux';
 import { toast } from 'react-toastify';
 import { bindActionCreators } from 'redux';
-import { delay, isEmpty, orderBy } from 'lodash';
 import React, { Fragment, Component } from 'react';
 
 import Modal from '../../common/Modal';
@@ -122,6 +124,9 @@ class Dashboard extends Component {
 			meta.description.setAttribute('content', routes.DASHBOARD.HOME.META.DESCRIPTION);
 			meta.keywords.setAttribute('content', routes.DASHBOARD.HOME.META.KEYWORDS);
 			meta.author.setAttribute('content', config.APP.AUTHOR.TITLE);
+
+			document.querySelector('link[rel="home"]').setAttribute('href', `${window.location.protocol}//${window.location.host}`);
+			document.querySelector('link[rel="canonical"]').setAttribute('href', `${window.location.protocol}//${window.location.host}${window.location.pathname}`);
 		}
 
 		/* Wait 1.3 seconds before fetching data - prevents any race conditions */

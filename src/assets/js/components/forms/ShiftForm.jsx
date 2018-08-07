@@ -1,12 +1,20 @@
 import Moment from 'moment';
+import has from 'lodash/has';
+import delay from 'lodash/delay';
+import omitBy from 'lodash/omitBy';
+import uniqBy from 'lodash/uniqBy';
 import PropTypes from 'prop-types';
+import orderBy from 'lodash/orderBy';
+import isEmpty from 'lodash/isEmpty';
+import isEqual from 'lodash/isEqual';
 import { connect } from 'react-redux';
+import debounce from 'lodash/debounce';
+import includes from 'lodash/includes';
 import { bindActionCreators } from 'redux';
 import { extendMoment } from 'moment-range';
 import React, { Fragment, Component } from 'react';
 import { Row, Col, Label, Input, Button, Tooltip, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
-import { has, delay, isEmpty, isEqual, includes, omitBy, uniqBy, orderBy, debounce } from 'lodash';
 
 import Alert from '../common/Alert';
 

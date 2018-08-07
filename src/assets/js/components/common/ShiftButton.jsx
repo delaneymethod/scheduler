@@ -111,15 +111,15 @@ class ShiftButton extends Component {
 		<Fragment>
 			{(!this.props.past) ? (
 				<Fragment>
-					<div className="p-2 p-lg-1 pl-lg-2 pr-lg-2 mb-2 mb-lg-1 d-block text-left shift" draggable="true" id={this.props.id} data-shift-id={this.props.shiftPlacement.shiftId} data-placement-id={this.props.shiftPlacement.placementId} onClick={this.handleShiftMenu}>
+					<div className="p-2 p-lg-1 pl-lg-2 pr-lg-2 mb-2 mb-lg-1 d-block text-left font-weight-light shift" draggable="true" id={this.props.id} data-shift-id={this.props.shiftPlacement.shiftId} data-placement-id={this.props.shiftPlacement.placementId} onClick={this.handleShiftMenu}>
 						{(this.props.unassigned) ? (
 							<Fragment>
-								<div className="shift__data-row d-block text-truncate"><strong>{(this.props.shiftPlacement.role ? this.props.shiftPlacement.role.roleName : '')}</strong> {this.props.shiftPlacement.hours} {((this.props.shiftPlacement.hours === 1) ? 'hr' : 'hrs')}</div>
+								<div className="shift__data-row d-block font-weight-bold text-truncate"><strong>{(this.props.shiftPlacement.role ? this.props.shiftPlacement.role.roleName : '')}</strong> {this.props.shiftPlacement.hours} {((this.props.shiftPlacement.hours === 1) ? 'hr' : 'hrs')}</div>
 								<div className="shift__data-row d-block text-truncate">{moment(this.props.shiftPlacement.startTime).format('HH:mm')} - {(this.props.shiftPlacement.isClosingShift) ? 'Closing' : moment(this.props.shiftPlacement.endTime).format('HH:mm')}</div>
 							</Fragment>
 						) : (
 							<Fragment>
-								<div className="shift__data-row d-block text-truncate"><strong>{this.props.shiftPlacement.roleName}</strong> {this.props.shiftPlacement.hours} {((this.props.shiftPlacement.hours === 1) ? 'hr' : 'hrs')}</div>
+								<div className="shift__data-row d-block font-weight-bold text-truncate"><strong>{this.props.shiftPlacement.roleName}</strong> {this.props.shiftPlacement.hours} {((this.props.shiftPlacement.hours === 1) ? 'hr' : 'hrs')}</div>
 								<div className="shift__data-row d-block text-truncate">{moment(this.props.shiftPlacement.startTime).format('HH:mm')} - {(this.props.shiftPlacement.isClosingShift) ? 'Closing' : moment(this.props.shiftPlacement.endTime).format('HH:mm')}</div>
 							</Fragment>
 						)}
@@ -147,7 +147,7 @@ class ShiftButton extends Component {
 				</Fragment>
 			) : (
 				<div className="p-2 p-lg-1 pl-lg-2 pr-lg-2 mb-2 mb-lg-1 d-block text-left shift" draggable="true" id={this.props.id} data-shift-id={this.props.shiftPlacement.shiftId} data-placement-id={this.props.shiftPlacement.placementId}>
-					<div className="shift__data-row d-block text-truncate"><strong>{this.props.shiftPlacement.roleName}</strong> {(!this.props.shiftPlacement.isClosingShift) ? `(${this.props.shiftPlacement.hours} ${((this.props.shiftPlacement.hours === 1) ? 'hr' : 'hrs')})` : null}</div>
+					<div className="shift__data-row d-block font-weight-bold text-truncate"><strong>{this.props.shiftPlacement.roleName}</strong> {(!this.props.shiftPlacement.isClosingShift) ? `(${this.props.shiftPlacement.hours} ${((this.props.shiftPlacement.hours === 1) ? 'hr' : 'hrs')})` : null}</div>
 					<div className="shift__data-row d-block text-truncate">{moment(this.props.shiftPlacement.startTime).format('HH:mm')} - {(this.props.shiftPlacement.isClosingShift) ? 'Closing' : moment(this.props.shiftPlacement.endTime).format('HH:mm')}</div>
 				</div>
 			)}

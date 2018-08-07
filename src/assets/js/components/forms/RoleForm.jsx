@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import { debounce } from 'lodash';
 import { connect } from 'react-redux';
+import debounce from 'lodash/debounce';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
 import { Row, Col, Label, Input, Button, FormGroup } from 'reactstrap';

@@ -92,6 +92,6 @@ $rt-toast-width: 400px !default;
 
 $rt-toast-min-height: 80px !default;
 
-$hamburger-button-size: 2rem; 
+$hamburger-button-size: calculateRem(16px); 
 
 $hamburger-button-transition: .3s;

@@ -1,10 +1,13 @@
 import moment from 'moment';
+import has from 'lodash/has';
 import PropTypes from 'prop-types';
+import orderBy from 'lodash/orderBy';
+import isEmpty from 'lodash/isEmpty';
 import { connect } from 'react-redux';
+import includes from 'lodash/includes';
 import React, { Component } from 'react';
 import DatePicker from 'react-datepicker';
 import { bindActionCreators } from 'redux';
-import { has, orderBy, isEmpty, includes } from 'lodash';
 
 import Modal from './Modal';
 

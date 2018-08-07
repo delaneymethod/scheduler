@@ -1,7 +1,8 @@
+import delay from 'lodash/delay';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
 import { connect } from 'react-redux';
-import { delay, debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
 import { FormWithConstraints } from 'react-form-with-constraints';

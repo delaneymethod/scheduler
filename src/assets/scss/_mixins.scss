@@ -11,8 +11,8 @@
 @mixin line {
 	display: inline-block;
 	background-color: $white;
-	width: $hamburger-button-size;
-	height: $hamburger-button-size/9;
+	width: calculateRem(18px);
+	height: calculateRem(2px);
 	transition: $hamburger-button-transition;
 	border-radius: $hamburger-button-size/14;
 }

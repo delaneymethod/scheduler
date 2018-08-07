@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
+import concat from 'lodash/concat';
+import isEmpty from 'lodash/isEmpty';
 import { connect } from 'react-redux';
+import debounce from 'lodash/debounce';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
-import { isEmpty, concat, debounce } from 'lodash';
 import { Row, Col, Button, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 

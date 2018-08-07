@@ -23,3 +23,6 @@
 /coverage
 /__tests__/__snapshots__
 /employees.csv
+/gig.crt
+/gig.key
+/stats.json

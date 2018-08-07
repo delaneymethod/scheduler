@@ -137,10 +137,11 @@ html {
 .lines-button {
 	cursor: pointer;
 	user-select: none;
+	padding-bottom: calculateRem(6px) !important;
 	transition: $hamburger-button-transition;
 	
 	.lines {
-		top: calculateRem(-2px);
+		top: calculateRem(-1px);
 			
 		@include line;
 		
@@ -169,15 +170,17 @@ html {
 	&:hover {
 		opacity: 0.8;
 			
+		/*
 		.lines {
 			&:before {
-				/* top: $hamburger-button-size/3.5; */
+				top: $hamburger-button-size/3.5;
 			}
 			
 			&:after {
-				/* top: -$hamburger-button-size/3.5; */
+				top: -$hamburger-button-size/3.5;
 			}
 		}
+		*/
 	}
 
 	&:active {

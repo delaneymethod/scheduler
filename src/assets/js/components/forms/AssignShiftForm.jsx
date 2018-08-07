@@ -1,9 +1,12 @@
 import moment from 'moment';
+import uniq from 'lodash/uniq';
 import PropTypes from 'prop-types';
+import orderBy from 'lodash/orderBy';
+import isEmpty from 'lodash/isEmpty';
 import { connect } from 'react-redux';
+import debounce from 'lodash/debounce';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
-import { uniq, orderBy, isEmpty, debounce } from 'lodash';
 import { Row, Col, Label, Input, Button, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 

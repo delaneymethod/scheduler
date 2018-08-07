@@ -16,11 +16,11 @@
 	width: 100%;
 	overflow-y: hidden;
 	white-space: nowrap;
-	overflow-x: inherit;
+	overflow-x: inherit;  
 	background-color: $white;
 	border-radius: calculateRem(5px);
 	border: calculateRem(5px) solid $white;
-	
+
 	/*
 	@include media-breakpoint-down(lg) {
 		border-radius: 0;
@@ -48,15 +48,12 @@
 	width: 100%;
 	table-layout: fixed;
 	border-collapse: collapse;
-	
+
 	thead {
 		position: relative;
 	}
-
+	
 	tr {
-		&:nth-child(even) {
-		}
-		
 		th {
 			background-color: $gray-700;
 			background-clip: padding-box;
@@ -133,10 +130,6 @@
 					width: 70%;	
 				}
 			}
-			
-			&.sortable {
-				/* cursor: pointer; */
-			}
 		}
 		
 		.column {
@@ -203,9 +196,6 @@
 					cursor: pointer;
 				}
 				
-				&:active {
-				}
-				
 				&:not(:only-child, :last-child) {
 					border-bottom: calculateRem(3px) solid darken($secondary, 10%);
 				}
@@ -213,6 +203,14 @@
 				@include media-breakpoint-down(md) {
 					min-height: 37px;
 				}
+			}
+			
+			.red {
+				background-color: rgba(0, 255, 255, 0.5);
+			}
+			
+			.green {
+				background-color: rgba(0, 128, 0, 0.5);
 			}
 			
 			.shift-selected {
@@ -247,22 +245,15 @@
 		
 		th.non-draggable-cell {
 			color: $dark;
-			cursor: no-drop;
 			background-color: $gray-700;
-			background-image: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255, 255, 255, 0.2) 3px, rgba(255, 255, 255, 0.1) 6px);
-		}
-		
-		th.today {
-			color: $dark;
-			background-color: $gray-900;
 		}
 		
 		td.non-draggable-cell {
 			z-index: 1;
 			cursor: no-drop;
 			color: $white;
-			background-color: $gray-200;
-			background-image: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255, 255, 255, 0.5) 3px, rgba(255, 255, 255, 0.5) 6px);
+			background-color: $white;
+			background-image: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(235, 235, 235, 0.5) 3px, rgba(235, 235, 235, 0.9) 6px);
 		}
 	
 		.draggable-cell {
@@ -281,7 +272,7 @@
 			opacity: 0.5;
 			background-color: $success !important;
 		}
-
+		
 		.drag-handler {
 			cursor: move !important;
 			
@@ -312,15 +303,15 @@
 		td {
 			cursor: default;
 			white-space: nowrap;
-			background-color: #EBEBEB;
+			background-color: #FFFFFF;
+			background-color: $gray-700;
 			background-clip: padding-box;
-			border-bottom: calculateRem(5px) solid #e0e0e0;
 			
 			.shift {
-				background-color: lighten($dark, 30%);
+				background-color: $dark;
 				
 				&:not(:only-child, :last-child) {
-					border-bottom: calculateRem(3px) solid darken($dark, 10%);
+					border-bottom: calculateRem(3px) solid darken($dark, 20%);
 				}
 			}
 		}
@@ -328,21 +319,18 @@
 		th.non-draggable-cell {
 			color: $dark;
 			cursor: no-drop;
+			background-color: $white;
 			background-color: $gray-700;
-			background-image: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255, 255, 255, 0.2) 3px, rgba(255, 255, 255, 0.1) 6px);
-		}
-		
-		th.today {
-			color: $dark;
-			background-color: $gray-900;
+			background-image: none;
 		}
 		
 		td.non-draggable-cell {
 			z-index: 1;
 			cursor: no-drop;
 			color: $white;
-			background-color: $gray-200;
-			background-image: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255, 255, 255, 0.5) 3px, rgba(255, 255, 255, 0.5) 6px);
+			background-color: $white;
+			background-color: $gray-700;
+			background-image: none;
 		}
 	
 		.draggable-cell {
@@ -379,41 +367,3 @@
 		background-color: $white;
 	}
 }
-
-/*
-@include media-breakpoint-down(lg) {
-	.freeze {
-		left: 0;
-		top: auto;
-		width: 300px;
-		position: absolute;
-		margin-top: -2px !important;
-	}
-	
-	thead {
-		.freeze {
-			padding: 12px 10px !important;
-		}
-		
-		th:nth-child(2) {
-			border-left: 0 !important;
-		}
-	}
-	
-	tbody {
-		.freeze {
-			padding: 12px 10px !important;
-		}
-		
-		td:nth-child(2) {
-			border-left: 0 !important;
-		}
-	}
-	
-	tfoot {
-		th:nth-child(2) {
-			border-left: 0 !important;
-		}
-	}
-}
-*/
