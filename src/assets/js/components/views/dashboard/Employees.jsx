@@ -1389,13 +1389,16 @@ class Employees extends Component {
 														{(column.shiftsPlacements.length > 0) ? column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
 															<ShiftButton key={shiftPlacementIndex} unassigned={false} past={false} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} roleName={this.state.roleName} handleSwitchFromSelectRoleToCreateRole={this.handleSwitchFromSelectRoleToCreateRole} />
 														)) : (
-															<Fragment>
-																{(column.unassignedShifts.length > 0) ? (
-																	<AssignShiftButton handleAssignShift={event => this.handleAssignShift(event, column.accountEmployee.employee.employeeId, moment(column.weekDate).format('YYYY-MM-DD'))} />
-																) : (
-																	<CreateShiftButton handleCreateShift={event => this.handleCreateShift(event, column.accountEmployee.employee.employeeId, moment(column.weekDate).format('YYYY-MM-DD'))} />
-																)}
-															</Fragment>
+															/**
+															 * Business Rule on 8th August 2018 to always show create shift modal when clicking + icon on Employee view.<Fragment>
+															 *	{(column.unassignedShifts.length > 0) ? (
+															 *		<AssignShiftButton handleAssignShift={event => this.handleAssignShift(event, column.accountEmployee.employee.employeeId, moment(column.weekDate).format('YYYY-MM-DD'))} />
+															 *	) : (
+															 *		<CreateShiftButton handleCreateShift={event => this.handleCreateShift(event, column.accountEmployee.employee.employeeId, moment(column.weekDate).format('YYYY-MM-DD'))} />
+															 *	)}
+															 * </Fragment>
+															 */
+															<CreateShiftButton handleCreateShift={event => this.handleCreateShift(event, column.accountEmployee.employee.employeeId, moment(column.weekDate).format('YYYY-MM-DD'))} />
 														)}
 													</td>
 												)))}
