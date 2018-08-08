@@ -91,12 +91,9 @@ class AssignShiftForm extends Component {
 		/* This listens for change events across the document - user typing and browser autofill */
 		document.addEventListener('change', event => this.form && this.form.validateFields(event.target));
 
-		/* Sets the default value to fix validation issues if user doesnt pick any employee */
-		/* However, if employee id was passed in as a prop, make sure we use this instead and also update the state... */
+		/* If employee id was passed in as a prop, make sure we use this instead and also update the state... */
 		if (!isEmpty(this.props.employeeId)) {
 			this.setState({ employeeId: this.props.employeeId });
-		} else {
-			this.setState({ employeeId: this.props.employees[0].employee.employeeId });
 		}
 
 		/* Loop over all dates in current week and grab all unassigned shifts */
@@ -371,6 +368,7 @@ class AssignShiftForm extends Component {
 					<FormGroup>
 						<Label for="employeeId">Employee <span className="text-danger">&#42;</span></Label>
 						<Input type="select" name="employeeId" id="employeeId" className="custom-select custom-select-xl" value={this.state.employeeId} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="3" required>
+							<option value="" label=""></option>
 							{this.props.employees.map(({ employee }, index) => <option key={index} value={employee.employeeId} label={`${employee.firstName} ${employee.lastName}`}>{employee.firstName} ${employee.lastName}</option>)}
 						</Input>
 						<FieldFeedbacks for="employeeId" show="all">
