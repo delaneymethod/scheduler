@@ -1,6 +1,7 @@
 import moment from 'moment';
 import Avatar from 'react-avatar';
 import PropTypes from 'prop-types';
+import sortBy from 'lodash/sortBy';
 import isEmpty from 'lodash/isEmpty';
 import { toast } from 'react-toastify';
 import React, { Fragment, Component } from 'react';
@@ -106,7 +107,8 @@ class ShiftsOverview extends Component {
 					<PopoverBody>
 						<ul className="popover-menu" style={{ minWidth: '264px' }}>
 							<li style={{ minWidth: '264px' }}><label className="pt-2 pb-1 m-0">Overview - {moment(this.props.weekDate).format('ddd, Do')}</label></li>
-							{this.props.unassignedShifts.map((unassignedShift, unassignedShiftIndex) => (
+							{(this.props.unassignedShifts.length > 0) ? (<li style={{ minWidth: '264px' }}>Unassigned Shifts</li>) : null}
+							{sortBy(this.props.unassignedShifts, ['startTime', 'endTime']).map((unassignedShift, unassignedShiftIndex) => (
 								<li key={unassignedShiftIndex} className="p-0" style={{ minWidth: '264px' }}>
 									<button type="button" className="btn btn-action border-0 p-0 font-weight-normal" id={`unassigned-shift-${unassignedShiftIndex}`} style={{ lineHeight: 'normal', fontSize: '0.7rem' }} onClick={event => this.handleAssignShift(event, unassignedShift.shiftId)}>
 										<div className="d-flex align-items-start pt-1 pl-2 pr-2 pb-1 m-0">
@@ -121,7 +123,8 @@ class ShiftsOverview extends Component {
 									</button>
 								</li>
 							))}
-							{this.props.assignedShifts.map((assignedShift, assignedShiftIndex) => assignedShift.placements.map((placement, placementIndex) => (
+							{(this.props.assignedShifts.length > 0) ? (<li style={{ minWidth: '264px' }}>Assigned Shifts</li>) : null}
+							{sortBy(this.props.assignedShifts, ['role.roleName', 'startTime', 'endTime']).map((assignedShift, assignedShiftIndex) => assignedShift.placements.map((placement, placementIndex) => (
 								<li key={`${assignedShiftIndex}_${placementIndex}`} className="p-0" style={{ minWidth: '264px' }}>
 									<button type="button" className="btn btn-action border-0 p-0 font-weight-normal" id={`assigned-shift-${assignedShiftIndex}-${placementIndex}`} style={{ lineHeight: 'normal', fontSize: '0.7rem' }} onClick={event => this.handleEditShift(event, assignedShift.shiftId, placement.employee.employeeId, placement.placementId, moment(this.props.weekDate).format('YYYY-MM-DD'))}>
 										<div className="d-flex align-items-start pt-1 pl-2 pr-2 pb-1 m-0">

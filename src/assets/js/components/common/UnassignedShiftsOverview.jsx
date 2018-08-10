@@ -1,6 +1,7 @@
 import moment from 'moment';
 import Avatar from 'react-avatar';
 import PropTypes from 'prop-types';
+import sortBy from 'lodash/sortBy';
 import isEmpty from 'lodash/isEmpty';
 import { toast } from 'react-toastify';
 import React, { Fragment, Component } from 'react';
@@ -80,7 +81,8 @@ class UnassignedShiftsOverview extends Component {
 				<PopoverBody>
 					<ul className="popover-menu" style={{ minWidth: '264px' }}>
 						<li style={{ minWidth: '264px' }}><label className="pt-2 pb-1 m-0">Overview - {moment(this.props.weekDate).format('ddd, Do')}</label></li>
-						{this.props.unassignedShifts.map((unassignedShift, unassignedShiftIndex) => (
+						{(this.props.unassignedShifts.length > 0) ? (<li style={{ minWidth: '264px' }}>Unassigned Shifts</li>) : null}
+						{sortBy(this.props.unassignedShifts, ['startTime', 'endTime']).map((unassignedShift, unassignedShiftIndex) => (
 							<li key={unassignedShiftIndex} className="p-0" style={{ minWidth: '264px' }}>
 								<button type="button" className="btn btn-action border-0 p-0 font-weight-normal" id={`unassigned-shift-${unassignedShiftIndex}`} style={{ lineHeight: 'normal', fontSize: '0.7rem' }} onClick={event => this.handleAssignShift(event, unassignedShift.shiftId)}>
 									<div className="d-flex align-items-start pt-1 pl-2 pr-2 pb-1 m-0">
