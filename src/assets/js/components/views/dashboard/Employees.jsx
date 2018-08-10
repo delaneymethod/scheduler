@@ -1344,21 +1344,19 @@ class Employees extends Component {
 										</tr>
 									</thead>
 									<tbody id="tableBody">
-										{(this.state.totalUnassignedShifts > 0) ? (
-											<tr className="open-shifts">
-												<td className="p-2 align-middle text-left p-0 m-0 column first">
-													<div className="d-flex align-items-center p-0 m-0">
-														<div className="d-inline-block p-0 m-0 font-italic">Unassigned Shifts</div>
-													</div>
+										<tr className="open-shifts">
+											<td className="p-2 align-middle text-left p-0 m-0 column first">
+												<div className="d-flex align-items-center p-0 m-0">
+													<div className="d-inline-block p-0 m-0 font-italic">Unassigned Shifts</div>
+												</div>
+											</td>
+											{this.state.tableData.header.columns.map((column, index) => (
+												<td key={index} className="p-0 align-top text-left column">
+													{(column.unassignedShifts.length > 0) ? <UnassignedShiftsOverview past={column.draggable} weekDate={column.weekDate} unassignedShifts={column.unassignedShifts} /> : null}
 												</td>
-												{this.state.tableData.header.columns.map((column, index) => (
-													<td key={index} className="p-0 align-top text-left column">
-														{(column.unassignedShifts.length > 0) ? <UnassignedShiftsOverview past={column.draggable} weekDate={column.weekDate} unassignedShifts={column.unassignedShifts} /> : null}
-													</td>
-												))}
-												<td className="p-2 align-top text-center column last">&nbsp;</td>
-											</tr>
-										) : null}
+											))}
+											<td className="p-2 align-top text-center column last">&nbsp;</td>
+										</tr>
 										{this.state.tableData.body.rowsAssigned.length > 0 && this.state.tableData.body.rowsAssigned.map((row, rowIndex) => (
 											<tr key={rowIndex} className="draggable-row" data-account-employee-id={row.accountEmployee.accountEmployeeId}>
 												<td className="p-2 align-top text-left p-0 m-0 edit-employee column first">
