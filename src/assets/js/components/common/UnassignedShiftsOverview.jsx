@@ -21,11 +21,13 @@ const routes = config.APP.ROUTES;
 const notifications = config.APP.NOTIFICATIONS;
 
 const propTypes = {
+	past: PropTypes.bool.isRequired,
 	weekDate: PropTypes.object.isRequired,
 	unassignedShifts: PropTypes.array.isRequired,
 };
 
 const defaultProps = {
+	past: false,
 	weekDate: {},
 	unassignedShifts: [],
 };
@@ -71,7 +73,7 @@ class UnassignedShiftsOverview extends Component {
 
 	handleSwitchFromAssignShiftToCreateShift = () => this.setState({ isCreateShiftModalOpen: true, isAssignShiftModalOpen: false });
 
-	render = () => (
+	render = () => ((!this.props.past) ? (
 		<Fragment>
 			<div className="p-2 p-lg-1 pl-lg-2 pr-lg-2 mb-2 mb-lg-1 d-block text-left font-weight-bold shift wrap-words" id={`unassigned-overview-${moment(this.props.weekDate).format('YYYYMMDD')}`} onClick={this.handleOverview}>{this.props.unassignedShifts.length} Unassigned<br />Shift{(this.props.unassignedShifts.length === 1) ? '' : 's'}</div>
 			<Popover placement="bottom" isOpen={this.state.isOverviewPopoverOpen} target={`unassigned-overview-${moment(this.props.weekDate).format('YYYYMMDD')}`} toggle={this.handleOverview}>
@@ -97,13 +99,15 @@ class UnassignedShiftsOverview extends Component {
 				</PopoverBody>
 			</Popover>
 			<Modal title="Create Shift" className="modal-dialog" show={this.state.isCreateShiftModalOpen} onClose={this.handleCreateShift}>
-				<ShiftForm editMode={false} startDate={moment(this.props.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateShift} />
+				<ShiftForm overview={true} editMode={false} startDate={moment(this.props.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateShift} />
 			</Modal>
 			<Modal title="Assign Shift" className="modal-dialog" show={this.state.isAssignShiftModalOpen} onClose={this.handleAssignShift}>
 				<AssignShiftForm overview={true} shiftId={this.state.shiftId} startDate={moment(this.props.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleAssignShift} handleSwitchFromAssignShiftToCreateShift={this.handleSwitchFromAssignShiftToCreateShift} />
 			</Modal>
 		</Fragment>
-	);
+	) : (
+		<div className="p-2 p-lg-1 pl-lg-2 pr-lg-2 mb-2 mb-lg-1 d-block text-left font-weight-bold shift past wrap-words" id={`unassigned-overview-${moment(this.props.weekDate).format('YYYYMMDD')}`}>{this.props.unassignedShifts.length} Unassigned<br />Shift{(this.props.unassignedShifts.length === 1) ? '' : 's'}</div>
+	));
 }
 
 UnassignedShiftsOverview.propTypes = propTypes;

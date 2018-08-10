@@ -139,10 +139,10 @@ class ShiftButton extends Component {
 						</PopoverBody>
 					</Popover>
 					<Modal title="Edit Shift" className="modal-dialog" show={this.state.isEditShiftModalOpen} onClose={this.handleEditShift}>
-						<ShiftForm editMode={true} roleName={(!isEmpty(this.state.roleName)) ? this.state.roleName : this.props.shiftPlacement.roleName} shiftId={this.props.shiftPlacement.shiftId} employeeId={this.props.shiftPlacement.employeeId} placementId={this.props.shiftPlacement.placementId} startDate={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleSwitchFromSelectRoleToCreateRole={this.props.handleSwitchFromSelectRoleToCreateRole} handleClose={this.handleEditShift} />
+						<ShiftForm overview={false} editMode={true} roleName={(!isEmpty(this.state.roleName)) ? this.state.roleName : this.props.shiftPlacement.roleName} shiftId={this.props.shiftPlacement.shiftId} employeeId={this.props.shiftPlacement.employeeId} placementId={this.props.shiftPlacement.placementId} startDate={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleSwitchFromSelectRoleToCreateRole={this.props.handleSwitchFromSelectRoleToCreateRole} handleClose={this.handleEditShift} />
 					</Modal>
 					<Modal title="Create Shift" className="modal-dialog" show={this.state.isCreateShiftModalOpen} onClose={this.handleCreateShift}>
-						<ShiftForm editMode={false} roleName={(!isEmpty(this.state.roleName)) ? this.state.roleName : this.props.shiftPlacement.roleName} employeeId={this.props.shiftPlacement.employeeId} startDate={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateShift} handleSwitchFromSelectRoleToCreateRole={this.props.handleSwitchFromSelectRoleToCreateRole} />
+						<ShiftForm overview={false} editMode={false} roleName={(!isEmpty(this.state.roleName)) ? this.state.roleName : this.props.shiftPlacement.roleName} employeeId={this.props.shiftPlacement.employeeId} startDate={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateShift} handleSwitchFromSelectRoleToCreateRole={this.props.handleSwitchFromSelectRoleToCreateRole} />
 					</Modal>
 				</Fragment>
 			) : (

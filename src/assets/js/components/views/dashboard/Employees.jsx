@@ -1353,7 +1353,7 @@ class Employees extends Component {
 												</td>
 												{this.state.tableData.header.columns.map((column, index) => (
 													<td key={index} className="p-0 align-top text-left column">
-														{(column.unassignedShifts.length > 0) ? <UnassignedShiftsOverview weekDate={column.weekDate} unassignedShifts={column.unassignedShifts} /> : null}
+														{(column.unassignedShifts.length > 0) ? <UnassignedShiftsOverview past={column.draggable} weekDate={column.weekDate} unassignedShifts={column.unassignedShifts} /> : null}
 													</td>
 												))}
 												<td className="p-2 align-top text-center column last">&nbsp;</td>
@@ -1445,10 +1445,10 @@ class Employees extends Component {
 					</Fragment>
 				) : null}
 				<Modal title="Create Shift" className="modal-dialog" show={this.state.isCreateShiftModalOpen} onClose={this.handleCreateShift}>
-					<ShiftForm editMode={false} roleName={this.state.roleName} employeeId={this.state.employeeId} startDate={moment(this.state.startDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateShift} handleSwitchFromSelectRoleToCreateRole={this.handleSwitchFromSelectRoleToCreateRole} />
+					<ShiftForm overview={false} editMode={false} roleName={this.state.roleName} employeeId={this.state.employeeId} startDate={moment(this.state.startDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateShift} handleSwitchFromSelectRoleToCreateRole={this.handleSwitchFromSelectRoleToCreateRole} />
 				</Modal>
 				<Modal title="Assign Shift" className="modal-dialog" show={this.state.isAssignShiftModalOpen} onClose={this.handleAssignShift}>
-					<AssignShiftForm employeeId={this.state.employeeId} startDate={moment(this.state.startDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleAssignShift} handleSwitchFromAssignShiftToCreateShift={this.handleSwitchFromAssignShiftToCreateShift} />
+					<AssignShiftForm overview={false} employeeId={this.state.employeeId} startDate={moment(this.state.startDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleAssignShift} handleSwitchFromAssignShiftToCreateShift={this.handleSwitchFromAssignShiftToCreateShift} />
 				</Modal>
 				<Modal title="Create Role" className="modal-dialog" show={this.state.isCreateRoleModalOpen} onClose={this.handleSwitchFromSelectRoleToCreateRole}>
 					<RoleForm handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleSwitchFromSelectRoleToCreateRole} />

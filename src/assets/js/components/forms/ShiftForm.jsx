@@ -619,6 +619,8 @@ class ShiftForm extends Component {
 					/* Updating a shift or placement updates a rotas status so we need to refresh our rotas list too */
 					.then(() => this.handleGetRotas())
 					.then(() => {
+						this.props.handleClose();
+
 						/* FIXME - Make messages constants in config */
 						message = '<p>Shift was deleted!</p>';
 
@@ -806,9 +808,7 @@ class ShiftForm extends Component {
 								.then(() => this.handleGetRotas())
 								.then(() => {
 									/* Close the modal */
-									if (this.props.overview) {
-										this.props.handleClose();
-									}
+									this.props.handleClose();
 
 									/* FIXME - Make messages constants in config */
 									const message = '<p>Shift was updated!</p>';
@@ -829,9 +829,7 @@ class ShiftForm extends Component {
 								.then(() => this.handleGetRotas())
 								.then(() => {
 									/* Close the modal */
-									if (this.props.overview) {
-										this.props.handleClose();
-									}
+									this.props.handleClose();
 
 									/* FIXME - Make messages constants in config */
 									const message = '<p>Shift was updated!</p>';
@@ -858,9 +856,7 @@ class ShiftForm extends Component {
 									.then(() => this.handleGetRotas())
 									.then(() => {
 										/* Close the modal */
-										if (this.props.overview) {
-											this.props.handleClose();
-										}
+										this.props.handleClose();
 
 										/* FIXME - Make messages constants in config */
 										const message = '<p>Shift was updated!</p>';
@@ -890,9 +886,7 @@ class ShiftForm extends Component {
 									.then(() => this.handleGetRotas())
 									.then(() => {
 										/* Close the modal */
-										if (this.props.overview) {
-											this.props.handleClose();
-										}
+										this.props.handleClose();
 
 										/* FIXME - Make messages constants in config */
 										const message = '<p>Shift was updated!</p>';
@@ -992,7 +986,7 @@ class ShiftForm extends Component {
 				<Row>
 					<Col xs="12" sm="12" md="12" lg="4" xl="4">
 						<FormGroup>
-							<Label for="startTime">Start Time</Label>
+							<Label for="startTime">Start Time <span className="text-danger">&#42;</span></Label>
 							<Input type="select" name="startTime" id="startTime" className="custom-select custom-select-xl" value={this.state.startTime} onChange={this.handleChangeStartTime} tabIndex="3" required>
 								<option value="" label="Select Start Time">Select Start Time</option>
 							</Input>
@@ -1003,7 +997,7 @@ class ShiftForm extends Component {
 					</Col>
 					<Col xs="12" sm="12" md="12" lg="4" xl="4">
 						<FormGroup>
-							<Label for="endTime">End Time</Label>
+							<Label for="endTime">End Time <span className="text-danger">&#42;</span></Label>
 							<Input type="select" name="endTime" id="endTime" className="custom-select custom-select-xl" value={this.state.endTime} onChange={this.handleChangeEndTime} tabIndex="4" required disabled />
 						</FormGroup>
 					</Col>
@@ -1069,7 +1063,6 @@ const mapStateToProps = (state, props) => ({
 	shiftId: props.shiftId,
 	rotaType: state.rotaType,
 	editMode: props.editMode,
-	overview: props.overview,
 	roleName: props.roleName,
 	startDate: props.startDate,
 	employees: state.employees,

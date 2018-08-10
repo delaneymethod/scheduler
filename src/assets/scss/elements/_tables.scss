@@ -316,6 +316,10 @@
 					border-bottom: calculateRem(3px) solid darken($dark, 20%);
 				}
 			}
+			
+			.past {
+				cursor: not-allowed;
+			}
 		}
 		
 		th.non-draggable-cell {
