@@ -244,9 +244,9 @@ class EmployeeForm extends Component {
 				actions.deleteEmployee(payload)
 					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
 					.then(() => this.handleGetEmployees())
-					.then(() => this.handleUpdateEmployeeOrder())
+					// .then(() => this.handleUpdateEmployeeOrder())
 					/* I guess the API could return the ordered list of employees so we dont need to make this extra call */
-					.then(() => this.handleGetEmployees())
+					// .then(() => this.handleGetEmployees())
 					/* Updating a shift or placement will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 					.then(() => this.handleGetShifts())
 					.then(() => {
@@ -302,9 +302,9 @@ class EmployeeForm extends Component {
 				actions.updateEmployee(payload)
 					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
 					.then(() => this.handleGetEmployees())
-					.then(() => this.handleUpdateEmployeeOrder())
+					// .then(() => this.handleUpdateEmployeeOrder())
 					/* I guess the API could return the ordered list of employees so we dont need to make this extra call */
-					.then(() => this.handleGetEmployees())
+					// .then(() => this.handleGetEmployees())
 					/* Updating a shift or placement will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 					.then(() => this.handleGetShifts())
 					.then(() => {
@@ -323,9 +323,9 @@ class EmployeeForm extends Component {
 				actions.createEmployee(payload)
 					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
 					.then(() => this.handleGetEmployees())
-					.then(() => this.handleUpdateEmployeeOrder())
+					// .then(() => this.handleUpdateEmployeeOrder())
 					/* I guess the API could return the ordered list of employees so we dont need to make this extra call */
-					.then(() => this.handleGetEmployees())
+					// .then(() => this.handleGetEmployees())
 					/* Updating a shift or placement will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 					.then(() => this.handleGetShifts())
 					.then(() => {

@@ -693,6 +693,7 @@ class Employees extends Component {
 	};
 
 	handleOrderable = () => {
+		/*
 		if (document.getElementById('tableBody')) {
 			Orderable.create(document.getElementById('tableBody'), {
 				scroll: true,
@@ -707,7 +708,7 @@ class Employees extends Component {
 					get: () => {
 						const employees = this.handleOrderEmployees();
 
-						/* The rows are sorted based on account employee id... */
+						// The rows are sorted based on account employee id...
 						return employees.map(employee => employee.accountEmployeeId);
 					},
 					set: sortable => this.handleUpdateEmployeeOrder(sortable.toArray()),
@@ -716,6 +717,7 @@ class Employees extends Component {
 
 			console.log('Called Employees handleOrderable - orderable listeners ready');
 		}
+		*/
 	};
 
 	handleGetEmployees = () => {
@@ -1350,7 +1352,7 @@ class Employees extends Component {
 													</div>
 												</td>
 												{this.state.tableData.header.columns.map((column, index) => (
-													<td key={index} className="p-0 align-top text-left non-draggable-cell1 column">
+													<td key={index} className="p-0 align-top text-left column">
 														{(column.unassignedShifts.length > 0) ? <UnassignedShiftsOverview weekDate={column.weekDate} unassignedShifts={column.unassignedShifts} /> : null}
 													</td>
 												))}
@@ -1358,7 +1360,7 @@ class Employees extends Component {
 											</tr>
 										) : null}
 										{this.state.tableData.body.rowsAssigned.length > 0 && this.state.tableData.body.rowsAssigned.map((row, rowIndex) => (
-											<tr key={rowIndex} className="draggable-row" data-position={row.accountEmployee.rotaTypeAccountEmployees[0].sortPosition} data-account-employee-id={row.accountEmployee.accountEmployeeId}>
+											<tr key={rowIndex} className="draggable-row" data-account-employee-id={row.accountEmployee.accountEmployeeId}>
 												<td className="p-2 align-top text-left p-0 m-0 edit-employee column first">
 													<div className="d-flex align-items-start p-0 m-0 wrap-words position-relative">
 														<div className="d-inline-block p-0 mt-0 ml-0 mr-2 mb-0 drag-handler">

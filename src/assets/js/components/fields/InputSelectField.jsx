@@ -71,7 +71,7 @@ class InputSelectField extends Component {
 					<Input type="select" name={this.props.fieldName} id={this.props.fieldName} value={this.props.fieldValue} className="custom-select custom-select-xl" tabIndex={this.props.fieldTabIndex} onChange={this.props.handleChange} onBlur={this.props.handleBlur} required={this.props.fieldRequired}>
 						{(this.props.fieldName === 'roleName') ? (
 							<Fragment>
-								<option value="" label=""></option>
+								<option value="" label="Select Role">Select Role</option>
 								{this.props.fieldOptions.map((role, index) => <option key={index} value={role.roleName} label={role.roleName}>{role.roleName}</option>)}
 							</Fragment>
 						) : (

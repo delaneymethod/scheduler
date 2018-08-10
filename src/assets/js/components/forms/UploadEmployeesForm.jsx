@@ -12,11 +12,14 @@ import config from '../../helpers/config';
 
 import FileField from '../fields/FileField';
 
+import { getShifts } from '../../actions/shiftActions';
+
 import { getEmployees, orderEmployees, uploadEmployees } from '../../actions/employeeActions';
 
 const routes = config.APP.ROUTES;
 
 const propTypes = {
+	rota: PropTypes.object.isRequired,
 	rotaType: PropTypes.object.isRequired,
 	employees: PropTypes.array.isRequired,
 	handleClose: PropTypes.func.isRequired,
@@ -24,6 +27,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+	rota: {},
 	rotaType: {},
 	employees: [],
 	handleClose: () => {},
@@ -39,6 +43,8 @@ class UploadEmployeesForm extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 
 		this.handleChange = this.handleChange.bind(this);
+
+		this.handleGetShifts = this.handleGetShifts.bind(this);
 
 		this.handleGetEmployees = this.handleGetEmployees.bind(this);
 
@@ -83,8 +89,19 @@ class UploadEmployeesForm extends Component {
 	};
 
 	handleGetEmployees = () => {
-		console.log('Called UploadEmployeesForm handleSubmit getEmployees');
+		console.log('Called UploadEmployeesForm handleGetEmployees getEmployees');
 		return this.props.actions.getEmployees().catch(error => Promise.reject(error));
+	};
+
+	handleGetShifts = () => {
+		const { actions, rota: { rotaId } } = this.props;
+
+		const payload = {
+			rotaId,
+		};
+
+		console.log('Called UploadEmployeesForm handleGetShifts getShifts');
+		return actions.getShifts(payload).catch(error => Promise.reject(error));
 	};
 
 	handleChange = file => this.setState({ file, error: {} });
@@ -127,10 +144,11 @@ class UploadEmployeesForm extends Component {
 					return true;
 				})
 				/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
-				.then(() => this.handleGetEmployees())
-				.then(() => this.handleUpdateEmployeeOrder())
+				// .then(() => this.handleGetEmployees())
+				// .then(() => this.handleUpdateEmployeeOrder())
 				/* I guess the API could return the ordered list of employees so we dont need to make this extra call */
 				.then(() => this.handleGetEmployees())
+				.then(() => this.handleGetShifts())
 				.then(() => {
 					/* Close the modal */
 					this.props.handleClose();
@@ -160,12 +178,14 @@ UploadEmployeesForm.propTypes = propTypes;
 UploadEmployeesForm.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
+	rota: state.rota,
 	rotaType: state.rotaType,
 	employees: state.employees,
 });
 
 const mapDispatchToProps = dispatch => ({
 	actions: bindActionCreators({
+		getShifts,
 		getEmployees,
 		orderEmployees,
 		uploadEmployees,

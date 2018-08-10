@@ -974,7 +974,7 @@ class ShiftForm extends Component {
 						<FormGroup>
 							<Label for="roleName">Role</Label>
 							<Input type="select" name="roleName" id="roleName" className="custom-select custom-select-xl" value={this.state.roleName} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="2">
-								<option value="" label=""></option>
+								<option value="" label="Select Role">Select Role</option>
 								{this.props.roles.map((role, index) => <option key={index} value={role.roleName} label={role.roleName}>{role.roleName}</option>)}
 							</Input>
 							<FieldFeedbacks for="roleName" show="all">
@@ -994,7 +994,7 @@ class ShiftForm extends Component {
 						<FormGroup>
 							<Label for="startTime">Start Time</Label>
 							<Input type="select" name="startTime" id="startTime" className="custom-select custom-select-xl" value={this.state.startTime} onChange={this.handleChangeStartTime} tabIndex="3" required>
-								<option value="" label=""></option>
+								<option value="" label="Select Start Time">Select Start Time</option>
 							</Input>
 							<FieldFeedbacks for="startTime" show="all">
 								<FieldFeedback when="*">- Please select a valid start time.</FieldFeedback>
@@ -1036,7 +1036,7 @@ class ShiftForm extends Component {
 					<FormGroup>
 						<Label for="employeeId">Assign Employee</Label>
 						<Input type="select" name="employeeId" id="employeeId" className="custom-select custom-select-xl" value={this.state.employeeId} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="7">
-							<option value="" label="" />
+							<option value="" label="Select Employee">Select Employee</option>
 							{this.props.employees.map(({ employee }, index) => <option key={index} value={employee.employeeId} label={`${employee.firstName} ${employee.lastName}`}>{employee.firstName} {employee.lastName}</option>)}
 						</Input>
 						<FieldFeedbacks for="employeeId" show="all">
