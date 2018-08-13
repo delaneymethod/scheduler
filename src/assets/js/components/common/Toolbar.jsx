@@ -481,7 +481,7 @@ class Toolbar extends Component {
 	render = () => (
 		<Fragment>
 			<Row>
-				<Col className={(this.props.rotaCost > this.state.rotaBudget) ? 'd-block bg-light-danger pt-3 pb-3 pt-sm-3 pb-ms-3 text-center text-md-left' : 'd-none bg-light-danger pt-3 pb-3 pt-sm-3 pb-ms-3 text-center text-md-left'} xs="12" sm="12" md="12" lg="12" xl="12">
+				<Col className={`bg-light-danger pt-3 pb-3 pt-sm-3 pb-ms-3 text-center text-md-left ${(this.props.rotaCost > this.props.rota.budget) ? 'd-block' : 'd-none'}`} xs="12" sm="12" md="12" lg="12" xl="12">
 					<ul className="list-unstyled list-inline m-0 p-0">
 						<li className="list-inline-item">Rota Budget: <strong>&pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</strong></li>
 						<li className="list-inline-item">Rota Cost: <strong className="text-danger">&pound;{this.props.rotaCost.toLocaleString(undefined, { minimumFractionDigits: 2 })}</strong></li>

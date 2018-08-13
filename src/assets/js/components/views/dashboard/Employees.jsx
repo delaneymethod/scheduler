@@ -1338,8 +1338,8 @@ class Employees extends Component {
 													<PopoverBody>
 														<ul className="popover-menu">
 															<li><label className="pt-2 pb-1 m-0">Sort by</label></li>
-															<li><button type="button" title="Sort by First Name" className={`btn btn-action btn-nav border-0${(this.state.sort.column === 'firstName') ? ' text-warning' : ''}`} onClick={event => this.handleSortEmployees(event, 'firstName')}>First Name</button></li>
-															<li><button type="button" title="Sort by Last Name" className={`btn btn-action btn-nav border-0${(this.state.sort.column === 'lastName') ? ' text-warning' : ''}`} onClick={event => this.handleSortEmployees(event, 'lastName')}>Last Name</button></li>
+															<li><button type="button" title="Sort by First Name" className={`btn btn-action btn-nav border-0${(this.state.sort.column === 'firstName') ? ' text-warning' : ''}`} onClick={event => this.handleSortEmployees(event, 'firstName')}>First Name {(this.state.sort.column === 'firstName') ? <i className={`fa fa-sort-alpha-${this.state.sort.direction}`} aria-hidden="true"></i> : null}</button></li>
+															<li><button type="button" title="Sort by Last Name" className={`btn btn-action btn-nav border-0${(this.state.sort.column === 'lastName') ? ' text-warning' : ''}`} onClick={event => this.handleSortEmployees(event, 'lastName')}>Last Name {(this.state.sort.column === 'lastName') ? <i className={`fa fa-sort-alpha-${this.state.sort.direction}`} aria-hidden="true"></i> : null}</button></li>
 															{(!isEmpty(this.state.sort.column)) ? (
 																<li className="filter-buttons"><button type="button" title="Clear Sort by" className="btn btn-action m-0 border-0" style={{ borderRadius: '4px' }} onClick={this.handleClearSortEmployees}>Reset</button></li>
 															) : null}
