@@ -267,10 +267,10 @@ class Employees extends Component {
 		/* We debounce this call to wait 500ms (we do not want the leading (or "immediate") flag passed because we want to wait until all the componentDidUpdate calls have finished before loading the table data again */
 		this.handleFetchData = debounce(this.handleFetchData.bind(this), 500);
 
-		this.handleSwitchRotaCost = debounce(this.handleSwitchRotaCost.bind(this), 100);
+		this.handleSwitchRotaCost = debounce(this.handleSwitchRotaCost.bind(this), 500);
 
-		/* We debounce this call to wait 500ms (we do not want the leading (or "immediate") flag passed because we want to wait the user has finished ordering all rows before saving the order */
-		this.handleUpdateEmployeeOrder = debounce(this.handleUpdateEmployeeOrder.bind(this), 500);
+		/* We debounce this call to wait 100ms (we do not want the leading (or "immediate") flag passed because we want to wait the user has finished ordering all rows before saving the order */
+		this.handleUpdateEmployeeOrder = debounce(this.handleUpdateEmployeeOrder.bind(this), 300);
 	};
 
 	componentDidUpdate = (prevProps, prevState) => {
@@ -577,11 +577,11 @@ class Employees extends Component {
 		/* Stick everything into the state */
 		this.setState({ tableData, totalUnassignedShifts });
 
-		/* Add Orderable event listeners to table rows */
-		this.handleOrderable();
-
 		/* Adds drag and drop event listeners to table cells and shifts */
 		this.handleDragAndDrop();
+
+		/* Add Orderable event listeners to table rows */
+		this.handleOrderable();
 	};
 
 	handleFilterEmployees = (event, name) => {
@@ -641,8 +641,6 @@ class Employees extends Component {
 		if ([...draggableRows].length > 0) {
 			/* We only want to use the visible rows as the user could have filtered */
 			draggableRows = [...draggableRows].filter(draggableRow => draggableRow.style.display !== 'none');
-
-			saveState('employees:order', document.getElementById('tableBody').innerHTML);
 
 			/* Now do our sorting */
 			draggableRows = draggableRows.sort((a, b) => {
@@ -706,12 +704,15 @@ class Employees extends Component {
 		/* Grab all employees without sort positions setup for rota types */
 		const nonOrderableEmployees = this.props.employees.filter(accountEmployee => !accountEmployee.rotaTypeAccountEmployees || !accountEmployee.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId));
 
+		const orderedEmployees = concat(orderableEmployees, nonOrderableEmployees);
+
 		/* Now that employees with sort positions have been ordered, add back in the non sort position employees */
-		return concat(orderableEmployees, nonOrderableEmployees);
+		saveState('employees:ordered', orderedEmployees);
+
+		return orderedEmployees;
 	};
 
 	handleOrderable = () => {
-		/*
 		if (document.getElementById('tableBody')) {
 			Orderable.create(document.getElementById('tableBody'), {
 				scroll: true,
@@ -724,10 +725,9 @@ class Employees extends Component {
 				ghostClass: 'draggable-row-ghost',
 				store: {
 					get: () => {
-						const employees = this.handleOrderEmployees();
+						const employees = getState('employees:ordered');
 
-						// The rows are sorted based on account employee id...
-						return employees.map(employee => employee.accountEmployeeId);
+						return employees.map(accountEmployee => accountEmployee.accountEmployeeId);
 					},
 					set: sortable => this.handleUpdateEmployeeOrder(sortable.toArray()),
 				},
@@ -735,7 +735,6 @@ class Employees extends Component {
 
 			console.log('Called Employees handleOrderable - orderable listeners ready');
 		}
-		*/
 	};
 
 	handleGetEmployees = () => {
