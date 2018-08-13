@@ -22,7 +22,7 @@ class NotFoundPage extends Component {
 	};
 
 	render = () => (
-		<Row className="d-flex flex-md-row flex-column login-page-container">
+		<Row className="d-flex flex-md-row flex-column general-page-container">
 			<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center bg-dark py-5">
 				<div className="panel-welcome">
 					<h1><a href={routes.HOME.URI} title={config.APP.TITLE}><img src={config.APP.LOGO} alt={config.APP.TITLE} className="mb-4" /></a></h1>

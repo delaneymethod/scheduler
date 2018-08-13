@@ -243,18 +243,7 @@ export default {
 				TITLE: 'Terms of Service',
 				URI: '/terms',
 				CONTENT: {
-					WELCOME: '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>',
-				},
-				META: {
-					DESCRIPTION: '',
-					KEYWORDS: '',
-				},
-			},
-			PRIVACY_POLICY: {
-				TITLE: 'Privacy Policy',
-				URI: '/privacy',
-				CONTENT: {
-					WELCOME: '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>',
+					WELCOME: 'Version: August 2018',
 				},
 				META: {
 					DESCRIPTION: '',
@@ -265,7 +254,29 @@ export default {
 				TITLE: 'End User License Agreement',
 				URI: '/eula',
 				CONTENT: {
-					WELCOME: '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>',
+					WELCOME: '',
+				},
+				META: {
+					DESCRIPTION: '',
+					KEYWORDS: '',
+				},
+			},
+			NEWS: {
+				TITLE: 'News',
+				URI: '/news',
+				CONTENT: {
+					WELCOME: '',
+					ARTICLES: [
+						{
+							TITLE: '<div class="p-0 m-0 text-center"><img src="/assets/img/erdf.png" alt="European Regional Development Fund Support" class="img-fluid d-block ml-auto mr-auto mb-4" style="height: 200px;" />European Regional Development Fund Support</div>',
+							URI: '/news/european-regional-development-fund-support',
+							CONTENT: '<p>Gig Grafter was initially established to assess the commercial viability of developing and marketing a contingent labour management, communication and recruitment application. The initial aim of the business was to build a SaaS-based solution that would enable businesses to quickly identify, communicate and mobilise casual workers who could cover gaps in their rosters at very short notice (i.e. within hours of the need being identified).</p><p>A core assumption of the project was that most companies would already be using a rostering application and, through using available API&#39;s, our proposed solution would integrate with the most commonly used tools in order to target shifts at staff that were available to work and that had the required skills to do the job at hand.</p><p>An unexpected finding from this initial research process and the release of our initial prototype was the discovery that many small businesses still use a mix of spreadsheets, word documents, pen and paper to plan and publish their schedules.</p><p>For those businesses that had actively attempted to source a better solution, the options available were either viewed as being too complex and expensive or alternatively offered limited additional benefits over spreadsheets and social media.</p><p>As an outcome, the Gig Grafter team took the decision to expand the scope of its original idea and develop a SaaS-based Rostering, Communications and Staff Management application that can be configured to meet the specific needs of smaller employers.</p><p>Gig Grafter Limited is in receipt of a grant for research and development support from Invest NI for Smart Scheduling and Shift Management for SME&#39;s that depend on an hourly-paid workforce. This project, which is part-financed by the European Regional Development Fund under the Investment for Growth and Jobs Programme 2014-2020 aims to provide an affordable suite of tools that optimise the productivity of small businesses through efficient engagement, scheduling and communications with all its staff - full-time, part-time and casual.</p>',
+							META: {
+								DESCRIPTION: '',
+								KEYWORDS: '',
+							},
+						},
+					],
 				},
 				META: {
 					DESCRIPTION: '',

@@ -9,11 +9,11 @@ import AjaxLoading from './AjaxLoading';
 
 import ErrorBoundary from './ErrorBoundary';
 
+import News from './views/News';
 import Home from './views/Home';
 import Login from './views/Login';
 import Register from './views/Register';
 import NotFoundPage from './views/NotFoundPage';
-import PrivacyPolicy from './views/PrivacyPolicy';
 import TermsOfService from './views/TermsOfService';
 import UpdateYourPassword from './views/UpdateYourPassword';
 import ForgottenYourPassword from './views/ForgottenYourPassword';
@@ -30,10 +30,10 @@ const routes = config.APP.ROUTES;
 const App = () => (
 	<ErrorBoundary>
 		<Switch context="router">
+			<Route exact path={routes.NEWS.URI} component={News} />
 			<Route exact path={routes.HOME.URI} component={Home} />
 			<Route exact path={routes.LOGIN.URI} component={Login} />
 			<Route exact path={routes.REGISTER.URI} component={Register} />
-			<Route exact path={routes.PRIVACY_POLICY.URI} component={PrivacyPolicy} />
 			<Route exact path={routes.TERMS_OF_SERVICE.URI} component={TermsOfService} />
 			<Route exact path={routes.END_USER_LICENSE_AGREEMENT.URI} component={EndUserLicenseAgreement} />
 			<Route exact path={`${routes.UPDATE_YOUR_PASSWORD.URI}/:token`} component={UpdateYourPassword} />

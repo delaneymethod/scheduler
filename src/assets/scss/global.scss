@@ -188,6 +188,7 @@ header {
 }
 
 /* Marketing site styles */
+.general-page-container,
 .home-page-container {
 	color: #343E48;
 	line-height: 1.5;
@@ -458,6 +459,7 @@ header {
 	}
 }
 
+.general-page-container,
 .login-page-container,
 .register-page-container,
 .update-your-password-page-container,
@@ -513,6 +515,29 @@ header {
 
 .lead-text {
 	font-weight: 600;
+}
+
+.general-page-container {
+	.lead-text {
+		&::after {
+			bottom: 0;
+			content: '';
+			display: block;
+			position: absolute;
+			width: calculateRem(30px);
+			height: calculateRem(5px);
+			background-color: $primary;
+		}
+	}
+	
+	@include media-breakpoint-down(sm) {
+		.lead-text {
+			&::after {
+				position: relative;
+				margin: calculateRem(10px) auto 0;
+			}
+		}
+	}
 }
 
 /* IE only */
