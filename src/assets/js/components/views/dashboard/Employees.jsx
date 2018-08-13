@@ -58,6 +58,8 @@ import UploadEmployeesForm from '../../forms/UploadEmployeesForm';
 
 import { getRotas, switchRota } from '../../../actions/rotaActions';
 
+import { getState, saveState } from '../../../store/persistedState';
+
 import { getShifts, updateShift } from '../../../actions/shiftActions';
 
 import UnassignedShiftsOverview from '../../common/UnassignedShiftsOverview';
@@ -95,6 +97,15 @@ const defaultProps = {
 	employees: [],
 	authenticated: false,
 };
+
+/**
+ * This sorts strings taking into consideration numbers in strings.
+ * e.g., Account 1, Account 2, Account 10. Normal sorting would sort it Account 1, Account 10, Account 2.
+ */
+const collator = new Intl.Collator(undefined, {
+	numeric: true,
+	sensitivity: 'base',
+});
 
 class Employees extends Component {
 	constructor(props) {
@@ -260,8 +271,6 @@ class Employees extends Component {
 
 		/* We debounce this call to wait 500ms (we do not want the leading (or "immediate") flag passed because we want to wait the user has finished ordering all rows before saving the order */
 		this.handleUpdateEmployeeOrder = debounce(this.handleUpdateEmployeeOrder.bind(this), 500);
-
-		this.setState({ totalEmployees: this.props.employees.length });
 	};
 
 	componentDidUpdate = (prevProps, prevState) => {
@@ -271,9 +280,7 @@ class Employees extends Component {
 
 		/* If the current week, current rota, current rota type, employees, settings or shifts had any changes, re/load the table */
 		if (prevProps.employees !== this.props.employees || prevProps.week !== this.props.week || prevProps.rota !== this.props.rota || prevProps.rotaType !== this.props.rotaType || prevProps.shifts !== this.props.shifts || prevProps.settings !== this.props.settings) {
-			this.handleFetchData();
-
-			this.setState({ totalEmployees: this.props.employees.length });
+			this.setState({ totalEmployees: this.props.employees.length }, () => this.handleFetchData());
 		}
 
 		if (prevState.roleName !== this.state.roleName) {
@@ -286,77 +293,6 @@ class Employees extends Component {
 	handleSwitchRotaCost = (cost) => {
 		console.log('Called Employee handleSwitchRotaCost switchRotaCost');
 		this.props.actions.switchRotaCost(cost);
-	};
-
-	handleClearSortEmployees = () => {
-		this.handleOrderable();
-
-		this.setState({
-			sort: {
-				column: null,
-				direction: 'asc',
-			},
-		});
-	};
-
-	handleSortEmployees = (event, column) => {
-		event.preventDefault();
-
-		const { sort, tableData } = this.state;
-
-		let { direction } = sort;
-
-		/* Change the sort direction if the same column is sorted. */
-		if (sort.column === column) {
-			direction = (direction === 'asc') ? 'desc' : 'asc';
-		}
-
-		/**
-		 * This sorts strings taking into consideration numbers in strings.
-		 * e.g., Account 1, Account 2, Account 10. Normal sorting would sort it Account 1, Account 10, Account 2.
-		 */
-		const collator = new Intl.Collator(undefined, {
-			numeric: true,
-			sensitivity: 'base',
-		});
-
-		/* Sort ascending */
-		const sortedBodyRows = tableData.body.rowsAssigned.sort((a, b) => {
-			if (column === 'firstName') {
-				return collator.compare(a.accountEmployee.employee.firstName, b.accountEmployee.employee.firstName);
-			} else if (column === 'lastName') {
-				return collator.compare(a.accountEmployee.employee.lastName, b.accountEmployee.employee.lastName);
-			}
-
-			return collator.compare(a.accountEmployee.accountEmployeeId, b.accountEmployee.accountEmployeeId);
-		});
-
-		/* Reverse the order if direction is descending */
-		if (direction === 'desc') {
-			sortedBodyRows.reverse();
-		}
-
-		tableData.body.rowsAssigned = sortedBodyRows;
-
-		this.setState({
-			tableData,
-			sort: {
-				column,
-				direction,
-			},
-		});
-	};
-
-	handleSortDirection = (column) => {
-		const { sort } = this.state;
-
-		let className = 'sort-direction';
-
-		if (sort.column === column) {
-			className = className.concat((sort.direction === 'asc') ? ' asc' : ' desc');
-		}
-
-		return className;
 	};
 
 	handleModal = () => this.setState({ isErrorModalOpen: !this.state.isErrorModalOpen }, () => ((!this.state.isErrorModalOpen) ? this.props.history.push(routes.DASHBOARD.HOME.URI) : null));
@@ -660,18 +596,16 @@ class Employees extends Component {
 		this.setState({ employeeName }, () => {
 			if (isEmpty(this.state.employeeName)) {
 				document.getElementById('employeeName').value = '';
-
-				this.setState({ totalEmployees: this.props.employees.length });
 			}
-
-			const tableBody = document.getElementById('tableBody');
 
 			/* Quick and easy - loop over each table body row and hide / show rows based on employee full name values */
 			let totalEmployees = 0;
 
-			Array.prototype.forEach.call(tableBody.rows, (row) => {
-				if (row.classList.contains('draggable-row')) {
-					const employeeFullName = row.querySelector('#fullname').textContent.toLowerCase();
+			const draggableRows = document.querySelectorAll('.draggable-row');
+
+			if ([...draggableRows].length > 0) {
+				[...draggableRows].forEach((draggableRow) => {
+					const employeeFullName = draggableRow.querySelector('#fullname').textContent.toLowerCase();
 
 					const employeeSearchName = employeeName.toLowerCase();
 
@@ -681,12 +615,83 @@ class Employees extends Component {
 						totalEmployees += 1;
 					}
 
-					row.setAttribute('style', display);
+					draggableRow.setAttribute('style', display);
+				});
+
+				this.setState({ totalEmployees });
+			}
+		});
+	};
+
+	handleSortEmployees = (event, column) => {
+		event.preventDefault();
+
+		const { sort } = this.state;
+
+		let { direction } = sort;
+
+		/* Change the sort direction if the same column is sorted. */
+		if (sort.column === column) {
+			direction = (direction === 'asc') ? 'desc' : 'asc';
+		}
+
+		/* Grab all draggable rows */
+		let draggableRows = document.querySelectorAll('.draggable-row');
+
+		if ([...draggableRows].length > 0) {
+			/* We only want to use the visible rows as the user could have filtered */
+			draggableRows = [...draggableRows].filter(draggableRow => draggableRow.style.display !== 'none');
+
+			saveState('employees:order', document.getElementById('tableBody').innerHTML);
+
+			/* Now do our sorting */
+			draggableRows = draggableRows.sort((a, b) => {
+				if (column === 'firstName') {
+					return collator.compare(a.dataset.firstName, b.dataset.firstName);
+				} else if (column === 'lastName') {
+					return collator.compare(a.dataset.lastName, b.dataset.lastName);
 				}
+
+				return collator.compare(a.dataset.accountEmployeeId, b.dataset.accountEmployeeId);
 			});
 
-			this.setState({ totalEmployees });
+			/* Reverse the order if direction is descending */
+			if (direction === 'desc') {
+				draggableRows.reverse();
+			}
+		}
+
+		/* Update our table */
+		[...draggableRows].forEach(draggableRow => document.getElementById('tableBody').appendChild(draggableRow));
+
+		this.setState({
+			sort: {
+				column,
+				direction,
+			},
 		});
+	};
+
+	handleClearSortEmployees = () => {
+		this.setState({
+			sort: {
+				column: null,
+				direction: 'asc',
+			},
+		});
+		/* , () => window.location.reload()); */
+	};
+
+	handleSortDirection = (column) => {
+		const { sort } = this.state;
+
+		let className = 'sort-direction';
+
+		if (sort.column === column) {
+			className = className.concat((sort.direction === 'asc') ? ' asc' : ' desc');
+		}
+
+		return className;
 	};
 
 	handleOrderEmployees = () => {
@@ -1341,7 +1346,10 @@ class Employees extends Component {
 															<li><button type="button" title="Sort by First Name" className={`btn btn-action btn-nav border-0${(this.state.sort.column === 'firstName') ? ' text-warning' : ''}`} onClick={event => this.handleSortEmployees(event, 'firstName')}>First Name {(this.state.sort.column === 'firstName') ? <i className={`fa fa-sort-alpha-${this.state.sort.direction}`} aria-hidden="true"></i> : null}</button></li>
 															<li><button type="button" title="Sort by Last Name" className={`btn btn-action btn-nav border-0${(this.state.sort.column === 'lastName') ? ' text-warning' : ''}`} onClick={event => this.handleSortEmployees(event, 'lastName')}>Last Name {(this.state.sort.column === 'lastName') ? <i className={`fa fa-sort-alpha-${this.state.sort.direction}`} aria-hidden="true"></i> : null}</button></li>
 															{(!isEmpty(this.state.sort.column)) ? (
-																<li className="filter-buttons"><button type="button" title="Clear Sort by" className="btn btn-action m-0 border-0" style={{ borderRadius: '4px' }} onClick={this.handleClearSortEmployees}>Reset</button></li>
+																<li className="filter-buttons">
+																	<button type="button" title="Clear Sort by" className="btn btn-action m-0 border-0 mb-2" style={{ borderRadius: '4px' }} onClick={event => this.handleClearSortEmployees(event)}>Clear</button>
+																	<button type="button" title="Close Sort by" className="btn btn-action m-0 border-0" style={{ borderRadius: '4px' }} onClick={this.handleSortBy}>Close</button>
+																</li>
 															) : null}
 														</ul>
 													</PopoverBody>
@@ -1355,8 +1363,6 @@ class Employees extends Component {
 											))}
 											<th className="p-2 m-0 text-center column last">Total</th>
 										</tr>
-									</thead>
-									<tbody id="tableBody">
 										<tr className="open-shifts">
 											<td className="p-2 align-middle text-left p-0 m-0 column first">
 												<div className="d-flex align-items-center p-0 m-0">
@@ -1370,8 +1376,10 @@ class Employees extends Component {
 											))}
 											<td className="p-2 align-top text-center column last">&nbsp;</td>
 										</tr>
+									</thead>
+									<tbody id="tableBody">
 										{this.state.tableData.body.rowsAssigned.length > 0 && this.state.tableData.body.rowsAssigned.map((row, rowIndex) => (
-											<tr key={rowIndex} className="draggable-row" data-account-employee-id={row.accountEmployee.accountEmployeeId}>
+											<tr key={rowIndex} className="draggable-row" data-account-employee-id={row.accountEmployee.accountEmployeeId} data-first-name={row.accountEmployee.employee.firstName} data-last-name={row.accountEmployee.employee.lastName}>
 												<td className="p-2 align-top text-left p-0 m-0 edit-employee column first">
 													<div className="d-flex align-items-start p-0 m-0 wrap-words position-relative">
 														<div className="d-inline-block p-0 mt-0 ml-0 mr-2 mb-0 drag-handler">
