@@ -52,6 +52,8 @@ import AssignShiftButton from '../../common/AssignShiftButton';
 
 import { addClass, removeClass } from '../../../helpers/classes';
 
+import { switchRotaCost } from '../../../actions/rotaCostActions';
+
 import UploadEmployeesForm from '../../forms/UploadEmployeesForm';
 
 import { getRotas, switchRota } from '../../../actions/rotaActions';
@@ -76,6 +78,7 @@ const propTypes = {
 	rotas: PropTypes.array.isRequired,
 	user: PropTypes.object.isRequired,
 	shifts: PropTypes.array.isRequired,
+	rotaCost: PropTypes.number.isRequired,
 	rotaType: PropTypes.object.isRequired,
 	employees: PropTypes.array.isRequired,
 	authenticated: PropTypes.bool.isRequired,
@@ -87,6 +90,7 @@ const defaultProps = {
 	rota: {},
 	rotas: [],
 	shifts: [],
+	rotaCost: 0,
 	rotaType: {},
 	employees: [],
 	authenticated: false,
@@ -252,6 +256,8 @@ class Employees extends Component {
 		/* We debounce this call to wait 500ms (we do not want the leading (or "immediate") flag passed because we want to wait until all the componentDidUpdate calls have finished before loading the table data again */
 		this.handleFetchData = debounce(this.handleFetchData.bind(this), 500);
 
+		this.handleSwitchRotaCost = debounce(this.handleSwitchRotaCost.bind(this), 100);
+
 		/* We debounce this call to wait 500ms (we do not want the leading (or "immediate") flag passed because we want to wait the user has finished ordering all rows before saving the order */
 		this.handleUpdateEmployeeOrder = debounce(this.handleUpdateEmployeeOrder.bind(this), 500);
 
@@ -275,6 +281,11 @@ class Employees extends Component {
 
 			this.setState({ roleName });
 		}
+	};
+
+	handleSwitchRotaCost = (cost) => {
+		console.log('Called Employee handleSwitchRotaCost switchRotaCost');
+		this.props.actions.switchRotaCost(cost);
 	};
 
 	handleClearSortEmployees = () => {
@@ -623,6 +634,8 @@ class Employees extends Component {
 			if (totalUnassignedShifts > 0) {
 				tableData.body.rowsUnassigned.push(rowUnassigned);
 			}
+
+			this.handleSwitchRotaCost(tableData.footer.columns[7].cost);
 		});
 
 		/* Stick everything into the state */
@@ -1485,6 +1498,7 @@ const mapStateToProps = (state, props) => ({
 	rota: state.rota,
 	rotas: state.rotas,
 	shifts: state.shifts,
+	rotaCost: state.rotaCost,
 	rotaType: state.rotaType,
 	employees: state.employees,
 	authenticated: state.authenticated,
@@ -1497,6 +1511,7 @@ const mapDispatchToProps = dispatch => ({
 		switchRota,
 		updateShift,
 		getEmployees,
+		switchRotaCost,
 		orderEmployees,
 		createPlacement,
 		updatePlacement,

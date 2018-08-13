@@ -99,7 +99,7 @@ class EndUserLicenseAgreement extends Component {
 							</Col>
 						</Row>
 					</Col>
-				</Row>	
+				</Row>
 				<Row className="service-updates">
 					<Col xs="12" sm="2" md="3" lg="4" xl="4" className="d-none d-sm-block"></Col>
 					<Col xs="12" sm="8" md="6" lg="4" xl="4" className="m-0 p-4 p-lg-5">

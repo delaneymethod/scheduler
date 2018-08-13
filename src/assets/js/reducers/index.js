@@ -7,6 +7,7 @@ import roles from './rolesReducer';
 import rotas from './rotasReducer';
 import shifts from './shiftsReducer';
 import accounts from './accountsReducer';
+import rotaCost from './rotaCostReducer';
 import rotaType from './rotaTypeReducer';
 import settings from './settingsReducer';
 import employees from './employeesReducer';
@@ -24,6 +25,7 @@ const reducers = combineReducers({
 	rotas,
 	shifts,
 	accounts,
+	rotaCost,
 	rotaType,
 	settings,
 	employees,

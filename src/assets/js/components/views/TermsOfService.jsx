@@ -320,6 +320,9 @@ class TermsOfService extends Component {
 							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.3</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">The parties acknowledge that:</Col>
 						</Row>
+						<Row className="no-gutters mb-4">
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">&nbsp;</Col>
+							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">
 								<Row className="no-gutters mb-4">
 									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.3.1</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">if the Supplier processes any personal data on the Customer&#39;s behalf when performing its obligations under this Agreement, the Customer is the data controller and the Supplier is the data processor for the purposes of the Data Protection Legislation (where <strong>Data Controller</strong> and <strong>Data Processor</strong> have the meanings as defined in the Data Protection Legislation).</Col>
@@ -332,6 +335,8 @@ class TermsOfService extends Component {
 									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.3.3</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">the personal data may be transferred or stored outside the EEA or the country where the Customer and the Authorised Users are located in order to carry out the Services and the Supplier&#39;s other obligations under this Agreement.</Col>
 								</Row>
+							</Col>
+						</Row>
 						<Row className="no-gutters mb-4">
 							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.4</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">Without prejudice to the generality of clause 6.2, the Customer will ensure that it has all necessary appropriate consents and notices in place to enable lawful transfer of the Personal Data to the Supplier for the duration and purposes of this Agreement so that the Supplier may lawfully use, process and transfer the Personal Data in accordance with this Agreement on the Customer&#39;s behalf.</Col>
@@ -805,7 +810,7 @@ class TermsOfService extends Component {
 									<li>Work rota.</li>
 								</ul>
 							</Col>
-						</Row>		
+						</Row>
 					</Col>
 				</Row>
 				<Row className="service-updates">

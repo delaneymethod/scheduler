@@ -39,6 +39,7 @@ store.subscribe(throttle(() => {
 		rotas,
 		roles,
 		shifts,
+		rotaCost,
 		settings,
 		rotaType,
 		rotaTypes,
@@ -59,6 +60,8 @@ store.subscribe(throttle(() => {
 	saveState('authenticated', authenticated);
 
 	saveState('rotas', (rotaTypes.length === 0) ? [] : rotas);
+
+	saveState('rotaCost', (rotaTypes.length === 0) ? 0 : rotaCost);
 
 	saveState('rotaType', (rotaTypes.length === 0) ? {} : rotaType);
 

@@ -101,6 +101,10 @@ html {
 	background-color: $gray-500 !important;
 }
 
+.bg-light-danger {
+	background-color: lighten($danger, 30%);
+}
+
 .error {
 	color: $danger;
 	margin-top: 0.5rem;

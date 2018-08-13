@@ -55,6 +55,7 @@ const propTypes = {
 	rota: PropTypes.object.isRequired,
 	rotas: PropTypes.array.isRequired,
 	shifts: PropTypes.array.isRequired,
+	rotaCost: PropTypes.number.isRequired,
 	rotaType: PropTypes.object.isRequired,
 	rotaTypes: PropTypes.array.isRequired,
 };
@@ -64,6 +65,7 @@ const defaultProps = {
 	rota: {},
 	rotas: [],
 	shifts: [],
+	rotaCost: 0,
 	rotaType: {},
 	rotaTypes: [],
 };
@@ -479,8 +481,30 @@ class Toolbar extends Component {
 	render = () => (
 		<Fragment>
 			<Row>
-				<Col className="pt-3 pb-0 pt-sm-3 pb-ms-3 text-center text-md-left" xs="12" sm="12" md="5" lg="5" xl="6">
+				<Col className={(this.props.rotaCost > this.state.rotaBudget) ? 'd-block bg-light-danger pt-3 pb-3 pt-sm-3 pb-ms-3 text-center text-md-left' : 'd-none bg-light-danger pt-3 pb-3 pt-sm-3 pb-ms-3 text-center text-md-left'} xs="12" sm="12" md="12" lg="12" xl="12">
+					<ul className="list-unstyled list-inline m-0 p-0">
+						<li className="list-inline-item">Rota Budget: <strong>&pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</strong></li>
+						<li className="list-inline-item">Rota Cost: <strong className="text-danger">&pound;{this.props.rotaCost.toLocaleString(undefined, { minimumFractionDigits: 2 })}</strong></li>
+						<li className="list-inline-item">Extra Cost: <strong className="text-danger">&#43;&pound;{(this.props.rotaCost - this.state.rotaBudget).toLocaleString(undefined, { minimumFractionDigits: 2 })}</strong></li>
+					</ul>
+				</Col>
+			</Row>
+			<Row>
+				<Col className="pt-3 pb-3 pt-sm-3 pb-ms-3 text-center text-md-left" xs="12" sm="12" md="7" lg="7" xl="6">
 					<button type="button" className="btn btn-rotas-popover text-dark border-0 col-12 col-sm-auto" id="rotaTypeMenu" title="Toggle Rotas" aria-label="Toggle Rotas" onClick={this.handleRotaTypeMenu}>{this.props.rotaType.rotaTypeName}<i className="pl-2 fa fa-fw fa-chevron-down" aria-hidden="true"></i></button>
+					<ButtonGroup className="d-none d-sm-inline-block p-0 pl-sm-3 pl-md-3 pl-lg-3 pl-xl-3 m-0">
+						<button type="button" title="Creates a PDF of the current Rota" id="download-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3" onClick={event => this.handleDownloadRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-file-pdf-o" aria-hidden="true"></i></button>
+						<button type="button" title="Edit the current Rota" id="edit-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3" onClick={event => this.handleEditRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i></button>
+						<button type="button" title="Rota Budget" id="rota-budget" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3" style={{ cursor: 'default' }}>&pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
+					</ButtonGroup>
+					<div className="d-block d-sm-none">
+						<button type="button" title="Creates a PDF of the current Rota" id="download-rota" className="btn btn-rotas-popover text-dark border-0 mt-3 mt-sm-auto pl-3 pr-3 col-12 col-sm-auto mb-3" onClick={event => this.handleDownloadRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-file-pdf-o" aria-hidden="true"></i> PDF Rota</button>
+						<button type="button" title="Edit the current Rota" id="edit-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-3" onClick={event => this.handleEditRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i> Edit Rota</button>
+						<button type="button" title="Rota Budget" id="rota-budget" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-0" style={{ cursor: 'default' }}>Rota Budget: &pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
+					</div>
+					<Tooltip placement="bottom" isOpen={this.state.isDownloadRotaTooltipOpen} target="download-rota" toggle={this.handleDownloadRotaTooltip}>Creates a PDF of the current Rota</Tooltip>
+					<Tooltip placement="bottom" isOpen={this.state.isEditRotaTooltipOpen} target="edit-rota" toggle={this.handleEditRotaTooltip}>Edit the current Rota</Tooltip>
+					<Tooltip placement="bottom" isOpen={this.state.isRotaBudgetTooltipOpen} target="rota-budget" toggle={this.handleRotaBudgetTooltip}>Rota Budget</Tooltip>
 					<Popover placement="bottom" isOpen={this.state.isRotaTypeMenuPopoverOpen} target="rotaTypeMenu" toggle={this.handleRotaTypeMenu}>
 						<PopoverBody>
 							<ul className="popover-menu">
@@ -490,7 +514,7 @@ class Toolbar extends Component {
 						</PopoverBody>
 					</Popover>
 				</Col>
-				<Col className="pt-3 pb-3 pt-sm-3 pb-ms-3 text-center text-md-right" xs="12" sm="12" md="7" lg="7" xl="6">
+				<Col className="pt-3 pb-0 pt-sm-0 pt-md-3 pb-sm-3 text-center text-md-right" xs="12" sm="12" md="5" lg="5" xl="6">
 					<div className="d-block d-sm-inline-block d-md-none d-lg-inline-block">
 						{(this.state.employeesIsActive || this.state.overviewIsActive) ? (
 							<Fragment>
@@ -514,10 +538,7 @@ class Toolbar extends Component {
 						) : null}
 						<button type="button" title="Create Employee" className="d-inline-block d-lg-none btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-plus d-none d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Create</span> Employee</button>
 					</div>
-					<ButtonGroup className="d-none d-md-inline-block d-lg-none p-0 m-0">
-						<button type="button" title="Create Employee" id="create-employee" className="d-inline-block d-lg-none btn btn-nav btn-primary border-0 pl-3 pr-3" onClick={this.handleCreateEmployee}><i className="fa fa-user-plus d-sm-none d-md-inline-block" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Create Employee</span></button>
-					</ButtonGroup>
-					<ButtonGroup className="d-none d-md-inline-block d-lg-none p-0 m-0 ml-3">
+					<ButtonGroup className="d-none d-md-inline-block d-lg-none p-0 m-0 mr-3">
 						{(this.state.employeesIsActive || this.state.overviewIsActive) ? (
 							<Fragment>
 								{(this.state.hasUnassignedShifts) ? (
@@ -557,20 +578,10 @@ class Toolbar extends Component {
 							</Fragment>
 						) : null}
 					</ButtonGroup>
-					<ButtonGroup className="d-none d-sm-inline-block p-0 pl-sm-3 pl-md-3 pl-lg-3 pl-xl-3 m-0">
-						<button type="button" title="Creates a PDF of the current Rota" id="download-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3" onClick={event => this.handleDownloadRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-file-pdf-o" aria-hidden="true"></i></button>
-						<button type="button" title="Edit the current Rota" id="edit-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3" onClick={event => this.handleEditRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i></button>
-						<button type="button" title="Rota Budget" id="rota-budget" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3" style={{ cursor: 'default' }}>&pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
+					<ButtonGroup className="d-none d-md-inline-block d-lg-none p-0 m-0">
+						<button type="button" title="Create Employee" id="create-employee" className="d-inline-block d-lg-none btn btn-nav btn-primary border-0 pl-3 pr-3" onClick={this.handleCreateEmployee}><i className="fa fa-user-plus d-sm-none d-md-inline-block" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Create Employee</span></button>
 					</ButtonGroup>
-					<div className="d-block d-sm-none">
-						<button type="button" title="Creates a PDF of the current Rota" id="download-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-3" onClick={event => this.handleDownloadRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-file-pdf-o" aria-hidden="true"></i> PDF Rota</button>
-						<button type="button" title="Edit the current Rota" id="edit-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-3" onClick={event => this.handleEditRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i> Edit Rota</button>
-						<button type="button" title="Rota Budget" id="rota-budget" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-0" style={{ cursor: 'default' }}>Rota Budget: &pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
-					</div>
 					<Tooltip placement="bottom" isOpen={this.state.isCreateEmployeeTooltipOpen} target="create-employee" toggle={this.handleCreateEmployeeTooltip}>Create Employee</Tooltip>
-					<Tooltip placement="bottom" isOpen={this.state.isDownloadRotaTooltipOpen} target="download-rota" toggle={this.handleDownloadRotaTooltip}>Creates a PDF of the current Rota</Tooltip>
-					<Tooltip placement="bottom" isOpen={this.state.isEditRotaTooltipOpen} target="edit-rota" toggle={this.handleEditRotaTooltip}>Edit the current Rota</Tooltip>
-					<Tooltip placement="bottom" isOpen={this.state.isRotaBudgetTooltipOpen} target="rota-budget" toggle={this.handleRotaBudgetTooltip}>Rota Budget</Tooltip>
 				</Col>
 			</Row>
 			<Modal title="Create Rota" className="modal-dialog" show={this.state.isCreateRotaModalOpen} onClose={this.handleCreateRota}>
@@ -609,6 +620,7 @@ const mapStateToProps = (state, props) => ({
 	rota: state.rota,
 	rotas: state.rotas,
 	shifts: state.shifts,
+	rotaCost: state.rotaCost,
 	rotaType: state.rotaType,
 	rotaTypes: state.rotaTypes,
 });
