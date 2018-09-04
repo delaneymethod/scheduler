@@ -127,9 +127,9 @@ class RoleForm extends Component {
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 				<TextField fieldName="roleName" fieldLabel="Role Name" fieldValue={this.state.roleName} fieldPlaceholder="e.g. Manager" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid role name." fieldTabIndex={1} fieldRequired={true} showIsDuplicate isDuplicateHaystack={this.props.roles.map(data => data.roleName)} />
 				{(this.props.editMode) ? (
-					<Button type="submit" color="primary" className="mt-4" title={routes.ROLES.UPDATE.TITLE} tabIndex="2" block>{routes.ROLES.UPDATE.TITLE}</Button>
+					<Button type="submit" color="primary" className="mt-4" id="submitUpdate" title={routes.ROLES.UPDATE.TITLE} tabIndex="2" block>{routes.ROLES.UPDATE.TITLE}</Button>
 				) : (
-					<Button type="submit" color="primary" className="mt-4" title={routes.ROLES.CREATE.TITLE} tabIndex="2" block>{routes.ROLES.CREATE.TITLE}</Button>
+					<Button type="submit" color="primary" className="mt-4" id="submitCreate" title={routes.ROLES.CREATE.TITLE} tabIndex="2" block>{routes.ROLES.CREATE.TITLE}</Button>
 				)}
 			</FormWithConstraints>
 		</Fragment>

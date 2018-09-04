@@ -120,7 +120,7 @@ class LoginForm extends Component {
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 				<EmailField fieldValue={this.state.email} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={1} fieldAutoComplete={'on'} fieldRequired={true} />
 				<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={2} fieldRequired={true} />
-				<Button type="submit" color="primary" className="mt-4" title={routes.LOGIN.TITLE} tabIndex="3" block>{routes.LOGIN.TITLE}</Button>
+				<Button type="submit" color="primary" className="mt-4" id="submitLogin" title={routes.LOGIN.TITLE} tabIndex="3" block>{routes.LOGIN.TITLE}</Button>
 				<a href={routes.FORGOTTEN_YOUR_PASSWORD.URI} title={routes.FORGOTTEN_YOUR_PASSWORD.TITLE} className="panel-page__forgot" tabIndex="-1">{routes.FORGOTTEN_YOUR_PASSWORD.TITLE}</a>
 			</FormWithConstraints>
 		</Fragment>

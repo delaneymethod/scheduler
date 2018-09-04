@@ -518,11 +518,11 @@ class RotaForm extends Component {
 				</Row>
 				{(this.props.editMode) ? (
 					<Fragment>
-						<Button type="submit" color="primary" className="mt-4" title={routes.ROTAS.UPDATE.TITLE} tabIndex="4" block>{routes.ROTAS.UPDATE.TITLE}</Button>
+						<Button type="submit" color="primary" className="mt-4" id="submitUpdate" title={routes.ROTAS.UPDATE.TITLE} tabIndex="4" block>{routes.ROTAS.UPDATE.TITLE}</Button>
 						<Button type="button" className="mt-4 text-danger btn btn-outline-danger" title={routes.ROTAS.DELETE.TITLE} tabIndex="5" block onClick={this.handleDelete}>{routes.ROTAS.DELETE.TITLE}</Button>
 					</Fragment>
 				) : (
-					<Button type="submit" color="primary" className="mt-4" title={routes.ROTAS.CREATE.TITLE} tabIndex="4" block>{routes.ROTAS.CREATE.TITLE}</Button>
+					<Button type="submit" color="primary" className="mt-4" id="submitCreate" title={routes.ROTAS.CREATE.TITLE} tabIndex="4" block>{routes.ROTAS.CREATE.TITLE}</Button>
 				)}
 			</FormWithConstraints>
 		</Fragment>

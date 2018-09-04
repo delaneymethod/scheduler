@@ -167,7 +167,7 @@ class UploadEmployeesForm extends Component {
 			{this.errorMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 				<FileField fieldName="file" fieldLabel="File" handleChange={this.handleChange} valueMissing="Please provide a valid CSV file." tabIndex="1" fieldAccept=".csv, text/csv, application/vnd.ms-excel" fieldRequired={true} />
-				<Button type="submit" color="primary" className="mt-5" title={routes.EMPLOYEES.UPLOAD.TITLE} tabIndex="2" block>{routes.EMPLOYEES.UPLOAD.TITLE}</Button>
+				<Button type="submit" color="primary" className="mt-5" id="submitUpload" title={routes.EMPLOYEES.UPLOAD.TITLE} tabIndex="2" block>{routes.EMPLOYEES.UPLOAD.TITLE}</Button>
 			</FormWithConstraints>
 		</Fragment>
 	);

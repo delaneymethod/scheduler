@@ -120,7 +120,7 @@ class UpdateYourPasswordForm extends Component {
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 				<PasswordField fieldLabel="Password" fieldName="password" fieldValue={this.state.password} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={1} showPasswordStrength showPasswordCommon fieldRequired={true} />
 				<PasswordField fieldLabel="Confirm Password" fieldName="confirmPassword" fieldValue={this.state.confirmPassword} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={2} fieldRequired={true} />
-				<Button type="submit" color="primary" className="mt-4" title={routes.UPDATE_YOUR_PASSWORD.TITLE} tabIndex="3" block>{routes.UPDATE_YOUR_PASSWORD.TITLE}</Button>
+				<Button type="submit" color="primary" className="mt-4" id="submitUpdate" title={routes.UPDATE_YOUR_PASSWORD.TITLE} tabIndex="3" block>{routes.UPDATE_YOUR_PASSWORD.TITLE}</Button>
 			</FormWithConstraints>
 		</Fragment>
 	);

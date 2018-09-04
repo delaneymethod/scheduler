@@ -191,7 +191,7 @@ class RegisterForm extends Component {
 						</Col>
 					</Row>
 				</FormGroup>
-				<Button type="submit" color="primary" className="mt-4" title={routes.REGISTER.TITLE} tabIndex="9" disabled={this.state.emailSent} block>{routes.REGISTER.TITLE}</Button>
+				<Button type="submit" color="primary" className="mt-4" id="submitRegister" title={routes.REGISTER.TITLE} tabIndex="9" disabled={this.state.emailSent} block>{routes.REGISTER.TITLE}</Button>
 			</FormWithConstraints>
 		</Fragment>
 	);

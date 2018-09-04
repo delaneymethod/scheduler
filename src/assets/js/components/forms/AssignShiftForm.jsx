@@ -373,8 +373,8 @@ class AssignShiftForm extends Component {
 						</FieldFeedbacks>
 					</FormGroup>
 				) : null}
-				<Button type="submit" color="primary" className="mt-4" title={routes.SHIFTS.ASSIGN.TITLE} tabIndex="4" block>{routes.SHIFTS.ASSIGN.TITLE}</Button>
-				<Button type="button" className="mt-4 text-danger btn btn-outline-danger" title={routes.SHIFTS.DELETE.TITLE} tabIndex="5" block onClick={this.handleDelete}>{routes.SHIFTS.DELETE.TITLE}</Button>
+				<Button type="submit" color="primary" className="mt-4" id="submitAssign" title={routes.SHIFTS.ASSIGN.TITLE} tabIndex="4" block>{routes.SHIFTS.ASSIGN.TITLE}</Button>
+				<Button type="button" className="mt-4 text-danger btn btn-outline-danger" id="submitDelete" title={routes.SHIFTS.DELETE.TITLE} tabIndex="5" block onClick={this.handleDelete}>{routes.SHIFTS.DELETE.TITLE}</Button>
 			</FormWithConstraints>
 		</Fragment>
 	);

@@ -1040,11 +1040,11 @@ class ShiftForm extends Component {
 				) : null}
 				{(this.props.editMode) ? (
 					<Fragment>
-						<Button type="submit" color="primary" className="mt-4" title={routes.SHIFTS.UPDATE.TITLE} tabIndex="8" block>{routes.SHIFTS.UPDATE.TITLE}</Button>
-						<Button type="button" className="mt-4 text-danger btn btn-outline-danger" title={routes.SHIFTS.DELETE.TITLE} tabIndex="9" block onClick={this.handleDelete}>{routes.SHIFTS.DELETE.TITLE}</Button>
+						<Button type="submit" color="primary" className="mt-4" id="submitUpdate" title={routes.SHIFTS.UPDATE.TITLE} tabIndex="8" block>{routes.SHIFTS.UPDATE.TITLE}</Button>
+						<Button type="button" className="mt-4 text-danger btn btn-outline-danger" id="submitDelete" title={routes.SHIFTS.DELETE.TITLE} tabIndex="9" block onClick={this.handleDelete}>{routes.SHIFTS.DELETE.TITLE}</Button>
 					</Fragment>
 				) : (
-					<Button type="submit" color="primary" className="mt-4" title={routes.SHIFTS.CREATE.TITLE} tabIndex="8" block>{routes.SHIFTS.CREATE.TITLE}</Button>
+					<Button type="submit" color="primary" className="mt-4" id="submitCreate" title={routes.SHIFTS.CREATE.TITLE} tabIndex="8" block>{routes.SHIFTS.CREATE.TITLE}</Button>
 				)}
 			</FormWithConstraints>
 		</Fragment>
