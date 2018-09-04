@@ -260,7 +260,11 @@ class ShiftForm extends Component {
 
 					this.setState({ startTime }, () => {
 						this.handleSetEndTimes().then(() => {
-							endTime = `${this.state.startDate} ${moment(oldEndTime).seconds(0).format('HH:mm:ss')}`;
+							if (moment(oldEndTime).isAfter(moment())) {
+								endTime = oldEndTime;
+							} else {
+								endTime = `${this.state.startDate} ${moment(oldEndTime).seconds(0).format('HH:mm:ss')}`;
+							}
 
 							this.setState({ endTime });
 						});
