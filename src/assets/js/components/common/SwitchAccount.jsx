@@ -9,6 +9,8 @@ import Modal from './Modal';
 
 import config from '../../helpers/config';
 
+import logMessage from '../../helpers/logging';
+
 import { updateUser } from '../../actions/userActions';
 
 import { switchAccount } from '../../actions/accountActions';
@@ -54,14 +56,14 @@ class SwitchAccount extends Component {
 	handleSwitchAccount = (event, accountId) => {
 		const { actions, history } = this.props;
 
-		console.log('Called SwitchAccount handleChange switchAccount');
+		logMessage('info', 'Called SwitchAccount handleChange switchAccount');
 		actions.switchAccount({ accountId })
 			.then(() => {
 				const { user } = this.props;
 
 				user.account = user.accounts.filter(data => data.id === accountId).shift();
 
-				console.log('Called SwitchAccount handleChange updateUser');
+				logMessage('info', 'Called SwitchAccount handleChange updateUser');
 				actions.updateUser(user).then(() => history.push(routes.DASHBOARD.HOME.URI));
 			})
 			.catch((error) => {

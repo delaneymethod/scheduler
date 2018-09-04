@@ -13,7 +13,7 @@ export const ScriptCache = (global => (scripts) => {
 				stored.error ? cb(stored.error) : cb(null, stored);
 			});
 		} else {
-			console.warn('No script cached for', key);
+			logMessage('warn', 'No script cached for', key);
 		}
 	};
 

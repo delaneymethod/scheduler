@@ -28,11 +28,13 @@ import Header from '../../common/Header';
 
 import Toolbar from '../../common/Toolbar';
 
-import config from '../../../helpers/config';
-
 import RoleForm from '../../forms/RoleForm';
 
+import config from '../../../helpers/config';
+
 import ShiftForm from '../../forms/ShiftForm';
+
+import logMessage from '../../../helpers/logging';
 
 import ShiftButton from '../../common/ShiftButton';
 
@@ -291,7 +293,7 @@ class Employees extends Component {
 	};
 
 	handleSwitchRotaCost = (cost) => {
-		console.log('Called Employee handleSwitchRotaCost switchRotaCost');
+		logMessage('info', 'Called Employee handleSwitchRotaCost switchRotaCost');
 		this.props.actions.switchRotaCost(cost);
 	};
 
@@ -349,7 +351,7 @@ class Employees extends Component {
 	handleEditEmployee = (event, employeeId) => this.setState({ employeeId, isEditEmployeeModalOpen: !this.state.isEditEmployeeModalOpen });
 
 	handleFetchData = () => {
-		console.log('Called Employees handleFetchData');
+		logMessage('info', 'Called Employees handleFetchData');
 
 		const employees = this.handleOrderEmployees();
 
@@ -733,12 +735,12 @@ class Employees extends Component {
 				},
 			});
 
-			console.log('Called Employees handleOrderable - orderable listeners ready');
+			logMessage('info', 'Called Employees handleOrderable - orderable listeners ready');
 		}
 	};
 
 	handleGetEmployees = () => {
-		console.log('Called Employee handleGetEmployees getEmployees');
+		logMessage('info', 'Called Employee handleGetEmployees getEmployees');
 		return this.props.actions.getEmployees().catch(error => Promise.reject(error));
 	};
 
@@ -755,7 +757,7 @@ class Employees extends Component {
 			rotaTypeId,
 		};
 
-		console.log('Called Employees handleUpdateEmployeeOrder orderEmployees');
+		logMessage('info', 'Called Employees handleUpdateEmployeeOrder orderEmployees');
 		actions.orderEmployees(payload)
 			.then(() => this.handleGetEmployees())
 			.catch((error) => {
@@ -938,8 +940,8 @@ class Employees extends Component {
 				}
 
 				if (updateBoth) {
-					console.log('Called Employees handleUpdateShift updateBoth');
-					console.log('Called Employees handleUpdateShift updateShift');
+					logMessage('info', 'Called Employees handleUpdateShift updateBoth');
+					logMessage('info', 'Called Employees handleUpdateShift updateShift');
 					actions.updateShift(payload)
 						/* Check if we need to update the placement */
 						.then(() => {
@@ -961,7 +963,7 @@ class Employees extends Component {
 								 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
 								 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
 								 */
-								console.log('Called Employees handleUpdateShift updatePlacement');
+								logMessage('info', 'Called Employees handleUpdateShift updatePlacement');
 								return actions.updatePlacement(payload).catch(error => Promise.reject(error));
 							}
 
@@ -978,8 +980,8 @@ class Employees extends Component {
 							this.handleModal();
 						});
 				} else if (updateShiftOnly) {
-					console.log('Called Employees handleUpdateShift updateShiftOnly');
-					console.log('Called Employees handleUpdateShift updateShift');
+					logMessage('info', 'Called Employees handleUpdateShift updateShiftOnly');
+					logMessage('info', 'Called Employees handleUpdateShift updateShift');
 					actions.updateShift(payload)
 						/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 						.then(() => this.handleGetShifts(rotaId))
@@ -992,7 +994,7 @@ class Employees extends Component {
 							this.handleModal();
 						});
 				} else if (updatePlacementOnly) {
-					console.log('Called Employees handleUpdateShift updatePlacementOnly');
+					logMessage('info', 'Called Employees handleUpdateShift updatePlacementOnly');
 					/* Get the matching placement (based on the employee id) */
 					const placement = shift.placements.filter(data => data.employee.employeeId === employeeId).shift();
 
@@ -1011,7 +1013,7 @@ class Employees extends Component {
 						 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
 						 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
 						 */
-						console.log('Called Employees handleUpdateShift updatePlacement');
+						logMessage('info', 'Called Employees handleUpdateShift updatePlacement');
 						actions.updatePlacement(payload)
 							/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 							.then(() => this.handleGetShifts(rotaId))
@@ -1031,7 +1033,7 @@ class Employees extends Component {
 					employeeId,
 				};
 
-				console.log('Called Employees handleUpdateShift createPlacement');
+				logMessage('info', 'Called Employees handleUpdateShift createPlacement');
 				actions.createPlacement(payload)
 					/* Updating the shift and or creating a placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 					.then(() => this.handleGetShifts(rotaId))
@@ -1067,7 +1069,7 @@ class Employees extends Component {
 			rotaId,
 		};
 
-		console.log('Called Employees handleGetShifts getShifts');
+		logMessage('info', 'Called Employees handleGetShifts getShifts');
 		return actions.getShifts(payload).catch(error => Promise.reject(error));
 	};
 
@@ -1078,13 +1080,13 @@ class Employees extends Component {
 			rotaTypeId,
 		};
 
-		console.log('Called Employees handleGetRotas getRotas');
+		logMessage('info', 'Called Employees handleGetRotas getRotas');
 		return actions.getRotas(payload)
 			.then((allRotas) => {
 				/* After we get all rotas, we need to find our current rota again and switch it so its details are also updated */
 				const currentRota = allRotas.filter(data => data.rotaId === rota.rotaId).shift();
 
-				console.log('Called Employees handleGetRotas switchRota');
+				logMessage('info', 'Called Employees handleGetRotas switchRota');
 				return actions.switchRota(currentRota);
 			})
 			.catch(error => Promise.reject(error));
@@ -1128,7 +1130,7 @@ class Employees extends Component {
 				draggableCell.addEventListener('dragleave', this.handleDragLeave);
 			});
 
-			console.log('Called Employees handleDragAndDrop - drag and drop listeners ready');
+			logMessage('info', 'Called Employees handleDragAndDrop - drag and drop listeners ready');
 		}
 	};
 

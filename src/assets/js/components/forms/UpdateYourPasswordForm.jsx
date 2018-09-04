@@ -12,6 +12,8 @@ import config from '../../helpers/config';
 
 import EmailField from '../fields/EmailField';
 
+import logMessage from '../../helpers/logging';
+
 import PasswordField from '../fields/PasswordField';
 
 import scriptCache from '../../helpers/scriptCache';
@@ -66,7 +68,7 @@ class UpdateYourPasswordForm extends Component {
 
 		this.setState({ token, email });
 
-		this.scriptCache.zxcvbn.onLoad(() => console.log('Called UpdateYourPasswordForm - zxcvbn was loaded.'));
+		this.scriptCache.zxcvbn.onLoad(() => logMessage('info', 'Called UpdateYourPasswordForm - zxcvbn was loaded.'));
 
 		/* We debounce this call to wait 1300ms (we do not want the leading (or "immediate") flag passed because we want to wait until the user has finished typing before running validation */
 		this.handleValidateFields = debounce(this.handleValidateFields.bind(this), 1300);
@@ -103,7 +105,7 @@ class UpdateYourPasswordForm extends Component {
 				password,
 			};
 
-			console.log('Called UpdateYourPasswordForm handleSubmit updateYourPassword');
+			logMessage('info', 'Called UpdateYourPasswordForm handleSubmit updateYourPassword');
 			actions.updateYourPassword(payload)
 				.then(() => history.push(`${routes.UPDATE_YOUR_PASSWORD.URI}/login`))
 				.catch(error => this.setState({ error }));

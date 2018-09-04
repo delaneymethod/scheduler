@@ -13,6 +13,8 @@ import config from '../../helpers/config';
 
 import EmailField from '../fields/EmailField';
 
+import logMessage from '../../helpers/logging';
+
 import scriptCache from '../../helpers/scriptCache';
 
 import { forgottenYourPassword } from '../../actions/authenticationActions';
@@ -53,7 +55,7 @@ class ForgottenYourPasswordForm extends Component {
 	};
 
 	componentDidMount = () => {
-		this.scriptCache.zxcvbn.onLoad(() => console.log('Called ForgottenYourPasswordForm - zxcvbn was loaded.'));
+		this.scriptCache.zxcvbn.onLoad(() => logMessage('info', 'Called ForgottenYourPasswordForm - zxcvbn was loaded.'));
 
 		/* We debounce this call to wait 1300ms (we do not want the leading (or "immediate") flag passed because we want to wait until the user has finished typing before running validation */
 		this.handleValidateFields = debounce(this.handleValidateFields.bind(this), 1300);
@@ -88,7 +90,7 @@ class ForgottenYourPasswordForm extends Component {
 				email: this.state.email,
 			};
 
-			console.log('Called ForgottenYourPasswordForm handleSubmit forgottenYourPassword');
+			logMessage('info', 'Called ForgottenYourPasswordForm handleSubmit forgottenYourPassword');
 			actions.forgottenYourPassword(payload)
 				.then(() => this.setState(Object.assign(this.getInitialState(), { email: payload.email, emailSent: true }), () => delay(() => this.form.reset(), 30)))
 				.catch(error => this.setState({ error }));

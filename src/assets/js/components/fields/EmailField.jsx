@@ -5,6 +5,8 @@ import React, { Component } from 'react';
 import { Label, Input, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks } from 'react-form-with-constraints';
 
+import logMessage from '../../helpers/logging';
+
 import { addClass, removeClass } from '../../helpers/classes';
 
 const propTypes = {
@@ -43,7 +45,7 @@ class EmailField extends Component {
 	handleBlur = (event) => {
 		const { didYouMean, suggestion } = this.refs;
 
-		console.log('Called EmailField handleBlur mailcheck');
+		logMessage('info', 'Called EmailField handleBlur mailcheck');
 		mailcheck.run({
 			email: this.props.fieldValue,
 			suggested: (suggested) => {

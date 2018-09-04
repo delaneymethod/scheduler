@@ -22,6 +22,8 @@ import config from '../../helpers/config';
 
 import confirm from '../../helpers/confirm';
 
+import logMessage from '../../helpers/logging';
+
 import { getRoles } from '../../actions/roleActions';
 
 import { getRotas, switchRota } from '../../actions/rotaActions';
@@ -533,7 +535,7 @@ class ShiftForm extends Component {
 			rotaId,
 		};
 
-		console.log('Called ShiftForm handleGetShifts getShifts');
+		logMessage('info', 'Called ShiftForm handleGetShifts getShifts');
 		return actions.getShifts(payload).catch(error => Promise.reject(error));
 	};
 
@@ -550,20 +552,20 @@ class ShiftForm extends Component {
 			rotaTypeId,
 		};
 
-		console.log('Called ShiftForm handleGetRotas getRotas');
+		logMessage('info', 'Called ShiftForm handleGetRotas getRotas');
 		return actions.getRotas(payload)
 			.then((allRotas) => {
 				/* After we get all rotas, we need to find our current rota again and switch it so its details are also updated */
 				const currentRota = allRotas.filter(data => data.rotaId === rota.rotaId).shift();
 
-				console.log('Called ShiftForm handleGetRotas switchRota');
+				logMessage('info', 'Called ShiftForm handleGetRotas switchRota');
 				return actions.switchRota(currentRota);
 			})
 			.catch(error => Promise.reject(error));
 	};
 
 	handleGetRoles = () => {
-		console.log('Called ShiftForm handleGetRoles getRoles');
+		logMessage('info', 'Called ShiftForm handleGetRoles getRoles');
 		return this.props.actions.getRoles().catch(error => Promise.reject(error));
 	};
 
@@ -614,7 +616,7 @@ class ShiftForm extends Component {
 					shiftId,
 				};
 
-				console.log('Called ShiftForm handleDelete deleteShifts');
+				logMessage('info', 'Called ShiftForm handleDelete deleteShifts');
 				actions.deleteShift(payload)
 					/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 					.then(() => this.handleGetShifts())
@@ -763,8 +765,8 @@ class ShiftForm extends Component {
 							/* Keep track of old shifts before updating so we can do checks on the employee/placement */
 							const oldShifts = shifts;
 
-							console.log('Called ShiftForm handleSubmit updateBoth');
-							console.log('Called ShiftForm handleSubmit updateShift');
+							logMessage('info', 'Called ShiftForm handleSubmit updateBoth');
+							logMessage('info', 'Called ShiftForm handleSubmit updateShift');
 							actions.updateShift(payload)
 								.then(() => {
 									/* Get the edit shift again based on shift id. Updated shift doesnt have placments included */
@@ -784,7 +786,7 @@ class ShiftForm extends Component {
 											};
 
 											/* Employee Id was unselected so lets delete the placement for the shift */
-											console.log('Called ShiftForm handleSubmit deletePlacement');
+											logMessage('info', 'Called ShiftForm handleSubmit deletePlacement');
 											return actions.deletePlacement(payload).catch(error => Promise.reject(error));
 										}
 
@@ -798,7 +800,7 @@ class ShiftForm extends Component {
 										 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
 										 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
 										 */
-										console.log('Called ShiftForm handleSubmit updatePlacement');
+										logMessage('info', 'Called ShiftForm handleSubmit updatePlacement');
 										return actions.updatePlacement(payload).catch(error => Promise.reject(error));
 									}
 
@@ -822,8 +824,8 @@ class ShiftForm extends Component {
 								})
 								.catch(error => this.setState({ error }));
 						} else if (updateShiftOnly) {
-							console.log('Called ShiftForm handleSubmit updateShiftOnly');
-							console.log('Called ShiftForm handleSubmit updateShift');
+							logMessage('info', 'Called ShiftForm handleSubmit updateShiftOnly');
+							logMessage('info', 'Called ShiftForm handleSubmit updateShift');
 							actions.updateShift(payload)
 								/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 								.then(() => this.handleGetShifts())
@@ -843,14 +845,14 @@ class ShiftForm extends Component {
 								})
 								.catch(error => this.setState({ error }));
 						} else if (updatePlacementOnly) {
-							console.log('Called ShiftForm handleSubmit updatePlacementOnly');
+							logMessage('info', 'Called ShiftForm handleSubmit updatePlacementOnly');
 							if (isEmpty(employeeId)) {
 								payload = {
 									placementId,
 								};
 
 								/* Employee Id was unselected so lets delete the placement for the shift */
-								console.log('Called ShiftForm handleSubmit deletePlacement');
+								logMessage('info', 'Called ShiftForm handleSubmit deletePlacement');
 								actions.deletePlacement(payload)
 									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 									.then(() => this.handleGetShifts())
@@ -880,7 +882,7 @@ class ShiftForm extends Component {
 								 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
 								 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
 								 */
-								console.log('Called ShiftForm handleSubmit updatePlacement');
+								logMessage('info', 'Called ShiftForm handleSubmit updatePlacement');
 								actions.updatePlacement(payload)
 									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 									.then(() => this.handleGetShifts())
@@ -903,7 +905,7 @@ class ShiftForm extends Component {
 						}
 					}
 				} else {
-					console.log('Called ShiftForm handleSubmit createShift');
+					logMessage('info', 'Called ShiftForm handleSubmit createShift');
 					actions.createShift(payload)
 						.then((shift) => {
 							if (!isEmpty(employeeId)) {
@@ -912,7 +914,7 @@ class ShiftForm extends Component {
 									shiftId: shift.shiftId,
 								};
 
-								console.log('Called ShiftForm handleSubmit createPlacement');
+								logMessage('info', 'Called ShiftForm handleSubmit createPlacement');
 								return actions.createPlacement(payload).catch(error => Promise.reject(error));
 							}
 

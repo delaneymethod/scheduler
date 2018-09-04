@@ -15,6 +15,8 @@ import TextField from '../fields/TextField';
 
 import EmailField from '../fields/EmailField';
 
+import logMessage from '../../helpers/logging';
+
 import scrollToTop from '../../helpers/animations';
 
 import PasswordField from '../fields/PasswordField';
@@ -72,7 +74,7 @@ class RegisterForm extends Component {
 	};
 
 	componentDidMount = () => {
-		this.scriptCache.zxcvbn.onLoad(() => console.log('Called RegisterForm - zxcvbn was loaded.'));
+		this.scriptCache.zxcvbn.onLoad(() => logMessage('info', 'Called RegisterForm - zxcvbn was loaded.'));
 
 		/* We debounce this call to wait 1300ms (we do not want the leading (or "immediate") flag passed because we want to wait until the user has finished typing before running validation */
 		this.handleValidateFields = debounce(this.handleValidateFields.bind(this), 1300);
@@ -82,7 +84,7 @@ class RegisterForm extends Component {
 
 		const { actions } = this.props;
 
-		console.log('Called RegisterForm componentDidMount getSubscriptionLevels');
+		logMessage('info', 'Called RegisterForm componentDidMount getSubscriptionLevels');
 		actions.getSubscriptionLevels()
 			.then((subscriptionLevels) => {
 				/* Used to set a default the subscription level id value after the getSubscriptionLevels action has completed */
@@ -133,7 +135,7 @@ class RegisterForm extends Component {
 				termsOfUseAgreed: (termsOfUseAgreed === 'on'),
 			};
 
-			console.log('Called RegisterForm handleSubmit register');
+			logMessage('info', 'Called RegisterForm handleSubmit register');
 			actions.register(payload)
 				.then(() => this.setState(Object.assign(this.getInitialState(), { email, emailSent: true }), () => delay(() => this.form.reset(), 30)))
 				.catch(error => this.setState({ error }));

@@ -19,6 +19,8 @@ import RotaForm from '../../forms/RotaForm';
 
 import config from '../../../helpers/config';
 
+import logMessage from '../../../helpers/logging';
+
 import CloseButton from '../../common/CloseButton';
 
 import Notification from '../../common/Notification';
@@ -139,17 +141,17 @@ class Dashboard extends Component {
 		let payload = {};
 
 		/* Grab all roles, employees, rota types, rotas and finally all shifts in this order. */
-		console.log('Called Dashboard handleFetchData getRoles');
+		logMessage('info', 'Called Dashboard handleFetchData getRoles');
 		actions.getRoles()
 			.then(() => {
 				this.setState({ isModalOpen: false });
 
-				console.log('Called Dashboard handleFetchData getEmployees');
+				logMessage('info', 'Called Dashboard handleFetchData getEmployees');
 				actions.getEmployees()
 					.then(() => {
 						this.setState({ isModalOpen: false });
 
-						console.log('Called Dashboard handleFetchData getRotaTypes');
+						logMessage('info', 'Called Dashboard handleFetchData getRotaTypes');
 						actions.getRotaTypes()
 							.then(() => {
 								this.setState({ isModalOpen: false });
@@ -163,9 +165,9 @@ class Dashboard extends Component {
 									 */
 									const rotaType = (!isEmpty(this.props.rotaType)) ? this.props.rotaType : this.props.rotaTypes[0];
 
-									console.log('Called Dashboard handleFetchData switchRotaType');
+									logMessage('info', 'Called Dashboard handleFetchData switchRotaType');
 									actions.switchRotaType(rotaType).then(() => {
-										console.log('Called Dashboard handleFetchData getRotas');
+										logMessage('info', 'Called Dashboard handleFetchData getRotas');
 										actions.getRotas(rotaType)
 											.then(() => {
 												this.setState({ isModalOpen: false });
@@ -179,21 +181,21 @@ class Dashboard extends Component {
 
 													/* No rotas match the current week so lets use the first rota we find */
 													if (isEmpty(rota)) {
-														console.log('Called Dashboard handleFetchData - No matching rotas. Week Start Date: ', moment(this.props.week.startDate).format('YYYY-MM-DD'));
-														console.log('Called Dashboard handleFetchData - No matching rotas. Sorting rotas by start date, oldest first...');
+														logMessage('info', 'Called Dashboard handleFetchData - No matching rotas. Week Start Date: ', moment(this.props.week.startDate).format('YYYY-MM-DD'));
+														logMessage('info', 'Called Dashboard handleFetchData - No matching rotas. Sorting rotas by start date, oldest first...');
 
 														rota = orderBy(this.props.rotas, 'startDate', 'desc').shift();
 
-														console.log('Called Dashboard handleFetchData - No matching rotas. Oldest Rota Start Date:', moment(rota.startDate).format('YYYY-MM-DD'));
+														logMessage('info', 'Called Dashboard handleFetchData - No matching rotas. Oldest Rota Start Date:', moment(rota.startDate).format('YYYY-MM-DD'));
 													} else {
-														console.log('Called Dashboard handleFetchData - Found matching rota. Rota Start Date:', moment(rota.startDate).format('YYYY-MM-DD'), 'Week Start Date:', moment(this.props.week.startDate).format('YYYY-MM-DD'));
+														logMessage('info', 'Called Dashboard handleFetchData - Found matching rota. Rota Start Date:', moment(rota.startDate).format('YYYY-MM-DD'), 'Week Start Date:', moment(this.props.week.startDate).format('YYYY-MM-DD'));
 													}
 
 													/* Yes we have a rota but does it also match the first day of the week start day? */
 													const rotaStartDay = moment(rota.startDate).day();
 
 													if (parseInt(rotaStartDay, 10) === parseInt(firstDayOfWeek, 10)) {
-														console.log('Called Dashboard handleFetchData - Found matching rota for first day of week. Rota Start Day:', rotaStartDay, 'First Day of Week:', firstDayOfWeek);
+														logMessage('info', 'Called Dashboard handleFetchData - Found matching rota for first day of week. Rota Start Day:', rotaStartDay, 'First Day of Week:', firstDayOfWeek);
 														actions.switchRota(rota).then(() => {
 															/* Then we use the current week/rota start date to set the current week start and end dates */
 															const weekStartDate = moment(rota.startDate);
@@ -206,10 +208,10 @@ class Dashboard extends Component {
 															};
 
 															/* Set the current week */
-															console.log('Called Dashboard handleFetchData switchWeek');
+															logMessage('info', 'Called Dashboard handleFetchData switchWeek');
 															actions.switchWeek(payload).then(() => {
 																/* Get shifts for current rota */
-																console.log('Called Dashboard handleFetchData getShifts');
+																logMessage('info', 'Called Dashboard handleFetchData getShifts');
 																actions.getShifts(rota)
 																	.then(() => history.push(routes.DASHBOARD.EMPLOYEES.URI))
 																	.catch((error) => {
@@ -223,7 +225,7 @@ class Dashboard extends Component {
 														});
 													} else {
 														/* No rotas match users first day of week settings but we still have a rota, so lets update th first day of the week settings to match the rota so we can display some data. User can always switch back if they want. */
-														console.log('Called Dashboard handleFetchData switchRota - updating first day of week to match');
+														logMessage('info', 'Called Dashboard handleFetchData switchRota - updating first day of week to match');
 														actions.switchRota(rota).then(() => {
 															/* Then we use the current week/rota start date to set the current week start and end dates and first day of the week */
 															firstDayOfWeek = moment(rota.startDate).day();
@@ -238,10 +240,10 @@ class Dashboard extends Component {
 															};
 
 															/* Set the current week */
-															console.log('Called Dashboard handleFetchData switchWeek');
+															logMessage('info', 'Called Dashboard handleFetchData switchWeek');
 															actions.switchWeek(payload).then(() => {
 																/* Get shifts for current rota */
-																console.log('Called Dashboard handleFetchData getShifts');
+																logMessage('info', 'Called Dashboard handleFetchData getShifts');
 																actions.getShifts(rota)
 																	.then(() => {
 																		payload = {
@@ -249,10 +251,10 @@ class Dashboard extends Component {
 																		};
 
 																		/* Set the day of week based on start date */
-																		console.log('Called Dashboard handleFetchData updateSettings');
+																		logMessage('info', 'Called Dashboard handleFetchData updateSettings');
 																		actions.updateSettings(payload);
 
-																		console.log('Called Dashboard handleFetchData firstDayOfWeek:', firstDayOfWeek);
+																		logMessage('info', 'Called Dashboard handleFetchData firstDayOfWeek:', firstDayOfWeek);
 																		moment.updateLocale('en', {
 																			week: {
 																				dow: firstDayOfWeek,
@@ -289,7 +291,7 @@ class Dashboard extends Component {
 
 													/* FIXME - Backend bug where you can't create rota that has a different "first day of week" starting point than previously created rota! */
 													/*
-													console.log('Called Dashboard handleFetchData createRota');
+													logMessage('info', 'Called Dashboard handleFetchData createRota');
 													actions.createRota(payload)
 														.then(newRota => this.handleSwitchRota(newRota))
 														.then(() => this.handleGetRotas(rotaTypeId))
@@ -312,10 +314,10 @@ class Dashboard extends Component {
 									});
 								} else {
 									/* This will trigger the store to update rotas, current rota, current rota type and current week to be cleared of any values */
-									console.log('Called Dashboard handleFetchData switchRotaType but to clear all rotas, the current rota and the current rota type');
+									logMessage('info', 'Called Dashboard handleFetchData switchRotaType but to clear all rotas, the current rota and the current rota type');
 									actions.switchRotaType({});
 
-									console.log('Called Dashboard handleCreateRota');
+									logMessage('info', 'Called Dashboard handleCreateRota');
 									this.handleCreateRota();
 								}
 							}).catch((error) => {
@@ -345,7 +347,7 @@ class Dashboard extends Component {
 		const { actions } = this.props;
 
 		/* Set the current rota */
-		console.log('Called Dashboard handleSwitchRota switchRota');
+		logMessage('info', 'Called Dashboard handleSwitchRota switchRota');
 		actions.switchRota(rota)
 			.then(() => {
 				const { rota: { rotaId } } = this.props;
@@ -355,7 +357,7 @@ class Dashboard extends Component {
 				};
 
 				/* Any time we switch rotas, we need to get a fresh list of shifts for that rota */
-				console.log('Called Dashboard handleSwitchRota getShifts');
+				logMessage('info', 'Called Dashboard handleSwitchRota getShifts');
 				actions.getShifts(payload).catch((error) => {
 					error.data.title = 'Get Shifts';
 
@@ -373,7 +375,7 @@ class Dashboard extends Component {
 			rotaTypeId,
 		};
 
-		console.log('Called Dashboard handleGetRotas getRota');
+		logMessage('info', 'Called Dashboard handleGetRotas getRota');
 		actions.getRotas(payload).catch((error) => {
 			error.data.title = 'Get Rotas';
 

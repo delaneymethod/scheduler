@@ -9,6 +9,8 @@ import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-w
 
 import config from '../../helpers/config';
 
+import logMessage from '../../helpers/logging';
+
 import { updateSettings } from '../../actions/settingActions';
 
 const routes = config.APP.ROUTES;
@@ -76,9 +78,9 @@ class SettingsForm extends Component {
 				firstDayOfWeek,
 			};
 
-			console.log('Called Settings handleSubmit updateSettings');
+			logMessage('info', 'Called Settings handleSubmit updateSettings');
 			actions.updateSettings(payload).then(() => {
-				console.log('Called Settings handleSubmit firstDayOfWeek:', firstDayOfWeek);
+				logMessage('info', 'Called Settings handleSubmit firstDayOfWeek:', firstDayOfWeek);
 				/* Make sure we update moment locate and day of week config */
 				moment.updateLocale('en', {
 					week: {

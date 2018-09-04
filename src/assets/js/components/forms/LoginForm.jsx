@@ -14,6 +14,8 @@ import config from '../../helpers/config';
 
 import EmailField from '../fields/EmailField';
 
+import logMessage from '../../helpers/logging';
+
 import PasswordField from '../fields/PasswordField';
 
 import { updateUser } from '../../actions/userActions';
@@ -88,7 +90,7 @@ class LoginForm extends Component {
 				password,
 			};
 
-			console.log('Called Login handleSubmit login');
+			logMessage('info', 'Called Login handleSubmit login');
 			actions.login(payload)
 				.then((user) => {
 					/* The tokens subject contains the users Id */
@@ -102,8 +104,7 @@ class LoginForm extends Component {
 					user.account = account;
 
 					/* Update the user state and then go to the dashboard */
-					console.log('Called Login handleSubmit updateUser');
-
+					logMessage('info', 'Called Login handleSubmit updateUser');
 					actions.updateUser(user).then(() => history.push(routes.DASHBOARD.HOME.URI));
 				})
 				.catch(error => this.setState({ error }));

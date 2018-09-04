@@ -18,6 +18,8 @@ import TextField from '../fields/TextField';
 
 import EmailField from '../fields/EmailField';
 
+import logMessage from '../../helpers/logging';
+
 import NumberField from '../fields/NumberField';
 
 import { getShifts } from '../../actions/shiftActions';
@@ -185,12 +187,12 @@ class EmployeeForm extends Component {
 			rotaTypeId,
 		};
 
-		console.log('Called EmployeeForm handleUpdateEmployeeOrder orderEmployees');
+		logMessage('info', 'Called EmployeeForm handleUpdateEmployeeOrder orderEmployees');
 		return actions.orderEmployees(payload).catch(error => Promise.reject(error));
 	};
 
 	handleGetEmployees = () => {
-		console.log('Called EmployeeForm handleGetEmployees getEmployees');
+		logMessage('info', 'Called EmployeeForm handleGetEmployees getEmployees');
 		return this.props.actions.getEmployees().catch(error => Promise.reject(error));
 	};
 
@@ -201,7 +203,7 @@ class EmployeeForm extends Component {
 			rotaId,
 		};
 
-		console.log('Called EmployeeForm handleGetShifts getShifts');
+		logMessage('info', 'Called EmployeeForm handleGetShifts getShifts');
 		return actions.getShifts(payload).catch(error => Promise.reject(error));
 	};
 
@@ -240,7 +242,7 @@ class EmployeeForm extends Component {
 					employeeId,
 				};
 
-				console.log('Called EmployeeForm handleDelete deleteEmployees');
+				logMessage('info', 'Called EmployeeForm handleDelete deleteEmployees');
 				actions.deleteEmployee(payload)
 					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
 					.then(() => this.handleGetEmployees())
@@ -298,7 +300,7 @@ class EmployeeForm extends Component {
 			};
 
 			if (this.props.editMode) {
-				console.log('Called EmployeeForm handleSubmit updateEmployee');
+				logMessage('info', 'Called EmployeeForm handleSubmit updateEmployee');
 				actions.updateEmployee(payload)
 					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
 					.then(() => this.handleGetEmployees())
@@ -319,7 +321,7 @@ class EmployeeForm extends Component {
 					})
 					.catch(error => this.setState({ error }));
 			} else {
-				console.log('Called EmployeeForm handleSubmit createEmployee');
+				logMessage('info', 'Called EmployeeForm handleSubmit createEmployee');
 				actions.createEmployee(payload)
 					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
 					.then(() => this.handleGetEmployees())

@@ -16,6 +16,8 @@ import config from '../../helpers/config';
 
 import confirm from '../../helpers/confirm';
 
+import logMessage from '../../helpers/logging';
+
 import { getRotas, switchRota } from '../../actions/rotaActions';
 
 import { createPlacement } from '../../actions/placementActions';
@@ -211,7 +213,7 @@ class AssignShiftForm extends Component {
 					shiftId,
 				};
 
-				console.log('Called ShiftForm handleDelete deleteShifts');
+				logMessage('info', 'Called ShiftForm handleDelete deleteShifts');
 				actions.deleteShift(payload)
 					.then(() => this.handleGetShifts())
 					.then(() => this.handleGetRotas())
@@ -248,7 +250,7 @@ class AssignShiftForm extends Component {
 			rotaId,
 		};
 
-		console.log('Called AssignShiftForm handleGetShifts getShifts');
+		logMessage('info', 'Called AssignShiftForm handleGetShifts getShifts');
 		return actions.getShifts(payload).catch(error => Promise.reject(error));
 	};
 
@@ -265,13 +267,13 @@ class AssignShiftForm extends Component {
 			rotaTypeId,
 		};
 
-		console.log('Called AssignShiftForm handleGetRotas getRotas');
+		logMessage('info', 'Called AssignShiftForm handleGetRotas getRotas');
 		return actions.getRotas(payload)
 			.then((allRotas) => {
 				/* After we get all rotas, we need to find our current rota again and switch it so its details are also updated */
 				const currentRota = allRotas.filter(data => data.rotaId === rota.rotaId).shift();
 
-				console.log('Called ShiftForm handleGetRotas switchRota');
+				logMessage('info', 'Called ShiftForm handleGetRotas switchRota');
 				return actions.switchRota(currentRota).catch(error => Promise.reject(error));
 			})
 			.catch(error => Promise.reject(error));
@@ -294,7 +296,7 @@ class AssignShiftForm extends Component {
 				employeeId,
 			};
 
-			console.log('Called AssignShiftForm handleSubmit createPlacement');
+			logMessage('info', 'Called AssignShiftForm handleSubmit createPlacement');
 			actions.createPlacement(payload)
 				/* Creating a placement will not update the store so we need to do another call to get all the shifts back into the store again */
 				.then(() => this.handleGetShifts())

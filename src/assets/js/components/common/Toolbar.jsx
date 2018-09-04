@@ -24,6 +24,8 @@ import ShiftForm from '../forms/ShiftForm';
 
 import confirm from '../../helpers/confirm';
 
+import logMessage from '../../helpers/logging';
+
 import CloseButton from '../common/CloseButton';
 
 import EmployeeForm from '../forms/EmployeeForm';
@@ -190,8 +192,8 @@ class Toolbar extends Component {
 			rotaId,
 		};
 
-		console.log('Called Toolbar handleGetRota getRota');
-		console.log('Called Toolbar handleGetRota switchRota');
+		logMessage('info', 'Called Toolbar handleGetRota getRota');
+		logMessage('info', 'Called Toolbar handleGetRota switchRota');
 		return actions.getRota(payload)
 			.then(rota => actions.switchRota(rota))
 			.catch(error => Promise.reject(error));
@@ -204,7 +206,7 @@ class Toolbar extends Component {
 			rotaId,
 		};
 
-		console.log('Called Toolbar handleDeleteRota deleteRota');
+		logMessage('info', 'Called Toolbar handleDeleteRota deleteRota');
 		return actions.deleteRota(payload).catch(error => Promise.reject(error));
 	};
 
@@ -212,7 +214,7 @@ class Toolbar extends Component {
 		const { actions } = this.props;
 
 		/* Set the current rota */
-		console.log('Called Toolbar handleSwitchRota switchRota');
+		logMessage('info', 'Called Toolbar handleSwitchRota switchRota');
 		actions.switchRota(rota)
 			.then(() => {
 				const { rota: { rotaId } } = this.props;
@@ -222,7 +224,7 @@ class Toolbar extends Component {
 				};
 
 				/* Any time we switch rotas, we need to get a fresh list of shifts for that rota */
-				console.log('Called Toolbar handleSwitchRota getShifts');
+				logMessage('info', 'Called Toolbar handleSwitchRota getShifts');
 				actions.getShifts(payload).catch((error) => {
 					error.data.title = 'Get Shifts';
 
@@ -240,7 +242,7 @@ class Toolbar extends Component {
 			rotaTypeId,
 		};
 
-		console.log('Called Toolbar handleGetRotas getRotas');
+		logMessage('info', 'Called Toolbar handleGetRotas getRotas');
 		return actions.getRotas(payload).catch(error => Promise.reject(error));
 	};
 
@@ -251,7 +253,7 @@ class Toolbar extends Component {
 			rotaId,
 		};
 
-		console.log('Called Toolbar handleGetShifts getShifts');
+		logMessage('info', 'Called Toolbar handleGetShifts getShifts');
 		return actions.getShifts(payload).catch(error => Promise.reject(error));
 	};
 
@@ -334,9 +336,9 @@ class Toolbar extends Component {
 				this.setState(this.getInitialState());
 
 				/* Switch rota type and fetch all rotas for this type, grab latest rota and update current week */
-				console.log('Called Toolbar handleSwitchRotaType switchRotaType');
+				logMessage('info', 'Called Toolbar handleSwitchRotaType switchRotaType');
 				actions.switchRotaType(rotaType).then(() => {
-					console.log('Called Toolbar handleSwitchRotaType getRotas');
+					logMessage('info', 'Called Toolbar handleSwitchRotaType getRotas');
 					actions.getRotas(rotaType)
 						.then(() => {
 							/* We only want to get the rota matching the current week so we have some data by default */
@@ -347,7 +349,7 @@ class Toolbar extends Component {
 								rota = orderBy(this.props.rotas, 'startDate').shift();
 							}
 
-							console.log('Called Toolbar handleSwitchRotaType switchRota');
+							logMessage('info', 'Called Toolbar handleSwitchRotaType switchRota');
 							actions.switchRota(rota).then(() => {
 								/* Then we use the rotas start date to set the current week start and end dates */
 								const firstDayOfWeek = moment(rota.startDate).day();
@@ -362,10 +364,10 @@ class Toolbar extends Component {
 								};
 
 								/* Set the current week */
-								console.log('Called Toolbar handleSwitchRotaType switchWeek');
+								logMessage('info', 'Called Toolbar handleSwitchRotaType switchWeek');
 								actions.switchWeek(payload).then(() => {
 									/* Get shifts for current rota */
-									console.log('Called Toolbar handleSwitchRotaType getShifts');
+									logMessage('info', 'Called Toolbar handleSwitchRotaType getShifts');
 									actions.getShifts(rota)
 										.then(() => {
 											payload = {
@@ -373,10 +375,10 @@ class Toolbar extends Component {
 											};
 
 											/* Set the day of week based on start date */
-											console.log('Called Toolbar handleSwitchRotaType updateSettings');
+											logMessage('info', 'Called Toolbar handleSwitchRotaType updateSettings');
 											actions.updateSettings(payload);
 
-											console.log('Called Toolbar handleSwitchRotaType firstDayOfWeek:', firstDayOfWeek);
+											logMessage('info', 'Called Toolbar handleSwitchRotaType firstDayOfWeek:', firstDayOfWeek);
 											moment.updateLocale('en', {
 												week: {
 													dow: firstDayOfWeek,
@@ -437,7 +439,7 @@ class Toolbar extends Component {
 					rotaId,
 				};
 
-				console.log('Called Toolbar handleSwitchRota publishRota');
+				logMessage('info', 'Called Toolbar handleSwitchRota publishRota');
 				actions.publishRota(payload)
 					.then(() => this.handleGetRota())
 					.then(() => this.handleGetRotas())
@@ -481,7 +483,7 @@ class Toolbar extends Component {
 	handleCopyShifts = (rota) => {
 		const { actions, rotaType: { rotaTypeId } } = this.props;
 
-		console.log('Called Toolbar handleCopyShifts copyShifts');
+		logMessage('info', 'Called Toolbar handleCopyShifts copyShifts');
 		actions.copyShifts(rota)
 			.then(newRota => this.handleSwitchRota(newRota))
 			.then(() => this.handleGetRotas())
@@ -524,13 +526,13 @@ class Toolbar extends Component {
 	handleCreateEmployeeTooltip = () => this.setState({ isCreateEmployeeTooltipOpen: !this.state.isCreateEmployeeTooltipOpen });
 
 	handleCopyLastWeeksRotaShifts = () => {
-		console.log('Called Toolbar handleCopyLastWeeksRotaShifts');
+		logMessage('info', 'Called Toolbar handleCopyLastWeeksRotaShifts');
 		const previousStartDate = moment(this.props.week.startDate).subtract(7, 'days');
 
 		/* Find the rota for the previous week */
 		const matchingRota = this.props.rotas.filter(rota => moment(rota.startDate).format('YYYY-MM-DD') === previousStartDate.format('YYYY-MM-DD')).shift();
 
-		console.log('Called Toolbar handleCopyLastWeeksRotaShifts - matching rota:', matchingRota);
+		logMessage('info', 'Called Toolbar handleCopyLastWeeksRotaShifts - matching rota:', matchingRota);
 		this.handleDeleteRota().then(() => this.handleCopyShifts(matchingRota));
 	};
 

@@ -12,6 +12,8 @@ import config from '../../helpers/config';
 
 import TextField from '../fields/TextField';
 
+import logMessage from '../../helpers/logging';
+
 import { getRoles, createRole } from '../../actions/roleActions';
 
 const routes = config.APP.ROUTES;
@@ -71,11 +73,11 @@ class RoleForm extends Component {
 	handleBlur = async event => this.handleValidateFields(event.currentTarget);
 
 	handleGetRoles = () => {
-		console.log('Called RoleForm handleGetRoles getRoles');
+		logMessage('info', 'Called RoleForm handleGetRoles getRoles');
 		return this.props.actions.getRoles().catch(error => Promise.reject(error));
 	};
 
-	handleDelete = event => console.log('FIXME - Delete Role');
+	handleDelete = event => logMessage('info', 'FIXME - Delete Role');
 
 	handleSubmit = async (event) => {
 		event.preventDefault();
@@ -92,14 +94,14 @@ class RoleForm extends Component {
 			const { roleName } = this.state;
 
 			if (this.props.editMode) {
-				console.log('FIXME - Update Role');
+				logMessage('info', 'FIXME - Update Role');
 			} else {
 				payload = {
 					roleName,
 				};
 
 				/* Creates a new role */
-				console.log('Called RoleForm handleSubmit createRole');
+				logMessage('info', 'Called RoleForm handleSubmit createRole');
 				actions.createRole(payload)
 					.then(() => this.handleGetRoles())
 					.then(() => {

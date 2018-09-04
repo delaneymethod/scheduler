@@ -12,6 +12,8 @@ import config from '../../helpers/config';
 
 import FileField from '../fields/FileField';
 
+import logMessage from '../../helpers/logging';
+
 import { getShifts } from '../../actions/shiftActions';
 
 import { getEmployees, orderEmployees, uploadEmployees } from '../../actions/employeeActions';
@@ -84,12 +86,12 @@ class UploadEmployeesForm extends Component {
 			rotaTypeId,
 		};
 
-		console.log('Called UploadEmployeesForm handleUpdateEmployeeOrder orderEmployees');
+		logMessage('info', 'Called UploadEmployeesForm handleUpdateEmployeeOrder orderEmployees');
 		return actions.orderEmployees(payload).catch(error => Promise.reject(error));
 	};
 
 	handleGetEmployees = () => {
-		console.log('Called UploadEmployeesForm handleGetEmployees getEmployees');
+		logMessage('info', 'Called UploadEmployeesForm handleGetEmployees getEmployees');
 		return this.props.actions.getEmployees().catch(error => Promise.reject(error));
 	};
 
@@ -100,7 +102,7 @@ class UploadEmployeesForm extends Component {
 			rotaId,
 		};
 
-		console.log('Called UploadEmployeesForm handleGetShifts getShifts');
+		logMessage('info', 'Called UploadEmployeesForm handleGetShifts getShifts');
 		return actions.getShifts(payload).catch(error => Promise.reject(error));
 	};
 
@@ -122,7 +124,7 @@ class UploadEmployeesForm extends Component {
 				file,
 			};
 
-			console.log('Called UploadEmployeesForm handleSubmit uploadEmployees');
+			logMessage('info', 'Called UploadEmployeesForm handleSubmit uploadEmployees');
 			actions.uploadEmployees(payload)
 				.then((response) => {
 					if (response.loadedEmployees.length > 0) {

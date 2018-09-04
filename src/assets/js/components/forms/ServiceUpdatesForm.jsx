@@ -13,6 +13,8 @@ import config from '../../helpers/config';
 
 import EmailField from '../fields/EmailField';
 
+import logMessage from '../../helpers/logging';
+
 import { serviceUpdates } from '../../actions/userActions';
 
 const routes = config.APP.ROUTES;
@@ -76,7 +78,7 @@ class ServiceUpdatesForm extends Component {
 				email,
 			};
 
-			console.log('Called ServiceUpdateForm handleSubmit registerServiceUpdates');
+			logMessage('info', 'Called ServiceUpdateForm handleSubmit registerServiceUpdates');
 			actions.serviceUpdates(payload)
 				.then(() => this.setState(Object.assign(this.getInitialState(), { email, emailSent: true }), () => delay(() => this.form.reset(), 30)))
 				.catch(error => this.setState({ error }));
