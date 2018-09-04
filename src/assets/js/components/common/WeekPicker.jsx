@@ -317,8 +317,10 @@ class WeekPicker extends Component {
 
 		/* If we don't have a rota that matches the start date of the week, then lets create a new rota but only if the start date is after the earliest rota start date. (FYI, If the dates where the same, we'd have a rota...) */
 		if (isEmpty(matchingRota)) {
+			/* See: https://trello.com/c/y0YeHOU1/204-changes-to-copy-shift-api-calls */
+			/*
 			if (weekStartDate.isAfter(this.state.earliestRotaStartDate)) {
-				/* Check if the user wants to copy the previous current rota shifts into the new rota we just created */
+				// Check if the user wants to copy the previous current rota shifts into the new rota we just created
 				const message = `<p>There was no Rota for week beginning ${moment(weekStartDate).format('dddd, Do MMMM')}, so we created one for you.</p><p>Would you like to copy the shifts from the Rota week beginning ${moment(this.props.rota.startDate).format('dddd, Do MMMM')} into the new Rota?</p>`;
 
 				const options = {
@@ -338,8 +340,8 @@ class WeekPicker extends Component {
 					className: 'modal-dialog',
 				};
 
-				/* If the user has clicked the proceed button, we copy the shifts from current rota and then switch to the new rota (copy shifts also create a rota) and then redirect to the shifts view */
-				/* If the user has clicked the cancel button, we create the rota and which switches to the new rota */
+				// If the user has clicked the proceed button, we copy the shifts from current rota and then switch to the new rota (copy shifts also create a rota) and then redirect to the shifts view
+				// If the user has clicked the cancel button, we create the rota and which switches to the new rota
 				confirm(options)
 					.then((result) => {
 						console.log('Called WeekPicker handleSwitchOrCreateRota copyShifts');
@@ -347,7 +349,7 @@ class WeekPicker extends Component {
 							.then(rota => this.handleSwitchRota(rota))
 							.then(() => this.handleGetRotas(rotaTypeId))
 							.then(() => {
-								/* FIXME - bug with setState somewhere when calling history.push(routes.DASHBOARD.ROLES.URI); */
+								// FIXME - bug with setState somewhere when calling history.push(routes.DASHBOARD.ROLES.URI);
 							})
 							.catch((error) => {
 								error.data.title = 'Copy Shifts';
@@ -358,9 +360,12 @@ class WeekPicker extends Component {
 							});
 					}, result => this.handleCreateRota(weekStartDate));
 			} else {
-				/* Selected week is before the earlest rota start date so user has gone back in time - lets create a blank rota in case its start date is still after or same as current date. In this case the user could create a shift would wont work as no rota exists. */
+				// Selected week is before the earlest rota start date so user has gone back in time - lets create a blank rota in case its start date is still after or same as current date. In this case the user could create a shift would wont work as no rota exists.
 				this.handleCreateRota(weekStartDate);
 			}
+			*/
+
+			this.handleCreateRota(weekStartDate);
 
 			/* We also need to check if the current day is before the start of week day. E.g start of week is Wednesday, but today is Tuesday, we need to go back to last Wednesday, not tomorrow as Tuesday sits in the previous week range and check for a rota. This fixes any issues where the users first day of week if before the current day of the week and there are no rotas! */
 		} else {
