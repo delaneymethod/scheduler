@@ -1384,8 +1384,8 @@ class Employees extends Component {
 												<td className="p-2 align-top text-left p-0 m-0 edit-employee column first">
 													<div className="d-flex align-items-start p-0 m-0 wrap-words position-relative">
 														<div className="d-inline-block p-0 mt-0 ml-0 mr-2 mb-0 drag-handler">
-															<Avatar className="d-none d-md-block" color="#1CA3AE" fgColor="#ffffff" email={row.accountEmployee.employee.email} name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="39" />
-															<Avatar className="d-block d-md-none" color="#1CA3AE" fgColor="#ffffff" email={row.accountEmployee.employee.email} name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="29" />
+															<Avatar className="d-none d-md-block" color="#1CA3AE" fgColor="#ffffff" name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="39" />
+															<Avatar className="d-block d-md-none" color="#1CA3AE" fgColor="#ffffff" name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="29" />
 														</div>
 														<div className="d-inline-block pt-0 pl-0 pr-0 pb-0 m-0">
 															<div id="fullname">{row.accountEmployee.employee.firstName} {row.accountEmployee.employee.lastName}</div>

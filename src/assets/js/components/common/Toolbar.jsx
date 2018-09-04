@@ -582,9 +582,9 @@ class Toolbar extends Component {
 					<div className="d-block d-sm-none">
 						<button type="button" id="download-rota" className="btn btn-rotas-popover text-dark border-0 mt-3 mt-sm-auto pl-3 pr-3 col-12 col-sm-auto mb-3" onClick={event => this.handleDownloadRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-file-pdf-o" aria-hidden="true"></i> PDF Rota</button>
 						<button type="button" id="edit-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-3" onClick={event => this.handleEditRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i> Edit Rota</button>
-						<button type="button" id="rota-budget" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-0" style={{ cursor: 'default' }}>Rota Budget: &pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
+						<button type="button" id="rota-budget" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-3" style={{ cursor: 'default' }}>Rota Budget: &pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
 						{(this.props.shifts.length === 0) ? (
-							<button type="button" id="copy-last-weeks-rota-shifts" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-0" onClick={this.handleCopyLastWeeksRotaShifts}><i className="fa fa-fw fa-files-o" aria-hidden="true"></i></button>
+							<button type="button" id="copy-last-weeks-rota-shifts" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-0" onClick={this.handleCopyLastWeeksRotaShifts}><i className="fa fa-fw fa-files-o" aria-hidden="true"></i> Copy last weeks Rota shifts</button>
 						) : null}
 					</div>
 					<Tooltip placement="bottom" isOpen={this.state.isDownloadRotaTooltipOpen} target="download-rota" toggle={this.handleDownloadRotaTooltip}>Creates a PDF of the current Rota</Tooltip>
@@ -600,7 +600,7 @@ class Toolbar extends Component {
 						</PopoverBody>
 					</Popover>
 				</Col>
-				<Col className="pt-3 pb-0 pt-sm-0 pt-md-3 pb-sm-3 text-center text-md-right" xs="12" sm="12" md="5" lg="5" xl="6">
+				<Col className="pt-0 pb-0 pt-sm-0 pt-md-3 pb-sm-3 text-center text-md-right" xs="12" sm="12" md="5" lg="5" xl="6">
 					<div className="d-block d-sm-inline-block d-md-none d-lg-inline-block">
 						{(this.state.employeesIsActive || this.state.overviewIsActive) ? (
 							<Fragment>

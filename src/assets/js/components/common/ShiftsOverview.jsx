@@ -129,7 +129,7 @@ class ShiftsOverview extends Component {
 									<button type="button" className="btn btn-action border-0 p-0 font-weight-normal" id={`assigned-shift-${assignedShiftIndex}-${placementIndex}`} style={{ lineHeight: 'normal', fontSize: '0.7rem' }} onClick={event => this.handleEditShift(event, assignedShift.shiftId, placement.employee.employeeId, placement.placementId, moment(this.props.weekDate).format('YYYY-MM-DD'))}>
 										<div className="d-flex align-items-start pt-1 pl-2 pr-2 pb-1 m-0">
 											<div className="d-inline-block p-0 mr-2 mb-0">
-												<Avatar color="#1CA3AE" fgColor="#ffffff" email={placement.employee.email} name={`${placement.employee.firstName} ${placement.employee.lastName}`} round={true} size="27" />
+												<Avatar color="#1CA3AE" fgColor="#ffffff" name={`${placement.employee.firstName} ${placement.employee.lastName}`} round={true} size="27" />
 											</div>
 											<div className="d-inline-block w-100 p-0 m-0">
 												<div className="wrap-words text-right"><span className="pull-left text-left w-50 p-0 ml-0 mt-0 mb-0 mr-1">{placement.employee.firstName} {placement.employee.lastName}</span> {moment(assignedShift.startTime).format('HH:mm')} - {(assignedShift.isClosingShift) ? 'Closing' : moment(assignedShift.endTime).format('HH:mm')}</div>
