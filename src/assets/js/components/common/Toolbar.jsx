@@ -543,14 +543,41 @@ class Toolbar extends Component {
 	handleCopyLastWeeksRotaShifts = () => {
 		logMessage('info', 'Called Toolbar handleCopyLastWeeksRotaShifts');
 
-		const previousStartDate = moment(this.props.week.startDate).subtract(7, 'days');
+		/* Check if the user wants to copy the previous weeks rota shifts into the new rota */
+		const message = '<p>Please confirm that you would like to copy all of previous week&#39;s shifts into this rota?</p>';
 
-		/* Find the rota for the previous week */
-		const matchingRota = this.props.rotas.filter(rota => moment(rota.startDate).format('YYYY-MM-DD') === previousStartDate.format('YYYY-MM-DD')).shift();
+		const options = {
+			message,
+			labels: {
+				cancel: 'No',
+				proceed: 'Yes',
+			},
+			values: {
+				cancel: false,
+				process: true,
+			},
+			colors: {
+				proceed: 'primary',
+			},
+			title: 'Copy Previous Week\'s Rota Shifts',
+			className: 'modal-dialog',
+		};
 
-		logMessage('info', 'Called Toolbar handleCopyLastWeeksRotaShifts - matching rota:', matchingRota);
+		/**
+		 * If the user has clicked the proceed button, we copy the shifts
+		 * If the user has clicked the cancel button, we do nothing.
+		 */
+		confirm(options)
+			.then((result) => {
+				const previousStartDate = moment(this.props.week.startDate).subtract(7, 'days');
 
-		this.handleDeleteRota().then(() => this.handleCopyShifts(matchingRota));
+				/* Find the rota for the previous week */
+				const matchingRota = this.props.rotas.filter(rota => moment(rota.startDate).format('YYYY-MM-DD') === previousStartDate.format('YYYY-MM-DD')).shift();
+
+				logMessage('info', 'Called Toolbar handleCopyLastWeeksRotaShifts - matching rota:', matchingRota);
+
+				this.handleDeleteRota().then(() => this.handleCopyShifts(matchingRota));
+			}, () => {});
 	};
 
 	handleSwitchFromSelectRoleToCreateRole = roleName => this.setState({ roleName, isCreateRoleModalOpen: !this.state.isCreateRoleModalOpen, isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen });
