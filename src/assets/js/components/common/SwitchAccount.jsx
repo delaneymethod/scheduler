@@ -57,6 +57,7 @@ class SwitchAccount extends Component {
 		const { actions, history } = this.props;
 
 		logMessage('info', 'Called SwitchAccount handleChange switchAccount');
+
 		actions.switchAccount({ accountId })
 			.then(() => {
 				const { user } = this.props;
@@ -64,6 +65,7 @@ class SwitchAccount extends Component {
 				user.account = user.accounts.filter(data => data.id === accountId).shift();
 
 				logMessage('info', 'Called SwitchAccount handleChange updateUser');
+
 				actions.updateUser(user).then(() => history.push(routes.DASHBOARD.HOME.URI));
 			})
 			.catch((error) => {

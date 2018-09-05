@@ -79,8 +79,10 @@ class SettingsForm extends Component {
 			};
 
 			logMessage('info', 'Called Settings handleSubmit updateSettings');
+
 			actions.updateSettings(payload).then(() => {
 				logMessage('info', 'Called Settings handleSubmit firstDayOfWeek:', firstDayOfWeek);
+
 				/* Make sure we update moment locate and day of week config */
 				moment.updateLocale('en', {
 					week: {

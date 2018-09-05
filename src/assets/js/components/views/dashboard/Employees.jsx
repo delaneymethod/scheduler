@@ -294,6 +294,7 @@ class Employees extends Component {
 
 	handleSwitchRotaCost = (cost) => {
 		logMessage('info', 'Called Employee handleSwitchRotaCost switchRotaCost');
+
 		this.props.actions.switchRotaCost(cost);
 	};
 
@@ -741,6 +742,7 @@ class Employees extends Component {
 
 	handleGetEmployees = () => {
 		logMessage('info', 'Called Employee handleGetEmployees getEmployees');
+
 		return this.props.actions.getEmployees().catch(error => Promise.reject(error));
 	};
 
@@ -758,6 +760,7 @@ class Employees extends Component {
 		};
 
 		logMessage('info', 'Called Employees handleUpdateEmployeeOrder orderEmployees');
+
 		actions.orderEmployees(payload)
 			.then(() => this.handleGetEmployees())
 			.catch((error) => {
@@ -942,6 +945,7 @@ class Employees extends Component {
 				if (updateBoth) {
 					logMessage('info', 'Called Employees handleUpdateShift updateBoth');
 					logMessage('info', 'Called Employees handleUpdateShift updateShift');
+
 					actions.updateShift(payload)
 						/* Check if we need to update the placement */
 						.then(() => {
@@ -964,6 +968,7 @@ class Employees extends Component {
 								 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
 								 */
 								logMessage('info', 'Called Employees handleUpdateShift updatePlacement');
+
 								return actions.updatePlacement(payload).catch(error => Promise.reject(error));
 							}
 
@@ -982,6 +987,7 @@ class Employees extends Component {
 				} else if (updateShiftOnly) {
 					logMessage('info', 'Called Employees handleUpdateShift updateShiftOnly');
 					logMessage('info', 'Called Employees handleUpdateShift updateShift');
+
 					actions.updateShift(payload)
 						/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 						.then(() => this.handleGetShifts(rotaId))
@@ -995,6 +1001,7 @@ class Employees extends Component {
 						});
 				} else if (updatePlacementOnly) {
 					logMessage('info', 'Called Employees handleUpdateShift updatePlacementOnly');
+
 					/* Get the matching placement (based on the employee id) */
 					const placement = shift.placements.filter(data => data.employee.employeeId === employeeId).shift();
 
@@ -1014,6 +1021,7 @@ class Employees extends Component {
 						 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
 						 */
 						logMessage('info', 'Called Employees handleUpdateShift updatePlacement');
+
 						actions.updatePlacement(payload)
 							/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 							.then(() => this.handleGetShifts(rotaId))
@@ -1034,6 +1042,7 @@ class Employees extends Component {
 				};
 
 				logMessage('info', 'Called Employees handleUpdateShift createPlacement');
+
 				actions.createPlacement(payload)
 					/* Updating the shift and or creating a placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 					.then(() => this.handleGetShifts(rotaId))
@@ -1070,6 +1079,7 @@ class Employees extends Component {
 		};
 
 		logMessage('info', 'Called Employees handleGetShifts getShifts');
+
 		return actions.getShifts(payload).catch(error => Promise.reject(error));
 	};
 
@@ -1081,12 +1091,14 @@ class Employees extends Component {
 		};
 
 		logMessage('info', 'Called Employees handleGetRotas getRotas');
+
 		return actions.getRotas(payload)
 			.then((allRotas) => {
 				/* After we get all rotas, we need to find our current rota again and switch it so its details are also updated */
 				const currentRota = allRotas.filter(data => data.rotaId === rota.rotaId).shift();
 
 				logMessage('info', 'Called Employees handleGetRotas switchRota');
+
 				return actions.switchRota(currentRota);
 			})
 			.catch(error => Promise.reject(error));

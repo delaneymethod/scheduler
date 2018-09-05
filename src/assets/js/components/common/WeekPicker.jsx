@@ -104,10 +104,12 @@ class WeekPicker extends Component {
 		/* Fall back when no settings for first day of week are found */
 		if (!has(settings, 'firstDayOfWeek')) {
 			logMessage('info', 'Called WeekPicker componentDidMount firstDayOfWeek not found. Defaulting to Monday');
+
 			firstDayOfWeek = 1;
 		}
 
 		logMessage('info', 'Called WeekPicker componentDidMount firstDayOfWeek:', firstDayOfWeek);
+
 		moment.updateLocale('en', {
 			week: {
 				dow: firstDayOfWeek,
@@ -120,6 +122,7 @@ class WeekPicker extends Component {
 		};
 
 		logMessage('info', 'Called WeekPicker componentDidMount updateSettings');
+
 		actions.updateSettings(payload).then(() => {
 			if (isEmpty(this.props.week)) {
 				/* Get the current rota start date and create a range based off that */
@@ -145,6 +148,7 @@ class WeekPicker extends Component {
 			};
 
 			logMessage('info', 'Called WeekPicker componentDidMount switchWeek');
+
 			actions.switchWeek(payload).then(() => {
 				/* We are setting moment objects in the component state compared to moment strings in the session storage */
 				this.setState({ week });
@@ -192,6 +196,7 @@ class WeekPicker extends Component {
 		const { settings: { firstDayOfWeek } } = this.props;
 
 		logMessage('info', 'Called WeekPicker handleChange firstDayOfWeek:', firstDayOfWeek);
+
 		moment.updateLocale('en', {
 			week: {
 				dow: firstDayOfWeek,
@@ -218,6 +223,7 @@ class WeekPicker extends Component {
 		};
 
 		logMessage('info', 'Called WeekPicker handleChange switchWeek');
+
 		actions.switchWeek(payload).then(() => {
 			/* We are setting moment objects in the component state compared to moment strings in the session storage */
 			this.setState({ week });
@@ -243,6 +249,7 @@ class WeekPicker extends Component {
 		};
 
 		logMessage('info', 'Called WeekPicker handleGetRotas getRota');
+
 		actions.getRotas(payload).catch((error) => {
 			error.data.title = 'Get Rotas';
 
@@ -270,6 +277,7 @@ class WeekPicker extends Component {
 
 		/* If the first day of week has changed and user tries to create a new rota, they can't due to previous rota first day of week not matching the new first day of week */
 		logMessage('info', 'Called WeekPicker handleCreateRota createRota');
+
 		actions.createRota(payload)
 			.then(rota => this.handleSwitchRota(rota))
 			.then(() => this.handleGetRotas(rotaTypeId))
@@ -287,6 +295,7 @@ class WeekPicker extends Component {
 
 		/* Set the current rota */
 		logMessage('info', 'Called WeekPicker handleSwitchRota switchRota');
+
 		actions.switchRota(rota)
 			.then(() => {
 				const { rota: { rotaId } } = this.props;
@@ -297,6 +306,7 @@ class WeekPicker extends Component {
 
 				/* Any time we switch rotas, we need to get a fresh list of shifts for that rota */
 				logMessage('info', 'Called WeekPicker handleSwitchRota getShifts');
+
 				actions.getShifts(payload).catch((error) => {
 					error.data.title = 'Get Shifts';
 
@@ -347,6 +357,7 @@ class WeekPicker extends Component {
 				confirm(options)
 					.then((result) => {
 						logMessage('info', 'Called WeekPicker handleSwitchOrCreateRota copyShifts');
+
 						actions.copyShifts(this.props.rota)
 							.then(rota => this.handleSwitchRota(rota))
 							.then(() => this.handleGetRotas(rotaTypeId))

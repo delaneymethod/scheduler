@@ -106,6 +106,7 @@ class UpdateYourPasswordForm extends Component {
 			};
 
 			logMessage('info', 'Called UpdateYourPasswordForm handleSubmit updateYourPassword');
+
 			actions.updateYourPassword(payload)
 				.then(() => history.push(`${routes.UPDATE_YOUR_PASSWORD.URI}/login`))
 				.catch(error => this.setState({ error }));

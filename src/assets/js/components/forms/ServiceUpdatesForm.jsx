@@ -79,6 +79,7 @@ class ServiceUpdatesForm extends Component {
 			};
 
 			logMessage('info', 'Called ServiceUpdateForm handleSubmit registerServiceUpdates');
+
 			actions.serviceUpdates(payload)
 				.then(() => this.setState(Object.assign(this.getInitialState(), { email, emailSent: true }), () => delay(() => this.form.reset(), 30)))
 				.catch(error => this.setState({ error }));

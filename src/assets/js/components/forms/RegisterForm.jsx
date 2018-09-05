@@ -85,6 +85,7 @@ class RegisterForm extends Component {
 		const { actions } = this.props;
 
 		logMessage('info', 'Called RegisterForm componentDidMount getSubscriptionLevels');
+
 		actions.getSubscriptionLevels()
 			.then((subscriptionLevels) => {
 				/* Used to set a default the subscription level id value after the getSubscriptionLevels action has completed */
@@ -136,6 +137,7 @@ class RegisterForm extends Component {
 			};
 
 			logMessage('info', 'Called RegisterForm handleSubmit register');
+
 			actions.register(payload)
 				.then(() => this.setState(Object.assign(this.getInitialState(), { email, emailSent: true }), () => delay(() => this.form.reset(), 30)))
 				.catch(error => this.setState({ error }));

@@ -91,6 +91,7 @@ class ForgottenYourPasswordForm extends Component {
 			};
 
 			logMessage('info', 'Called ForgottenYourPasswordForm handleSubmit forgottenYourPassword');
+
 			actions.forgottenYourPassword(payload)
 				.then(() => this.setState(Object.assign(this.getInitialState(), { email: payload.email, emailSent: true }), () => delay(() => this.form.reset(), 30)))
 				.catch(error => this.setState({ error }));

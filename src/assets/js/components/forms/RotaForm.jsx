@@ -220,6 +220,7 @@ class RotaForm extends Component {
 
 	handleGetRotaTypes = () => {
 		logMessage('info', 'Called RotaForm handleGetRotaTypes getRotaTypes');
+
 		return this.props.actions.getRotaTypes().catch(error => Promise.reject(error));
 	};
 
@@ -231,6 +232,7 @@ class RotaForm extends Component {
 		};
 
 		logMessage('info', 'Called RotaForm handleGetRotas getRotas');
+
 		return actions.getRotas(payload).catch(error => Promise.reject(error));
 	};
 
@@ -270,6 +272,7 @@ class RotaForm extends Component {
 				};
 
 				logMessage('info', 'Called RotaForm handleDelete deleteRotaType');
+
 				actions.deleteRotaType(payload)
 					.then(() => this.handleGetRotaTypes())
 					.then(() => this.handleGetRotas())
@@ -308,10 +311,12 @@ class RotaForm extends Component {
 
 			if (this.props.editMode) {
 				logMessage('info', 'Called RotaForm handleSubmit updateRotaType');
+
 				actions.updateRotaType(payload)
 					.then((updatedRotaType) => {
 						/* Set the current rota type */
 						logMessage('info', 'Called RotaForm handleSubmit switchRotaType');
+
 						actions.switchRotaType(updatedRotaType).then(() => {
 							let { startDate } = this.state;
 
@@ -329,20 +334,25 @@ class RotaForm extends Component {
 
 							/* Now we create a new rota */
 							logMessage('info', 'Called RotaForm handleSubmit updateRota');
+
 							actions.updateRota(payload)
 								.then((updatedRota) => {
 									/* Set the current rota */
 									logMessage('info', 'Called RotaForm handleSubmit switchRota');
+
 									actions.switchRota(updatedRota).then(() => {
 										/* Lets make sure we pull the latest list of rota types and rotas from the API and update the store */
 										logMessage('info', 'Called RotaForm handleSubmit getRotaTypes');
+
 										actions.getRotaTypes()
 											.then(() => {
 												logMessage('info', 'Called RotaForm handleSubmit getRotas');
+
 												actions.getRotas(updatedRotaType)
 													.then(() => {
 														/* Lets also make sure we pull the latest list of shifts from the API and update the store */
 														logMessage('info', 'Called RotaForm handleSubmit getShifts');
+
 														actions.getShifts(updatedRota)
 															.then(() => {
 																/* Then we use the new rotas start date to set the current week start and end dates */
@@ -359,6 +369,7 @@ class RotaForm extends Component {
 
 																/* Set the current week */
 																logMessage('info', 'Called RotaForm handleSubmit switchWeek');
+
 																actions.switchWeek(payload).then(() => {
 																	payload = {
 																		firstDayOfWeek,
@@ -366,6 +377,7 @@ class RotaForm extends Component {
 
 																	/* Set the day of week based on start date */
 																	logMessage('info', 'Called RotaForm handleSubmit updateSettings');
+
 																	actions.updateSettings(payload).then(() => {
 																		logMessage('info', 'Called RotaForm handleSubmit firstDayOfWeek:', firstDayOfWeek);
 
@@ -401,10 +413,12 @@ class RotaForm extends Component {
 			} else {
 				/* Creates a new rota type */
 				logMessage('info', 'Called RotaForm handleSubmit createRotaType');
+
 				actions.createRotaType(payload)
 					.then((rotaType) => {
 						/* Set the current rota type */
 						logMessage('info', 'Called RotaForm handleSubmit switchRotaType');
+
 						actions.switchRotaType(rotaType).then(() => {
 							const status = STATUSES.DRAFT;
 
@@ -419,17 +433,21 @@ class RotaForm extends Component {
 
 							/* Now we create a new rota */
 							logMessage('info', 'Called RotaForm handleSubmit createRota');
+
 							actions.createRota(payload)
 								.then((rota) => {
 									/* Set the current rota */
 									logMessage('info', 'Called RotaForm handleSubmit switchRota');
+
 									actions.switchRota(rota).then(() => {
 										/* Lets make sure we pull the latest list of rotas from the API and update the store */
 										logMessage('info', 'Called RotaForm handleSubmit getRotas');
+
 										actions.getRotas(rotaType)
 											.then(() => {
 												/* Lets also make sure we pull the latest list of shifts from the API and update the store */
 												logMessage('info', 'Called RotaForm handleSubmit getShifts');
+
 												actions.getShifts(rota)
 													.then(() => {
 														/* Then we use the new rotas start date to set the current week start and end dates */
@@ -446,6 +464,7 @@ class RotaForm extends Component {
 
 														/* Set the current week */
 														logMessage('info', 'Called RotaForm handleSubmit switchWeek');
+
 														actions.switchWeek(payload).then(() => {
 															payload = {
 																firstDayOfWeek,
@@ -453,6 +472,7 @@ class RotaForm extends Component {
 
 															/* Set the day of week based on start date */
 															logMessage('info', 'Called RotaForm handleSubmit updateSettings');
+
 															actions.updateSettings(payload).then(() => {
 																logMessage('info', 'Called RotaForm handleSubmit firstDayOfWeek:', firstDayOfWeek);
 

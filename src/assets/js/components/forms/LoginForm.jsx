@@ -91,6 +91,7 @@ class LoginForm extends Component {
 			};
 
 			logMessage('info', 'Called Login handleSubmit login');
+
 			actions.login(payload)
 				.then((user) => {
 					/* The tokens subject contains the users Id */
@@ -105,6 +106,7 @@ class LoginForm extends Component {
 
 					/* Update the user state and then go to the dashboard */
 					logMessage('info', 'Called Login handleSubmit updateUser');
+
 					actions.updateUser(user).then(() => history.push(routes.DASHBOARD.HOME.URI));
 				})
 				.catch(error => this.setState({ error }));

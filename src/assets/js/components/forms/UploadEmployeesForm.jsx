@@ -87,11 +87,13 @@ class UploadEmployeesForm extends Component {
 		};
 
 		logMessage('info', 'Called UploadEmployeesForm handleUpdateEmployeeOrder orderEmployees');
+
 		return actions.orderEmployees(payload).catch(error => Promise.reject(error));
 	};
 
 	handleGetEmployees = () => {
 		logMessage('info', 'Called UploadEmployeesForm handleGetEmployees getEmployees');
+
 		return this.props.actions.getEmployees().catch(error => Promise.reject(error));
 	};
 
@@ -103,6 +105,7 @@ class UploadEmployeesForm extends Component {
 		};
 
 		logMessage('info', 'Called UploadEmployeesForm handleGetShifts getShifts');
+
 		return actions.getShifts(payload).catch(error => Promise.reject(error));
 	};
 
@@ -125,6 +128,7 @@ class UploadEmployeesForm extends Component {
 			};
 
 			logMessage('info', 'Called UploadEmployeesForm handleSubmit uploadEmployees');
+
 			actions.uploadEmployees(payload)
 				.then((response) => {
 					if (response.loadedEmployees.length > 0) {

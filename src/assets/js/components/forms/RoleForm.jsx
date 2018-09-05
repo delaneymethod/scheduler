@@ -74,6 +74,7 @@ class RoleForm extends Component {
 
 	handleGetRoles = () => {
 		logMessage('info', 'Called RoleForm handleGetRoles getRoles');
+
 		return this.props.actions.getRoles().catch(error => Promise.reject(error));
 	};
 
@@ -102,6 +103,7 @@ class RoleForm extends Component {
 
 				/* Creates a new role */
 				logMessage('info', 'Called RoleForm handleSubmit createRole');
+
 				actions.createRole(payload)
 					.then(() => this.handleGetRoles())
 					.then(() => {

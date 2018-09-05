@@ -46,6 +46,7 @@ class EmailField extends Component {
 		const { didYouMean, suggestion } = this.refs;
 
 		logMessage('info', 'Called EmailField handleBlur mailcheck');
+
 		mailcheck.run({
 			email: this.props.fieldValue,
 			suggested: (suggested) => {

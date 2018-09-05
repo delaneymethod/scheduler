@@ -536,6 +536,7 @@ class ShiftForm extends Component {
 		};
 
 		logMessage('info', 'Called ShiftForm handleGetShifts getShifts');
+
 		return actions.getShifts(payload).catch(error => Promise.reject(error));
 	};
 
@@ -553,12 +554,14 @@ class ShiftForm extends Component {
 		};
 
 		logMessage('info', 'Called ShiftForm handleGetRotas getRotas');
+
 		return actions.getRotas(payload)
 			.then((allRotas) => {
 				/* After we get all rotas, we need to find our current rota again and switch it so its details are also updated */
 				const currentRota = allRotas.filter(data => data.rotaId === rota.rotaId).shift();
 
 				logMessage('info', 'Called ShiftForm handleGetRotas switchRota');
+
 				return actions.switchRota(currentRota);
 			})
 			.catch(error => Promise.reject(error));
@@ -566,6 +569,7 @@ class ShiftForm extends Component {
 
 	handleGetRoles = () => {
 		logMessage('info', 'Called ShiftForm handleGetRoles getRoles');
+
 		return this.props.actions.getRoles().catch(error => Promise.reject(error));
 	};
 
@@ -617,6 +621,7 @@ class ShiftForm extends Component {
 				};
 
 				logMessage('info', 'Called ShiftForm handleDelete deleteShifts');
+
 				actions.deleteShift(payload)
 					/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 					.then(() => this.handleGetShifts())
@@ -767,6 +772,7 @@ class ShiftForm extends Component {
 
 							logMessage('info', 'Called ShiftForm handleSubmit updateBoth');
 							logMessage('info', 'Called ShiftForm handleSubmit updateShift');
+
 							actions.updateShift(payload)
 								.then(() => {
 									/* Get the edit shift again based on shift id. Updated shift doesnt have placments included */
@@ -787,6 +793,7 @@ class ShiftForm extends Component {
 
 											/* Employee Id was unselected so lets delete the placement for the shift */
 											logMessage('info', 'Called ShiftForm handleSubmit deletePlacement');
+
 											return actions.deletePlacement(payload).catch(error => Promise.reject(error));
 										}
 
@@ -801,6 +808,7 @@ class ShiftForm extends Component {
 										 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
 										 */
 										logMessage('info', 'Called ShiftForm handleSubmit updatePlacement');
+
 										return actions.updatePlacement(payload).catch(error => Promise.reject(error));
 									}
 
@@ -826,6 +834,7 @@ class ShiftForm extends Component {
 						} else if (updateShiftOnly) {
 							logMessage('info', 'Called ShiftForm handleSubmit updateShiftOnly');
 							logMessage('info', 'Called ShiftForm handleSubmit updateShift');
+
 							actions.updateShift(payload)
 								/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 								.then(() => this.handleGetShifts())
@@ -846,6 +855,7 @@ class ShiftForm extends Component {
 								.catch(error => this.setState({ error }));
 						} else if (updatePlacementOnly) {
 							logMessage('info', 'Called ShiftForm handleSubmit updatePlacementOnly');
+
 							if (isEmpty(employeeId)) {
 								payload = {
 									placementId,
@@ -853,6 +863,7 @@ class ShiftForm extends Component {
 
 								/* Employee Id was unselected so lets delete the placement for the shift */
 								logMessage('info', 'Called ShiftForm handleSubmit deletePlacement');
+
 								actions.deletePlacement(payload)
 									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 									.then(() => this.handleGetShifts())
@@ -883,6 +894,7 @@ class ShiftForm extends Component {
 								 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
 								 */
 								logMessage('info', 'Called ShiftForm handleSubmit updatePlacement');
+
 								actions.updatePlacement(payload)
 									/* Updating the shift and or placement will update the store with only the updated shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 									.then(() => this.handleGetShifts())
@@ -906,6 +918,7 @@ class ShiftForm extends Component {
 					}
 				} else {
 					logMessage('info', 'Called ShiftForm handleSubmit createShift');
+
 					actions.createShift(payload)
 						.then((shift) => {
 							if (!isEmpty(employeeId)) {
@@ -915,6 +928,7 @@ class ShiftForm extends Component {
 								};
 
 								logMessage('info', 'Called ShiftForm handleSubmit createPlacement');
+
 								return actions.createPlacement(payload).catch(error => Promise.reject(error));
 							}
 
