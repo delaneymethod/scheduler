@@ -20,21 +20,17 @@ import AssignShiftForm from '../forms/AssignShiftForm';
 const notifications = config.APP.NOTIFICATIONS;
 
 const propTypes = {
-	roleName: PropTypes.string,
 	id: PropTypes.string.isRequired,
 	past: PropTypes.bool.isRequired,
 	unassigned: PropTypes.bool.isRequired,
 	shiftPlacement: PropTypes.object.isRequired,
-	handleSwitchFromSelectRoleToCreateRole: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
 	id: '',
 	past: false,
-	roleName: '',
 	unassigned: false,
 	shiftPlacement: {},
-	handleSwitchFromSelectRoleToCreateRole: () => {},
 };
 
 class ShiftButton extends Component {
@@ -59,34 +55,12 @@ class ShiftButton extends Component {
 	}
 
 	getInitialState = () => ({
-		roleName: '',
 		editMode: false,
 		isShiftPopoverOpen: false,
 		isEditShiftModalOpen: false,
 		isCreateShiftModalOpen: false,
 		isAssignShiftModalOpen: false,
 	});
-
-	componentDidMount = () => {
-		const { roleName } = this.props;
-
-		if (!isEmpty(roleName)) {
-			this.setState({ roleName });
-		}
-	};
-
-	componentDidUpdate = (prevProps, prevState) => {
-		if (prevProps.roleName !== this.props.roleName) {
-			const { roleName } = this.props;
-
-			if (!isEmpty(roleName)) {
-				this.setState({ roleName });
-			}
-		}
-	};
-
-	/* If we close the modal, reset the role name state. If the user hasnt saved, but reopens the modal, we want the correct value - not the state value */
-	componentWillUnmount = () => this.setState({ roleName: '' });
 
 	handleShiftMenu = () => this.setState({ isShiftPopoverOpen: !this.state.isShiftPopoverOpen });
 
@@ -139,10 +113,10 @@ class ShiftButton extends Component {
 						</PopoverBody>
 					</Popover>
 					<Modal title="Edit Shift" className="modal-dialog" show={this.state.isEditShiftModalOpen} onClose={this.handleEditShift}>
-						<ShiftForm overview={false} editMode={true} roleName={(!isEmpty(this.state.roleName)) ? this.state.roleName : this.props.shiftPlacement.roleName} shiftId={this.props.shiftPlacement.shiftId} employeeId={this.props.shiftPlacement.employeeId} placementId={this.props.shiftPlacement.placementId} startDate={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleSwitchFromSelectRoleToCreateRole={this.props.handleSwitchFromSelectRoleToCreateRole} handleClose={this.handleEditShift} />
+						<ShiftForm overview={false} editMode={true} shiftId={this.props.shiftPlacement.shiftId} employeeId={this.props.shiftPlacement.employeeId} placementId={this.props.shiftPlacement.placementId} startDateClone={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} startDate={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleEditShift} />
 					</Modal>
 					<Modal title="Create Shift" className="modal-dialog" show={this.state.isCreateShiftModalOpen} onClose={this.handleCreateShift}>
-						<ShiftForm overview={false} editMode={false} roleName={(!isEmpty(this.state.roleName)) ? this.state.roleName : this.props.shiftPlacement.roleName} employeeId={this.props.shiftPlacement.employeeId} startDate={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateShift} handleSwitchFromSelectRoleToCreateRole={this.props.handleSwitchFromSelectRoleToCreateRole} />
+						<ShiftForm overview={false} editMode={false} employeeId={this.props.shiftPlacement.employeeId} startDate={moment(this.props.shiftPlacement.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateShift} />
 					</Modal>
 				</Fragment>
 			) : (

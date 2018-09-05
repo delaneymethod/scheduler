@@ -16,6 +16,10 @@ import React, { Fragment, Component } from 'react';
 import { Row, Col, Label, Input, Button, Tooltip, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 
+import RoleForm from './RoleForm';
+
+import Modal from '../common/Modal';
+
 import Alert from '../common/Alert';
 
 import config from '../../helpers/config';
@@ -51,7 +55,6 @@ const propTypes = {
 	employees: PropTypes.array.isRequired,
 	handleClose: PropTypes.func.isRequired,
 	handleSuccessNotification: PropTypes.func.isRequired,
-	handleSwitchFromSelectRoleToCreateRole: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -69,7 +72,6 @@ const defaultProps = {
 	placementId: null,
 	handleClose: () => {},
 	handleSuccessNotification: () => {},
-	handleSwitchFromSelectRoleToCreateRole: () => {},
 };
 
 class ShiftForm extends Component {
@@ -122,6 +124,10 @@ class ShiftForm extends Component {
 
 		this.handleChangeStartDate = this.handleChangeStartDate.bind(this);
 
+		this.handleOpenCreateRoleModal = this.handleOpenCreateRoleModal.bind(this);
+
+		this.handleCloseCreateRoleModal = this.handleCloseCreateRoleModal.bind(this);
+
 		this.handleIsClosingShiftTooltip = this.handleIsClosingShiftTooltip.bind(this);
 	}
 
@@ -140,6 +146,7 @@ class ShiftForm extends Component {
 		oldStartTime: '',
 		numberOfPositions: 1,
 		isClosingShift: false,
+		isCreateRoleModalOpen: false,
 		isClosingShiftTooltipOpen: false,
 	});
 
@@ -278,13 +285,9 @@ class ShiftForm extends Component {
 		}
 	};
 
-	componentDidUpdate = (prevProps, prevState) => {
-		if (prevProps.roleName !== this.props.roleName) {
-			const { roleName } = this.props;
+	handleOpenCreateRoleModal = () => this.setState({ isCreateRoleModalOpen: !this.state.isCreateRoleModalOpen });
 
-			this.setState({ roleName });
-		}
-	};
+	handleCloseCreateRoleModal = roleName => this.setState({ roleName, isCreateRoleModalOpen: false });
 
 	handleIsClosingShiftTooltip = () => this.setState({ isClosingShiftTooltipOpen: !this.state.isClosingShiftTooltipOpen });
 
@@ -999,7 +1002,7 @@ class ShiftForm extends Component {
 					<Col className="text-right" xs="12" sm="3" md="3" lg="3" xl="3">
 						<FormGroup>
 							<Label className="text-white">Create Role</Label>
-							<Button type="button" title="Create Role" className="btn btn-create-select btn-toggle-fields" onClick={this.props.handleSwitchFromSelectRoleToCreateRole}>Create Role</Button>
+							<Button type="button" title="Create Role" className="btn btn-create-select btn-toggle-fields" onClick={this.handleOpenCreateRoleModal}>Create Role</Button>
 						</FormGroup>
 					</Col>
 				</Row>
@@ -1066,6 +1069,9 @@ class ShiftForm extends Component {
 				) : (
 					<Button type="submit" color="primary" className="mt-4" id="submitCreate" title={routes.SHIFTS.CREATE.TITLE} tabIndex="8" block>{routes.SHIFTS.CREATE.TITLE}</Button>
 				)}
+				<Modal title="Create Role" className="modal-dialog" show={this.state.isCreateRoleModalOpen} onClose={this.handleOpenCreateRoleModal}>
+					<RoleForm handleSuccessNotification={this.props.handleSuccessNotification} handleClose={this.handleCloseCreateRoleModal} />
+				</Modal>
 			</FormWithConstraints>
 		</Fragment>
 	);

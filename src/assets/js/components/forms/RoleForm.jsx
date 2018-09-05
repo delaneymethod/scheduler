@@ -34,19 +34,19 @@ class RoleForm extends Component {
 	constructor(props) {
 		super(props);
 
-		this.form = null;
+		this.roleForm = null;
 
 		this.state = this.getInitialState();
 
-		this.handleBlur = this.handleBlur.bind(this);
-
-		this.handleDelete = this.handleDelete.bind(this);
-
-		this.handleSubmit = this.handleSubmit.bind(this);
-
-		this.handleChange = this.handleChange.bind(this);
+		this.handleRoleBlur = this.handleRoleBlur.bind(this);
 
 		this.handleGetRoles = this.handleGetRoles.bind(this);
+
+		this.handleRoleDelete = this.handleRoleDelete.bind(this);
+
+		this.handleRoleSubmit = this.handleRoleSubmit.bind(this);
+
+		this.handleRoleChange = this.handleRoleChange.bind(this);
 	}
 
 	getInitialState = () => ({
@@ -56,13 +56,13 @@ class RoleForm extends Component {
 
 	componentDidMount = () => {
 		/* We debounce this call to wait 1300ms (we do not want the leading (or "immediate") flag passed because we want to wait until the user has finished typing before running validation */
-		this.handleValidateFields = debounce(this.handleValidateFields.bind(this), 1300);
+		this.handleRoleValidateFields = debounce(this.handleRoleValidateFields.bind(this), 1300);
 
 		/* This listens for change events across the document - user typing and browser autofill */
-		document.addEventListener('change', event => this.form && this.form.validateFields(event.target));
+		document.addEventListener('change', event => this.roleForm && this.roleForm.validateFields(event.target));
 	};
 
-	handleChange = (event) => {
+	handleRoleChange = (event) => {
 		const target = event.currentTarget;
 
 		this.setState({
@@ -70,7 +70,7 @@ class RoleForm extends Component {
 		});
 	};
 
-	handleBlur = async event => this.handleValidateFields(event.currentTarget);
+	handleRoleBlur = async event => this.handleRoleValidateFields(event.currentTarget);
 
 	handleGetRoles = () => {
 		logMessage('info', 'Called RoleForm handleGetRoles getRoles');
@@ -78,18 +78,18 @@ class RoleForm extends Component {
 		return this.props.actions.getRoles().catch(error => Promise.reject(error));
 	};
 
-	handleDelete = event => logMessage('info', 'FIXME - Delete Role');
+	handleRoleDelete = event => logMessage('info', 'FIXME - Delete Role');
 
-	handleSubmit = async (event) => {
+	handleRoleSubmit = async (event) => {
 		event.preventDefault();
 
 		this.setState({ error: {} });
 
 		const { actions } = this.props;
 
-		await this.form.validateFields();
+		await this.roleForm.validateFields();
 
-		if (this.form.isValid()) {
+		if (this.roleForm.isValid()) {
 			let payload;
 
 			const { roleName } = this.state;
@@ -121,19 +121,19 @@ class RoleForm extends Component {
 		}
 	};
 
-	handleValidateFields = target => ((this.form && target) ? this.form.validateFields(target) : null);
+	handleRoleValidateFields = target => ((this.roleForm && target) ? this.roleForm.validateFields(target) : null);
 
 	errorMessage = () => (this.state.error.data ? <Alert color="danger" message={this.state.error.data.message} /> : null);
 
 	render = () => (
 		<Fragment>
 			{this.errorMessage()}
-			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
-				<TextField fieldName="roleName" fieldLabel="Role Name" fieldValue={this.state.roleName} fieldPlaceholder="e.g. Manager" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid role name." fieldTabIndex={1} fieldRequired={true} showIsDuplicate isDuplicateHaystack={this.props.roles.map(data => data.roleName)} />
+			<FormWithConstraints ref={(el) => { this.roleForm = el; }} noValidate>
+				<TextField fieldName="roleName" fieldLabel="Role Name" fieldValue={this.state.roleName} fieldPlaceholder="e.g. Manager" handleChange={this.handleRoleChange} handleBlur={this.handleRoleBlur} valueMissing="Please provide a valid role name." fieldTabIndex={1} fieldRequired={true} showIsDuplicate isDuplicateHaystack={this.props.roles.map(data => data.roleName)} />
 				{(this.props.editMode) ? (
-					<Button type="submit" color="primary" className="mt-4" id="submitUpdate" title={routes.ROLES.UPDATE.TITLE} tabIndex="2" block>{routes.ROLES.UPDATE.TITLE}</Button>
+					<Button type="button" color="primary" className="mt-4" id="submitUpdate" title={routes.ROLES.UPDATE.TITLE} tabIndex="2" onClick={this.handleRoleSubmit} block>{routes.ROLES.UPDATE.TITLE}</Button>
 				) : (
-					<Button type="submit" color="primary" className="mt-4" id="submitCreate" title={routes.ROLES.CREATE.TITLE} tabIndex="2" block>{routes.ROLES.CREATE.TITLE}</Button>
+					<Button type="button" color="primary" className="mt-4" id="submitCreate" title={routes.ROLES.CREATE.TITLE} tabIndex="2" onClick={this.handleRoleSubmit} block>{routes.ROLES.CREATE.TITLE}</Button>
 				)}
 			</FormWithConstraints>
 		</Fragment>
