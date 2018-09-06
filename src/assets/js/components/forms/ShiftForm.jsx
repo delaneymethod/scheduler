@@ -1002,7 +1002,7 @@ class ShiftForm extends Component {
 					<Col className="text-right" xs="12" sm="3" md="3" lg="3" xl="3">
 						<FormGroup>
 							<Label className="text-white">Create Role</Label>
-							<Button type="button" title="Create Role" className="btn btn-create-select btn-toggle-fields" onClick={this.handleOpenCreateRoleModal}>Create Role</Button>
+							<Button type="button" title="Create Role" id="createRole" className="btn btn-create-select btn-toggle-fields" onClick={this.handleOpenCreateRoleModal}>Create Role</Button>
 						</FormGroup>
 					</Col>
 				</Row>
@@ -1063,11 +1063,11 @@ class ShiftForm extends Component {
 				) : null}
 				{(this.props.editMode) ? (
 					<Fragment>
-						<Button type="submit" color="primary" className="mt-4" id="submitUpdate" title={routes.SHIFTS.UPDATE.TITLE} tabIndex="8" block>{routes.SHIFTS.UPDATE.TITLE}</Button>
-						<Button type="button" className="mt-4 text-danger btn btn-outline-danger" id="submitDelete" title={routes.SHIFTS.DELETE.TITLE} tabIndex="9" block onClick={this.handleDelete}>{routes.SHIFTS.DELETE.TITLE}</Button>
+						<Button type="submit" color="primary" className="mt-4" id="submitUpdateShift" title={routes.SHIFTS.UPDATE.TITLE} tabIndex="8" block>{routes.SHIFTS.UPDATE.TITLE}</Button>
+						<Button type="button" className="mt-4 text-danger btn btn-outline-danger" id="submitDeleteShift" title={routes.SHIFTS.DELETE.TITLE} tabIndex="9" block onClick={this.handleDelete}>{routes.SHIFTS.DELETE.TITLE}</Button>
 					</Fragment>
 				) : (
-					<Button type="submit" color="primary" className="mt-4" id="submitCreate" title={routes.SHIFTS.CREATE.TITLE} tabIndex="8" block>{routes.SHIFTS.CREATE.TITLE}</Button>
+					<Button type="submit" color="primary" className="mt-4" id="submitCreateShift" title={routes.SHIFTS.CREATE.TITLE} tabIndex="8" block>{routes.SHIFTS.CREATE.TITLE}</Button>
 				)}
 				<Modal title="Create Role" className="modal-dialog" show={this.state.isCreateRoleModalOpen} onClose={this.handleOpenCreateRoleModal}>
 					<RoleForm handleSuccessNotification={this.props.handleSuccessNotification} handleClose={this.handleCloseCreateRoleModal} />

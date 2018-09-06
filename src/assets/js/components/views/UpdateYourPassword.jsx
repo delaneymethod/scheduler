@@ -49,8 +49,8 @@ class UpdateYourPassword extends Component {
 			<Col xs="12" sm="12" md="6" lg="6" xl="6" className="d-flex align-items-center py-5">
 				{(this.props.token === 'login') ? (
 					<div className="panel-page">
-						<a href={routes.HOME.URI} title={routes.HOME.TITLE} className="panel-page__link"><i className="fa fa-fw fa-arrow-circle-left" aria-hidden="true"></i> Back to {routes.HOME.TITLE}</a>
-						<a href={routes.REGISTER.URI} title={routes.REGISTER.TITLE} className="panel-page__link pull-right">{routes.REGISTER.TITLE}</a>
+						<a href={routes.HOME.URI} title={routes.HOME.TITLE} id="home" className="panel-page__link"><i className="fa fa-fw fa-arrow-circle-left" aria-hidden="true"></i> Back to {routes.HOME.TITLE}</a>
+						<a href={routes.REGISTER.URI} title={routes.REGISTER.TITLE} id="register" className="panel-page__link pull-right">{routes.REGISTER.TITLE}</a>
 						<div className="card panel-page__content">
 							<h2 className="h5--title-card">{routes.LOGIN.TITLE}</h2>
 							<Alert color="success" message="Your password was updated successfully. You can now login below." />
@@ -59,7 +59,7 @@ class UpdateYourPassword extends Component {
 					</div>
 				) : (
 					<div className="panel-page">
-						<a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} className="panel-page__link">Back to {routes.LOGIN.TITLE}</a>
+						<a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} id="login" className="panel-page__link">Back to {routes.LOGIN.TITLE}</a>
 						<div className="card panel-page__content">
 							<h2 className="h5--title-card">{routes.UPDATE_YOUR_PASSWORD.TITLE}</h2>
 							<UpdateYourPasswordForm token={this.props.token} email={queryString.parse(this.props.location.search).email} history={this.props.history} />

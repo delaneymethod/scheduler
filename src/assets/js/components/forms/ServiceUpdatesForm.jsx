@@ -98,7 +98,7 @@ class ServiceUpdatesForm extends Component {
 			{this.successMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 				<EmailField fieldValue={this.state.email} handleChange={this.handleChange} handleBlur={this.handleBlur} fieldTabIndex={1} fieldAutoComplete="on" fieldRequired={true} />
-				<Button type="submit" color="primary" className="mt-4" id="submit" title={routes.HOME.CONTENT.SERVICE_UPDATES.CALL_TO_ACTION.TITLE} tabIndex="2" block>{routes.HOME.CONTENT.SERVICE_UPDATES.CALL_TO_ACTION.TITLE}</Button>
+				<Button type="submit" color="primary" className="mt-4" id="submitServiceUpdates" title={routes.HOME.CONTENT.SERVICE_UPDATES.CALL_TO_ACTION.TITLE} tabIndex="2" block>{routes.HOME.CONTENT.SERVICE_UPDATES.CALL_TO_ACTION.TITLE}</Button>
 			</FormWithConstraints>
 		</Fragment>
 	);

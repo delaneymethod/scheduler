@@ -32,8 +32,8 @@ const ConfirmDialog = ({
 			<div dangerouslySetInnerHTML={{ __html: options.message }} />
 		</ModalBody>
 		<ModalFooter className="text-center">
-			<Button color={options.colors.proceed} title={options.labels.proceed} className="pl-5 pr-5 ml-auto" onClick={() => proceed(options.values.proceed)}>{options.labels.proceed}</Button>
-			<Button color="light" title={options.labels.cancel} className="text-dark pl-5 pr-5 mr-auto" onClick={() => cancel(options.values.cancel)}>{options.labels.cancel}</Button>
+			<Button color={options.colors.proceed} title={options.labels.proceed} id="proceed" className="pl-5 pr-5 ml-auto" onClick={() => proceed(options.values.proceed)}>{options.labels.proceed}</Button>
+			<Button color="light" title={options.labels.cancel} id="cancel" className="text-dark pl-5 pr-5 mr-auto" onClick={() => cancel(options.values.cancel)}>{options.labels.cancel}</Button>
 		</ModalFooter>
 	</Modal>
 );

@@ -469,13 +469,13 @@ class WeekPicker extends Component {
 
 		return (
 			<div className="row week-toggle text-dark p-0 m-0">
-				<button type="button" name="previous-week" className="col-2 col-sm-2 col-md-2 btn btn-toggle p-0 border-0 font-weight-normal text-dark" disabled={(pathname === dashboard.HOME.URI) ? 'disabled' : null} onClick={this.handlePrevious}><i className="fa fa-fw fa-caret-left" aria-hidden="true"></i></button>
-				<button type="button" name="current-week" className="col-8 col-sm-8 col-md-8 btn btn-toggle p-0 btn-week-picker text-dark font-weight-normal rounded-0 border-0" disabled={(pathname === dashboard.HOME.URI) ? 'disabled' : null} onClick={this.handleToggle}><strong>{moment(this.state.week.startDate).format('ddd')}</strong>, {moment(this.state.week.startDate).format('MMM')} {moment(this.state.week.startDate).format('D')} - <strong>{moment(this.state.week.endDate).format('ddd')}</strong>, {moment(this.state.week.endDate).format('MMM')} {moment(this.state.week.endDate).format('D')}</button>
-				<button type="button" name="next-week" className="col-2 col-sm-2 col-md-2 btn btn-toggle p-0 border-0 font-weight-normal text-dark" disabled={(pathname === dashboard.HOME.URI) ? 'disabled' : null} onClick={this.handleNext}><i className="fa fa-fw fa-caret-right" aria-hidden="true"></i></button>
+				<button type="button" name="previous-week" id="previous-week" className="col-2 col-sm-2 col-md-2 btn btn-toggle p-0 border-0 font-weight-normal text-dark" disabled={(pathname === dashboard.HOME.URI) ? 'disabled' : null} onClick={this.handlePrevious}><i className="fa fa-fw fa-caret-left" aria-hidden="true"></i></button>
+				<button type="button" name="current-week" id="current-week" className="col-8 col-sm-8 col-md-8 btn btn-toggle p-0 btn-week-picker text-dark font-weight-normal rounded-0 border-0" disabled={(pathname === dashboard.HOME.URI) ? 'disabled' : null} onClick={this.handleToggle}><strong>{moment(this.state.week.startDate).format('ddd')}</strong>, {moment(this.state.week.startDate).format('MMM')} {moment(this.state.week.startDate).format('D')} - <strong>{moment(this.state.week.endDate).format('ddd')}</strong>, {moment(this.state.week.endDate).format('MMM')} {moment(this.state.week.endDate).format('D')}</button>
+				<button type="button" name="next-week" id="next-week" className="col-2 col-sm-2 col-md-2 btn btn-toggle p-0 border-0 font-weight-normal text-dark" disabled={(pathname === dashboard.HOME.URI) ? 'disabled' : null} onClick={this.handleNext}><i className="fa fa-fw fa-caret-right" aria-hidden="true"></i></button>
 				{(this.state.isCalenderOpen) ? (
 					<DatePicker withPortal inline autoFocus fixedHeight tabIndex={-1} selected={this.state.week.startDate} onChange={this.handleChange} onClickOutside={this.handleToggle} highlightDates={this.state.highlightedDates}>
 						<div className="d-none p-3 text-right">
-							<button type="button" title="Cancel" className="mt-2 btn btn-secondary" onClick={this.handleToggle}>Cancel</button>
+							<button type="button" title="Cancel" id="cancel-week-picker" className="mt-2 btn btn-secondary" onClick={this.handleToggle}>Cancel</button>
 						</div>
 					</DatePicker>
 				) : null}

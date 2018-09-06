@@ -1297,8 +1297,8 @@ class Employees extends Component {
 															<div className="d-inline-block p-0 m-0 mr-1 mr-xl-1"><button type="button" className={`btn btn-dark border-0 btn-icon${!isEmpty(this.state.sort.column) ? ' btn-filter-active' : ''}`} id="sortBy" title="Sort by" aria-label="Sort by" onClick={this.handleSortBy}><i className="fa fa-fw fa-sort" aria-hidden="true"></i></button></div>
 														</Fragment>
 													) : null}
-													<div className="d-none d-lg-inline-block p-0 m-0 mr-1 mr-xl-1"><button type="button" className="btn btn-secondary border-0 btn-icon" title="Upload Employees" aria-label="Upload Employees" onClick={this.handleUploadEmployees}><i className="fa fa-fw fa-upload" aria-hidden="true"></i></button></div>
-													<div className="d-none d-lg-inline-block p-0 m-0"><button type="button" className="btn btn-secondary border-0 btn-icon" title="Add New Employee" aria-label="Add New Employee" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-user-plus" aria-hidden="true"></i></button></div>
+													<div className="d-none d-lg-inline-block p-0 m-0 mr-1 mr-xl-1"><button type="button" className="btn btn-secondary border-0 btn-icon" id="uploadEmployees" title="Upload Employees" aria-label="Upload Employees" onClick={this.handleUploadEmployees}><i className="fa fa-fw fa-upload" aria-hidden="true"></i></button></div>
+													<div className="d-none d-lg-inline-block p-0 m-0"><button type="button" className="btn btn-secondary border-0 btn-icon" id="addNewEmployee" title="Add New Employee" aria-label="Add New Employee" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-user-plus" aria-hidden="true"></i></button></div>
 												</div>
 												<Popover placement="bottom" isOpen={this.state.isFilterPopoverOpen} target="filter" toggle={this.handleFilter}>
 													<PopoverBody>
@@ -1310,8 +1310,8 @@ class Employees extends Component {
 																<Input type="text" name="employeeName" id="employeeName" className="border-0" value={this.state.employeeName} onChange={event => this.handleFilterEmployees(event)} onKeyPress={event => this.handleNoEnterKeySubmit(event)} placeholder="By employee name..." autoComplete="off" tabIndex="-1" bsSize="sm" />
 															</FormGroup>
 															<div className="filter-buttons">
-																<button type="button" className="btn btn-action m-0 border-0" onClick={event => this.handleFilterEmployees(event, '')}>Clear</button>
-																<button type="button" className="btn btn-action m-0 border-0" onClick={this.handleFilter}>Close</button>
+																<button type="button" className="btn btn-action m-0 border-0" id="filterClear" onClick={event => this.handleFilterEmployees(event, '')}>Clear</button>
+																<button type="button" className="btn btn-action m-0 border-0" id="filterClose" onClick={this.handleFilter}>Close</button>
 															</div>
 														</Form>
 													</PopoverBody>
@@ -1320,12 +1320,12 @@ class Employees extends Component {
 													<PopoverBody>
 														<ul className="popover-menu">
 															<li><label className="pt-2 pb-1 m-0">Sort by</label></li>
-															<li><button type="button" title="Sort by First Name" className={`btn btn-action btn-nav border-0${(this.state.sort.column === 'firstName') ? ' text-warning' : ''}`} onClick={event => this.handleSortEmployees(event, 'firstName')}>First Name {(this.state.sort.column === 'firstName') ? <i className={`fa fa-sort-alpha-${this.state.sort.direction}`} aria-hidden="true"></i> : null}</button></li>
-															<li><button type="button" title="Sort by Last Name" className={`btn btn-action btn-nav border-0${(this.state.sort.column === 'lastName') ? ' text-warning' : ''}`} onClick={event => this.handleSortEmployees(event, 'lastName')}>Last Name {(this.state.sort.column === 'lastName') ? <i className={`fa fa-sort-alpha-${this.state.sort.direction}`} aria-hidden="true"></i> : null}</button></li>
+															<li><button type="button" title="Sort by First Name" id="sortByFirstName" className={`btn btn-action btn-nav border-0${(this.state.sort.column === 'firstName') ? ' text-warning' : ''}`} onClick={event => this.handleSortEmployees(event, 'firstName')}>First Name {(this.state.sort.column === 'firstName') ? <i className={`fa fa-sort-alpha-${this.state.sort.direction}`} aria-hidden="true"></i> : null}</button></li>
+															<li><button type="button" title="Sort by Last Name" id="sortByLastName" className={`btn btn-action btn-nav border-0${(this.state.sort.column === 'lastName') ? ' text-warning' : ''}`} onClick={event => this.handleSortEmployees(event, 'lastName')}>Last Name {(this.state.sort.column === 'lastName') ? <i className={`fa fa-sort-alpha-${this.state.sort.direction}`} aria-hidden="true"></i> : null}</button></li>
 															{(!isEmpty(this.state.sort.column)) ? (
 																<li className="filter-buttons">
-																	<button type="button" title="Clear Sort by" className="btn btn-action m-0 border-0 mb-2" style={{ borderRadius: '4px' }} onClick={event => this.handleClearSortEmployees(event)}>Clear</button>
-																	<button type="button" title="Close Sort by" className="btn btn-action m-0 border-0" style={{ borderRadius: '4px' }} onClick={this.handleSortBy}>Close</button>
+																	<button type="button" title="Clear Sort by" id="clearSortBy" className="btn btn-action m-0 border-0 mb-2" style={{ borderRadius: '4px' }} onClick={event => this.handleClearSortEmployees(event)}>Clear</button>
+																	<button type="button" title="Close Sort by" id="closeSortBy" className="btn btn-action m-0 border-0" style={{ borderRadius: '4px' }} onClick={this.handleSortBy}>Close</button>
 																</li>
 															) : null}
 														</ul>
@@ -1372,7 +1372,7 @@ class Employees extends Component {
 															</div>
 														</div>
 														<div className="position-absolute p-0 m-0 edit-handler">
-															<button type="button" className="btn border-0 btn-secondary btn-icon" title="Edit employee" aria-label="Edit employee" onClick={event => this.handleEditEmployee(event, row.accountEmployee.employee.employeeId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i></button>
+															<button type="button" className="btn border-0 btn-secondary btn-icon" id={`editEmployeeRow${rowIndex}`} title="Edit employee" aria-label="Edit employee" onClick={event => this.handleEditEmployee(event, row.accountEmployee.employee.employeeId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i></button>
 														</div>
 													</div>
 												</td>
@@ -1429,7 +1429,7 @@ class Employees extends Component {
 															<div className="p-2 m-0 flex-row">{column.hours}</div>
 															<div className="p-2 m-0 flex-row">{column.shifts}</div>
 														</div>
-														<div title={`${column.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}`} className="flex-column p-2 m-0 text-danger text-truncate">&pound;{column.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
+														<div title={`${column.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}`} id={`column${columnIndex}TotalCost`} className="flex-column p-2 m-0 text-danger text-truncate">&pound;{column.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
 													</div>
 												</th>
 											))}

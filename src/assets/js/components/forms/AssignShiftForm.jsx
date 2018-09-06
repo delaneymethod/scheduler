@@ -364,7 +364,7 @@ class AssignShiftForm extends Component {
 					<Col className="text-right" xs="12" sm="3" md="3" lg="3" xl="3">
 						<FormGroup>
 							<Label className="text-white">Create Shift</Label>
-							<Button type="button" title="Create Shift" className="btn btn-create-select btn-toggle-fields" onClick={this.props.handleSwitchFromAssignShiftToCreateShift}>Create Shift</Button>
+							<Button type="button" title="Create Shift" id="createShift" className="btn btn-create-select btn-toggle-fields" onClick={this.props.handleSwitchFromAssignShiftToCreateShift}>Create Shift</Button>
 						</FormGroup>
 					</Col>
 				</Row>
@@ -380,8 +380,8 @@ class AssignShiftForm extends Component {
 						</FieldFeedbacks>
 					</FormGroup>
 				) : null}
-				<Button type="submit" color="primary" className="mt-4" id="submitAssign" title={routes.SHIFTS.ASSIGN.TITLE} tabIndex="4" block>{routes.SHIFTS.ASSIGN.TITLE}</Button>
-				<Button type="button" className="mt-4 text-danger btn btn-outline-danger" id="submitDelete" title={routes.SHIFTS.DELETE.TITLE} tabIndex="5" block onClick={this.handleDelete}>{routes.SHIFTS.DELETE.TITLE}</Button>
+				<Button type="submit" color="primary" className="mt-4" id="submitAssignShift" title={routes.SHIFTS.ASSIGN.TITLE} tabIndex="4" block>{routes.SHIFTS.ASSIGN.TITLE}</Button>
+				<Button type="button" className="mt-4 text-danger btn btn-outline-danger" id="submitDeleteShift" title={routes.SHIFTS.DELETE.TITLE} tabIndex="5" block onClick={this.handleDelete}>{routes.SHIFTS.DELETE.TITLE}</Button>
 			</FormWithConstraints>
 		</Fragment>
 	);

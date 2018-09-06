@@ -386,11 +386,11 @@ class EmployeeForm extends Component {
 				</Row>
 				{(this.props.editMode) ? (
 					<Fragment>
-						<Button type="submit" color="primary" className="mt-4" id="submitUpdate" title={routes.EMPLOYEES.UPDATE.TITLE} tabIndex="8" block>{routes.EMPLOYEES.UPDATE.TITLE}</Button>
-						<Button type="button" className="mt-4 text-danger btn btn-outline-danger" id="submitDelete" title={routes.EMPLOYEES.DELETE.TITLE} tabIndex="9" block onClick={this.handleDelete}>{routes.EMPLOYEES.DELETE.TITLE}</Button>
+						<Button type="submit" color="primary" className="mt-4" id="submitUpdateEmployee" title={routes.EMPLOYEES.UPDATE.TITLE} tabIndex="8" block>{routes.EMPLOYEES.UPDATE.TITLE}</Button>
+						<Button type="button" className="mt-4 text-danger btn btn-outline-danger" id="submitDeleteEmployee" title={routes.EMPLOYEES.DELETE.TITLE} tabIndex="9" block onClick={this.handleDelete}>{routes.EMPLOYEES.DELETE.TITLE}</Button>
 					</Fragment>
 				) : (
-					<Button type="submit" color="primary" className="mt-4" id="submitCreate" title={routes.EMPLOYEES.CREATE.TITLE} tabIndex="8" block>{routes.EMPLOYEES.CREATE.TITLE}</Button>
+					<Button type="submit" color="primary" className="mt-4" id="submitCreateEmployee" title={routes.EMPLOYEES.CREATE.TITLE} tabIndex="8" block>{routes.EMPLOYEES.CREATE.TITLE}</Button>
 				)}
 			</FormWithConstraints>
 		</Fragment>

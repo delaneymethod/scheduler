@@ -102,11 +102,11 @@ class ShiftButton extends Component {
 						<PopoverBody>
 							<div className="cell-popover">
 								{(this.props.unassigned) ? (
-									<button type="button" title="Assign Shift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleAssignShift}>Assign Shift</button>
+									<button type="button" title="Assign Shift" id="assignShift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleAssignShift}>Assign Shift</button>
 								) : (
 									<Fragment>
-										<button type="button" title="Edit Shift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleEditShift}>Edit Shift</button>
-										<button type="button" title="Create Shift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleCreateShift}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Create Shift</button>
+										<button type="button" title="Edit Shift" id="editShift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleEditShift}>Edit Shift</button>
+										<button type="button" title="Create Shift" id="createShift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleCreateShift}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Create Shift</button>
 									</Fragment>
 								)}
 							</div>

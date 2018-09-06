@@ -119,7 +119,7 @@ class SettingsForm extends Component {
 								<FieldFeedback when="*">- Please select first day of week.</FieldFeedback>
 							</FieldFeedbacks>
 						</FormGroup>
-						<Button type="submit" color="primary" className="mt-4" id="submitUpdate" title={routes.SETTINGS.UPDATE.TITLE} tabIndex="2" block>{routes.SETTINGS.UPDATE.TITLE}</Button>
+						<Button type="submit" color="primary" className="mt-4" id="submitUpdateSettings" title={routes.SETTINGS.UPDATE.TITLE} tabIndex="2" block>{routes.SETTINGS.UPDATE.TITLE}</Button>
 					</Col>
 				</Row>
 			</FormWithConstraints>

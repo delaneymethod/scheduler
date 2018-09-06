@@ -624,7 +624,7 @@ class Toolbar extends Component {
 						<PopoverBody>
 							<ul className="popover-menu">
 								{(this.props.rotaTypes.length > 0) ? orderBy(this.props.rotaTypes, 'rotaTypeName').map((rotaType, index) => (<li key={index}><button type="button" title={rotaType.rotaTypeName} className="btn btn-action btn-nav border-0 text-truncate" id={rotaType.rotaTypeId} onClick={this.handleSwitchRotaType}>{rotaType.rotaTypeName}</button></li>)) : null}
-								<li><button type="button" title="Add New Rota" className="btn btn-primary btn-nav border-0" onClick={this.handleCreateRota}>Add New Rota</button></li>
+								<li><button type="button" title="Add New Rota" id="add-new-rota" className="btn btn-primary btn-nav border-0" onClick={this.handleCreateRota}>Add New Rota</button></li>
 							</ul>
 						</PopoverBody>
 					</Popover>
@@ -634,24 +634,24 @@ class Toolbar extends Component {
 						{(this.state.employeesIsActive || this.state.overviewIsActive) ? (
 							<Fragment>
 								{(this.state.hasUnassignedShifts) ? (
-									<button type="button" title="Assign Shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 mb-md-0 pl-3 pr-3 border-0" disabled={!this.state.enableShiftButton} onClick={this.handleAssignShift}><i className="fa fa-fw fa-plus d-none d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Assign</span> Shift</button>
+									<button type="button" title="Assign Shift" id="assign-shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 mb-md-0 pl-3 pr-3 border-0" disabled={!this.state.enableShiftButton} onClick={this.handleAssignShift}><i className="fa fa-fw fa-plus d-none d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Assign</span> Shift</button>
 								) : (
-									<button type="button" title="Create Shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 mb-md-0 pl-3 pr-3 border-0" disabled={!this.state.enableShiftButton} onClick={this.handleCreateShift}><i className="fa fa-fw fa-plus d-none d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Create</span> Shift</button>
+									<button type="button" title="Create Shift" id="create-shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 mb-md-0 pl-3 pr-3 border-0" disabled={!this.state.enableShiftButton} onClick={this.handleCreateShift}><i className="fa fa-fw fa-plus d-none d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Create</span> Shift</button>
 								)}
 							</Fragment>
 						) : (
-							<button type="button" title="Create Shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 mb-md-0 pl-3 pr-3 border-0" disabled={!this.state.enableShiftButton} onClick={this.handleCreateShift}><i className="fa fa-fw fa-plus d-none d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Create</span> Shift</button>
+							<button type="button" title="Create Shift" id="create-shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 mb-md-0 pl-3 pr-3 border-0" disabled={!this.state.enableShiftButton} onClick={this.handleCreateShift}><i className="fa fa-fw fa-plus d-none d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Create</span> Shift</button>
 						)}
 						{(this.state.rotaStatus === STATUSES.DRAFT) ? (
-							<button type="button" title="Publish Rota" className="btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish<span className="d-sm-inline-block d-md-none d-lg-inline-block">&nbsp;Rota</span></button>
+							<button type="button" title="Publish Rota" id="publish-rota" className="btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish<span className="d-sm-inline-block d-md-none d-lg-inline-block">&nbsp;Rota</span></button>
 						) : null}
 						{(this.state.rotaStatus === STATUSES.PUBLISHED) ? (
-							<button type="button" title="Rota Published" className="btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled>Publish<span className="d-sm-inline-block d-md-none d-lg-inline-block">&nbsp;Rota</span></button>
+							<button type="button" title="Rota Published" id="rota-published" className="btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled>Publish<span className="d-sm-inline-block d-md-none d-lg-inline-block">&nbsp;Rota</span></button>
 						) : null}
 						{(this.state.rotaStatus === STATUSES.EDITED) ? (
-							<button type="button" title="Publish Rota Changes" className="btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish&nbsp;<span className="d-sm-inline-block d-md-none d-lg-inline-block">Rota&nbsp;</span>Changes</button>
+							<button type="button" title="Publish Rota Changes" id="publish-rota-changes" className="btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish&nbsp;<span className="d-sm-inline-block d-md-none d-lg-inline-block">Rota&nbsp;</span>Changes</button>
 						) : null}
-						<button type="button" title="Create Employee" className="d-inline-block d-lg-none btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-plus d-none d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Create</span> Employee</button>
+						<button type="button" title="Create Employee" id="create-employee" className="d-inline-block d-lg-none btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-plus d-none d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Create</span> Employee</button>
 					</div>
 					<ButtonGroup className="d-none d-md-inline-block d-lg-none p-0 m-0 mr-3">
 						{(this.state.employeesIsActive || this.state.overviewIsActive) ? (
