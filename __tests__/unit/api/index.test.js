@@ -596,15 +596,19 @@ describe('API', () => {
 	});
 
 	it('should copy shifts', () => {
-		mock.onPost('/rotas/2/copy-shifts').reply(201, {
+		mock.onPost('/shifts/copy?fromRotaId=2&toRotaId=3').reply(201, {
 			rota: {},
 		});
 
-		const payload = {
+		const fromRota = {
 			rotaId: 2,
 		};
 
-		return api.copyShifts(payload).then(data => expect(data.rota).toEqual({}));
+		const toRota = {
+			rotaId: 3,
+		};
+
+		return api.copyShifts(fromRota, toRota).then(data => expect(data.rota).toEqual({}));
 	});
 
 	it('should download shifts', () => {

@@ -36,10 +36,10 @@ export const getShifts = payload => (dispatch) => {
 		});
 };
 
-export const copyShifts = payload => (dispatch) => {
+export const copyShifts = (fromRota, toRota) => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return api.copyShifts(payload)
+	return api.copyShifts(fromRota, toRota)
 		.then((rota) => {
 			dispatch(ajaxLoading(false));
 

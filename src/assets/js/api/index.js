@@ -134,7 +134,7 @@ export const deleteAccount = account => request('DELETE', `/accounts/${account.a
 /* SHIFTS */
 export const getShifts = rota => request('GET', `/shifts?rotaId=${rota.rotaId}`);
 
-export const copyShifts = rota => request('POST', `/rotas/${rota.rotaId}/copy-shifts`, 201);
+export const copyShifts = (fromRota, toRota) => request('POST', `/shifts/copy?fromRotaId=${fromRota.rotaId}&toRotaId=${toRota.rotaId}`, 201);
 
 export const downloadShifts = rota => request('GET', `/shifts/pdf?rotaId=${rota.rotaId}`);
 

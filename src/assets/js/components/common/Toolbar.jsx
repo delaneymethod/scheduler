@@ -483,13 +483,15 @@ class Toolbar extends Component {
 			});
 	};
 
-	handleCopyShifts = (rota) => {
-		const { actions, rotaType: { rotaTypeId } } = this.props;
+	handleCopyShifts = (fromRota) => {
+		const { actions, rota, rotaType: { rotaTypeId } } = this.props;
+
+		const toRota = rota;
 
 		logMessage('info', 'Called Toolbar handleCopyShifts copyShifts');
 
-		actions.copyShifts(rota)
-			.then(newRota => this.handleSwitchRota(newRota))
+		actions.copyShifts(fromRota, toRota)
+			.then(() => this.handleSwitchRota(toRota))
 			.then(() => this.handleGetRotas())
 			.then(() => {
 				/* FIXME - bug with setState somewhere when calling history.push(routes.DASHBOARD.ROLES.URI); */
@@ -559,11 +561,11 @@ class Toolbar extends Component {
 				const previousStartDate = moment(this.props.week.startDate).subtract(7, 'days');
 
 				/* Find the rota for the previous week */
-				const matchingRota = this.props.rotas.filter(rota => moment(rota.startDate).format('YYYY-MM-DD') === previousStartDate.format('YYYY-MM-DD')).shift();
+				const previousRota = this.props.rotas.filter(rota => moment(rota.startDate).format('YYYY-MM-DD') === previousStartDate.format('YYYY-MM-DD')).shift();
 
-				logMessage('info', 'Called Toolbar handleCopyLastWeeksRotaShifts - matching rota:', matchingRota);
+				logMessage('info', 'Called Toolbar handleCopyLastWeeksRotaShifts - matching rota:', previousRota);
 
-				this.handleDeleteRota().then(() => this.handleCopyShifts(matchingRota));
+				this.handleCopyShifts(previousRota);
 			}, () => {});
 	};
 
