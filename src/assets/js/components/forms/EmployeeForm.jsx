@@ -12,13 +12,13 @@ import Alert from '../common/Alert';
 
 import config from '../../helpers/config';
 
-import confirm from '../../helpers/confirm';
-
 import TextField from '../fields/TextField';
 
 import EmailField from '../fields/EmailField';
 
 import logMessage from '../../helpers/logging';
+
+import { confirm } from '../../helpers/confirm';
 
 import NumberField from '../fields/NumberField';
 

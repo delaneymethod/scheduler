@@ -14,9 +14,9 @@ import Alert from '../common/Alert';
 
 import config from '../../helpers/config';
 
-import confirm from '../../helpers/confirm';
-
 import logMessage from '../../helpers/logging';
+
+import { confirm } from '../../helpers/confirm';
 
 import { getRotas, switchRota } from '../../actions/rotaActions';
 

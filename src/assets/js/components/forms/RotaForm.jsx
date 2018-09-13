@@ -12,13 +12,13 @@ import Alert from '../common/Alert';
 
 import config from '../../helpers/config';
 
-import confirm from '../../helpers/confirm';
-
 import TextField from '../fields/TextField';
 
 import logMessage from '../../helpers/logging';
 
 import NumberField from '../fields/NumberField';
+
+import { confirm } from '../../helpers/confirm';
 
 import { getShifts } from '../../actions/shiftActions';
 

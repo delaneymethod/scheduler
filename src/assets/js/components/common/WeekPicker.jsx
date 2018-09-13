@@ -13,9 +13,9 @@ import Modal from './Modal';
 
 import config from '../../helpers/config';
 
-import confirm from '../../helpers/confirm';
-
 import logMessage from '../../helpers/logging';
+
+import { confirm } from '../../helpers/confirm';
 
 import { switchWeek } from '../../actions/weekActions';
 
