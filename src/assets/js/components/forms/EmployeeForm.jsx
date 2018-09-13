@@ -226,11 +226,12 @@ class EmployeeForm extends Component {
 			},
 			values: {
 				cancel: false,
-				process: true,
+				proceed: true,
 			},
 			colors: {
 				proceed: 'danger',
 			},
+			enableEscape: false,
 			title: 'Delete Employee',
 			className: 'modal-dialog-warning',
 		};

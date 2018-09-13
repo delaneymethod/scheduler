@@ -604,11 +604,12 @@ class ShiftForm extends Component {
 			},
 			values: {
 				cancel: false,
-				process: true,
+				proceed: true,
 			},
 			colors: {
 				proceed: 'danger',
 			},
+			enableEscape: false,
 			title: 'Delete Shift',
 			className: 'modal-dialog-warning',
 		};

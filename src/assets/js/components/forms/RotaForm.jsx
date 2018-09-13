@@ -250,11 +250,12 @@ class RotaForm extends Component {
 			},
 			values: {
 				cancel: false,
-				process: true,
+				proceed: true,
 			},
 			colors: {
 				proceed: 'danger',
 			},
+			enableEscape: false,
 			title: 'Delete Rota',
 			className: 'modal-dialog-warning',
 		};

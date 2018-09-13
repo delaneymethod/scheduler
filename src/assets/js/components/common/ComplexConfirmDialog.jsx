@@ -19,7 +19,7 @@ const defaultProps = {
 	proceed: () => {},
 };
 
-const ConfirmDialog = ({
+const ComplexConfirmDialog = ({
 	show,
 	cancel,
 	options,
@@ -27,19 +27,21 @@ const ConfirmDialog = ({
 	proceed,
 }) => (
 	<Modal backdrop={options.enableEscape ? true : 'static'} keyboard={options.enableEscape} centered={true} isOpen={show} toggle={dismiss} className={options.className}>
-		<ModalHeader toggle={() => cancel(options.values.cancel)}>{options.title}</ModalHeader>
+		<ModalHeader toggle={() => cancel(options.cancel.value)}>{options.title}</ModalHeader>
 		<ModalBody className="p-4 p-sm-4 p-md-5 p-lg-5 p-xl-5">
 			<div dangerouslySetInnerHTML={{ __html: options.message }} />
 		</ModalBody>
 		<ModalFooter className="text-center">
-			<Button color={options.colors.proceed} title={options.labels.proceed} id="proceed" className="pl-5 pr-5 ml-auto" onClick={() => proceed(options.values.proceed)}>{options.labels.proceed}</Button>
-			<Button color="light" title={options.labels.cancel} id="cancel" className="text-dark pl-5 pr-5 mr-auto" onClick={() => cancel(options.values.cancel)}>{options.labels.cancel}</Button>
+			{options.buttons.map((button, buttonIndex) => (
+				<Button key={buttonIndex} color={button.color} title={button.label} id={button.id} className="pl-5 pr-5" onClick={() => proceed(button.value)}>{button.label}</Button>
+			))}
+			<Button color="light" title={options.cancel.label} id="cancel" className="text-dark pl-5 pr-5 ml-auto" onClick={() => cancel(options.cancel.value)}>{options.cancel.label}</Button>
 		</ModalFooter>
 	</Modal>
 );
 
-ConfirmDialog.propTypes = propTypes;
+ComplexConfirmDialog.propTypes = propTypes;
 
-ConfirmDialog.defaultProps = defaultProps;
+ComplexConfirmDialog.defaultProps = defaultProps;
 
-export default confirmable(ConfirmDialog);
+export default confirmable(ComplexConfirmDialog);

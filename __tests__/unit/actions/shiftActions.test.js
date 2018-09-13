@@ -97,7 +97,9 @@ describe('Shift Actions', () => {
 			rotaId: 2,
 		};
 
-		return store.dispatch(actions.copyShifts(fromRota, toRota)).then(() => expect(store.getActions()).toEqual(expectedActions));
+		const includePlacements = true;
+
+		return store.dispatch(actions.copyShifts(fromRota, toRota, includePlacements)).then(() => expect(store.getActions()).toEqual(expectedActions));
 	});
 
 	it('should catch error on failed copyShifts', () => {
@@ -112,7 +114,7 @@ describe('Shift Actions', () => {
 
 		store = mockStore({ shifts: [] });
 
-		return store.dispatch(actions.copyShifts({}, {})).catch(error => expect(store.getActions()).not.toBeNull());
+		return store.dispatch(actions.copyShifts({}, {}, true)).catch(error => expect(store.getActions()).not.toBeNull());
 	});
 
 	it('should create AJAX_LOADING actions on downloadShifts', () => {

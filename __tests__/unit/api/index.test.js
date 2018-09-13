@@ -596,7 +596,7 @@ describe('API', () => {
 	});
 
 	it('should copy shifts', () => {
-		mock.onPost('/shifts/copy?fromRotaId=2&toRotaId=3').reply(201, {
+		mock.onPost('/shifts/copy?fromRotaId=2&toRotaId=3&includePlacements=true').reply(201, {
 			rota: {},
 		});
 
@@ -608,7 +608,9 @@ describe('API', () => {
 			rotaId: 3,
 		};
 
-		return api.copyShifts(fromRota, toRota).then(data => expect(data.rota).toEqual({}));
+		const includePlacements = true;
+
+		return api.copyShifts(fromRota, toRota, includePlacements).then(data => expect(data.rota).toEqual({}));
 	});
 
 	it('should download shifts', () => {

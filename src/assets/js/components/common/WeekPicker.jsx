@@ -343,11 +343,12 @@ class WeekPicker extends Component {
 					},
 					values: {
 						cancel: false,
-						process: true,
+						proceed: true,
 					},
 					colors: {
 						proceed: 'primary',
 					},
+					enableEscape: false,
 					title: 'Copy Rota Shifts',
 					className: 'modal-dialog',
 				};

@@ -20,8 +20,6 @@ import RotaForm from '../forms/RotaForm';
 
 import ShiftForm from '../forms/ShiftForm';
 
-import confirm from '../../helpers/confirm';
-
 import logMessage from '../../helpers/logging';
 
 import CloseButton from '../common/CloseButton';
@@ -35,6 +33,8 @@ import AssignShiftForm from '../forms/AssignShiftForm';
 import { switchWeek } from '../../actions/weekActions';
 
 import { updateSettings } from '../../actions/settingActions';
+
+import { confirm, complexConfirm } from '../../helpers/confirm';
 
 import { getRotaTypes, switchRotaType } from '../../actions/rotaTypeActions';
 
@@ -422,11 +422,12 @@ class Toolbar extends Component {
 			},
 			values: {
 				cancel: false,
-				process: true,
+				proceed: true,
 			},
 			colors: {
 				proceed: 'primary',
 			},
+			enableEscape: false,
 			title: 'Publish Rota',
 			className: 'modal-dialog',
 		};
@@ -483,14 +484,14 @@ class Toolbar extends Component {
 			});
 	};
 
-	handleCopyShifts = (fromRota) => {
+	handleCopyShifts = (fromRota, includePlacements) => {
 		const { actions, rota, rotaType: { rotaTypeId } } = this.props;
 
 		const toRota = rota;
 
 		logMessage('info', 'Called Toolbar handleCopyShifts copyShifts');
 
-		actions.copyShifts(fromRota, toRota)
+		actions.copyShifts(fromRota, toRota, includePlacements)
 			.then(() => this.handleSwitchRota(toRota))
 			.then(() => this.handleGetRotas())
 			.then(() => {
@@ -537,27 +538,33 @@ class Toolbar extends Component {
 
 		const options = {
 			message,
-			labels: {
-				cancel: 'No',
-				proceed: 'Yes',
+			cancel: {
+				label: 'Cancel',
+				value: false,
 			},
-			values: {
-				cancel: false,
-				process: true,
-			},
-			colors: {
-				proceed: 'primary',
-			},
+			buttons: [{
+				color: 'primary',
+				id: 'shiftsOnly',
+				value: 'shiftsOnly',
+				label: 'Copy Shifts Only',
+			}, {
+				color: 'secondary',
+				id: 'shiftsAndPlacements',
+				value: 'shiftsAndPlacements',
+				label: 'Copy Shifts and Placements',
+			}],
+			enableEscape: false,
 			title: 'Copy Previous Week\'s Rota Shifts',
 			className: 'modal-dialog',
 		};
 
 		/**
-		 * If the user has clicked the proceed button, we copy the shifts
+		 * If the user has clicked the primary button, we copy the shifts onlys.
+		 * If the user has clicked the secondary button, we copy the shifts and placements.
 		 * If the user has clicked the cancel button, we do nothing.
 		 */
-		confirm(options)
-			.then((result) => {
+		complexConfirm(options)
+			.then((confirmAction) => {
 				const previousStartDate = moment(this.props.week.startDate).subtract(7, 'days');
 
 				/* Find the rota for the previous week */
@@ -565,7 +572,9 @@ class Toolbar extends Component {
 
 				logMessage('info', 'Called Toolbar handleCopyLastWeeksRotaShifts - matching rota:', previousRota);
 
-				this.handleCopyShifts(previousRota);
+				const includePlacements = (confirmAction === 'shiftsAndPlacements');
+
+				this.handleCopyShifts(previousRota, includePlacements);
 			}, () => {});
 	};
 
