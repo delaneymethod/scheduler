@@ -112,6 +112,8 @@ class Toolbar extends Component {
 
 		this.handleEditRotaTooltip = this.handleEditRotaTooltip.bind(this);
 
+		this.handleDownloadRotaMenu = this.handleDownloadRotaMenu.bind(this);
+
 		this.handleRotaBudgetTooltip = this.handleRotaBudgetTooltip.bind(this);
 
 		this.handleCreateShiftTooltip = this.handleCreateShiftTooltip.bind(this);
@@ -155,6 +157,7 @@ class Toolbar extends Component {
 		isRotaTypeMenuPopoverOpen: false,
 		isCreateEmployeeModalOpen: false,
 		isCreateEmployeeTooltipOpen: false,
+		isDownloadRotaMenuPopoverOpen: false,
 		isCopyLastWeeksRotaShiftsTooltipOpen: false,
 	});
 
@@ -466,15 +469,17 @@ class Toolbar extends Component {
 			});
 	};
 
-	handleDownloadRota = () => {
+	handleDownloadRota = (event, format) => {
 		const { rota: { rotaId }, actions } = this.props;
 
-		const payload = {
+		const rota = {
 			rotaId,
 		};
 
-		actions.downloadShifts(payload)
-			.then(response => saveAs(response, `rota-shifts-${moment(this.props.rota.startDate).format('YYYY-MM-DD')}.pdf`))
+		const extension = (format === 'pdf') ? format : 'xls';
+
+		actions.downloadShifts(rota, format)
+			.then(response => saveAs(response, `rota-shifts-${moment(this.props.rota.startDate).format('YYYY-MM-DD')}.${extension}`))
 			.catch((error) => {
 				error.data.title = 'Download Rota';
 
@@ -529,6 +534,8 @@ class Toolbar extends Component {
 	handleDownloadRotaTooltip = () => this.setState({ isDownloadRotaTooltipOpen: !this.state.isDownloadRotaTooltipOpen });
 
 	handleCreateEmployeeTooltip = () => this.setState({ isCreateEmployeeTooltipOpen: !this.state.isCreateEmployeeTooltipOpen });
+
+	handleDownloadRotaMenu = () => this.setState({ isDownloadRotaTooltipOpen: false, isDownloadRotaMenuPopoverOpen: !this.state.isDownloadRotaMenuPopoverOpen });
 
 	handleCopyLastWeeksRotaShifts = () => {
 		logMessage('info', 'Called Toolbar handleCopyLastWeeksRotaShifts');
@@ -614,21 +621,21 @@ class Toolbar extends Component {
 				<Col className="pt-3 pb-3 pt-sm-3 pb-ms-3 text-center text-md-left" xs="12" sm="12" md="7" lg="7" xl="6">
 					<button type="button" className="btn btn-rotas-popover text-dark border-0 col-12 col-sm-auto" id="rotaTypeMenu" title="Toggle Rotas" aria-label="Toggle Rotas" onClick={this.handleRotaTypeMenu}>{this.props.rotaType.rotaTypeName}<i className="pl-2 fa fa-fw fa-chevron-down" aria-hidden="true"></i></button>
 					<ButtonGroup className="d-none d-sm-inline-block p-0 pl-sm-3 pl-md-3 pl-lg-3 pl-xl-3 m-0">
-						<button type="button" id="download-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3" onClick={event => this.handleDownloadRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-file-pdf-o" aria-hidden="true"></i></button>
+						<button type="button" id="download-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3" onClick={this.handleDownloadRotaMenu}><i className="fa fa-fw fa-cloud-download" aria-hidden="true"></i></button>
 						<button type="button" id="edit-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3" onClick={event => this.handleEditRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i></button>
 						<button type="button" id="rota-budget" className={`btn btn-rotas-popover text-dark border-0 pl-3 pr-3 ${(this.props.shifts.length === 0) ? '' : 'rounded-right'}`} style={{ cursor: 'default' }}>&pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
 						<button type="button" id="copy-last-weeks-rota-shifts" className={`btn btn-rotas-popover text-dark border-0 pl-3 pr-3 ${(this.props.shifts.length === 0) ? 'd-inline-block' : 'd-none'}`} onClick={this.handleCopyLastWeeksRotaShifts}><i className="fa fa-fw fa-files-o" aria-hidden="true"></i></button>
 					</ButtonGroup>
 					<div className="d-block d-sm-none">
-						<button type="button" id="download-rota" className="btn btn-rotas-popover text-dark border-0 mt-3 mt-sm-auto pl-3 pr-3 col-12 col-sm-auto mb-3" onClick={event => this.handleDownloadRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-file-pdf-o" aria-hidden="true"></i> PDF Rota</button>
+						<button type="button" id="download-rota" className="btn btn-rotas-popover text-dark border-0 mt-3 mt-sm-auto pl-3 pr-3 col-12 col-sm-auto mb-3" onClick={this.handleDownloadRotaMenu}><i className="fa fa-fw fa-cloud-download" aria-hidden="true"></i> Download Rota</button>
 						<button type="button" id="edit-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-3" onClick={event => this.handleEditRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i> Edit Rota</button>
 						<button type="button" id="rota-budget" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-3" style={{ cursor: 'default' }}>Rota Budget: &pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
 						{(this.props.shifts.length === 0) ? (
 							<button type="button" id="copy-last-weeks-rota-shifts" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-0" onClick={this.handleCopyLastWeeksRotaShifts}><i className="fa fa-fw fa-files-o" aria-hidden="true"></i> Copy last weeks Rota shifts</button>
 						) : null}
 					</div>
-					<Tooltip placement="bottom" isOpen={this.state.isDownloadRotaTooltipOpen} target="download-rota" toggle={this.handleDownloadRotaTooltip}>Creates a PDF of the current Rota</Tooltip>
-					<Tooltip placement="bottom" isOpen={this.state.isEditRotaTooltipOpen} target="edit-rota" toggle={this.handleEditRotaTooltip}>Edit the current Rota</Tooltip>
+					<Tooltip placement="bottom" isOpen={this.state.isDownloadRotaTooltipOpen} target="download-rota" toggle={this.handleDownloadRotaTooltip}>Download Rota</Tooltip>
+					<Tooltip placement="bottom" isOpen={this.state.isEditRotaTooltipOpen} target="edit-rota" toggle={this.handleEditRotaTooltip}>Edit Rota</Tooltip>
 					<Tooltip placement="bottom" isOpen={this.state.isRotaBudgetTooltipOpen} target="rota-budget" toggle={this.handleRotaBudgetTooltip}>Rota Budget</Tooltip>
 					<Tooltip placement="bottom" isOpen={this.state.isCopyLastWeeksRotaShiftsTooltipOpen} target="copy-last-weeks-rota-shifts" toggle={this.handleCopyLastWeeksRotaShiftsTooltip}>Copy last weeks Rota shifts</Tooltip>
 					<Popover placement="bottom" isOpen={this.state.isRotaTypeMenuPopoverOpen} target="rotaTypeMenu" toggle={this.handleRotaTypeMenu}>
@@ -636,6 +643,14 @@ class Toolbar extends Component {
 							<ul className="popover-menu">
 								{(this.props.rotaTypes.length > 0) ? orderBy(this.props.rotaTypes, 'rotaTypeName').map((rotaType, index) => (<li key={index}><button type="button" title={rotaType.rotaTypeName} className="btn btn-action btn-nav border-0 text-truncate" id={rotaType.rotaTypeId} onClick={this.handleSwitchRotaType}>{rotaType.rotaTypeName}</button></li>)) : null}
 								<li><button type="button" title="Add New Rota" id="add-new-rota" className="btn btn-primary btn-nav border-0" onClick={this.handleCreateRota}>Add New Rota</button></li>
+							</ul>
+						</PopoverBody>
+					</Popover>
+					<Popover placement="bottom" isOpen={this.state.isDownloadRotaMenuPopoverOpen} target="download-rota" toggle={this.handleDownloadRotaMenu}>
+						<PopoverBody>
+							<ul className="popover-menu">
+								<li><button type="button" title="Download Rota (PDF)" id="pdf-rota" className="btn btn-action btn-nav border-0 text-truncate" onClick={event => this.handleDownloadRota(event, 'pdf')}>Download Rota (PDF)</button></li>
+								<li><button type="button" title="Download Rota (Excel)" id="excel-rota" className="btn btn-action btn-nav border-0 text-truncate" onClick={event => this.handleDownloadRota(event, 'excel')}>Download Rota (Excel)</button></li>
 							</ul>
 						</PopoverBody>
 					</Popover>

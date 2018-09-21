@@ -613,16 +613,32 @@ describe('API', () => {
 		return api.copyShifts(fromRota, toRota, includePlacements).then(data => expect(data.rota).toEqual({}));
 	});
 
-	it('should download shifts', () => {
-		mock.onGet('/shifts/pdf?rotaId=1234').reply(200, {
+	it('should download shifts as PDF', () => {
+		mock.onGet('/shifts/download?format=pdf&rotaId=1234').reply(200, {
 			stream: {},
 		});
 
-		const payload = {
+		const rota = {
 			rotaId: 1234,
 		};
 
-		return api.downloadShifts(payload).then(data => expect(data.stream).toEqual({}));
+		const format = 'pdf';
+
+		return api.downloadShifts(rota, format).then(data => expect(data.stream).toEqual({}));
+	});
+
+	it('should download shifts as Excel', () => {
+		mock.onGet('/shifts/download?format=excel&rotaId=1234').reply(200, {
+			stream: {},
+		});
+
+		const rota = {
+			rotaId: 1234,
+		};
+
+		const format = 'excel';
+
+		return api.downloadShifts(rota, format).then(data => expect(data.stream).toEqual({}));
 	});
 
 	it('should get shift', () => {
