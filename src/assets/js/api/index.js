@@ -41,6 +41,10 @@ const request = (method, url, expectedStatus = 200, payload = null) => {
 
 	const headers = requestHeaders();
 
+	if (url.includes('pdf') || url.includes('excel')) {
+		headers.Accept = 'application/vnd.ms-excel';
+	}
+
 	const axiosConfig = {
 		url,
 		data,
@@ -48,7 +52,7 @@ const request = (method, url, expectedStatus = 200, payload = null) => {
 		headers,
 		/* cancelToken: axiosCall.token, */
 		validateStatus: status => status === expectedStatus,
-		responseType: url.includes('pdf') ? 'blob' : null,
+		responseType: (url.includes('pdf') || url.includes('excel')) ? 'blob' : null,
 	};
 
 	const user = getState('user');
