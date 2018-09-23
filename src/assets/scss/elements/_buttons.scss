@@ -183,3 +183,15 @@
 	border-color: $warning !important;
 	background-color: $warning !important;
 }
+
+.btn-med {
+    font-weight: 500;
+    font-size: 0.85rem;
+    line-height: calculateRem(32px) !important;
+    margin-top: calculateRem(-2px) !important;
+    
+    @include media-breakpoint-down(sm) {
+	    font-size: 0.95rem;
+        line-height: calculateRem(33px) !important;
+    }
+}
