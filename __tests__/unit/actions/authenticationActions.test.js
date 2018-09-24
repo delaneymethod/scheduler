@@ -272,9 +272,7 @@ describe('Authentication Actions', () => {
 			email: 'barry@giggrafter.com',
 		};
 
-		return store.dispatch(actions.forgottenYourPassword(payload))
-			.then(() => expect(store.getActions()).toEqual(expectedActions))
-			.catch(error => console.log(error));
+		return store.dispatch(actions.forgottenYourPassword(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
 	});
 
 	it('should catch error on forgotten your password', () => {
@@ -335,9 +333,7 @@ describe('Authentication Actions', () => {
 			email: 'barry@giggrafter.com',
 		};
 
-		return store.dispatch(actions.resetYourPassword(payload))
-			.then(() => expect(store.getActions()).toEqual(expectedActions))
-			.catch(error => console.log(error));
+		return store.dispatch(actions.resetYourPassword(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
 	});
 
 	it('should catch error on reset your password', () => {
@@ -399,9 +395,7 @@ describe('Authentication Actions', () => {
 			email: 'barry@giggrafter.com',
 		};
 
-		return store.dispatch(actions.updateYourPassword(payload))
-			.then(() => expect(store.getActions()).toEqual(expectedActions))
-			.catch(error => console.log(error));
+		return store.dispatch(actions.updateYourPassword(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
 	});
 
 	it('should catch error on update your password', () => {

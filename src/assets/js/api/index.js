@@ -41,6 +41,10 @@ const request = (method, url, expectedStatus = 200, payload = null) => {
 
 	const headers = requestHeaders();
 
+	if (url.includes('pdf') || url.includes('excel')) {
+		headers.Accept = 'application/vnd.ms-excel';
+	}
+
 	const axiosConfig = {
 		url,
 		data,
@@ -48,7 +52,7 @@ const request = (method, url, expectedStatus = 200, payload = null) => {
 		headers,
 		/* cancelToken: axiosCall.token, */
 		validateStatus: status => status === expectedStatus,
-		responseType: url.includes('pdf') ? 'blob' : null,
+		responseType: (url.includes('pdf') || url.includes('excel')) ? 'blob' : null,
 	};
 
 	const user = getState('user');
@@ -136,7 +140,7 @@ export const getShifts = rota => request('GET', `/shifts?rotaId=${rota.rotaId}`)
 
 export const copyShifts = (fromRota, toRota, includePlacements) => request('POST', `/shifts/copy?fromRotaId=${fromRota.rotaId}&toRotaId=${toRota.rotaId}&includePlacements=${includePlacements}`, 201);
 
-export const downloadShifts = rota => request('GET', `/shifts/pdf?rotaId=${rota.rotaId}`);
+export const downloadShifts = (rota, format) => request('GET', `/shifts/download?format=${format}&rotaId=${rota.rotaId}`);
 
 export const getShift = shift => request('GET', `/shifts/${shift.shiftId}`);
 

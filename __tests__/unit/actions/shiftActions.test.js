@@ -139,11 +139,13 @@ describe('Shift Actions', () => {
 			type: types.AJAX_LOADING,
 		}];
 
-		const payload = {
+		const rota = {
 			rotaId: 1,
 		};
 
-		return store.dispatch(actions.downloadShifts(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));
+		const format = 'pdf';
+
+		return store.dispatch(actions.downloadShifts(rota, format)).then(() => expect(store.getActions()).toEqual(expectedActions));
 	});
 
 	it('should catch error on failed downloadShifts', () => {
@@ -158,7 +160,7 @@ describe('Shift Actions', () => {
 
 		store = mockStore({ shifts: [] });
 
-		return store.dispatch(actions.downloadShifts({})).catch(error => expect(store.getActions()).not.toBeNull());
+		return store.dispatch(actions.downloadShifts({}, '')).catch(error => expect(store.getActions()).not.toBeNull());
 	});
 
 	it('should create GET_SHIFT and AJAX_LOADING actions on getShift', () => {
