@@ -195,3 +195,18 @@ export const createRole = role => request('POST', '/roles', 201, role);
 export const updateRole = role => request('PUT', `/roles/${role.id}`, 200, role);
 
 export const deleteRole = role => request('DELETE', `/roles/${role.id}`, 204);
+
+/* UNAVAILABILITY */
+export const getUnavailability = unavailability => request('GET', `/unavailabilities/${unavailability.unavailabilityId}`);
+
+export const createUnavailability = unavailability => request('POST', '/unavailabilities', 201, unavailability);
+
+export const updateUnavailability = unavailability => request('POST', `/unavailabilities/${unavailability.unavailabilityId}/update`, 200, unavailability);
+
+export const deleteUnavailability = unavailability => request('DELETE', `/unavailabilities/${unavailability.unavailabilityId}`, 204);
+
+/* UNAVAILABILITY OCCURRENCES */
+export const getUnavailabilityOccurrences = payload => request('GET', `/unavailability-occurrences?fromDate=${payload.startDate}&toDate=${payload.endDate}`);
+
+/* UNAVAILABILITY TYPES */
+export const getUnavailabilityTypes = () => request('GET', '/unavailability-types');

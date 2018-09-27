@@ -15,7 +15,10 @@ import rotaTypes from './rotaTypesReducer';
 import placements from './placementsReducer';
 import ajaxLoading from './ajaxLoadingReducer';
 import authenticated from './authenticatedReducer';
+import unavailabilities from './unavailabilitiesReducer';
 import subscriptionLevels from './subscriptionLevelsReducer';
+import unavailabilityTypes from './unavailabilityTypesReducer';
+import unavailabilityOccurrences from './unavailabilityOccurrencesReducer';
 
 const reducers = combineReducers({
 	week,
@@ -33,7 +36,10 @@ const reducers = combineReducers({
 	placements,
 	ajaxLoading,
 	authenticated,
+	unavailabilities,
 	subscriptionLevels,
+	unavailabilityTypes,
+	unavailabilityOccurrences,
 });
 
 export default reducers;

@@ -26,7 +26,7 @@ import configureStore from './store/configureStore';
 
 import registerServiceWorker from './helpers/registerServiceWorker';
 
-console.log('Gig Grafter version:', packageJson.version);
+console.log(packageJson.author.name, ' version:', packageJson.version);
 
 const store = configureStore();
 
@@ -45,6 +45,9 @@ store.subscribe(throttle(() => {
 		rotaTypes,
 		employees,
 		authenticated,
+		unavailabilities,
+		unavailabilityTypes,
+		unavailabilityOccurrences,
 	} = store.getState();
 
 	saveState('user', user);
@@ -70,6 +73,12 @@ store.subscribe(throttle(() => {
 	saveState('rota', (rotaTypes.length === 0 || rotas.length === 0) ? {} : rota);
 
 	saveState('shifts', (rotaTypes.length === 0 || rotas.length === 0) ? [] : shifts);
+
+	saveState('unavailabilities', unavailabilities);
+
+	saveState('unavailabilityTypes', unavailabilityTypes);
+
+	saveState('unavailabilityOccurrences', unavailabilityOccurrences);
 }, 1000));
 
 ReactDOM.render(

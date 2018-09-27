@@ -25,6 +25,8 @@ import { getShifts, copyShifts } from '../../actions/shiftActions';
 
 import { getRotas, createRota, switchRota } from '../../actions/rotaActions';
 
+import { getUnavailabilityOccurrences } from '../../actions/unavailabilityOccurrenceActions';
+
 const routes = config.APP.ROUTES;
 
 const { STATUSES } = routes.ROTAS;
@@ -76,6 +78,8 @@ class WeekPicker extends Component {
 		this.handleSwitchRota = this.handleSwitchRota.bind(this);
 
 		this.handleSwitchOrCreateRota = this.handleSwitchOrCreateRota.bind(this);
+
+		this.handleGetUnavailabilityOccurrences = this.handleGetUnavailabilityOccurrences.bind(this);
 	}
 
 	getInitialState = () => ({
@@ -241,6 +245,19 @@ class WeekPicker extends Component {
 
 	handleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
 
+	handleGetUnavailabilityOccurrences = () => {
+		const { week, actions } = this.props;
+
+		const payload = {
+			endDate: moment(week.endDate).format('YYYY-MM-DDT23:59:59'),
+			startDate: moment(week.startDate).format('YYYY-MM-DDT00:00:00'),
+		};
+
+		logMessage('info', 'Called WeekPicker handleGetUnavailabilityOccurrences getUnavailabilityOccurrences');
+
+		return actions.getUnavailabilityOccurrences(payload).catch(error => Promise.reject(error));
+	};
+
 	handleGetRotas = (rotaTypeId) => {
 		const { actions } = this.props;
 
@@ -281,6 +298,7 @@ class WeekPicker extends Component {
 		actions.createRota(payload)
 			.then(rota => this.handleSwitchRota(rota))
 			.then(() => this.handleGetRotas(rotaTypeId))
+			.then(() => this.handleGetUnavailabilityOccurrences())
 			.catch((error) => {
 				error.data.title = 'Create Rota';
 
@@ -307,13 +325,15 @@ class WeekPicker extends Component {
 				/* Any time we switch rotas, we need to get a fresh list of shifts for that rota */
 				logMessage('info', 'Called WeekPicker handleSwitchRota getShifts');
 
-				actions.getShifts(payload).catch((error) => {
-					error.data.title = 'Get Shifts';
+				actions.getShifts(payload)
+					.then(() => this.handleGetUnavailabilityOccurrences())
+					.catch((error) => {
+						error.data.title = 'Get Shifts';
 
-					this.setState({ error });
+						this.setState({ error });
 
-					this.handleModal();
-				});
+						this.handleModal();
+					});
 			});
 	};
 
@@ -512,6 +532,7 @@ const mapDispatchToProps = dispatch => ({
 		switchRota,
 		switchWeek,
 		updateSettings,
+		getUnavailabilityOccurrences,
 	}, dispatch),
 });
 

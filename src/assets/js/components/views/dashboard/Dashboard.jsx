@@ -41,6 +41,10 @@ import { createRota, getRotas, switchRota } from '../../../actions/rotaActions';
 
 import { getRotaTypes, switchRotaType } from '../../../actions/rotaTypeActions';
 
+import { getUnavailabilityTypes } from '../../../actions/unavailabilityTypeActions';
+
+import { getUnavailabilityOccurrences } from '../../../actions/unavailabilityOccurrenceActions';
+
 const routes = config.APP.ROUTES;
 
 const { STATUSES } = routes.ROTAS;
@@ -57,6 +61,8 @@ const propTypes = {
 	rotaTypes: PropTypes.array.isRequired,
 	employees: PropTypes.array.isRequired,
 	authenticated: PropTypes.bool.isRequired,
+	unavailabilityTypes: PropTypes.array.isRequired,
+	unavailabilityOccurrences: PropTypes.array.isRequired,
 };
 
 const defaultProps = {
@@ -69,6 +75,8 @@ const defaultProps = {
 	rotaTypes: [],
 	employees: [],
 	authenticated: false,
+	unavailabilityTypes: [],
+	unavailabilityOccurrences: [],
 };
 
 class Dashboard extends Component {
@@ -221,7 +229,36 @@ class Dashboard extends Component {
 																logMessage('info', 'Called Dashboard handleFetchData getShifts');
 
 																actions.getShifts(rota)
-																	.then(() => history.push(routes.DASHBOARD.EMPLOYEES.URI))
+																	.then(() => {
+																		logMessage('info', 'Called Dashboard handleFetchData getUnavailabilityTypes');
+
+																		actions.getUnavailabilityTypes()
+																			.then(() => {
+																				logMessage('info', 'Called Dashboard handleFetchData getUnavailabilityOccurrences');
+
+																				payload = {
+																					endDate: moment(weekEndDate).format('YYYY-MM-DDT23:59:59'),
+																					startDate: moment(weekStartDate).format('YYYY-MM-DDT00:00:00'),
+																				};
+
+																				actions.getUnavailabilityOccurrences(payload)
+																					.then(() => history.push(routes.DASHBOARD.EMPLOYEES.URI))
+																					.catch((error) => {
+																						error.data.title = 'Get Unavailability Occurrences';
+
+																						this.setState({ error });
+
+																						this.handleModal();
+																					});
+																			})
+																			.catch((error) => {
+																				error.data.title = 'Get Unavailability Types';
+
+																				this.setState({ error });
+
+																				this.handleModal();
+																			});
+																	})
 																	.catch((error) => {
 																		error.data.title = 'Get Shifts';
 
@@ -453,6 +490,8 @@ const mapStateToProps = (state, props) => ({
 	rotaTypes: state.rotaTypes,
 	employees: state.employees,
 	authenticated: state.authenticated,
+	unavailabilityTypes: state.unavailabilityTypes,
+	unavailabilityOccurrences: state.unavailabilityOccurrences,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -467,6 +506,8 @@ const mapDispatchToProps = dispatch => ({
 		getEmployees,
 		updateSettings,
 		switchRotaType,
+		getUnavailabilityTypes,
+		getUnavailabilityOccurrences,
 	}, dispatch),
 });
 

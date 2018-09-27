@@ -43,7 +43,7 @@ describe('Shift Actions', () => {
 		}];
 
 		const payload = {
-			rotaId: 1,
+			shiftId: 1,
 		};
 
 		return store.dispatch(actions.getShifts(payload)).then(() => expect(store.getActions()).toEqual(expectedActions));

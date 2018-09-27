@@ -205,6 +205,29 @@
 				}
 			}
 			
+			.unavailability {
+    			border: 0;
+				z-index: 1;
+				width: 100%;
+				color: $white;
+                cursor: pointer !important;
+				min-height: 47px;
+				position: relative;
+				background-color: #fd8b25;
+		
+				&:hover {
+					cursor: pointer !important;
+				}
+
+				&:not(:only-child, :last-child) {
+					border-bottom: calculateRem(3px) solid darken(#fd8b25, 10%);
+				}
+
+				@include media-breakpoint-down(md) {
+					min-height: 37px;
+				}
+			}
+			
 			.red {
 				background-color: rgba(0, 255, 255, 0.5);
 			}
@@ -248,6 +271,11 @@
 			background-color: $gray-700;
 		}
 		
+		td.unavailability-cell {
+			color: $dark;
+			background-color: $gray-500;
+		}
+		
 		td.non-draggable-cell {
 			z-index: 1;
 			cursor: no-drop;
@@ -265,8 +293,12 @@
 				.add-shift {
 					opacity: 1;
 				}
+
+				.unavailability {
+                    cursor: pointer !important;
+				}
 			}
-		}
+        }
 		
 		.cell-highlighted {
 			opacity: 0.5;

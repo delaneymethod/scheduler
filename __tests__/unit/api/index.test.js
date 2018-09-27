@@ -770,4 +770,78 @@ describe('API', () => {
 
 		return api.deletePlacement(payload).then(data => expect(data.deleted).toBe(true));
 	});
+
+	it('should get unavailabilities', () => {
+		mock.onGet('/unavailabilities/1').reply(200, {
+			unavailabilities: [],
+		});
+
+		const payload = {
+			unavailabilityId: 1,
+		};
+
+		return api.getUnavailability(payload).then(data => expect(data.unavailabilities.length).toEqual(0));
+	});
+
+	it('should create unavailability', () => {
+		mock.onPost('/unavailabilities').reply(201, {
+			unavailabilities: [{
+				unavailabilityId: 4,
+				fullDay: true,
+			}],
+		});
+
+		const payload = {
+			unavailabilityId: 4,
+			fullDay: true,
+		};
+
+		return api.createUnavailability(payload).then(data => expect(data.unavailabilities[0].fullDay).toEqual(true));
+	});
+
+	it('should update unavailability', () => {
+		mock.onPost('/unavailabilities/2/update').reply(200, {
+			unavailabilities: [],
+		});
+
+		const payload = {
+			unavailabilityId: 2,
+			fullDay: false,
+		};
+
+		return api.updateUnavailability(payload).then(data => expect(data.unavailabilities.length).toEqual(0));
+	});
+
+	it('should delete unavailability', () => {
+		mock.onDelete('/unavailabilities/1').reply(204, {
+			deleted: true,
+		});
+
+		const payload = {
+			unavailabilityId: 1,
+		};
+
+		return api.deleteUnavailability(payload).then(data => expect(data.deleted).toBe(true));
+	});
+
+	it('should get unavailability occurrences', () => {
+		mock.onGet('/unavailability-occurrences?fromDate=2018-09-10T00:00:00&toDate=2018-09-16T00:00:00').reply(200, {
+			unavailabilityOccurrences: [],
+		});
+
+		const payload = {
+			endDate: '2018-09-16T00:00:00',
+			startDate: '2018-09-10T00:00:00',
+		};
+
+		return api.getUnavailabilityOccurrences(payload).then(data => expect(data.unavailabilityOccurrences).toEqual([]));
+	});
+
+	it('should get unavailability types', () => {
+		mock.onGet('/unavailability-types').reply(200, {
+			unavailabilityTypes: [],
+		});
+
+		return api.getUnavailabilityTypes().then(data => expect(data.unavailabilityTypes).toEqual([]));
+	});
 });

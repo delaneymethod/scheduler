@@ -14,5 +14,8 @@ export default {
 	placements: [],
 	ajaxLoading: false,
 	authenticated: false,
+	unavailabilities: [],
 	subscriptionLevels: [],
+	unavailabilityTypes: [],
+	unavailabilityOccurrences: [],
 };

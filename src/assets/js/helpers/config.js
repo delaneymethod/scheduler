@@ -153,6 +153,17 @@ export default {
 					PUBLISHED: 'PUBLISHED',
 				},
 			},
+			UNAVAILABILITIES: {
+				DELETE: {
+					TITLE: 'Delete Time Off',
+				},
+				UPDATE: {
+					TITLE: 'Update Time Off',
+				},
+				CREATE: {
+					TITLE: 'Create Time Off',
+				},
+			},
 			REGISTER: {
 				TITLE: 'Register',
 				URI: '/register',

@@ -1,7 +1,9 @@
 /* eslint-disable no-param-reassign */
 import initialState from './initialState';
 
-const prefix = 'scheduler';
+import packageJson from '../../../../package.json';
+
+const prefix = packageJson.name;
 
 export const getState = (key) => {
 	if (sessionStorage.getItem) {
