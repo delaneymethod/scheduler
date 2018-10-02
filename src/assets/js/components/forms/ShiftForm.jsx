@@ -380,7 +380,13 @@ class ShiftForm extends Component {
 
 						endTime = `${this.state.startDate} ${moment(endTime).seconds(0).format('HH:mm:ss')}`;
 					} else if (moment(oldEndTime).isAfter(moment())) {
-						endTime = oldEndTime;
+						if (moment(oldEndTime).isSameOrBefore(moment(this.state.startTime))) {
+							endTime = moment(this.state.startTime, 'YYYY-MM-DD HH:mm:ss').add(this.timeInterval, 'minutes').seconds(0);
+
+							endTime = `${this.state.startDate} ${moment(endTime).seconds(0).format('HH:mm:ss')}`;
+						} else {
+							endTime = oldEndTime;
+						}
 					} else {
 						endTime = `${this.state.startDate} ${moment(oldEndTime).seconds(0).format('HH:mm:ss')}`;
 					}
