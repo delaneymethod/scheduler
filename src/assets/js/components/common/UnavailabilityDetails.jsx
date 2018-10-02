@@ -5,16 +5,26 @@ import { connect } from 'react-redux';
 import React, { Fragment, Component } from 'react';
 import { Tooltip, Popover, PopoverBody, PopoverHeader } from 'reactstrap';
 
+import Modal from './Modal';
+
+import ShiftForm from '../forms/ShiftForm';
+
 const propTypes = {
 	id: PropTypes.string.isRequired,
+	weekDate: PropTypes.string.isRequired,
+	employeeId: PropTypes.string.isRequired,
 	unavailability: PropTypes.object.isRequired,
 	handleEditUnavailability: PropTypes.func.isRequired,
+	handleSuccessNotification: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
 	id: '',
+	weekDate: '',
+	employeeId: '',
 	unavailability: {},
 	handleEditUnavailability: () => {},
+	handleSuccessNotification: () => {},
 };
 
 class UnavailabilityDetails extends Component {
@@ -22,6 +32,8 @@ class UnavailabilityDetails extends Component {
 		super(props);
 
 		this.state = this.getInitialState();
+
+		this.handleCreateShift = this.handleCreateShift.bind(this);
 
 		this.handleTooltipDetails = this.handleTooltipDetails.bind(this);
 
@@ -33,9 +45,12 @@ class UnavailabilityDetails extends Component {
 	}
 
 	getInitialState = () => ({
+		isCreateShiftModalOpen: false,
 		isUnavailabilityPopoverOpen: false,
 		isUnavailabilityTooltipOpen: false,
 	});
+
+	handleCreateShift = () => this.setState({ isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen });
 
 	handleUnavailabilityMenu = () => this.setState({ isUnavailabilityPopoverOpen: !this.state.isUnavailabilityPopoverOpen });
 
@@ -110,9 +125,13 @@ class UnavailabilityDetails extends Component {
 				<PopoverBody>
 					<div className="cell-popover">
 						<button type="button" title="Edit Time Off" id="editUnavailability" className="d-block border-0 m-0 text-uppercase" onClick={event => this.props.handleEditUnavailability(event, this.props.unavailability.unavailabilityId)}>Edit Time Off</button>
+						<button type="button" title="Create Shift" id="createShift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleCreateShift}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Create Shift</button>
 					</div>
 				</PopoverBody>
 			</Popover>
+			<Modal title="Create Shift" className="modal-dialog" show={this.state.isCreateShiftModalOpen} onClose={this.handleCreateShift}>
+				<ShiftForm overview={false} editMode={false} employeeId={this.props.employeeId} startDate={moment(this.props.weekDate).format('YYYY-MM-DD')} handleSuccessNotification={this.props.handleSuccessNotification} handleClose={this.handleCreateShift} />
+			</Modal>
 		</Fragment>
 	);
 }
@@ -123,6 +142,8 @@ UnavailabilityDetails.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
 	id: props.id,
+	weekDate: props.weekDate,
+	employeeId: props.employeeId,
 	unavailability: props.unavailability,
 	handleEditUnavailability: props.handleEditUnavailability,
 });

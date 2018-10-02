@@ -64,9 +64,9 @@ class UnavailabilityButton extends Component {
 	render = () => (
 		<Fragment>
 			{(this.props.unavailabilities.length > 0) ? (this.props.unavailabilities.map((unavailability, unavailabilityIndex) => (
-				<UnavailabilityDetails key={`${this.props.id}_${unavailabilityIndex}`} id={this.props.id} weekDate={this.props.weekDate} unavailability={unavailability} handleEditUnavailability={this.handleEditUnavailability} />
+				<UnavailabilityDetails key={`${this.props.id}_${unavailabilityIndex}`} id={this.props.id} weekDate={this.props.weekDate} unavailability={unavailability} employeeId={this.props.employeeId} handleEditUnavailability={this.handleEditUnavailability} handleSuccessNotification={this.handleSuccessNotification} />
 			))) : (
-				<UnavailabilityDetails key={`${this.props.id}_${this.props.unavailability.unavailabilityId}`} id={this.props.id} weekDate={this.props.weekDate} unavailability={this.props.unavailability} handleEditUnavailability={this.handleEditUnavailability} />
+				<UnavailabilityDetails key={`${this.props.id}_${this.props.unavailability.unavailabilityId}`} id={this.props.id} weekDate={this.props.weekDate} unavailability={this.props.unavailability} employeeId={this.props.employeeId} handleEditUnavailability={this.handleEditUnavailability} handleSuccessNotification={this.handleSuccessNotification} />
 			)}
 			<Modal title="Edit Time Off" className="modal-dialog" show={this.state.isEditUnavailabilityModalOpen} onClose={this.handleEditUnavailability}>
 				<UnavailabilityForm editMode={true} unavailabilityId={this.state.unavailabilityId} employeeId={this.props.employeeId} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleEditUnavailability} />
