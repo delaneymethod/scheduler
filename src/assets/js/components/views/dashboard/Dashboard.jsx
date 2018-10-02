@@ -294,25 +294,54 @@ class Dashboard extends Component {
 
 																actions.getShifts(rota)
 																	.then(() => {
-																		payload = {
-																			firstDayOfWeek,
-																		};
+																		logMessage('info', 'Called Dashboard handleFetchData getUnavailabilityTypes');
 
-																		/* Set the day of week based on start date */
-																		logMessage('info', 'Called Dashboard handleFetchData updateSettings');
+																		actions.getUnavailabilityTypes()
+																			.then(() => {
+																				logMessage('info', 'Called Dashboard handleFetchData getUnavailabilityOccurrences');
 
-																		actions.updateSettings(payload);
+																				payload = {
+																					endDate: moment(weekEndDate).format('YYYY-MM-DDT23:59:59'),
+																					startDate: moment(weekStartDate).format('YYYY-MM-DDT00:00:00'),
+																				};
 
-																		logMessage('info', 'Called Dashboard handleFetchData firstDayOfWeek:', firstDayOfWeek);
+																				actions.getUnavailabilityOccurrences(payload)
+																					.then(() => {
+																						payload = {
+																							firstDayOfWeek,
+																						};
 
-																		moment.updateLocale('en', {
-																			week: {
-																				dow: firstDayOfWeek,
-																				doy: moment.localeData('en').firstDayOfYear(),
-																			},
-																		});
+																						/* Set the day of week based on start date */
+																						logMessage('info', 'Called Dashboard handleFetchData updateSettings');
 
-																		history.push(routes.DASHBOARD.EMPLOYEES.URI);
+																						actions.updateSettings(payload);
+
+																						logMessage('info', 'Called Dashboard handleFetchData firstDayOfWeek:', firstDayOfWeek);
+
+																						moment.updateLocale('en', {
+																							week: {
+																								dow: firstDayOfWeek,
+																								doy: moment.localeData('en').firstDayOfYear(),
+																							},
+																						});
+
+																						history.push(routes.DASHBOARD.EMPLOYEES.URI);
+																					})
+																					.catch((error) => {
+																						error.data.title = 'Get Unavailability Occurrences';
+
+																						this.setState({ error });
+
+																						this.handleModal();
+																					});
+																			})
+																			.catch((error) => {
+																				error.data.title = 'Get Unavailability Types';
+
+																				this.setState({ error });
+
+																				this.handleModal();
+																			});
 																	})
 																	.catch((error) => {
 																		error.data.title = 'Get Shifts';
