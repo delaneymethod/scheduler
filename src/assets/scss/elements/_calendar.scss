@@ -124,7 +124,25 @@
     .react-datepicker__day--selected,
     .react-datepicker__day--in-range,
     .react-datepicker__day--in-selecting-range {
-        background-color: #ed7102;
+        color: inherit !important;
+        background-color: $white !important;
+        
+        &:hover {
+            color: inherit !important;
+            background-color: #f0f0f0 !important;
+        }
+    }
+
+    .react-datepicker__day--selected {
+        border-radius: 0.3rem;
+        color: $white !important;
+        background-color: #ed7102 !important;
+        
+        &:hover {
+            border-radius: 0.3rem;
+            color: $white !important;
+            background-color: #ed7102 !important;
+        }
     }
 }
 
