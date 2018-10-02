@@ -28,13 +28,13 @@ class SiteNavBar extends Component {
 				<nav className="fixed row no-gutters p-0 m-0 navbar navbar-expand-lg navbar-dark bg-dark">
 					<div className="mt-3 mt-md-0 mb-3 m-lg-auto navbar-collapse collapse w-100 p-0 m-0 order-2 order-sm-2 order-md-1 order-lg-2 order-xl-2" id="navbar">
 						<ul className="p-0 m-0 nav navbar-nav ml-auto w-100 justify-content-end">
-							<li className="nav-item p-0 m-0"><a href="#benefits" title="Benefits" id="benefits" className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-dark border-0">Benefits</a></li>
-							<li className="nav-item p-0 m-0"><a href="#about" title="About" id="about" className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-dark border-0">About</a></li>
-							<li className="nav-item p-0 m-0"><a href="#beta" title="Beta" id="beta" className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-dark border-0">Beta</a></li>
-							<li className="nav-item p-0 m-0"><a href="#pricing" title="Pricing" id="pricing" className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-dark border-0">Pricing</a></li>
-							<li className="nav-item p-0 m-0"><a href={routes.NEWS.URI} id="news" title={routes.NEWS.TITLE} className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-dark border-0">{routes.NEWS.TITLE}</a></li>
-							<li className="d-none d-lg-block nav-item p-0 m-0"><a href={routes.LOGIN.URI} id="login" title={routes.LOGIN.TITLE} className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-secondary border-0">{routes.LOGIN.TITLE}</a></li>
-							<li className="d-none d-lg-block nav-item p-0 m-0"><a href={routes.REGISTER.URI} id="register" title={routes.REGISTER.TITLE} className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-primary border-0">{routes.REGISTER.TITLE}</a></li>
+							<li className="nav-item p-0 m-0"><a href="#benefits" title="Benefits" id="benefitsNavLink" className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-dark border-0">Benefits</a></li>
+							<li className="nav-item p-0 m-0"><a href="#about" title="About" id="aboutNavLink" className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-dark border-0">About</a></li>
+							<li className="nav-item p-0 m-0"><a href="#beta" title="Beta" id="betaNavLink" className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-dark border-0">Beta</a></li>
+							<li className="nav-item p-0 m-0"><a href="#pricing" title="Pricing" id="pricingNavLink" className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-dark border-0">Pricing</a></li>
+							<li className="nav-item p-0 m-0"><a href={routes.NEWS.URI} id="newsNavLink" title={routes.NEWS.TITLE} className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-dark border-0">{routes.NEWS.TITLE}</a></li>
+							<li className="d-none d-lg-block nav-item p-0 m-0"><a href={routes.LOGIN.URI} id="loginNavLink" title={routes.LOGIN.TITLE} className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-secondary border-0">{routes.LOGIN.TITLE}</a></li>
+							<li className="d-none d-lg-block nav-item p-0 m-0"><a href={routes.REGISTER.URI} id="registerNavLink" title={routes.REGISTER.TITLE} className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-primary border-0">{routes.REGISTER.TITLE}</a></li>
 						</ul>
 					</div>
 					<div className="p-0 pt-3 p-md-0 m-0 text-center order-3 order-sm-3 order-md-2 order-lg-1 order-xl-1 col-12 col-md-auto">
