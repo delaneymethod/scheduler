@@ -138,7 +138,25 @@ class UnavailabilityForm extends Component {
 		}
 	};
 
-	handleChangeDate = (date, id) => this.setState({ [id]: date });
+	handleChangeDate = (date, id) => {
+		/* If we change the start date and not in edit mode, lets set the end date to match */
+		if (id === 'startDate' && !this.props.editMode) {
+			this.setState({ [id]: date, endDate: date });
+
+		/* If we change the start date and in edit mode, leave the end date as it was */
+		} else if (id === 'startDate' && this.props.editMode) {
+			this.setState({ [id]: date }, () => {
+				/* If the end date is before the new start date, set the end date to match */
+				if (moment(this.state.endDate).isBefore(moment(this.state.startDate))) {
+					this.setState({ endDate: date });
+				}
+			});
+
+		/* we've changed the end date... */
+		} else {
+			this.setState({ [id]: date });
+		}
+	};
 
 	handleChangeTime = (time, id) => this.setState({ [id]: time });
 
