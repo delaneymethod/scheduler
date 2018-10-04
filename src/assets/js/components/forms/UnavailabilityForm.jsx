@@ -26,6 +26,7 @@ import { getUnavailability, createUnavailability, updateUnavailability, deleteUn
 const routes = config.APP.ROUTES;
 
 const propTypes = {
+	weekDate: PropTypes.string,
 	week: PropTypes.object.isRequired,
 	unavailabilityId: PropTypes.string,
 	editMode: PropTypes.bool.isRequired,
@@ -37,6 +38,7 @@ const propTypes = {
 
 const defaultProps = {
 	week: {},
+	weekDate: '',
 	editMode: false,
 	accountEmployee: {},
 	unavailabilityId: '',
@@ -104,6 +106,11 @@ class UnavailabilityForm extends Component {
 		/* If unavailability id was passed in as a prop, make sure we also update the state... */
 		if (!isEmpty(this.props.unavailabilityId)) {
 			this.setState({ unavailabilityId: this.props.unavailabilityId });
+		}
+
+		/* If week date was passed in as a prop, make sure we also update the state, setting start and end dates to match... */
+		if (!isEmpty(this.props.weekDate)) {
+			this.setState({ startDate: moment(this.props.weekDate), endDate: moment(this.props.weekDate) });
 		}
 
 		if (this.props.editMode && !isEmpty(this.props.unavailabilityId)) {
@@ -468,6 +475,7 @@ UnavailabilityForm.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
 	week: state.week,
+	weekDate: props.weekDate,
 	editMode: props.editMode,
 	unavailabilityId: props.unavailabilityId,
 	unavailabilityTypes: state.unavailabilityTypes,

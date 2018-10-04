@@ -121,11 +121,11 @@ class UnavailabilityDetails extends Component {
 			<Tooltip placement="auto" isOpen={this.state.isUnavailabilityTooltipOpen} target={`unavailability_${this.props.id}_${this.props.unavailability.unavailabilityId}_information`} toggle={this.handleUnavailabilityTooltip}>
 				<div className="p-0 m-0" dangerouslySetInnerHTML={{ __html: this.handleTooltipDetails() }} />
 			</Tooltip>
-			<Popover placement="right" isOpen={this.state.isUnavailabilityPopoverOpen} target={`unavailability_${this.props.unavailability.unavailabilityId}_${this.props.id}`} toggle={this.handleUnavailabilityMenu}>
+			<Popover placement="auto" isOpen={this.state.isUnavailabilityPopoverOpen} target={`unavailability_${this.props.unavailability.unavailabilityId}_${this.props.id}`} toggle={this.handleUnavailabilityMenu}>
 				<PopoverBody>
 					<div className="cell-popover">
 						<button type="button" title="Edit Time Off" id="editUnavailability" className="d-block border-0 m-0 text-uppercase" onClick={event => this.props.handleEditUnavailability(event, this.props.unavailability.unavailabilityId)}>Edit Time Off</button>
-						<button type="button" title="Create Shift" id="createShift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleCreateShift}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Create Shift</button>
+						<button type="button" title="Create Shift" id="createShift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleCreateShift}>Create Shift</button>
 					</div>
 				</PopoverBody>
 			</Popover>

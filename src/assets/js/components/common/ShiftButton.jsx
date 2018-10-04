@@ -11,8 +11,6 @@ import config from '../../helpers/config';
 
 import ShiftForm from '../forms/ShiftForm';
 
-import CloseButton from '../common/CloseButton';
-
 import Notification from '../common/Notification';
 
 import AssignShiftForm from '../forms/AssignShiftForm';
@@ -98,7 +96,7 @@ class ShiftButton extends Component {
 							</Fragment>
 						)}
 					</div>
-					<Popover placement="right" isOpen={this.state.isShiftPopoverOpen} target={this.props.id} toggle={this.handleShiftMenu}>
+					<Popover placement="auto" isOpen={this.state.isShiftPopoverOpen} target={this.props.id} toggle={this.handleShiftMenu}>
 						<PopoverBody>
 							<div className="cell-popover">
 								{(this.props.unassigned) ? (
@@ -106,7 +104,7 @@ class ShiftButton extends Component {
 								) : (
 									<Fragment>
 										<button type="button" title="Edit Shift" id="editShift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleEditShift}>Edit Shift</button>
-										<button type="button" title="Create Shift" id="createShift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleCreateShift}><i className="pr-2 fa fa-fw fa-plus" aria-hidden="true"></i>Create Shift</button>
+										<button type="button" title="Create Shift" id="createShift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleCreateShift}>Create Shift</button>
 									</Fragment>
 								)}
 							</div>

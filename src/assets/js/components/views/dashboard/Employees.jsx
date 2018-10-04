@@ -46,8 +46,6 @@ import ShiftsOverview from '../../common/ShiftsOverview';
 
 import AssignShiftForm from '../../forms/AssignShiftForm';
 
-import CreateShiftButton from '../../common/CreateShiftButton';
-
 import AssignShiftButton from '../../common/AssignShiftButton';
 
 import { addClass, removeClass } from '../../../helpers/classes';
@@ -67,6 +65,8 @@ import UnavailabilityButton from '../../common/UnavailabilityButton';
 import { getShifts, updateShift } from '../../../actions/shiftActions';
 
 import UnassignedShiftsOverview from '../../common/UnassignedShiftsOverview';
+
+import ShiftUnavailabilityButton from '../../common/ShiftUnavailabilityButton';
 
 import { getEmployees, orderEmployees } from '../../../actions/employeeActions';
 
@@ -147,6 +147,8 @@ class Employees extends Component {
 
 		this.state = this.getInitialState();
 
+		this.handleCell = this.handleCell.bind(this);
+
 		this.handleDrop = this.handleDrop.bind(this);
 
 		this.handleModal = this.handleModal.bind(this);
@@ -179,8 +181,6 @@ class Employees extends Component {
 
 		this.handleUpdateShift = this.handleUpdateShift.bind(this);
 
-		this.handleDraggableCell = this.handleDraggableCell.bind(this);
-
 		this.handleSetShiftHours = this.handleSetShiftHours.bind(this);
 
 		this.handleSortEmployees = this.handleSortEmployees.bind(this);
@@ -200,8 +200,6 @@ class Employees extends Component {
 		this.handleNoEnterKeySubmit = this.handleNoEnterKeySubmit.bind(this);
 
 		this.handleRemoveCellStyles = this.handleRemoveCellStyles.bind(this);
-
-		this.handleNonDraggableCell = this.handleNonDraggableCell.bind(this);
 
 		this.handleShiftConflictModal = this.handleShiftConflictModal.bind(this);
 
@@ -1347,23 +1345,21 @@ class Employees extends Component {
 			 *	)}
 			 * </Fragment>
 			 */
-			return (<CreateShiftButton handleCreateShift={event => this.handleCreateShift(event, column.accountEmployee.employee.employeeId, moment(column.weekDate).format('YYYY-MM-DD'))} />);
+			return (<ShiftUnavailabilityButton weekDate={moment(column.weekDate).format('YYYY-MM-DD')} id={`shift_unavailability_${rowIndex}_${columnIndex}`} employeeId={column.accountEmployee.employee.employeeId} handleSuccessNotification={this.handleSuccessNotification} />);
 		}
 
 		return '';
 	};
 
-	handleDraggableCell = (rowIndex, column, columnIndex, unavailabilities) => (
+	handleCell = (rowIndex, column, columnIndex, unavailabilities, draggable) => ((draggable) ? (
 		<td key={`draggable_cell_${columnIndex}`} className="p-0 align-top draggable-cell column" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId}>
 			{this.handleShiftsAndUnavailabilities(rowIndex, column, columnIndex, unavailabilities, false)}
 		</td>
-	);
-
-	handleNonDraggableCell = (rowIndex, column, columnIndex, unavailabilities) => (
+	) : (
 		<td key={`non_draggable_cell_${columnIndex}`} className="p-0 align-top non-draggable-cell column" data-date={moment(column.weekDate).format('YYYY-MM-DD')} data-employee-id={column.accountEmployee.employee.employeeId}>
 			{this.handleShiftsAndUnavailabilities(rowIndex, column, columnIndex, unavailabilities, true)}
 		</td>
-	);
+	));
 
 	render = () => {
 		if (isEmpty(this.props.rota)) {
@@ -1465,17 +1461,11 @@ class Employees extends Component {
 															</div>
 														</div>
 														<div className="position-absolute p-0 m-0 edit-handler">
-															<UpdateEmployeeButton employeeId={row.accountEmployee.employee.employeeId} rowIndex={rowIndex} />
+															<UpdateEmployeeButton employeeId={row.accountEmployee.employee.employeeId} rowIndex={rowIndex} handleSuccessNotification={this.handleSuccessNotification} />
 														</div>
 													</div>
 												</td>
-												{row.columns.map((column, columnIndex) => {
-													if (column.draggable) {
-														return this.handleDraggableCell(rowIndex, column, columnIndex, row.unavailabilities[columnIndex]);
-													}
-
-													return this.handleNonDraggableCell(rowIndex, column, columnIndex, row.unavailabilities[columnIndex]);
-												})}
+												{row.columns.map((column, columnIndex) => this.handleCell(rowIndex, column, columnIndex, row.unavailabilities[columnIndex], column.draggable))}
 												<td className="p-2 align-top text-center column last">
 													<div className="d-flex align-items-center">
 														<div className="w-100">

@@ -74,6 +74,7 @@ UpdateEmployeeButton.defaultProps = defaultProps;
 const mapStateToProps = (state, props) => ({
 	rowIndex: props.rowIndex,
 	employeeId: props.employeeId,
+	handleSuccessNotification: props.handleSuccessNotification,
 });
 
 const mapDispatchToProps = dispatch => ({});
