@@ -58,8 +58,8 @@ class ShiftUnavailabilityButton extends Component {
 			<Popover placement="auto" isOpen={this.state.isShiftUnavailabilityPopoverOpen} target={this.props.id} toggle={this.handleShiftUnavailabilityMenu}>
 				<PopoverBody>
 					<div className="cell-popover">
-						<button type="button" title="Add Time Off" id="createUnavailability" className="d-block border-0 m-0 text-uppercase" onClick={this.handleCreateUnavailability}>Add Time Off</button>
 						<button type="button" title="Create Shift" id="createShift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleCreateShift}>Create Shift</button>
+						<button type="button" title="Add Time Off" id="createUnavailability" className="d-block border-0 m-0 text-uppercase" onClick={this.handleCreateUnavailability}>Add Time Off</button>
 					</div>
 				</PopoverBody>
 			</Popover>
