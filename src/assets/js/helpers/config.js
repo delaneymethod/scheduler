@@ -261,18 +261,6 @@ export default {
 					KEYWORDS: '',
 				},
 			},
-			COOKIES_POLICY: {
-				TITLE: 'Cookies Policy',
-				URI: '/cookies-policy',
-				CONTENT: {
-					WELCOME: '',
-					CONSENT: 'Our website uses cookies to distinguish you from other users of our website. This helps us to provide you with a good experience when you browse our website and also allows us to improve our site.',
-				},
-				META: {
-					DESCRIPTION: '',
-					KEYWORDS: '',
-				},
-			},
 			END_USER_LICENSE_AGREEMENT: {
 				TITLE: 'End User License Agreement',
 				URI: '/eula',
@@ -309,9 +297,6 @@ export default {
 		},
 		NOTIFICATIONS: {
 			TIMEOUT: 3000,
-		},
-		TRACKING: {
-			GOOGLE: 'GTM-N8KDBWL',
 		},
 	},
 	API: {

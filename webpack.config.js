@@ -32,11 +32,11 @@ const filenames = {
 	js: '[name].bundle.js',
 };
 
-console.log('#############################################');
+console.log('#########################################');
 
 /* Cache busted names for production */
 if (process.env.NODE_ENV === 'production') {
-	console.log('#	  Gig Grafter v', packageJson.version, ' PRODUCTION	  #');
+	console.log('#   Gig Grafter v', packageJson.version, ' PRODUCTION   #');
 
 	/*
 	Removed as production pipeline is already adding caching to assets via CloudFront.
@@ -46,10 +46,10 @@ if (process.env.NODE_ENV === 'production') {
 	filenames.js = `[name].bundle.${timestamp}.js`;
 	*/
 } else {
-	console.log('#	  Gig Grafter v', packageJson.version, ' DEVELOPMENT   #');
+	console.log('#   Gig Grafter v', packageJson.version, ' DEVELOPMENT   #');
 }
 
-console.log('#############################################');
+console.log('#########################################');
 console.log('');
 
 module.exports = (env, options) => ({
@@ -68,9 +68,7 @@ module.exports = (env, options) => ({
 	devtool: (options.mode === 'production') ? 'source-map' : 'cheap-module-source-map',
 	devServer: {
 		hot: true,
-		compress: true,
 		watchContentBase: true,
-		disableHostCheck: true,
 		historyApiFallback: true,
 		contentBase: path.join(__dirname, 'src'),
 	},
@@ -279,39 +277,19 @@ module.exports = (env, options) => ({
 				cache: true,
 				to: 'assets/js/zxcvbn.js',
 				from: 'src/assets/js/helpers/zxcvbn.js',
-			}, {
-				force: true,
-				cache: true,
-				to: 'manifest.json',
-				from: 'src/manifest.json',
-			}, {
-				force: true,
-				cache: true,
-				to: 'robots.txt',
-				from: 'src/robots.txt',
-			}, {
-				force: true,
-				cache: true,
-				to: 'crossdomain.xml',
-				from: 'src/crossdomain.xml',
-			}, {
-				force: true,
-				cache: true,
-				to: 'browserconfig.xml',
-				from: 'src/browserconfig.xml',
 			},
 		]),
 		new HtmlCriticalPlugin({
 			base: path.join(path.resolve(__dirname), 'public/'),
 			src: 'index.html',
 			dest: 'index.html',
-			inline: (options.mode === 'production'),
-			minify: (options.mode === 'production'),
-			extract: (options.mode === 'production'),
+			inline: true,
+			minify: true,
+			extract: true,
 			width: 1200,
 			height: 950,
 			penthouse: {
-				blockJSRequests: (options.mode !== 'production'),
+				blockJSRequests: false,
 			},
 		}),
 		/*

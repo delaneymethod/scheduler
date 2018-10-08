@@ -26,8 +26,6 @@ import Modal from '../../common/Modal';
 
 import Header from '../../common/Header';
 
-import Footer from '../../common/Footer';
-
 import Toolbar from '../../common/Toolbar';
 
 import config from '../../../helpers/config';
@@ -1530,7 +1528,6 @@ class Employees extends Component {
 						<div dangerouslySetInnerHTML={{ __html: this.state.shiftConflict.data.message }} />
 					</Modal>
 				) : null}
-				<Footer history={this.props.history} />
 			</Fragment>
 		);
 	};

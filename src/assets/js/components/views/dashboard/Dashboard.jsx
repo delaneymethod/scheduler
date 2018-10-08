@@ -15,8 +15,6 @@ import Modal from '../../common/Modal';
 
 import Header from '../../common/Header';
 
-import Footer from '../../common/Footer';
-
 import RotaForm from '../../forms/RotaForm';
 
 import config from '../../../helpers/config';
@@ -503,7 +501,6 @@ class Dashboard extends Component {
 			<Modal className="modal-dialog" show={this.state.isRotaModalOpen} onClose={this.handleCreateRota}>
 				<RotaForm firstRota={true} title="Create First Rota" message={routes.ROTAS.CREATE.MESSAGE} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateRota} />
 			</Modal>
-			<Footer history={this.props.history} />
 		</Fragment>
 	);
 }
