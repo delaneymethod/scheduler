@@ -244,7 +244,7 @@ class Dashboard extends Component {
 																				};
 
 																				actions.getUnavailabilityOccurrences(payload)
-																					.then(() => history.push(routes.DASHBOARD.EMPLOYEES.URI))
+																					.then(() => history.push(routes.DASHBOARD.ROTAS.URI))
 																					.catch((error) => {
 																						error.data.title = 'Get Unavailability Occurrences';
 
@@ -327,7 +327,7 @@ class Dashboard extends Component {
 																							},
 																						});
 
-																						history.push(routes.DASHBOARD.EMPLOYEES.URI);
+																						history.push(routes.DASHBOARD.ROTAS.URI);
 																					})
 																					.catch((error) => {
 																						error.data.title = 'Get Unavailability Occurrences';
@@ -496,7 +496,7 @@ class Dashboard extends Component {
 			});
 		}
 
-		this.props.history.push(routes.DASHBOARD.EMPLOYEES.URI);
+		this.props.history.push(routes.DASHBOARD.ROTAS.URI);
 	};
 
 	render = () => (

@@ -217,6 +217,14 @@ export default {
 						KEYWORDS: '',
 					},
 				},
+				ROTAS: {
+					TITLE: 'Rotas',
+					URI: '/dashboard/rotas',
+					META: {
+						DESCRIPTION: '',
+						KEYWORDS: '',
+					},
+				},
 				EMPLOYEES: {
 					TITLE: 'Employees',
 					URI: '/dashboard/employees',

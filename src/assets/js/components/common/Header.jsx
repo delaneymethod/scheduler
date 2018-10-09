@@ -43,6 +43,7 @@ class Header extends Component {
 	}
 
 	getInitialState = () => ({
+		rotasIsActive: false,
 		employeesIsActive: false,
 		isProfileMenuPopoverOpen: false,
 		isNavigationMenuPopoverOpen: false,
@@ -52,6 +53,7 @@ class Header extends Component {
 		const { pathname } = this.props.history.location;
 
 		this.setState({
+			rotasIsActive: (pathname === dashboard.ROTAS.URI),
 			employeesIsActive: (pathname === dashboard.EMPLOYEES.URI),
 		});
 	};
@@ -91,20 +93,22 @@ class Header extends Component {
 										<PopoverBody>
 											<ul className="actions popover-menu">
 												{(!isEmpty(this.props.rota)) ? (
-													<NavItem className={`pr-3 ml-0 ${(this.state.employeesIsActive) ? 'active' : ''}`}><a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a></NavItem>
+													<NavItem className={`pr-3 ml-0 ${(this.state.rotasIsActive) ? 'active' : ''}`}><a href={dashboard.ROTAS.URI} title={dashboard.ROTAS.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-table" aria-hidden="true"></i>{dashboard.ROTAS.TITLE}</a></NavItem>
 												) : null}
+												<NavItem className={`pr-3 ml-0 ${(this.state.employeesIsActive) ? 'active' : ''}`}><a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a></NavItem>
 											</ul>
 										</PopoverBody>
 									</Popover>
 									<div className="collapse navbar-collapse m-0 p-0 col-lg-6 col-xl-6">
 										<ul className="actions popover-menu">
-											<NavItem className={`pr-3 ml-0 ${(this.state.employeesIsActive) ? 'active' : ''}`}>
+											<NavItem className={`pr-3 ml-0 ${(this.state.rotasIsActive) ? 'active' : ''}`}>
 												{(!isEmpty(this.props.rota)) ? (
-													<a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a>
+													<a href={dashboard.ROTAS.URI} title={dashboard.ROTAS.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-table" aria-hidden="true"></i>{dashboard.ROTAS.TITLE}</a>
 												) : (
-													<a href="" title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0 disabled" aria-disabled="true"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a>
+													<a href="" title={dashboard.ROTAS.TITLE} className="btn btn-action btn-nav border-0 disabled" aria-disabled="true"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.ROTAS.TITLE}</a>
 												)}
 											</NavItem>
+											<NavItem className={`pr-3 ml-0 ${(this.state.employeesIsActive) ? 'active' : ''}`}><a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a></NavItem>
 										</ul>
 									</div>
 									<ul className="mt-3 mt-md-0 actions profile-toggle col-12 col-sm-12 col-md-10 col-lg-6 col-xl-6">
