@@ -139,9 +139,7 @@ class Toolbar extends Component {
 		startDate: '',
 		rotaBudget: 0,
 		rotaStatus: 'DRAFT',
-		rolesIsActive: false,
 		isErrorModalOpen: false,
-		overviewIsActive: false,
 		employeesIsActive: false,
 		enableShiftButton: false,
 		isEditRotaModalOpen: false,
@@ -316,8 +314,6 @@ class Toolbar extends Component {
 			rotaBudget: budget,
 			rotaStatus: status,
 			hasUnassignedShifts,
-			rolesIsActive: (pathname === dashboard.ROLES.URI),
-			overviewIsActive: (pathname === dashboard.OVERVIEW.URI),
 			employeesIsActive: (pathname === dashboard.EMPLOYEES.URI),
 		});
 	};
@@ -657,7 +653,7 @@ class Toolbar extends Component {
 				</Col>
 				<Col className="pt-0 pb-0 pt-sm-0 pt-md-3 pb-sm-3 text-center text-md-right" xs="12" sm="12" md="5" lg="5" xl="6">
 					<div className="d-block d-sm-inline-block d-md-none d-lg-inline-block">
-						{(this.state.employeesIsActive || this.state.overviewIsActive) ? (
+						{(this.state.employeesIsActive) ? (
 							<Fragment>
 								{(this.state.hasUnassignedShifts) ? (
 									<button type="button" title="Assign Shift" id="assign-shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 mb-md-0 pl-3 pr-3 border-0" disabled={!this.state.enableShiftButton} onClick={this.handleAssignShift}><i className="fa fa-fw fa-plus d-none d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Assign</span> Shift</button>
@@ -680,7 +676,7 @@ class Toolbar extends Component {
 						<button type="button" title="Create Employee" id="create-employee" className="d-inline-block d-lg-none btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-plus d-none d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Create</span> Employee</button>
 					</div>
 					<ButtonGroup className="d-none d-md-inline-block d-lg-none p-0 m-0 mr-3">
-						{(this.state.employeesIsActive || this.state.overviewIsActive) ? (
+						{(this.state.employeesIsActive) ? (
 							<Fragment>
 								{(this.state.hasUnassignedShifts) ? (
 									<Fragment>

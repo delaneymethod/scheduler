@@ -217,22 +217,6 @@ export default {
 						KEYWORDS: '',
 					},
 				},
-				OVERVIEW: {
-					TITLE: 'Overview',
-					URI: '/dashboard/overview',
-					META: {
-						DESCRIPTION: '',
-						KEYWORDS: '',
-					},
-				},
-				ROLES: {
-					TITLE: 'Roles',
-					URI: '/dashboard/roles',
-					META: {
-						DESCRIPTION: '',
-						KEYWORDS: '',
-					},
-				},
 				EMPLOYEES: {
 					TITLE: 'Employees',
 					URI: '/dashboard/employees',
