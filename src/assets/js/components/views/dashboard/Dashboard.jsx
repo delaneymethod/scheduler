@@ -400,9 +400,21 @@ class Dashboard extends Component {
 
 									actions.switchRotaType({});
 
-									logMessage('info', 'Called Dashboard handleCreateRota');
+									logMessage('info', 'Called Dashboard handleFetchData getUnavailabilityTypes');
 
-									this.handleCreateRota();
+									actions.getUnavailabilityTypes()
+										.then(() => {
+											logMessage('info', 'Called Dashboard handleCreateRota');
+
+											this.handleCreateRota();
+										})
+										.catch((error) => {
+											error.data.title = 'Get Unavailability Types';
+
+											this.setState({ error });
+
+											this.handleModal();
+										});
 								}
 							}).catch((error) => {
 								error.data.title = 'Get Rota Types';
