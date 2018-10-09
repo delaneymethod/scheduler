@@ -7,6 +7,8 @@ import React, { Fragment, Component } from 'react';
 
 import Header from '../../common/Header';
 
+import Footer from '../../common/Footer';
+
 import Toolbar from '../../common/Toolbar';
 
 import config from '../../../helpers/config';
@@ -68,6 +70,7 @@ class Overview extends Component {
 		<Fragment>
 			<Header history={this.props.history} />
 			<Toolbar history={this.props.history} />
+			<Footer history={this.props.history} />
 		</Fragment>
 	);
 }

@@ -1,5 +1,5 @@
 import { Col, Row } from 'reactstrap';
-import React, { Fragment, Component } from 'react';
+import React, { Component } from 'react';
 
 import config from '../../helpers/config';
 

@@ -1,8 +1,10 @@
 import thunk from 'redux-thunk';
-import { logger } from 'redux-logger';
+// import { logger } from 'redux-logger';
 import { createStore, applyMiddleware } from 'redux';
 
 import reducers from '../reducers';
+
+import config from '../helpers/config';
 
 import initialState from './initialState';
 
@@ -14,7 +16,7 @@ middlewares.push(thunk);
 
 /*
 if (process.env.NODE_ENV === 'development') {
-	middlewares.push(logger);
+	middlewares.push(reduxLogger);
 }
 */
 
