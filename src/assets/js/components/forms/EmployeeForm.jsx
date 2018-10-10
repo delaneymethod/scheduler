@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import debounce from 'lodash/debounce';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
-import { Row, Col, Button, FormGroup } from 'reactstrap';
+import { Row, Col, Label, Button, FormGroup } from 'reactstrap';
+
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 
 import Alert from '../common/Alert';
@@ -32,6 +33,7 @@ const propTypes = {
 	editMode: PropTypes.bool,
 	employeeId: PropTypes.string,
 	rota: PropTypes.object.isRequired,
+	rotaTypes: PropTypes.array.isRequired,
 	rotaType: PropTypes.object.isRequired,
 	employees: PropTypes.array.isRequired,
 	handleClose: PropTypes.func.isRequired,
@@ -41,6 +43,7 @@ const propTypes = {
 const defaultProps = {
 	rota: {},
 	rotaType: {},
+	rotaTypes: [],
 	employees: [],
 	editMode: false,
 	employeeId: null,
@@ -74,6 +77,8 @@ class EmployeeForm extends Component {
 
 		this.handleChangeHourlyRate = this.handleChangeHourlyRate.bind(this);
 
+		this.handleChangeToggleSwitch = this.handleChangeToggleSwitch.bind(this);
+
 		this.handleUpdateEmployeeOrder = this.handleUpdateEmployeeOrder.bind(this);
 
 		this.handleChangeWeeklyContractHours = this.handleChangeWeeklyContractHours.bind(this);
@@ -88,6 +93,7 @@ class EmployeeForm extends Component {
 		firstName: '',
 		hourlyRate: '',
 		employeeId: '',
+		rotaTypeIds: [],
 		weeklyContractHours: '',
 	});
 
@@ -147,6 +153,18 @@ class EmployeeForm extends Component {
 		this.setState({
 			[target.name]: target.value,
 		});
+	};
+
+	handleChangeToggleSwitch = (event) => {
+		const { name, checked } = event.currentTarget;
+
+		this.setState(prevState => ({
+			...prevState,
+			rotaTypeIds: {
+				...prevState.rotaTypeIds,
+				[name]: checked,
+			},
+		}));
 	};
 
 	handleChangeMobile = (event, values) => this.setState({ mobile: values.value });
@@ -293,16 +311,31 @@ class EmployeeForm extends Component {
 				weeklyContractHours,
 			} = this.state;
 
+			let { rotaTypeIds } = this.state;
+
+			rotaTypeIds = Object.keys(rotaTypeIds).filter(rotaType => rotaTypeIds[rotaType]).map(rotaTypeId => rotaTypeId.replace('rota_type_', ''));
+
+			const rotaTypes = [];
+
+			rotaTypeIds.forEach((id) => {
+				rotaTypes.push({
+					rotaTypeId: id,
+				});
+			});
+
 			const payload = {
 				email,
 				salary,
 				mobile,
 				lastName,
 				firstName,
+				rotaTypes,
 				hourlyRate,
 				employeeId,
 				weeklyContractHours,
 			};
+
+			console.log(payload);
 
 			if (this.props.editMode) {
 				logMessage('info', 'Called EmployeeForm handleSubmit updateEmployee');
@@ -383,7 +416,7 @@ class EmployeeForm extends Component {
 				</Row>
 				<Row>
 					<Col xs="12" sm="12" md="12" lg="12" xl="12">
-						<h5 className="text-uppercase mt-3 mb-3">Remuneration Details</h5>
+						<h5 className="text-uppercase mt-4 mb-3">Remuneration Details</h5>
 					</Col>
 				</Row>
 				<Row>
@@ -401,7 +434,19 @@ class EmployeeForm extends Component {
 				</Row>
 				<Row>
 					<Col xs="12" sm="12" md="12" lg="12" xl="12">
-						<h5 className="text-uppercase mt-3 mb-3">Select Rotas</h5>
+						<h5 className="text-uppercase mt-4 mb-3">Select Rotas</h5>
+					</Col>
+				</Row>
+				<Row>
+					<Col xs="12" sm="12" md="12" lg="12" xl="12">
+						<FormGroup check>
+							{this.props.rotaTypes.map((rotaType, rotaTypeIndex) => (
+								<Label check key={rotaTypeIndex} className="switch">
+									<input type="checkbox" name={`rota_type_${rotaType.rotaTypeId}`} checked={this.state.rotaTypeIds[rotaType.rotaTypeId]} onChange={this.handleChangeToggleSwitch} /> {rotaType.rotaTypeName}
+									<span className="slider round"></span>
+								</Label>
+							))}
+						</FormGroup>
 					</Col>
 				</Row>
 				{(this.props.editMode) ? (
@@ -425,6 +470,7 @@ const mapStateToProps = (state, props) => ({
 	rota: state.rota,
 	rotaType: state.rotaType,
 	editMode: props.editMode,
+	rotaTypes: state.rotaTypes,
 	employees: state.employees,
 	employeeId: props.employeeId,
 });

@@ -101,7 +101,6 @@
 		"font-awesome": "^4.7.0",
 		"font-awesome-filetypes": "^1.2.0",
 		"fs": "0.0.1-security",
-		"html-critical-webpack-plugin": "^2.1.0",
 		"jquery": "^3.3.1",
 		"jwt-decode": "^2.2.0",
 		"loaders.css": "^0.1.2",
