@@ -438,15 +438,24 @@ class EmployeeForm extends Component {
 					</Col>
 				</Row>
 				<Row>
-					<Col xs="12" sm="12" md="12" lg="12" xl="12">
-						<FormGroup check>
+					<Col xs="12" sm="12" md="12" lg="6" xl="6">
+						<Row>
 							{this.props.rotaTypes.map((rotaType, rotaTypeIndex) => (
-								<Label check key={rotaTypeIndex} className="switch">
-									<input type="checkbox" name={`rota_type_${rotaType.rotaTypeId}`} checked={this.state.rotaTypeIds[rotaType.rotaTypeId]} onChange={this.handleChangeToggleSwitch} /> {rotaType.rotaTypeName}
-									<span className="slider round"></span>
-								</Label>
+								<Col key={rotaTypeIndex} xs="12" sm="12" md="12" lg="12" xl="12">
+									<Row className="d-flex justify-content-center">
+										<Col className="align-self-center text-left" xs="12" sm="12" md="6" lg="6" xl="6">
+											<Label check className="mt-2 mb-2">{rotaType.rotaTypeName}</Label>
+										</Col>
+										<Col className="align-self-center text-right" xs="12" sm="12" md="6" lg="6" xl="6">
+											<Label check className="switch mt-2 mb-2">
+												<input type="checkbox" name={`rota_type_${rotaType.rotaTypeId}`} checked={this.state.rotaTypeIds[rotaType.rotaTypeId]} onChange={this.handleChangeToggleSwitch} />
+												<span className="slider round"></span>
+											</Label>
+										</Col>
+									</Row>
+								</Col>
 							))}
-						</FormGroup>
+						</Row>
 					</Col>
 				</Row>
 				{(this.props.editMode) ? (
