@@ -1,11 +1,11 @@
 .switch {
 	position: relative;
 	display: inline-block;
+	padding: 0 !important;
+	margin-top: 0 !important;
 	width: calculateRem(50px);
 	height: calculateRem(25px);
-	margin-top: 0 !important;
 	margin-bottom: calculateRem(-5px) !important;
-	padding: 0 !important;
 }
 	
 .switch input {
@@ -14,25 +14,25 @@
 	
 .slider,
 .slider.off {
-	position: absolute;
-	cursor: pointer;
 	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
+	cursor: pointer;
+	position: absolute;
 	background-color: #CCCCCC;
 	
 	@include transition(.4s);
 }
 	
 .slider:before {
-	position: absolute;
 	content: '';
-	height: calculateRem(17px);
-	width: calculateRem(18px);
+	position: absolute;
 	left: calculateRem(4px);
+	background-color: $white;
+	width: calculateRem(18px);
 	bottom: calculateRem(4px);
-	background-color: #FFFFFF;
+	height: calculateRem(17px);
 	
 	@include opacity(1);
 	@include transition(.4s);
