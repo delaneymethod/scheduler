@@ -25,6 +25,8 @@ import NumberField from '../fields/NumberField';
 
 import { getShifts } from '../../actions/shiftActions';
 
+import { getRotaEmployees } from '../../actions/rotaEmployeeActions';
+
 import { createEmployee, updateEmployee, getEmployees, deleteEmployee, orderEmployees } from '../../actions/employeeActions';
 
 const routes = config.APP.ROUTES;
@@ -37,6 +39,7 @@ const propTypes = {
 	rotaType: PropTypes.object.isRequired,
 	employees: PropTypes.array.isRequired,
 	handleClose: PropTypes.func.isRequired,
+	rotaEmployees: PropTypes.array.isRequired,
 	handleSuccessNotification: PropTypes.func.isRequired,
 };
 
@@ -47,6 +50,7 @@ const defaultProps = {
 	employees: [],
 	editMode: false,
 	employeeId: null,
+	rotaEmployees: [],
 	handleClose: () => {},
 	handleSuccessNotification: () => {},
 };
@@ -75,6 +79,8 @@ class EmployeeForm extends Component {
 
 		this.handleChangeSalary = this.handleChangeSalary.bind(this);
 
+		this.handleGetRotaEmployees = this.handleGetRotaEmployees.bind(this);
+
 		this.handleChangeHourlyRate = this.handleChangeHourlyRate.bind(this);
 
 		this.handleChangeToggleSwitch = this.handleChangeToggleSwitch.bind(this);
@@ -93,8 +99,8 @@ class EmployeeForm extends Component {
 		firstName: '',
 		hourlyRate: '',
 		employeeId: '',
-		rotaTypeIds: [],
 		weeklyContractHours: '',
+		rotaTypeIds: this.props.rotaTypes.reduce((state, rotaType) => ({ ...state, [`rota_type_id_${rotaType.rotaTypeId}`]: false }), []),
 	});
 
 	componentDidMount = () => {
@@ -116,11 +122,11 @@ class EmployeeForm extends Component {
 			let {
 				salary,
 				hourlyRate,
-				rotaTypeIds,
 				weeklyContractHours,
 			} = accountEmployee;
 
 			const {
+				rotaTypes,
 				employee: {
 					email,
 					mobile,
@@ -135,8 +141,13 @@ class EmployeeForm extends Component {
 
 			weeklyContractHours = (weeklyContractHours !== 0) ? weeklyContractHours : null;
 
-			/* FIXME - Hook up employee rota type ids */
-			rotaTypeIds = [];
+			rotaTypes.forEach(rotaType => this.setState(prevState => ({
+				...prevState,
+				rotaTypeIds: {
+					...prevState.rotaTypeIds,
+					[`rota_type_id_${rotaType.rotaTypeId}`]: true,
+				},
+			})));
 
 			/* Update the state with all the edit shift details */
 			this.setState({
@@ -146,7 +157,6 @@ class EmployeeForm extends Component {
 				lastName,
 				firstName,
 				hourlyRate,
-				rotaTypeIds,
 				weeklyContractHours,
 			});
 		}
@@ -221,6 +231,14 @@ class EmployeeForm extends Component {
 		return this.props.actions.getEmployees().catch(error => Promise.reject(error));
 	};
 
+	handleGetRotaEmployees = () => {
+		const { rota, actions } = this.props;
+
+		logMessage('info', 'Called EmployeeForm handleGetRotaEmployees getRotaEmployees');
+
+		return actions.getRotaEmployees(rota).catch(error => Promise.reject(error));
+	};
+
 	handleGetShifts = () => {
 		const { actions, rota: { rotaId } } = this.props;
 
@@ -274,6 +292,7 @@ class EmployeeForm extends Component {
 				actions.deleteEmployee(payload)
 					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
 					.then(() => this.handleGetEmployees())
+					.then(() => this.handleGetRotaEmployees())
 					// .then(() => this.handleUpdateEmployeeOrder())
 					/* I guess the API could return the ordered list of employees so we dont need to make this extra call */
 					// .then(() => this.handleGetEmployees())
@@ -313,22 +332,13 @@ class EmployeeForm extends Component {
 				firstName,
 				hourlyRate,
 				employeeId,
+				rotaTypeIds,
 				weeklyContractHours,
 			} = this.state;
 
-			let { rotaTypeIds } = this.state;
-
-			rotaTypeIds = Object.keys(rotaTypeIds)
+			const rotaTypes = Object.keys(rotaTypeIds)
 				.filter(rotaType => rotaTypeIds[rotaType])
-				.map(rotaTypeId => rotaTypeId.replace('rota_type_', ''));
-
-			const rotaTypes = [];
-
-			rotaTypeIds.forEach((id) => {
-				rotaTypes.push({
-					rotaTypeId: id,
-				});
-			});
+				.map(rotaTypeId => rotaTypeId.replace('rota_type_id_', ''));
 
 			const payload = {
 				email,
@@ -348,6 +358,7 @@ class EmployeeForm extends Component {
 				actions.updateEmployee(payload)
 					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
 					.then(() => this.handleGetEmployees())
+					.then(() => this.handleGetRotaEmployees())
 					// .then(() => this.handleUpdateEmployeeOrder())
 					/* I guess the API could return the ordered list of employees so we dont need to make this extra call */
 					// .then(() => this.handleGetEmployees())
@@ -370,6 +381,7 @@ class EmployeeForm extends Component {
 				actions.createEmployee(payload)
 					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
 					.then(() => this.handleGetEmployees())
+					.then(() => this.handleGetRotaEmployees())
 					// .then(() => this.handleUpdateEmployeeOrder())
 					/* I guess the API could return the ordered list of employees so we dont need to make this extra call */
 					// .then(() => this.handleGetEmployees())
@@ -453,7 +465,7 @@ class EmployeeForm extends Component {
 										</Col>
 										<Col className="align-self-center text-right" xs="12" sm="12" md="6" lg="6" xl="6">
 											<Label check className="switch mt-2 mb-2">
-												<input type="checkbox" name={`rota_type_${rotaType.rotaTypeId}`} checked={this.state.rotaTypeIds[rotaType.rotaTypeId]} onChange={this.handleChangeToggleSwitch} />
+												<input type="checkbox" name={`rota_type_id_${rotaType.rotaTypeId}`} onChange={this.handleChangeToggleSwitch} checked={(this.state.rotaTypeIds[`rota_type_id_${rotaType.rotaTypeId}`])} />
 												<span className="slider round"></span>
 											</Label>
 										</Col>
@@ -487,6 +499,7 @@ const mapStateToProps = (state, props) => ({
 	rotaTypes: state.rotaTypes,
 	employees: state.employees,
 	employeeId: props.employeeId,
+	rotaEmployees: state.rotaEmployees,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -497,6 +510,7 @@ const mapDispatchToProps = dispatch => ({
 		updateEmployee,
 		deleteEmployee,
 		orderEmployees,
+		getRotaEmployees,
 	}, dispatch),
 });
 
