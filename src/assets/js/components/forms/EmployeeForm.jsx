@@ -313,7 +313,9 @@ class EmployeeForm extends Component {
 
 			let { rotaTypeIds } = this.state;
 
-			rotaTypeIds = Object.keys(rotaTypeIds).filter(rotaType => rotaTypeIds[rotaType]).map(rotaTypeId => rotaTypeId.replace('rota_type_', ''));
+			rotaTypeIds = Object.keys(rotaTypeIds)
+				.filter(rotaType => rotaTypeIds[rotaType])
+				.map(rotaTypeId => rotaTypeId.replace('rota_type_', ''));
 
 			const rotaTypes = [];
 
