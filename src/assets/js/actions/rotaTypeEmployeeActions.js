@@ -12,10 +12,10 @@ export const createRotaTypeEmployeesSuccess = employees => ({
 	employees,
 });
 
-export const createRotaTypeEmployees = payload => (dispatch) => {
+export const createRotaTypeEmployees = (rotaType, employeeIds) => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
-	return api.createRotaTypeEmployees(payload)
+	return api.createRotaTypeEmployees(rotaType, employeeIds)
 		.then((employees) => {
 			dispatch(ajaxLoading(false));
 
