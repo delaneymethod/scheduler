@@ -114,7 +114,7 @@ export const getEmployees = () => request('GET', '/employees');
 
 export const orderEmployees = payload => request('PUT', `/employees/order?rotaTypeId=${payload.rotaTypeId}`, 200, payload);
 
-export const uploadEmployees = payload => request('POST', '/employees/load', 200, payload);
+export const uploadEmployees = employees => request('POST', '/employees/load', 200, employees);
 
 export const getEmployee = employee => request('GET', `/employees/${employee.employeeId}`);
 
@@ -163,6 +163,12 @@ export const deleteRota = rota => request('DELETE', `/rotas/${rota.rotaId}`, 204
 
 export const publishRota = rota => request('POST', `/rotas/${rota.rotaId}/publish`, 201);
 
+/* ROTA EMPLOYEES */
+
+export const getRotaEmployees = rota => request('GET', `/rotas/${rota.rotaId}/employees`);
+
+export const updateRotaEmployeesOrder = payload => request('PUT', `/rotas/${payload.rotaId}/employees/order`, 200, payload);
+
 /* ROTA TYPES */
 export const getRotaTypes = () => request('GET', '/rota-types');
 
@@ -173,6 +179,12 @@ export const createRotaType = rotaType => request('POST', '/rota-types', 201, ro
 export const updateRotaType = rotaType => request('PUT', `/rota-types/${rotaType.rotaTypeId}`, 200, rotaType);
 
 export const deleteRotaType = rotaType => request('DELETE', `/rota-types/${rotaType.rotaTypeId}`, 204);
+
+/* ROTA TYPE EMPLOYEES */
+
+export const createRotaTypeEmployees = (rotaType, employees) => request('POST', `/rota-types/${rotaType.rotaTypeId}/employees`, 201, employees);
+
+export const deleteRotaTypeEmployee = (rotaType, employee) => request('DELETE', `/rota-types/${rotaType.rotaTypeId}/employees/${employee.employeeId}`, 204);
 
 /* PLACEMENTS */
 export const getPlacements = () => request('GET', '/placements');
