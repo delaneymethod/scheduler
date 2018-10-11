@@ -116,6 +116,7 @@ class EmployeeForm extends Component {
 			let {
 				salary,
 				hourlyRate,
+				rotaTypeIds,
 				weeklyContractHours,
 			} = accountEmployee;
 
@@ -134,6 +135,9 @@ class EmployeeForm extends Component {
 
 			weeklyContractHours = (weeklyContractHours !== 0) ? weeklyContractHours : null;
 
+			/* FIXME - Hook up employee rota type ids */
+			rotaTypeIds = [];
+
 			/* Update the state with all the edit shift details */
 			this.setState({
 				email,
@@ -142,6 +146,7 @@ class EmployeeForm extends Component {
 				lastName,
 				firstName,
 				hourlyRate,
+				rotaTypeIds,
 				weeklyContractHours,
 			});
 		}
@@ -336,8 +341,6 @@ class EmployeeForm extends Component {
 				employeeId,
 				weeklyContractHours,
 			};
-
-			console.log(payload);
 
 			if (this.props.editMode) {
 				logMessage('info', 'Called EmployeeForm handleSubmit updateEmployee');
