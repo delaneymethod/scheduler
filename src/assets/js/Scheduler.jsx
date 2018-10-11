@@ -45,7 +45,9 @@ store.subscribe(throttle(() => {
 		rotaTypes,
 		employees,
 		authenticated,
+		rotaEmployees,
 		unavailabilities,
+		rotaTypeEmployees,
 		unavailabilityTypes,
 		unavailabilityOccurrences,
 	} = store.getState();
@@ -62,6 +64,10 @@ store.subscribe(throttle(() => {
 
 	saveState('authenticated', authenticated);
 
+	saveState('unavailabilities', unavailabilities);
+
+	saveState('unavailabilityTypes', unavailabilityTypes);
+
 	saveState('rotas', (rotaTypes.length === 0) ? [] : rotas);
 
 	saveState('rotaCost', (rotaTypes.length === 0) ? 0 : rotaCost);
@@ -70,15 +76,15 @@ store.subscribe(throttle(() => {
 
 	saveState('rotaTypes', (rotaTypes.length === 0) ? [] : rotaTypes);
 
+	saveState('unavailabilityOccurrences', unavailabilityOccurrences);
+
+	saveState('rotaEmployees', (rotaTypes.length === 0) ? [] : rotaEmployees);
+
 	saveState('rota', (rotaTypes.length === 0 || rotas.length === 0) ? {} : rota);
 
 	saveState('shifts', (rotaTypes.length === 0 || rotas.length === 0) ? [] : shifts);
 
-	saveState('unavailabilities', unavailabilities);
-
-	saveState('unavailabilityTypes', unavailabilityTypes);
-
-	saveState('unavailabilityOccurrences', unavailabilityOccurrences);
+	saveState('rotaTypeEmployees', (rotaTypes.length === 0) ? [] : rotaTypeEmployees);
 }, 1000));
 
 ReactDOM.render(
