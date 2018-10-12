@@ -64,6 +64,8 @@ import UpdateEmployeeButton from '../../common/UpdateEmployeeButton';
 
 import UnavailabilityButton from '../../common/UnavailabilityButton';
 
+import ExistingEmployeesForm from '../../forms/ExistingEmployeesForm';
+
 import { getShifts, updateShift } from '../../../actions/shiftActions';
 
 import { getRotaEmployees } from '../../../actions/rotaEmployeeActions';
@@ -211,6 +213,8 @@ class Rotas extends Component {
 
 		this.handleRemoveCellStyles = this.handleRemoveCellStyles.bind(this);
 
+		this.handleExistingEmployees = this.handleExistingEmployees.bind(this);
+
 		this.handleShiftConflictModal = this.handleShiftConflictModal.bind(this);
 
 		this.handleClearSortEmployees = this.handleClearSortEmployees.bind(this);
@@ -220,6 +224,8 @@ class Rotas extends Component {
 		this.handleUpdateEmployeeOrder = this.handleUpdateEmployeeOrder.bind(this);
 
 		this.handleRemoveCellHighlight = this.handleRemoveCellHighlight.bind(this);
+
+		this.handleManageRotaEmployees = this.handleManageRotaEmployees.bind(this);
 
 		this.handleRemoveEmployeeFromRota = this.handleRemoveEmployeeFromRota.bind(this);
 
@@ -250,6 +256,8 @@ class Rotas extends Component {
 		isShiftConflictModalOpen: false,
 		isCreateEmployeeModalOpen: false,
 		isUploadEmployeesModalOpen: false,
+		isExistingEmployeesModelOpen: false,
+		isManageRotaEmployeesPopoverOpen: false,
 	});
 
 	componentDidMount = () => {
@@ -295,6 +303,8 @@ class Rotas extends Component {
 			this.setState({ totalEmployees: this.props.employees.length }, () => this.handleFetchData());
 		}
 	};
+
+	handleManageRotaEmployees = () => this.setState({ isManageRotaEmployeesPopoverOpen: !this.state.isManageRotaEmployeesPopoverOpen });
 
 	handleSwitchRotaCost = (cost) => {
 		logMessage('info', 'Called Employee handleSwitchRotaCost switchRotaCost');
@@ -403,7 +413,9 @@ class Rotas extends Component {
 			});
 	};
 
-	handleCreateEmployee = () => this.setState({ isCreateEmployeeModalOpen: !this.state.isCreateEmployeeModalOpen });
+	handleCreateEmployee = () => this.setState({ isCreateEmployeeModalOpen: !this.state.isCreateEmployeeModalOpen, isManageRotaEmployeesPopoverOpen: false });
+
+	handleExistingEmployees = () => this.setState({ isExistingEmployeesModalOpen: !this.state.isExistingEmployeesModalOpen });
 
 	handleUploadEmployees = () => this.setState({ isUploadEmployeesModalOpen: !this.state.isUploadEmployeesModalOpen });
 
@@ -1465,7 +1477,7 @@ class Rotas extends Component {
 														</Fragment>
 													) : null}
 													<div className="d-none d-lg-inline-block p-0 m-0 mr-1 mr-xl-1"><button type="button" className="btn btn-secondary border-0 btn-icon" id="uploadEmployees" title="Upload Employees" aria-label="Upload Employees" onClick={this.handleUploadEmployees}><i className="fa fa-fw fa-upload" aria-hidden="true"></i></button></div>
-													<div className="d-none d-lg-inline-block p-0 m-0"><button type="button" className="btn btn-secondary border-0 btn-icon" id="addNewEmployee" title="Add New Employee" aria-label="Add New Employee" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-user-plus" aria-hidden="true"></i></button></div>
+													<div className="d-none d-lg-inline-block p-0 m-0"><button type="button" className="btn btn-secondary border-0 btn-icon" id="manageRotaEmployees" title="Manage Rota Employees" aria-label="Manage Rota Employees" onClick={this.handleManageRotaEmployees}><i className="fa fa-fw fa-user-plus" aria-hidden="true"></i></button></div>
 												</div>
 												<Popover placement="bottom" isOpen={this.state.isFilterPopoverOpen} target="filter" toggle={this.handleFilter}>
 													<PopoverBody>
@@ -1495,6 +1507,14 @@ class Rotas extends Component {
 																	<button type="button" title="Close Sort by" id="closeSortBy" className="btn btn-action m-0 border-0" style={{ borderRadius: '4px' }} onClick={this.handleSortBy}>Close</button>
 																</li>
 															) : null}
+														</ul>
+													</PopoverBody>
+												</Popover>
+												<Popover placement="bottom" isOpen={this.state.isManageRotaEmployeesPopoverOpen} target="manageRotaEmployees" toggle={this.handleManageRotaEmployees}>
+													<PopoverBody>
+														<ul className="popover-menu">
+															<li><button type="button" title="Add Existing Employees" id="addExistingEmployees" className="btn btn-action btn-nav border-0" onClick={this.handleExistingEmployees}>Add Existing Employees</button></li>
+															<li><button type="button" title="Add New Employee" id="addNewEmployee" className="btn btn-action btn-nav border-0" onClick={this.handleCreateEmployee}>Add New Employee</button></li>
 														</ul>
 													</PopoverBody>
 												</Popover>
@@ -1596,6 +1616,9 @@ class Rotas extends Component {
 				</Modal>
 				<Modal title="Upload Employees" className="modal-dialog" show={this.state.isUploadEmployeesModalOpen} onClose={this.handleUploadEmployees}>
 					<UploadEmployeesForm handleInfoNotification={this.handleInfoNotification} handleClose={this.handleUploadEmployees} />
+				</Modal>
+				<Modal title="Existing Employees" className="modal-dialog" show={this.state.isExistingEmployeesModalOpen} onClose={this.handleExistingEmployees}>
+					<ExistingEmployeesForm handleInfoNotification={this.handleInfoNotification} handleClose={this.handleExistingEmployees} />
 				</Modal>
 				{(this.state.error.data) ? (
 					<Modal title={this.state.error.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isErrorModalOpen} onClose={this.handleModal}>

@@ -110,6 +110,9 @@ export default {
 				UPLOAD: {
 					TITLE: 'Upload Employees',
 				},
+				EXISTING: {
+					TITLE: 'Update Employees',
+				},
 			},
 			ROLES: {
 				DELETE: {

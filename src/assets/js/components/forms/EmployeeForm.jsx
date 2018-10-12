@@ -99,7 +99,7 @@ class EmployeeForm extends Component {
 		hourlyRate: '',
 		employeeId: '',
 		weeklyContractHours: '',
-		rotaTypeIds: this.props.rotaTypes.reduce((state, rotaType) => ({ ...state, [`rota_type_id_${rotaType.rotaTypeId}`]: false }), []),
+		rotaTypeIds: this.props.rotaTypes.reduce((state, rotaType) => ({ ...state, [`rota_type_id_${rotaType.rotaTypeId}`]: (rotaType.rotaTypeId === this.props.rotaType.rotaTypeId) }), []),
 	});
 
 	componentDidMount = () => {

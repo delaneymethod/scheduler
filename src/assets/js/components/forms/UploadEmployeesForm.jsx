@@ -1,9 +1,9 @@
 import concat from 'lodash/concat';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Button } from 'reactstrap';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
-import { Row, Col, Label, Input, Button, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 
 import Alert from '../common/Alert';
