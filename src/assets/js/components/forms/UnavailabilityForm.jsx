@@ -69,6 +69,8 @@ class UnavailabilityForm extends Component {
 
 		this.handleChangeTime = this.handleChangeTime.bind(this);
 
+		this.handleTimeOffDetails = this.handleTimeOffDetails.bind(this);
+
 		this.handleGetUnavailability = this.handleGetUnavailability.bind(this);
 
 		this.handleNearestFutureMinutes = this.handleNearestFutureMinutes.bind(this);
@@ -206,9 +208,27 @@ class UnavailabilityForm extends Component {
 
 	handleBlur = async event => this.handleValidateFields(event.currentTarget);
 
+	handleTimeOffDetails = () => {
+		const unavailabilityType = this.props.unavailabilityTypes.filter(data => data.unavailabilityTypeId === this.state.unavailabilityTypeId).shift();
+
+		if (this.state.fullDay) {
+			if (moment(this.state.startDate, 'YYYY-MM-DD').isSame(moment(this.state.endDate, 'YYYY-MM-DD'))) {
+				return (`${unavailabilityType.unavailabilityTypeName} on ${moment(this.state.startDate).format('ddd Do')}, All day.${((!isEmpty(this.state.reason)) ? this.state.reason : '')}`);
+			}
+
+			return (`${unavailabilityType.unavailabilityTypeName} from ${moment(this.state.startDate).format('ddd Do')} to ${moment(this.state.endDate).format('ddd Do')}, All day.${((!isEmpty(this.state.reason)) ? this.state.reason : '')}`);
+		}
+
+		if (moment(this.state.startDate, 'YYYY-MM-DD').isSame(moment(this.state.endDate, 'YYYY-MM-DD'))) {
+			return (`${unavailabilityType.unavailabilityTypeName} on ${moment(this.state.startDate).format('ddd Do HH:mm')} to ${moment(this.state.startDate).format('HH:mm')} ${((!isEmpty(this.state.reason)) ? this.state.reason : '')}`);
+		}
+
+		return (`${unavailabilityType.unavailabilityTypeName} from ${moment(this.state.startDate).format('ddd Do HH:mm')} to ${moment(this.state.endDate).format('HH:mm ddd Do')} ${((!isEmpty(this.state.reason)) ? this.state.reason : '')}`);
+	};
+
 	handleDelete = () => {
 		/* Check if the user wants to delete the unavailability */
-		let message = '<div class="text-center"><p>Please confirm that you wish to delete the Time Off?</p><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>';
+		let message = `<div class="text-center"><ul class="list-unstyled font-weight-bold text-uppercase"><li>Employee: ${this.props.accountEmployee.employee.firstName} ${this.props.accountEmployee.employee.lastName}</li><li>${this.handleTimeOffDetails()}</li></ul><p>Please confirm that you wish to delete time off for this employee?</p><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
 
 		const options = {
 			message,

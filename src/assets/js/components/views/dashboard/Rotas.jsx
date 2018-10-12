@@ -358,7 +358,7 @@ class Rotas extends Component {
 		const accountEmployee = employees.filter(data => data.accountEmployeeId === accountEmployeeId).shift();
 
 		/* Check if the user wants to remove the employee from the current rota */
-		let message = `<div class="text-center"><p>Please confirm that you wish to remove the Employee from the current Rota?</p><ul class="list-unstyled font-weight-bold"><li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li></ul><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
+		let message = `<div class="text-center"><ul class="list-unstyled font-weight-bold text-uppercase"><li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li></ul><p>Please confirm that you wish to remove the employee from the current rota?</p><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Any future shifts will be unassigned!</p><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
 
 		const options = {
 			message,
@@ -1562,7 +1562,7 @@ class Rotas extends Component {
 														</div>
 														<div className="position-absolute p-0 m-0 edit-handler">
 															<UpdateEmployeeButton employeeId={row.accountEmployee.employee.employeeId} accountEmployeeId={row.accountEmployee.accountEmployeeId} rowIndex={rowIndex} handleSuccessNotification={this.handleSuccessNotification} />
-															<button type="button" className="btn border-0 btn-danger btn-icon ml-1" id={`removeEmployeeFromRota${row.accountEmployee.accountEmployeeId}`} title="Remove Employee from Rota" aria-label="Remove Employee from Rota" onClick={event => this.handleRemoveEmployeeFromRota(event, row.accountEmployee.accountEmployeeId)}><i className="fa fa-fw fa-trash" aria-hidden="true"></i></button>
+															<button type="button" className="btn border-0 btn-warning text-white btn-icon ml-1" id={`removeEmployeeFromRota${row.accountEmployee.accountEmployeeId}`} title="Remove Employee from Rota" aria-label="Remove Employee from Rota" onClick={event => this.handleRemoveEmployeeFromRota(event, row.accountEmployee.accountEmployeeId)}><i className="fa fa-fw fa-trash" aria-hidden="true"></i></button>
 														</div>
 													</div>
 												</td>
@@ -1619,7 +1619,7 @@ class Rotas extends Component {
 				<Modal title="Upload Employees" className="modal-dialog" show={this.state.isUploadEmployeesModalOpen} onClose={this.handleUploadEmployees}>
 					<UploadEmployeesForm handleInfoNotification={this.handleInfoNotification} handleClose={this.handleUploadEmployees} />
 				</Modal>
-				<Modal title="Existing Employees" className="modal-dialog" show={this.state.isExistingEmployeesModalOpen} onClose={this.handleExistingEmployees}>
+				<Modal title="Add Existing Employees" className="modal-dialog" show={this.state.isExistingEmployeesModalOpen} onClose={this.handleExistingEmployees}>
 					<ExistingEmployeesForm handleInfoNotification={this.handleInfoNotification} handleClose={this.handleExistingEmployees} />
 				</Modal>
 				{(this.state.error.data) ? (

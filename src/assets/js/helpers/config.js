@@ -111,7 +111,7 @@ export default {
 					TITLE: 'Upload Employees',
 				},
 				EXISTING: {
-					TITLE: 'Update Employees',
+					TITLE: 'Update Rota Employees',
 				},
 			},
 			ROLES: {

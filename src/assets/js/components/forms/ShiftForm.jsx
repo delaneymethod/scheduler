@@ -590,7 +590,7 @@ class ShiftForm extends Component {
 		const accountEmployee = this.props.employees.filter(data => data.employee.employeeId === this.state.employeeId).shift();
 
 		/* Check if the user wants to delete the shift */
-		let message = '<div class="text-center"><p>Please confirm that you wish to delete the Shift?</p><ul class="list-unstyled font-weight-bold">';
+		let message = '<div class="text-center"><ul class="list-unstyled font-weight-bold text-uppercase">';
 
 		if (!isEmpty(accountEmployee)) {
 			message += `<li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li>`;
@@ -600,7 +600,7 @@ class ShiftForm extends Component {
 			message += `<li>Role: ${shift.role.roleName}</li>`;
 		}
 
-		message += `<li>Date: ${moment(shift.startTime).format('YYYY-MM-DD')}</li><li>Time: ${moment(shift.startTime).format('HH:mma')} - ${(shift.isClosingShift) ? 'Closing' : moment(shift.endTime).format('HH:mma')}</li></ul><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
+		message += `<li>Date: ${moment(shift.startTime).format('YYYY-MM-DD')}</li><li>Time: ${moment(shift.startTime).format('HH:mma')} - ${(shift.isClosingShift) ? 'Closing' : moment(shift.endTime).format('HH:mma')}</li></ul><p>Please confirm that you wish to delete this shift?</p><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
 
 		const options = {
 			message,

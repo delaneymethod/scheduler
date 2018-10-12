@@ -241,7 +241,7 @@ class RotaForm extends Component {
 		const rotaType = this.props.rotaTypes.filter(data => data.rotaTypeId === this.state.rotaTypeId).shift();
 
 		/* Check if the user wants to delete the shift */
-		let message = '<div class="text-center"><p>Please confirm that you wish to delete the Rota?</p><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>This will permanently delete all shifts, past and present for the rota!</p><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>';
+		let message = `<div class="text-center"><ul class="list-unstyled font-weight-bold text-uppercase"><li>Rota: ${rotaType.rotaTypeName}</li></ul><p>Please confirm that you wish to delete this rota?</p><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>This will permanently delete all shifts, past and present for the rota!</p><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
 
 		const options = {
 			message,

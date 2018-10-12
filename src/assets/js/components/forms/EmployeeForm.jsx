@@ -99,7 +99,10 @@ class EmployeeForm extends Component {
 		hourlyRate: '',
 		employeeId: '',
 		weeklyContractHours: '',
-		rotaTypeIds: this.props.rotaTypes.reduce((state, rotaType) => ({ ...state, [`rota_type_id_${rotaType.rotaTypeId}`]: (rotaType.rotaTypeId === this.props.rotaType.rotaTypeId) }), []),
+		rotaTypeIds: this.props.rotaTypes.reduce((state, rotaType) => ({
+			...state,
+			[`rota_type_id_${rotaType.rotaTypeId}`]: (rotaType.rotaTypeId === this.props.rotaType.rotaTypeId),
+		}), []),
 	});
 
 	componentDidMount = () => {
@@ -258,7 +261,7 @@ class EmployeeForm extends Component {
 		const accountEmployee = employees.filter(data => data.employee.employeeId === this.state.employeeId).shift();
 
 		/* Check if the user wants to delete the employee */
-		let message = `<div class="text-center"><p>Please confirm that you wish to delete the Employee?</p><ul class="list-unstyled font-weight-bold"><li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li></ul><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
+		let message = `<div class="text-center"><ul class="list-unstyled font-weight-bold text-uppercase"><li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li></ul><p>Please confirm that you wish to delete this employee?</p><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
 
 		const options = {
 			message,
