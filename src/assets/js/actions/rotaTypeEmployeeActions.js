@@ -7,21 +7,21 @@ export const ajaxLoading = status => ({
 });
 
 /* CREATE ROTA TYPE EMPLOYEES */
-export const createRotaTypeEmployeesSuccess = employees => ({
+export const createRotaTypeEmployeesSuccess = rotaEmployees => ({
 	type: types.CREATE_ROTA_TYPE_EMPLOYEES,
-	employees,
+	rotaEmployees,
 });
 
 export const createRotaTypeEmployees = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
 	return api.createRotaTypeEmployees(payload)
-		.then((employees) => {
+		.then((rotaEmployees) => {
 			dispatch(ajaxLoading(false));
 
-			dispatch(createRotaTypeEmployeesSuccess(employees));
+			dispatch(createRotaTypeEmployeesSuccess(rotaEmployees));
 
-			return employees;
+			return rotaEmployees;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));

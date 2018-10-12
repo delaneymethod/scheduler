@@ -6,12 +6,12 @@ const persistedState = getStates();
 
 const combinedState = Object.assign(initialState, persistedState);
 
-const rotaTypeEmployeesReducer = (state = combinedState.employees, action) => {
+const rotaTypeEmployeesReducer = (state = combinedState.rotaEmployees, action) => {
 	switch (action.type) {
 		case types.CREATE_ROTA_TYPE_EMPLOYEES:
 			return [
 				...state,
-				Object.assign({}, action.employees),
+				Object.assign({}, action.rotaEmployees),
 			];
 
 		case types.DELETE_ROTA_TYPE_EMPLOYEE:
