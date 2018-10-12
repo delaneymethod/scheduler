@@ -110,11 +110,17 @@ class ExistingEmployeesForm extends Component {
 		this.setState({ error: {} });
 
 		if (this.form.isValid()) {
+			let message = '';
+
 			const { accountEmployeeIds } = this.state;
 
+			const order = Object.keys(accountEmployeeIds)
+				.filter(accountEmployee => accountEmployeeIds[accountEmployee])
+				.map(accountEmployeeId => accountEmployeeId.replace('account_employee_id_', ''));
+
 			const payload = {
+				order,
 				rotaTypeId,
-				accountEmployeeIds,
 			};
 
 			logMessage('info', 'Called ExistingEmployeesForm handleSubmit createRotaTypeEmployees');
@@ -161,11 +167,6 @@ class ExistingEmployeesForm extends Component {
 			{this.errorMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 				<Row>
-					<Col xs="12" sm="12" md="12" lg="12" xl="12">
-						<h5 className="text-uppercase mt-4 mb-3">Select Employees</h5>
-					</Col>
-				</Row>
-				<Row>
 					{this.props.employees.map((accountEmployee, accountEmployeeIndex) => (
 						<Col key={accountEmployeeIndex} xs="12" sm="12" md="12" lg="12" xl="12">
 							<Row className="d-flex justify-content-center">
@@ -201,7 +202,7 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = dispatch => ({
 	actions: bindActionCreators({
-    	getShifts,
+		getShifts,
 		getEmployees,
 		getRotaEmployees,
 		createRotaTypeEmployees,

@@ -182,7 +182,7 @@ export const deleteRotaType = rotaType => request('DELETE', `/rota-types/${rotaT
 
 /* ROTA TYPE EMPLOYEES */
 
-export const createRotaTypeEmployees = (rotaType, employees) => request('POST', `/rota-types/${rotaType.rotaTypeId}/employees`, 201, employees);
+export const createRotaTypeEmployees = payload => request('POST', `/rota-types/${payload.rotaTypeId}/employees`, 201, payload);
 
 export const deleteRotaTypeEmployee = payload => request('DELETE', `/rota-types/${payload.rotaTypeId}/employees/${payload.accountEmployeeId}`, 204);
 
