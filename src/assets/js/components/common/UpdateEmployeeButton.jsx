@@ -9,7 +9,7 @@ import EmployeeForm from '../forms/EmployeeForm';
 
 import UnavailabilityForm from '../forms/UnavailabilityForm';
 
-import { addClass, removeClass, showEditHandler, hideEditHandler } from '../../helpers/classes';
+import { showEditHandler, hideEditHandler } from '../../helpers/toggleClasses';
 
 const propTypes = {
 	rowIndex: PropTypes.number.isRequired,

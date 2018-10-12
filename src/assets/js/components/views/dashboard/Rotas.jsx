@@ -52,6 +52,8 @@ import AssignShiftForm from '../../forms/AssignShiftForm';
 
 import AssignShiftButton from '../../common/AssignShiftButton';
 
+import { addClass, removeClass } from '../../../helpers/classes';
+
 import { switchRotaCost } from '../../../actions/rotaCostActions';
 
 import UploadEmployeesForm from '../../forms/UploadEmployeesForm';
@@ -72,6 +74,8 @@ import { getRotaEmployees } from '../../../actions/rotaEmployeeActions';
 
 import UnassignedShiftsOverview from '../../common/UnassignedShiftsOverview';
 
+import { showEditHandler, hideEditHandler } from '../../helpers/toggleClasses';
+
 import ShiftUnavailabilityButton from '../../common/ShiftUnavailabilityButton';
 
 import { getEmployees, orderEmployees } from '../../../actions/employeeActions';
@@ -79,8 +83,6 @@ import { getEmployees, orderEmployees } from '../../../actions/employeeActions';
 import { deleteRotaTypeEmployee } from '../../../actions/rotaTypeEmployeeActions';
 
 import { createPlacement, updatePlacement } from '../../../actions/placementActions';
-
-import { addClass, removeClass, showEditHandler, hideEditHandler } from '../../../helpers/classes';
 
 const routes = config.APP.ROUTES;
 
