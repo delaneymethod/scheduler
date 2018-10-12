@@ -6,7 +6,6 @@ import debounce from 'lodash/debounce';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
 import { Row, Col, Label, Button, FormGroup } from 'reactstrap';
-
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 
 import Alert from '../common/Alert';
@@ -141,13 +140,15 @@ class EmployeeForm extends Component {
 
 			weeklyContractHours = (weeklyContractHours !== 0) ? weeklyContractHours : null;
 
-			rotaTypes.forEach(rotaType => this.setState(prevState => ({
-				...prevState,
-				rotaTypeIds: {
-					...prevState.rotaTypeIds,
-					[`rota_type_id_${rotaType.rotaTypeId}`]: true,
-				},
-			})));
+			if (rotaTypes && rotaTypes.length > 0) {
+				rotaTypes.forEach(rotaType => this.setState(prevState => ({
+					...prevState,
+					rotaTypeIds: {
+						...prevState.rotaTypeIds,
+						[`rota_type_id_${rotaType.rotaTypeId}`]: true,
+					},
+				})));
+			}
 
 			/* Update the state with all the edit shift details */
 			this.setState({
@@ -274,7 +275,7 @@ class EmployeeForm extends Component {
 			},
 			enableEscape: false,
 			title: 'Delete Employee',
-			className: 'modal-dialog-warning',
+			className: 'modal-dialog-danger',
 		};
 
 		/* If the user has clicked the proceed button, we delete the employee */

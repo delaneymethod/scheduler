@@ -40,6 +40,8 @@ import ShiftButton from '../../common/ShiftButton';
 
 import CloseButton from '../../common/CloseButton';
 
+import { confirm } from '../../../helpers/confirm';
+
 import EmployeeForm from '../../forms/EmployeeForm';
 
 import Notification from '../../common/Notification';
@@ -66,11 +68,15 @@ import UnavailabilityButton from '../../common/UnavailabilityButton';
 
 import { getShifts, updateShift } from '../../../actions/shiftActions';
 
+import { getRotaEmployees } from '../../../actions/rotaEmployeeActions';
+
 import UnassignedShiftsOverview from '../../common/UnassignedShiftsOverview';
 
 import ShiftUnavailabilityButton from '../../common/ShiftUnavailabilityButton';
 
 import { getEmployees, orderEmployees } from '../../../actions/employeeActions';
+
+import { deleteRotaTypeEmployee } from '../../../actions/rotaTypeEmployeeActions';
 
 import { createPlacement, updatePlacement } from '../../../actions/placementActions';
 
@@ -90,6 +96,7 @@ const propTypes = {
 	rotaType: PropTypes.object.isRequired,
 	employees: PropTypes.array.isRequired,
 	authenticated: PropTypes.bool.isRequired,
+	rotaEmployees: PropTypes.array.isRequired,
 	unavailabilityOccurrences: PropTypes.array.isRequired,
 };
 
@@ -102,6 +109,7 @@ const defaultProps = {
 	rotaCost: 0,
 	rotaType: {},
 	employees: [],
+	rotaEmployees: [],
 	authenticated: false,
 	unavailabilityOccurrences: [],
 };
@@ -212,6 +220,8 @@ class Rotas extends Component {
 		this.handleUpdateEmployeeOrder = this.handleUpdateEmployeeOrder.bind(this);
 
 		this.handleRemoveCellHighlight = this.handleRemoveCellHighlight.bind(this);
+
+		this.handleRemoveEmployeeFromRota = this.handleRemoveEmployeeFromRota.bind(this);
 
 		this.handleShiftsAndUnavailabilities = this.handleShiftsAndUnavailabilities.bind(this);
 
@@ -325,6 +335,68 @@ class Rotas extends Component {
 		shift.hours = (Math.round(hours * 12) / 12);
 
 		return shift;
+	};
+
+	handleRemoveEmployeeFromRota = (event, accountEmployeeId) => {
+		const { actions, employees, rotaType: { rotaTypeId } } = this.props;
+
+		const accountEmployee = employees.filter(data => data.accountEmployeeId === accountEmployeeId).shift();
+
+		/* Check if the user wants to remove the employee from the current rota */
+		let message = `<div class="text-center"><p>Please confirm that you wish to remove the Employee from the current Rota?</p><ul class="list-unstyled font-weight-bold"><li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li></ul><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
+
+		const options = {
+			message,
+			labels: {
+				cancel: 'Cancel',
+				proceed: 'Remove',
+			},
+			values: {
+				cancel: false,
+				proceed: true,
+			},
+			colors: {
+				proceed: 'warning text-white',
+			},
+			enableEscape: false,
+			title: 'Remove Employee From Rota',
+			className: 'modal-dialog-warning',
+		};
+
+		/* If the user has clicked the proceed button, we remove the employee from rota */
+		/* If the user has clicked the cancel button, we do nothing */
+		confirm(options)
+			.then((result) => {
+				const payload = {
+					rotaTypeId,
+					accountEmployeeId,
+				};
+
+				logMessage('info', 'Called EmployeeForm handleRemoveEmployeeFromRota deleteRotaTypeEmployee');
+
+				actions.deleteRotaTypeEmployee(payload)
+					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
+					.then(() => this.handleGetEmployees())
+					.then(() => this.handleGetRotaEmployees())
+					// .then(() => this.handleUpdateEmployeeOrder())
+					/* I guess the API could return the ordered list of employees so we dont need to make this extra call */
+					// .then(() => this.handleGetEmployees())
+					/* Updating a shift or placement will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
+					.then(() => this.handleGetShifts())
+					.then(() => {
+						/* Close the modal */
+						this.props.handleClose();
+
+						/* FIXME - Make messages constants in config */
+						message = '<p>Employee was removed from Rota!</p>';
+
+						/* Pass a message back up the rabbit hole to the parent component */
+						this.props.handleSuccessNotification(message);
+					})
+					.catch(error => this.setState({ error }));
+			}, (result) => {
+				/* We do nothing */
+			});
 	};
 
 	handleCreateEmployee = () => this.setState({ isCreateEmployeeModalOpen: !this.state.isCreateEmployeeModalOpen });
@@ -1464,6 +1536,7 @@ class Rotas extends Component {
 														</div>
 														<div className="position-absolute p-0 m-0 edit-handler">
 															<UpdateEmployeeButton employeeId={row.accountEmployee.employee.employeeId} rowIndex={rowIndex} handleSuccessNotification={this.handleSuccessNotification} />
+															<button type="button" className="btn border-0 btn-danger btn-icon ml-1" id={`removeEmployeeFromRota${row.accountEmployee.accountEmployeeId}`} title="Remove Employee from Rota" aria-label="Remove Employee from Rota" onClick={event => this.handleRemoveEmployeeFromRota(event, row.accountEmployee.accountEmployeeId)}><i className="fa fa-fw fa-trash" aria-hidden="true"></i></button>
 														</div>
 													</div>
 												</td>
@@ -1549,6 +1622,7 @@ const mapStateToProps = (state, props) => ({
 	rotaCost: state.rotaCost,
 	rotaType: state.rotaType,
 	employees: state.employees,
+	rotaEmployees: state.rotaEmployees,
 	authenticated: state.authenticated,
 	unavailabilityOccurrences: state.unavailabilityOccurrences,
 });
@@ -1564,6 +1638,8 @@ const mapDispatchToProps = dispatch => ({
 		orderEmployees,
 		createPlacement,
 		updatePlacement,
+		getRotaEmployees,
+		deleteRotaTypeEmployee,
 	}, dispatch),
 });
 
