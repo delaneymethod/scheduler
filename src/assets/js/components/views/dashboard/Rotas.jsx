@@ -52,8 +52,6 @@ import AssignShiftForm from '../../forms/AssignShiftForm';
 
 import AssignShiftButton from '../../common/AssignShiftButton';
 
-import { addClass, removeClass } from '../../../helpers/classes';
-
 import { switchRotaCost } from '../../../actions/rotaCostActions';
 
 import UploadEmployeesForm from '../../forms/UploadEmployeesForm';
@@ -79,6 +77,8 @@ import { getEmployees, orderEmployees } from '../../../actions/employeeActions';
 import { deleteRotaTypeEmployee } from '../../../actions/rotaTypeEmployeeActions';
 
 import { createPlacement, updatePlacement } from '../../../actions/placementActions';
+
+import { addClass, removeClass, showEditHandler, hideEditHandler } from '../../../helpers/classes';
 
 const routes = config.APP.ROUTES;
 
@@ -338,6 +338,9 @@ class Rotas extends Component {
 	};
 
 	handleRemoveEmployeeFromRota = (event, accountEmployeeId) => {
+		/* Find the edit handler for employee row and show it */
+		showEditHandler(accountEmployeeId);
+
 		const { actions, employees, rotaType: { rotaTypeId } } = this.props;
 
 		const accountEmployee = employees.filter(data => data.accountEmployeeId === accountEmployeeId).shift();
@@ -395,7 +398,8 @@ class Rotas extends Component {
 					})
 					.catch(error => this.setState({ error }));
 			}, (result) => {
-				/* We do nothing */
+				/* We do nothing, but find the edit handler for employee row and hide it */
+				hideEditHandler(accountEmployeeId);
 			});
 	};
 
@@ -1535,7 +1539,7 @@ class Rotas extends Component {
 															</div>
 														</div>
 														<div className="position-absolute p-0 m-0 edit-handler">
-															<UpdateEmployeeButton employeeId={row.accountEmployee.employee.employeeId} rowIndex={rowIndex} handleSuccessNotification={this.handleSuccessNotification} />
+															<UpdateEmployeeButton employeeId={row.accountEmployee.employee.employeeId} accountEmployeeId={row.accountEmployee.accountEmployeeId} rowIndex={rowIndex} handleSuccessNotification={this.handleSuccessNotification} />
 															<button type="button" className="btn border-0 btn-danger btn-icon ml-1" id={`removeEmployeeFromRota${row.accountEmployee.accountEmployeeId}`} title="Remove Employee from Rota" aria-label="Remove Employee from Rota" onClick={event => this.handleRemoveEmployeeFromRota(event, row.accountEmployee.accountEmployeeId)}><i className="fa fa-fw fa-trash" aria-hidden="true"></i></button>
 														</div>
 													</div>

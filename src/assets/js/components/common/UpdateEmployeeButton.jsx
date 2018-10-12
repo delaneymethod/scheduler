@@ -9,15 +9,19 @@ import EmployeeForm from '../forms/EmployeeForm';
 
 import UnavailabilityForm from '../forms/UnavailabilityForm';
 
+import { addClass, removeClass, showEditHandler, hideEditHandler } from '../../helpers/classes';
+
 const propTypes = {
 	rowIndex: PropTypes.number.isRequired,
 	employeeId: PropTypes.string.isRequired,
+	accountEmployeeId: PropTypes.string.isRequired,
 	handleSuccessNotification: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
 	rowIndex: 0,
 	employeeId: '',
+	accountEmployeeId: '',
 	handleSuccessNotification: () => {},
 };
 
@@ -40,11 +44,30 @@ class UpdateEmployeeButton extends Component {
 		isCreateUnavailabilityModalOpen: false,
 	});
 
-	handleUpdateEmployee = () => this.setState({ isUpdateEmployeePopoverOpen: !this.state.isUpdateEmployeePopoverOpen });
+	handleUpdateEmployee = () => {
+		this.setState({ isUpdateEmployeePopoverOpen: !this.state.isUpdateEmployeePopoverOpen }, () => {
+			/* Find the edit handler and set its display so it stays on screen */
+			if (this.state.isUpdateEmployeePopoverOpen) {
+				/* Find the edit handler for employee row and show it */
+				showEditHandler(this.props.accountEmployeeId);
+			} else {
+				/* Find the edit handler for employee row and hide it */
+				hideEditHandler(this.props.accountEmployeeId);
+			}
+		});
+	};
 
-	handleEditEmployee = () => this.setState({ isUpdateEmployeePopoverOpen: false, isEditEmployeeModalOpen: !this.state.isEditEmployeeModalOpen });
+	handleEditEmployee = () => {
+		hideEditHandler(this.props.accountEmployeeId);
 
-	handleCreateUnavailability = () => this.setState({ isUpdateEmployeePopoverOpen: false, isCreateUnavailabilityModalOpen: !this.state.isCreateUnavailabilityModalOpen });
+		this.setState({ isUpdateEmployeePopoverOpen: false, isEditEmployeeModalOpen: !this.state.isEditEmployeeModalOpen });
+	};
+
+	handleCreateUnavailability = () => {
+		hideEditHandler(this.props.accountEmployeeId);
+
+		this.setState({ isUpdateEmployeePopoverOpen: false, isCreateUnavailabilityModalOpen: !this.state.isCreateUnavailabilityModalOpen });
+	};
 
 	render = () => (
 		<Fragment>
@@ -74,6 +97,7 @@ UpdateEmployeeButton.defaultProps = defaultProps;
 const mapStateToProps = (state, props) => ({
 	rowIndex: props.rowIndex,
 	employeeId: props.employeeId,
+	accountEmployeeId: props.accountEmployeeId,
 	handleSuccessNotification: props.handleSuccessNotification,
 });
 
