@@ -7,21 +7,21 @@ export const ajaxLoading = status => ({
 });
 
 /* GET SPECIFIC ROTA EMPLOYEES */
-export const getRotaEmployeesSuccess = employees => ({
+export const getRotaEmployeesSuccess = rotaEmployees => ({
 	type: types.GET_ROTA_EMPLOYEES,
-	employees,
+	rotaEmployees,
 });
 
 export const getRotaEmployees = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
 	return api.getRotaEmployees(payload)
-		.then((employees) => {
+		.then((rotaEmployees) => {
 			dispatch(ajaxLoading(false));
 
-			dispatch(getRotaEmployeesSuccess(employees));
+			dispatch(getRotaEmployeesSuccess(rotaEmployees));
 
-			return employees;
+			return rotaEmployees;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
@@ -32,21 +32,21 @@ export const getRotaEmployees = payload => (dispatch) => {
 };
 
 /* UPDATE SPECIFIC ROTA EMPLOYEES ORDER */
-export const updateRotaEmployeesOrderSuccess = employees => ({
+export const updateRotaEmployeesOrderSuccess = rotaEmployees => ({
 	type: types.UPDATE_ROTA_EMPLOYEES_ORDER,
-	employees,
+	rotaEmployees,
 });
 
 export const updateRotaEmployeesOrder = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
 	return api.updateRotaEmployeesOrder(payload)
-		.then((employees) => {
+		.then((rotaEmployees) => {
 			dispatch(ajaxLoading(false));
 
-			dispatch(updateRotaEmployeesOrderSuccess(employees));
+			dispatch(updateRotaEmployeesOrderSuccess(rotaEmployees));
 
-			return employees;
+			return rotaEmployees;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
