@@ -502,13 +502,12 @@ describe('API', () => {
 			}],
 		});
 
-		const rotaType = {
+		const payload = {
 			rotaTypeId: 4,
+			employees: ['1', '2', '3'],
 		};
 
-		const employeeIds = ['1', '2', '3'];
-
-		return api.createRotaTypeEmployees(rotaType, employeeIds).then(data => expect(data.employees[0].accountEmployeeId).toEqual(1));
+		return api.createRotaTypeEmployees(payload).then(data => expect(data.employees[0].accountEmployeeId).toEqual(1));
 	});
 
 	it('should delete rota type employee', () => {

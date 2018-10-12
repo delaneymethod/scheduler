@@ -114,12 +114,12 @@ class ExistingEmployeesForm extends Component {
 
 			const { accountEmployeeIds } = this.state;
 
-			const order = Object.keys(accountEmployeeIds)
+			const employees = Object.keys(accountEmployeeIds)
 				.filter(accountEmployee => accountEmployeeIds[accountEmployee])
 				.map(accountEmployeeId => accountEmployeeId.replace('account_employee_id_', ''));
 
 			const payload = {
-				order,
+				employees,
 				rotaTypeId,
 			};
 
