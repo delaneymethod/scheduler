@@ -31,7 +31,7 @@ describe('Rota Type Employees Reducer', () => {
 
 		const action = {
 			type: DELETE_ROTA_TYPE_EMPLOYEE,
-			employee: mockEmployee,
+			rotaEmployee: mockEmployee,
 		};
 
 		const employees = rotaTypeEmployeesReducer(mockEmployees, action);

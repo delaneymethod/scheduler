@@ -32,21 +32,21 @@ export const createRotaTypeEmployees = payload => (dispatch) => {
 };
 
 /* DELETE SPECIFIC ROTA TYPE EMPLOYEE */
-export const deleteRotaTypeEmployeeSuccess = employee => ({
+export const deleteRotaTypeEmployeeSuccess = rotaEmployee => ({
 	type: types.DELETE_ROTA_TYPE_EMPLOYEE,
-	employee,
+	rotaEmployee,
 });
 
 export const deleteRotaTypeEmployee = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 
 	return api.deleteRotaTypeEmployee(payload)
-		.then((employee) => {
+		.then((rotaEmployee) => {
 			dispatch(ajaxLoading(false));
 
-			dispatch(deleteRotaTypeEmployeeSuccess(employee));
+			dispatch(deleteRotaTypeEmployeeSuccess(rotaEmployee));
 
-			return employee;
+			return rotaEmployee;
 		})
 		.catch((error) => {
 			dispatch(ajaxLoading(false));

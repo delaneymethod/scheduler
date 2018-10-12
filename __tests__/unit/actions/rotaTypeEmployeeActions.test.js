@@ -86,7 +86,7 @@ describe('Rota Type Employee Actions', () => {
 			status: false,
 			type: types.AJAX_LOADING,
 		}, {
-			rotaEmployees: [],
+			rotaEmployee: {},
 			type: types.DELETE_ROTA_TYPE_EMPLOYEE,
 		}];
 
