@@ -518,7 +518,7 @@ describe('API', () => {
 
 		const payload = {
 			rotaTypeId: 1,
-			employeeId: 2,
+			accountEmployeeId: 2,
 		};
 
 		return api.deleteRotaTypeEmployee(payload).then(data => expect(data.deleted).toBe(true));
