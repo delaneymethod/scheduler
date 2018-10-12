@@ -74,11 +74,11 @@ import { getRotaEmployees } from '../../../actions/rotaEmployeeActions';
 
 import UnassignedShiftsOverview from '../../common/UnassignedShiftsOverview';
 
-import { showEditHandler, hideEditHandler } from '../../helpers/toggleClasses';
-
 import ShiftUnavailabilityButton from '../../common/ShiftUnavailabilityButton';
 
 import { getEmployees, orderEmployees } from '../../../actions/employeeActions';
+
+import { showEditHandler, hideEditHandler } from '../../../helpers/toggleClasses';
 
 import { deleteRotaTypeEmployee } from '../../../actions/rotaTypeEmployeeActions';
 
