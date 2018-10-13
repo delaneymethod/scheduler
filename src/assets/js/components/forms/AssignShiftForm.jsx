@@ -34,8 +34,8 @@ const propTypes = {
 	week: PropTypes.object.isRequired,
 	shifts: PropTypes.array.isRequired,
 	rotaType: PropTypes.object.isRequired,
-	employees: PropTypes.array.isRequired,
 	handleClose: PropTypes.func.isRequired,
+	rotaEmployees: PropTypes.array.isRequired,
 	handleSuccessNotification: PropTypes.func.isRequired,
 	handleSwitchFromAssignShiftToCreateShift: PropTypes.func.isRequired,
 };
@@ -46,9 +46,9 @@ const defaultProps = {
 	shifts: [],
 	rotaType: {},
 	shiftId: null,
-	employees: [],
 	startDate: null,
 	employeeId: null,
+	rotaEmployees: [],
 	handleClose: () => {},
 	handleSuccessNotification: () => {},
 	handleSwitchFromAssignShiftToCreateShift: () => {},
@@ -369,12 +369,12 @@ class AssignShiftForm extends Component {
 						</FormGroup>
 					</Col>
 				</Row>
-				{(this.props.employees.length > 0) ? (
+				{(this.props.rotaEmployees.length > 0) ? (
 					<FormGroup>
 						<Label for="employeeId">Employee <span className="text-danger">&#42;</span></Label>
 						<Input type="select" name="employeeId" id="employeeId" className="custom-select custom-select-xl" value={this.state.employeeId} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="3" required>
 							<option value="" label="Select Employee">Select Employee</option>
-							{this.props.employees.map(({ employee }, index) => <option key={index} value={employee.employeeId} label={`${employee.firstName} ${employee.lastName}`}>{employee.firstName} ${employee.lastName}</option>)}
+							{this.props.rotaEmployees.map(({ employee }, index) => <option key={index} value={employee.employeeId} label={`${employee.firstName} ${employee.lastName}`}>{employee.firstName} ${employee.lastName}</option>)}
 						</Input>
 						<FieldFeedbacks for="employeeId" show="all">
 							<FieldFeedback when="*">- Please select an employee.</FieldFeedback>
@@ -400,7 +400,7 @@ const mapStateToProps = (state, props) => ({
 	rotaType: state.rotaType,
 	overview: props.overview,
 	startDate: props.startDate,
-	employees: state.employees,
+	rotaEmployees: state.rotaEmployees,
 });
 
 const mapDispatchToProps = dispatch => ({
