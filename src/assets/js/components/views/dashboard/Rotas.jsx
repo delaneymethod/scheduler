@@ -209,6 +209,8 @@ class Rotas extends Component {
 
 		this.handleFilterEmployees = this.handleFilterEmployees.bind(this);
 
+		this.handleGetRotaEmployees = this.handleGetRotaEmployees.bind(this);
+
 		this.handleInfoNotification = this.handleInfoNotification.bind(this);
 
 		this.handleNoEnterKeySubmit = this.handleNoEnterKeySubmit.bind(this);
@@ -247,8 +249,8 @@ class Rotas extends Component {
 		placementId: '',
 		employeeName: '',
 		shiftConflict: {},
-		totalEmployees: 0,
 		startDate: moment(),
+		totalRotaEmployees: 0,
 		isErrorModalOpen: false,
 		totalUnassignedShifts: 0,
 		isFilterPopoverOpen: false,
@@ -300,9 +302,9 @@ class Rotas extends Component {
 			return;
 		}
 
-		/* If the current week, current rota, current rota type, current week unavailabilities, employees, settings or shifts had any changes, re/load the table */
-		if (prevProps.unavailabilityOccurrences !== this.props.unavailabilityOccurrences || prevProps.employees !== this.props.employees || prevProps.week !== this.props.week || prevProps.rota !== this.props.rota || prevProps.rotaType !== this.props.rotaType || prevProps.shifts !== this.props.shifts || prevProps.settings !== this.props.settings) {
-			this.setState({ totalEmployees: this.props.employees.length }, () => this.handleFetchData());
+		/* If the current week, current rota, current rota type, current week unavailabilities, rota employees, settings or shifts had any changes, re/load the table */
+		if (prevProps.unavailabilityOccurrences !== this.props.unavailabilityOccurrences || prevProps.rotaEmployees !== this.props.rotaEmployees || prevProps.week !== this.props.week || prevProps.rota !== this.props.rota || prevProps.rotaType !== this.props.rotaType || prevProps.shifts !== this.props.shifts || prevProps.settings !== this.props.settings) {
+			this.setState({ totalRotaEmployees: this.props.rotaEmployees.length }, () => this.handleFetchData());
 		}
 	};
 
@@ -353,9 +355,9 @@ class Rotas extends Component {
 		/* Find the edit handler for employee row and show it */
 		showEditHandler(accountEmployeeId);
 
-		const { actions, employees, rotaType: { rotaTypeId } } = this.props;
+		const { actions, rotaEmployees, rotaType: { rotaTypeId } } = this.props;
 
-		const accountEmployee = employees.filter(data => data.accountEmployeeId === accountEmployeeId).shift();
+		const accountEmployee = rotaEmployees.filter(data => data.accountEmployeeId === accountEmployeeId).shift();
 
 		/* Check if the user wants to remove the employee from the current rota */
 		let message = `<div class="text-center"><ul class="list-unstyled font-weight-bold text-uppercase"><li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li></ul><p>Please confirm that you wish to remove the employee from the current rota?</p><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Any future shifts will be unassigned!</p><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
@@ -393,9 +395,6 @@ class Rotas extends Component {
 					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
 					.then(() => this.handleGetEmployees())
 					.then(() => this.handleGetRotaEmployees())
-					// .then(() => this.handleUpdateEmployeeOrder())
-					/* I guess the API could return the ordered list of employees so we dont need to make this extra call */
-					// .then(() => this.handleGetEmployees())
 					/* Updating a shift or placement will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 					.then(() => this.handleGetShifts())
 					.then(() => {
@@ -428,7 +427,7 @@ class Rotas extends Component {
 	handleFetchData = () => {
 		logMessage('info', 'Called Rotas handleFetchData');
 
-		const employees = this.handleOrderEmployees();
+		const rotaEmployees = this.handleOrderEmployees();
 
 		const weekDates = [];
 
@@ -500,7 +499,7 @@ class Rotas extends Component {
 		});
 
 		/* Loop over each employee and build our table body data */
-		employees.forEach((accountEmployee, accountEmployeeIndex) => {
+		rotaEmployees.forEach((accountEmployee, accountEmployeeIndex) => {
 			/* Each row holds employee info */
 			const rowAssigned = {};
 
@@ -540,7 +539,7 @@ class Rotas extends Component {
 				/* Loop over all the shifts and get current date shifts */
 				const shifts = sortBy(this.props.shifts, 'startTime').filter(data => moment(data.startTime).format('YYYY-MM-DD') === moment(weekDate).format('YYYY-MM-DD'));
 
-				/* Now we have to loop over all the shifts, grabbing the shifts belong to the current employee since the shifts API has all shifts not just those assigned to employees */
+				/* Now we have to loop over all the shifts, grabbing the shifts belong to the current employee since the shifts API has all shifts not just those assigned to rota employees */
 				shifts.forEach((shift) => {
 					/* If the shift has placements, we can assume its been assigned to an employee */
 					if (shift.placements !== null) {
@@ -688,7 +687,7 @@ class Rotas extends Component {
 			}
 
 			/* Quick and easy - loop over each table body row and hide / show rows based on employee full name values */
-			let totalEmployees = 0;
+			let totalRotaEmployees = 0;
 
 			const draggableRows = document.querySelectorAll('.draggable-row');
 
@@ -701,13 +700,13 @@ class Rotas extends Component {
 					const display = includes(employeeFullName, employeeSearchName) ? 'display:table-row' : 'display:none';
 
 					if (display === 'display:table-row') {
-						totalEmployees += 1;
+						totalRotaEmployees += 1;
 					}
 
 					draggableRow.setAttribute('style', display);
 				});
 
-				this.setState({ totalEmployees });
+				this.setState({ totalRotaEmployees });
 			}
 		});
 	};
@@ -783,20 +782,20 @@ class Rotas extends Component {
 
 	handleOrderEmployees = () => {
 		/**
-		 * Employees may have a different sort positions for different rota types,
-		 * so we loop over each employee and get its sort position for the current rota type.
+		 * Rota employees may have a different sort positions for different rota types,
+		 * so we loop over each rota employee and get its sort position for the current rota type.
 		 */
-		let orderableEmployees = this.props.employees.filter(accountEmployee => accountEmployee.rotaTypeAccountEmployees && accountEmployee.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId));
+		let orderableRotaEmployees = this.props.rotaEmployees.filter(accountEmployee => accountEmployee.rotaTypeAccountEmployees && accountEmployee.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId));
 
-		orderableEmployees = orderableEmployees.sort((a, b) => a.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId).sortPosition - b.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId).sortPosition);
+		orderableRotaEmployees = orderableRotaEmployees.sort((a, b) => a.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId).sortPosition - b.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId).sortPosition);
 
-		/* Grab all employees without sort positions setup for rota types */
-		const nonOrderableEmployees = this.props.employees.filter(accountEmployee => !accountEmployee.rotaTypeAccountEmployees || !accountEmployee.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId));
+		/* Grab all rota employees without sort positions setup for rota types */
+		const nonOrderableRotaEmployees = this.props.rotaEmployees.filter(accountEmployee => !accountEmployee.rotaTypeAccountEmployees || !accountEmployee.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId));
 
-		const orderedEmployees = concat(orderableEmployees, nonOrderableEmployees);
+		const orderedRotaEmployees = concat(orderableRotaEmployees, nonOrderableRotaEmployees);
 
-		/* Now that employees with sort positions have been ordered, add back in the non sort position employees */
-		saveState('employees:ordered', orderedEmployees);
+		/* Now that rota employees with sort positions have been ordered, add back in the non sort position rota employees */
+		saveState('rotaEmployees:ordered', orderedRotaEmployees);
 
 		return orderedEmployees;
 	};
@@ -806,7 +805,7 @@ class Rotas extends Component {
 			Orderable.create(document.getElementById('tableBody'), {
 				scroll: true,
 				animation: 150,
-				group: 'employees',
+				group: 'rotaEmployees',
 				dataIdAttr: 'data-account-employee-id',
 				handle: '.drag-handler',
 				draggable: '.draggable-row',
@@ -814,9 +813,9 @@ class Rotas extends Component {
 				ghostClass: 'draggable-row-ghost',
 				store: {
 					get: () => {
-						const employees = getState('employees:ordered');
+						const rotaEmployees = getState('rotaEmployees:ordered');
 
-						return employees.map(accountEmployee => accountEmployee.accountEmployeeId);
+						return rotaEmployees.map(accountEmployee => accountEmployee.accountEmployeeId);
 					},
 					set: sortable => this.handleUpdateEmployeeOrder(sortable.toArray()),
 				},
@@ -826,8 +825,16 @@ class Rotas extends Component {
 		}
 	};
 
+	handleGetRotaEmployees = () => {
+		const { rota, actions } = this.props;
+
+		logMessage('info', 'Called Rotas handleGetRotaEmployees getRotaEmployees');
+
+		return actions.getRotaEmployees(rota).catch(error => Promise.reject(error));
+	};
+	
 	handleGetEmployees = () => {
-		logMessage('info', 'Called Employee handleGetEmployees getEmployees');
+		logMessage('info', 'Called Rotas handleGetEmployees getEmployees');
 
 		return this.props.actions.getEmployees().catch(error => Promise.reject(error));
 	};
@@ -900,7 +907,7 @@ class Rotas extends Component {
 
 		/**
 		 * Get date only part from both start and end times.
-		 * Shifts can be dragged back, forward, up and down. The latter two actions is moving a shift between employees within the same day.
+		 * Shifts can be dragged back, forward, up and down. The latter two actions is moving a shift between rota employees within the same day.
 		 * Shifts can also flow over to the following day (E.g start at 6pm Tuesday and finish 2am Wednesday).
 		 * If the date parts are the same, this means the shift starts and ends on the same day and was dragged up or down.
 		 * If the date parts are different, means the shift finishes on the following day and if dragged forward increase the end time date by 1 day and if dragged back, decrease the end time date by 1 day.
@@ -1050,8 +1057,8 @@ class Rotas extends Component {
 								};
 
 								/**
-								 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
-								 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
+								 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same rota employees row
+								 * If the employee id is different, then we can assume the user has dragged and shift into a different rota employees row
 								 */
 								logMessage('info', 'Called Rotas handleUpdateShift updatePlacement');
 
@@ -1103,8 +1110,8 @@ class Rotas extends Component {
 						};
 
 						/**
-						 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
-						 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
+						 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same rota employees row
+						 * If the employee id is different, then we can assume the user has dragged and shift into a different rota employees row
 						 */
 						logMessage('info', 'Called Rotas handleUpdateShift updatePlacement');
 
@@ -1466,13 +1473,13 @@ class Rotas extends Component {
 					<Fragment>
 						<div className="table-wrapper">
 							<div className="table-scroller border-0 mt-0 mr-0 mb-3 p-0 u-disable-selection">
-								<table className="employees p-0 m-0">
+								<table className="rota-employees p-0 m-0">
 									<thead>
 										<tr>
 											<th className="p-2 text-left column first sortable text-uppercase">
 												<div className="d-flex align-items-center p-0 m-0">
-													<div className="d-inline-block p-0 mr-auto">Employees ({this.state.totalEmployees})</div>
-													{(this.props.employees.length > 0) ? (
+													<div className="d-inline-block p-0 mr-auto">Employees ({this.state.totalRotaEmployees})</div>
+													{(this.props.rotaEmployees.length > 0) ? (
 														<Fragment>
 															<div className="d-inline-block p-0 m-0 mr-1 mr-xl-1"><button type="button" className={`btn btn-dark border-0 btn-icon${!isEmpty(this.state.employeeName) ? ' btn-filter-active' : ''}`} id="filter" title="Filter by" aria-label="Filter by" onClick={this.handleFilter}><i className="fa fa-fw fa-filter" aria-hidden="true"></i></button></div>
 															<div className="d-inline-block p-0 m-0 mr-1 mr-xl-1"><button type="button" className={`btn btn-dark border-0 btn-icon${!isEmpty(this.state.sort.column) ? ' btn-filter-active' : ''}`} id="sortBy" title="Sort by" aria-label="Sort by" onClick={this.handleSortBy}><i className="fa fa-fw fa-sort" aria-hidden="true"></i></button></div>
