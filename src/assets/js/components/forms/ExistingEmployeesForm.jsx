@@ -49,6 +49,8 @@ class ExistingEmployeesForm extends Component {
 
 		this.handleGetShifts = this.handleGetShifts.bind(this);
 
+		this.handleSelectAll = this.handleSelectAll.bind(this);
+
 		this.handleGetEmployees = this.handleGetEmployees.bind(this);
 
 		this.handleGetRotaEmployees = this.handleGetRotaEmployees.bind(this);
@@ -58,11 +60,19 @@ class ExistingEmployeesForm extends Component {
 
 	getInitialState = () => ({
 		error: {},
+		selectAll: false,
 		accountEmployeeIds: this.props.employees.reduce((state, accountEmployee) => ({
 			...state,
 			[`account_employee_id_${accountEmployee.accountEmployeeId}`]: (this.props.rotaEmployees.find(data => data.accountEmployeeId === accountEmployee.accountEmployeeId)),
 		}), []),
 	});
+
+	handleSelectAll = () => this.setState({ selectAll: !this.state.selectAll }, () => this.setState({
+		accountEmployeeIds: this.props.employees.reduce((state, accountEmployee) => ({
+			...state,
+			[`account_employee_id_${accountEmployee.accountEmployeeId}`]: this.state.selectAll,
+		}), []),
+	}));
 
 	handleChangeToggleSwitch = (event) => {
 		const { name, checked } = event.currentTarget;
@@ -166,6 +176,21 @@ class ExistingEmployeesForm extends Component {
 		<Fragment>
 			{this.errorMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
+				<Row>
+					<Col xs="12" sm="12" md="12" lg="12" xl="12">
+						<Row className="d-flex justify-content-center">
+							<Col className="align-self-center text-left" xs="12" sm="12" md="6" lg="6" xl="6">
+								<Label check className="mt-2 mb-2">Select All</Label>
+							</Col>
+							<Col className="align-self-center text-right" xs="12" sm="12" md="6" lg="6" xl="6">
+								<Label check className="switch mt-2 mb-2">
+									<input type="checkbox" name="toggle_all_switches" onChange={this.handleSelectAll} checked={this.state.selectAll} />
+									<span className="slider round"></span>
+								</Label>
+							</Col>
+						</Row>
+					</Col>
+				</Row>
 				<Row>
 					{this.props.employees.map((accountEmployee, accountEmployeeIndex) => (
 						<Col key={accountEmployeeIndex} xs="12" sm="12" md="12" lg="12" xl="12">
