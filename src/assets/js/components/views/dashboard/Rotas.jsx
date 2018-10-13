@@ -797,7 +797,7 @@ class Rotas extends Component {
 		/* Now that rota employees with sort positions have been ordered, add back in the non sort position rota employees */
 		saveState('rotaEmployees:ordered', orderedRotaEmployees);
 
-		return orderedEmployees;
+		return orderedRotaEmployees;
 	};
 
 	handleOrderable = () => {
@@ -832,7 +832,7 @@ class Rotas extends Component {
 
 		return actions.getRotaEmployees(rota).catch(error => Promise.reject(error));
 	};
-	
+
 	handleGetEmployees = () => {
 		logMessage('info', 'Called Rotas handleGetEmployees getEmployees');
 
@@ -1473,7 +1473,7 @@ class Rotas extends Component {
 					<Fragment>
 						<div className="table-wrapper">
 							<div className="table-scroller border-0 mt-0 mr-0 mb-3 p-0 u-disable-selection">
-								<table className="rota-employees p-0 m-0">
+								<table className="employees p-0 m-0">
 									<thead>
 										<tr>
 											<th className="p-2 text-left column first sortable text-uppercase">
@@ -1488,37 +1488,41 @@ class Rotas extends Component {
 													<div className="d-none d-lg-inline-block p-0 m-0 mr-1 mr-xl-1"><button type="button" className="btn btn-secondary border-0 btn-icon" id="uploadEmployees" title="Upload Employees" aria-label="Upload Employees" onClick={this.handleUploadEmployees}><i className="fa fa-fw fa-upload" aria-hidden="true"></i></button></div>
 													<div className="d-none d-lg-inline-block p-0 m-0"><button type="button" className="btn btn-secondary border-0 btn-icon" id="manageRotaEmployees" title="Manage Rota Employees" aria-label="Manage Rota Employees" onClick={this.handleManageRotaEmployees}><i className="fa fa-fw fa-user-plus" aria-hidden="true"></i></button></div>
 												</div>
-												<Popover placement="bottom" isOpen={this.state.isFilterPopoverOpen} target="filter" toggle={this.handleFilter}>
-													<PopoverBody>
-														<ul className="popover-menu">
-															<li><label className="pt-2 pb-1 m-0">Filter</label></li>
-														</ul>
-														<Form className="popover-menu">
-															<FormGroup className="pl-1 pr-1 pb-1 mb-1">
-																<Input type="text" name="employeeName" id="employeeName" className="border-0" value={this.state.employeeName} onChange={event => this.handleFilterEmployees(event)} onKeyPress={event => this.handleNoEnterKeySubmit(event)} placeholder="By employee name..." autoComplete="off" tabIndex="-1" bsSize="sm" />
-															</FormGroup>
-															<div className="filter-buttons">
-																<button type="button" className="btn btn-action m-0 border-0" id="filterClear" onClick={event => this.handleFilterEmployees(event, '')}>Clear</button>
-																<button type="button" className="btn btn-action m-0 border-0" id="filterClose" onClick={this.handleFilter}>Close</button>
-															</div>
-														</Form>
-													</PopoverBody>
-												</Popover>
-												<Popover placement="bottom" isOpen={this.state.isSortByPopoverOpen} target="sortBy" toggle={this.handleSortBy}>
-													<PopoverBody>
-														<ul className="popover-menu">
-															<li><label className="pt-2 pb-1 m-0">Sort by</label></li>
-															<li><button type="button" title="Sort by First Name" id="sortByFirstName" className={`btn btn-action btn-nav border-0${(this.state.sort.column === 'firstName') ? ' text-warning' : ''}`} onClick={event => this.handleSortEmployees(event, 'firstName')}>First Name {(this.state.sort.column === 'firstName') ? <i className={`fa fa-sort-alpha-${this.state.sort.direction}`} aria-hidden="true"></i> : null}</button></li>
-															<li><button type="button" title="Sort by Last Name" id="sortByLastName" className={`btn btn-action btn-nav border-0${(this.state.sort.column === 'lastName') ? ' text-warning' : ''}`} onClick={event => this.handleSortEmployees(event, 'lastName')}>Last Name {(this.state.sort.column === 'lastName') ? <i className={`fa fa-sort-alpha-${this.state.sort.direction}`} aria-hidden="true"></i> : null}</button></li>
-															{(!isEmpty(this.state.sort.column)) ? (
-																<li className="filter-buttons">
-																	<button type="button" title="Clear Sort by" id="clearSortBy" className="btn btn-action m-0 border-0 mb-2" style={{ borderRadius: '4px' }} onClick={event => this.handleClearSortEmployees(event)}>Clear</button>
-																	<button type="button" title="Close Sort by" id="closeSortBy" className="btn btn-action m-0 border-0" style={{ borderRadius: '4px' }} onClick={this.handleSortBy}>Close</button>
-																</li>
-															) : null}
-														</ul>
-													</PopoverBody>
-												</Popover>
+												{(this.props.rotaEmployees.length > 0) ? (
+													<Fragment>
+														<Popover placement="bottom" isOpen={this.state.isFilterPopoverOpen} target="filter" toggle={this.handleFilter}>
+															<PopoverBody>
+																<ul className="popover-menu">
+																	<li><label className="pt-2 pb-1 m-0">Filter</label></li>
+																</ul>
+																<Form className="popover-menu">
+																	<FormGroup className="pl-1 pr-1 pb-1 mb-1">
+																		<Input type="text" name="employeeName" id="employeeName" className="border-0" value={this.state.employeeName} onChange={event => this.handleFilterEmployees(event)} onKeyPress={event => this.handleNoEnterKeySubmit(event)} placeholder="By employee name..." autoComplete="off" tabIndex="-1" bsSize="sm" />
+																	</FormGroup>
+																	<div className="filter-buttons">
+																		<button type="button" className="btn btn-action m-0 border-0" id="filterClear" onClick={event => this.handleFilterEmployees(event, '')}>Clear</button>
+																		<button type="button" className="btn btn-action m-0 border-0" id="filterClose" onClick={this.handleFilter}>Close</button>
+																	</div>
+																</Form>
+															</PopoverBody>
+														</Popover>
+														<Popover placement="bottom" isOpen={this.state.isSortByPopoverOpen} target="sortBy" toggle={this.handleSortBy}>
+															<PopoverBody>
+																<ul className="popover-menu">
+																	<li><label className="pt-2 pb-1 m-0">Sort by</label></li>
+																	<li><button type="button" title="Sort by First Name" id="sortByFirstName" className={`btn btn-action btn-nav border-0${(this.state.sort.column === 'firstName') ? ' text-warning' : ''}`} onClick={event => this.handleSortEmployees(event, 'firstName')}>First Name {(this.state.sort.column === 'firstName') ? <i className={`fa fa-sort-alpha-${this.state.sort.direction}`} aria-hidden="true"></i> : null}</button></li>
+																	<li><button type="button" title="Sort by Last Name" id="sortByLastName" className={`btn btn-action btn-nav border-0${(this.state.sort.column === 'lastName') ? ' text-warning' : ''}`} onClick={event => this.handleSortEmployees(event, 'lastName')}>Last Name {(this.state.sort.column === 'lastName') ? <i className={`fa fa-sort-alpha-${this.state.sort.direction}`} aria-hidden="true"></i> : null}</button></li>
+																	{(!isEmpty(this.state.sort.column)) ? (
+																		<li className="filter-buttons">
+																			<button type="button" title="Clear Sort by" id="clearSortBy" className="btn btn-action m-0 border-0 mb-2" style={{ borderRadius: '4px' }} onClick={event => this.handleClearSortEmployees(event)}>Clear</button>
+																			<button type="button" title="Close Sort by" id="closeSortBy" className="btn btn-action m-0 border-0" style={{ borderRadius: '4px' }} onClick={this.handleSortBy}>Close</button>
+																		</li>
+																	) : null}
+																</ul>
+															</PopoverBody>
+														</Popover>
+													</Fragment>
+												) : null}
 												<Popover placement="bottom" isOpen={this.state.isManageRotaEmployeesPopoverOpen} target="manageRotaEmployees" toggle={this.handleManageRotaEmployees}>
 													<PopoverBody>
 														<ul className="popover-menu">
