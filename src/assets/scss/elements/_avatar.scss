@@ -1,0 +1,27 @@
+:root {
+    --avatar-size: 2.5rem;
+    --avatar-size-sm: 1.6rem;
+}
+
+.avatar-circle {
+    border-radius: 50%;
+    width: var(--avatar-size);
+    height: var(--avatar-size);
+}
+
+.avatar-circle-sm {
+    border-radius: 50%;
+    width: var(--avatar-size-sm);
+    height: var(--avatar-size-sm);
+}
+
+.avatar-initials {
+    line-height: 1;
+    top: calc(var(--avatar-size) / 3.5);
+    font-size: calc(var(--avatar-size) / 3.2);
+}
+
+.avatar-initials-sm {
+    top: calc(var(--avatar-size-sm) / 4);
+    font-size: calc(var(--avatar-size-sm) / 3.2); 
+}

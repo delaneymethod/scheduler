@@ -2,7 +2,6 @@ import 'element-closest';
 import Moment from 'moment';
 import has from 'lodash/has';
 import delay from 'lodash/delay';
-import Avatar from 'react-avatar';
 import omitBy from 'lodash/omitBy';
 import jwtDecode from 'jwt-decode';
 import Orderable from 'sortablejs';
@@ -1560,8 +1559,9 @@ class Rotas extends Component {
 												<td className="p-2 align-top text-left p-0 m-0 edit-employee column first">
 													<div className="d-flex align-items-start p-0 m-0 wrap-words position-relative">
 														<div className="d-inline-block p-0 mt-0 ml-0 mr-2 mb-0 drag-handler">
-															<Avatar className="d-none d-md-block" textSizeRatio={3} color="#1CA3AE" fgColor="#ffffff" name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="39" />
-															<Avatar className="d-block d-md-none" textSizeRatio={3} color="#1CA3AE" fgColor="#ffffff" name={`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`} round={true} size="29" />
+															<div className="avatar-circle text-center bg-secondary">
+																<span className="avatar-initials position-relative text-white">{(`${row.accountEmployee.employee.firstName} ${row.accountEmployee.employee.lastName}`).split(' ').map(n => n[0]).join('')}</span>
+															</div>
 														</div>
 														<div className="d-inline-block pt-0 pl-0 pr-0 pb-0 m-0">
 															<div id="fullname">{row.accountEmployee.employee.firstName} {row.accountEmployee.employee.lastName}</div>
