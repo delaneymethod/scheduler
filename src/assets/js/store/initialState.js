@@ -16,7 +16,6 @@ export default {
 	ajaxLoading: false,
 	authenticated: false,
 	unavailabilities: [],
-	rotaTypeEmployees: [],
 	subscriptionLevels: [],
 	unavailabilityTypes: [],
 	unavailabilityOccurrences: [],

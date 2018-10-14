@@ -164,7 +164,6 @@ export const deleteRota = rota => request('DELETE', `/rotas/${rota.rotaId}`, 204
 export const publishRota = rota => request('POST', `/rotas/${rota.rotaId}/publish`, 201);
 
 /* ROTA EMPLOYEES */
-
 export const getRotaEmployees = rota => request('GET', `/rotas/${rota.rotaId}/employees`);
 
 export const updateRotaEmployeesOrder = payload => request('PUT', `/rotas/${payload.rotaId}/employees/order`, 200, payload);
@@ -181,7 +180,6 @@ export const updateRotaType = rotaType => request('PUT', `/rota-types/${rotaType
 export const deleteRotaType = rotaType => request('DELETE', `/rota-types/${rotaType.rotaTypeId}`, 204);
 
 /* ROTA TYPE EMPLOYEES */
-
 export const createRotaTypeEmployees = payload => request('POST', `/rota-types/${payload.rotaTypeId}/employees`, 201, payload);
 
 export const deleteRotaTypeEmployee = payload => request('DELETE', `/rota-types/${payload.rotaTypeId}/employees/${payload.accountEmployeeId}`, 204);

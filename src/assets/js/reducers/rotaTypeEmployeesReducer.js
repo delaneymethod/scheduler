@@ -16,7 +16,7 @@ const rotaTypeEmployeesReducer = (state = combinedState.rotaEmployees, action) =
 
 		case types.DELETE_ROTA_TYPE_EMPLOYEE:
 			return [
-				...state.filter(employee => employee.id !== action.employee.id),
+				...state.filter(rotaEmployee => rotaEmployee.id !== action.rotaEmployee.id),
 			];
 
 		default:

@@ -44,7 +44,8 @@
 	*/
 }
 
-.employees {
+.employees,
+.rota-employees {
 	width: 100%;
 	table-layout: fixed;
 	border-collapse: collapse;
@@ -401,5 +402,15 @@
 	
 	tfoot tr th {
 		background-color: $white;
+	}
+}
+
+.employees {	
+	.column.numeric {
+		width: 120px !important;
+	}
+
+	.column.last {
+		width: 130px !important;
 	}
 }

@@ -55,8 +55,6 @@ import { addClass, removeClass } from '../../../helpers/classes';
 
 import { switchRotaCost } from '../../../actions/rotaCostActions';
 
-import UploadEmployeesForm from '../../forms/UploadEmployeesForm';
-
 import { getRotas, switchRota } from '../../../actions/rotaActions';
 
 import { getState, saveState } from '../../../store/persistedState';
@@ -98,6 +96,7 @@ const propTypes = {
 	rotaCost: PropTypes.number.isRequired,
 	rotaType: PropTypes.object.isRequired,
 	employees: PropTypes.array.isRequired,
+	settings: PropTypes.object.isRequired,
 	authenticated: PropTypes.bool.isRequired,
 	rotaEmployees: PropTypes.array.isRequired,
 	unavailabilityOccurrences: PropTypes.array.isRequired,
@@ -111,6 +110,7 @@ const defaultProps = {
 	shifts: [],
 	rotaCost: 0,
 	rotaType: {},
+	settings: {},
 	employees: [],
 	rotaEmployees: [],
 	authenticated: false,
@@ -204,8 +204,6 @@ class Rotas extends Component {
 
 		this.handleOrderEmployees = this.handleOrderEmployees.bind(this);
 
-		this.handleUploadEmployees = this.handleUploadEmployees.bind(this);
-
 		this.handleFilterEmployees = this.handleFilterEmployees.bind(this);
 
 		this.handleGetRotaEmployees = this.handleGetRotaEmployees.bind(this);
@@ -258,7 +256,6 @@ class Rotas extends Component {
 		isCreateShiftModalOpen: false,
 		isShiftConflictModalOpen: false,
 		isCreateEmployeeModalOpen: false,
-		isUploadEmployeesModalOpen: false,
 		isExistingEmployeesModelOpen: false,
 		isManageRotaEmployeesPopoverOpen: false,
 	});
@@ -388,7 +385,7 @@ class Rotas extends Component {
 					accountEmployeeId,
 				};
 
-				logMessage('info', 'Called EmployeeForm handleRemoveEmployeeFromRota deleteRotaTypeEmployee');
+				logMessage('info', 'Called Rotas handleRemoveEmployeeFromRota deleteRotaTypeEmployee');
 
 				actions.deleteRotaTypeEmployee(payload)
 					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
@@ -397,16 +394,19 @@ class Rotas extends Component {
 					/* Updating a shift or placement will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 					.then(() => this.handleGetShifts())
 					.then(() => {
-						/* Close the modal */
-						this.props.handleClose();
-
 						/* FIXME - Make messages constants in config */
 						message = '<p>Employee was removed from Rota!</p>';
 
 						/* Pass a message back up the rabbit hole to the parent component */
-						this.props.handleSuccessNotification(message);
+						this.handleSuccessNotification(message);
 					})
-					.catch(error => this.setState({ error }));
+					.catch((error) => {
+						error.data.title = 'Delete Rota Employee';
+
+						this.setState({ error });
+
+						this.handleModal();
+					});
 			}, (result) => {
 				/* We do nothing, but find the edit handler for employee row and hide it */
 				hideEditHandler(accountEmployeeId);
@@ -416,8 +416,6 @@ class Rotas extends Component {
 	handleCreateEmployee = () => this.setState({ isCreateEmployeeModalOpen: !this.state.isCreateEmployeeModalOpen, isManageRotaEmployeesPopoverOpen: false });
 
 	handleExistingEmployees = () => this.setState({ isExistingEmployeesModalOpen: !this.state.isExistingEmployeesModalOpen });
-
-	handleUploadEmployees = () => this.setState({ isUploadEmployeesModalOpen: !this.state.isUploadEmployeesModalOpen });
 
 	handleAssignShift = (event, employeeId, startDate) => this.setState({ startDate, employeeId, isAssignShiftModalOpen: !this.state.isAssignShiftModalOpen });
 
@@ -1472,7 +1470,7 @@ class Rotas extends Component {
 					<Fragment>
 						<div className="table-wrapper">
 							<div className="table-scroller border-0 mt-0 mr-0 mb-3 p-0 u-disable-selection">
-								<table className="employees p-0 m-0">
+								<table className="rota-employees p-0 m-0">
 									<thead>
 										<tr>
 											<th className="p-2 text-left column first sortable text-uppercase">
@@ -1484,7 +1482,6 @@ class Rotas extends Component {
 															<div className="d-inline-block p-0 m-0 mr-1 mr-xl-1"><button type="button" className={`btn btn-dark border-0 btn-icon${!isEmpty(this.state.sort.column) ? ' btn-filter-active' : ''}`} id="sortBy" title="Sort by" aria-label="Sort by" onClick={this.handleSortBy}><i className="fa fa-fw fa-sort" aria-hidden="true"></i></button></div>
 														</Fragment>
 													) : null}
-													<div className="d-none d-lg-inline-block p-0 m-0 mr-1 mr-xl-1"><button type="button" className="btn btn-secondary border-0 btn-icon" id="uploadEmployees" title="Upload Employees" aria-label="Upload Employees" onClick={this.handleUploadEmployees}><i className="fa fa-fw fa-upload" aria-hidden="true"></i></button></div>
 													<div className="d-none d-lg-inline-block p-0 m-0"><button type="button" className="btn btn-secondary border-0 btn-icon" id="manageRotaEmployees" title="Manage Rota Employees" aria-label="Manage Rota Employees" onClick={this.handleManageRotaEmployees}><i className="fa fa-fw fa-user-plus" aria-hidden="true"></i></button></div>
 												</div>
 												{(this.props.rotaEmployees.length > 0) ? (
@@ -1627,9 +1624,6 @@ class Rotas extends Component {
 				<Modal title="Create Employee" className="modal-dialog" show={this.state.isCreateEmployeeModalOpen} onClose={this.handleCreateEmployee}>
 					<EmployeeForm editMode={false} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateEmployee} />
 				</Modal>
-				<Modal title="Upload Employees" className="modal-dialog" show={this.state.isUploadEmployeesModalOpen} onClose={this.handleUploadEmployees}>
-					<UploadEmployeesForm handleInfoNotification={this.handleInfoNotification} handleClose={this.handleUploadEmployees} />
-				</Modal>
 				<Modal title="Add Existing Employees" className="modal-dialog" show={this.state.isExistingEmployeesModalOpen} onClose={this.handleExistingEmployees}>
 					<ExistingEmployeesForm handleInfoNotification={this.handleInfoNotification} handleClose={this.handleExistingEmployees} />
 				</Modal>
@@ -1661,6 +1655,7 @@ const mapStateToProps = (state, props) => ({
 	shifts: state.shifts,
 	rotaCost: state.rotaCost,
 	rotaType: state.rotaType,
+	settings: state.settings,
 	employees: state.employees,
 	rotaEmployees: state.rotaEmployees,
 	authenticated: state.authenticated,

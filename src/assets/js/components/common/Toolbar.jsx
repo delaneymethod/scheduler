@@ -34,6 +34,8 @@ import { switchWeek } from '../../actions/weekActions';
 
 import { updateSettings } from '../../actions/settingActions';
 
+import UploadEmployeesForm from '../forms/UploadEmployeesForm';
+
 import { confirm, complexConfirm } from '../../helpers/confirm';
 
 import { getRotaTypes, switchRotaType } from '../../actions/rotaTypeActions';
@@ -112,6 +114,10 @@ class Toolbar extends Component {
 
 		this.handleEditRotaTooltip = this.handleEditRotaTooltip.bind(this);
 
+		this.handleUploadEmployees = this.handleUploadEmployees.bind(this);
+
+		this.handleInfoNotification = this.handleInfoNotification.bind(this);
+
 		this.handleDownloadRotaMenu = this.handleDownloadRotaMenu.bind(this);
 
 		this.handleRotaBudgetTooltip = this.handleRotaBudgetTooltip.bind(this);
@@ -125,6 +131,8 @@ class Toolbar extends Component {
 		this.handleSuccessNotification = this.handleSuccessNotification.bind(this);
 
 		this.handleCreateEmployeeTooltip = this.handleCreateEmployeeTooltip.bind(this);
+
+		this.handleUploadEmployeesTooltip = this.handleUploadEmployeesTooltip.bind(this);
 
 		this.handleCopyLastWeeksRotaShifts = this.handleCopyLastWeeksRotaShifts.bind(this);
 
@@ -155,7 +163,9 @@ class Toolbar extends Component {
 		isDownloadRotaTooltipOpen: false,
 		isRotaTypeMenuPopoverOpen: false,
 		isCreateEmployeeModalOpen: false,
+		isUploadEmployeesModalOpen: false,
 		isCreateEmployeeTooltipOpen: false,
+		isUploadEmployeesTooltipOpen: false,
 		isDownloadRotaMenuPopoverOpen: false,
 		isCopyLastWeeksRotaShiftsTooltipOpen: false,
 	});
@@ -529,9 +539,13 @@ class Toolbar extends Component {
 
 	handleEditRota = (event, rotaId) => this.setState({ rotaId, isEditRotaModalOpen: !this.state.isEditRotaModalOpen });
 
+	handleUploadEmployees = () => this.setState({ isUploadEmployeesModalOpen: !this.state.isUploadEmployeesModalOpen });
+
 	handleDownloadRotaTooltip = () => this.setState({ isDownloadRotaTooltipOpen: !this.state.isDownloadRotaTooltipOpen });
 
 	handleCreateEmployeeTooltip = () => this.setState({ isCreateEmployeeTooltipOpen: !this.state.isCreateEmployeeTooltipOpen });
+
+	handleUploadEmployeesTooltip = () => this.setState({ isUploadEmployeesTooltipOpen: !this.state.isUploadEmployeesTooltipOpen });
 
 	handleDownloadRotaMenu = () => this.setState({ isDownloadRotaTooltipOpen: false, isDownloadRotaMenuPopoverOpen: !this.state.isDownloadRotaMenuPopoverOpen });
 
@@ -587,6 +601,15 @@ class Toolbar extends Component {
 
 	handleSwitchFromAssignShiftToCreateShift = () => this.setState({ isCreateShiftModalOpen: true, isAssignShiftModalOpen: false });
 
+	handleInfoNotification = (message) => {
+		if (!toast.isActive(this.toastId)) {
+			this.toastId = toast.info(<Notification icon="fa-info-circle" title="Information" message={message} />, {
+				autoClose: false,
+				closeButton: <CloseButton />,
+			});
+		}
+	};
+
 	handleSuccessNotification = (message) => {
 		if (!toast.isActive(this.toastId)) {
 			this.toastId = toast.success(<Notification icon="fa-check-circle" title="Success" message={message} />, {
@@ -637,7 +660,7 @@ class Toolbar extends Component {
 							<div className="d-block d-sm-none">
 								<button type="button" id="download-rota" className="btn btn-rotas-popover text-dark border-0 mt-3 mt-sm-auto pl-3 pr-3 col-12 col-sm-auto mb-3" onClick={this.handleDownloadRotaMenu}><i className="fa fa-fw fa-cloud-download" aria-hidden="true"></i> Download Rota</button>
 								<button type="button" id="edit-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-3" onClick={event => this.handleEditRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i> Edit Rota</button>
-								<button type="button" id="rota-budget" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-3" style={{ cursor: 'default' }}>Rota Budget: &pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
+								<button type="button" id="rota-budget" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto" style={{ cursor: 'default' }}>Rota Budget: &pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
 								{(this.props.shifts.length === 0) ? (
 									<button type="button" id="copy-last-weeks-rota-shifts" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-0" onClick={this.handleCopyLastWeeksRotaShifts}><i className="fa fa-fw fa-files-o" aria-hidden="true"></i> Copy last weeks Rota shifts</button>
 								) : null}
@@ -677,9 +700,14 @@ class Toolbar extends Component {
 								) : null}
 							</Fragment>
 						) : null}
-						<button type="button" title="Create Employee" id="create-employee" className="d-inline-block d-lg-none btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-plus d-none d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Create</span> Employee</button>
+						{(this.state.employeesIsActive) ? (
+							<Fragment>
+								<button title="Create Employee" id="create-employee" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 mb-md-0 pl-3 pr-3 border-0" onClick={this.handleCreateEmployee}>Create Employee</button>
+								<button title="Upload Employees" id="upload-employees" className="btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" onClick={this.handleUploadEmployees}>Upload Employees</button>
+							</Fragment>
+						) : null}
 					</div>
-					<ButtonGroup className="d-none d-md-inline-block d-lg-none p-0 m-0 mr-3">
+					<ButtonGroup className="d-none d-md-inline-block d-lg-none p-0 m-0">
 						{(this.state.rotasIsActive) ? (
 							<Fragment>
 								{(this.state.hasUnassignedShifts) ? (
@@ -713,11 +741,15 @@ class Toolbar extends Component {
 								) : null}
 							</Fragment>
 						) : null}
+						{(this.state.employeesIsActive) ? (
+							<Fragment>
+								<button type="button" title="Create Employee" id="create-employee" className="btn btn-nav btn-secondary border-0 pl-3 pr-3" onClick={this.handleCreateEmployee}>Create Employee</button>
+								<Tooltip placement="bottom" isOpen={this.state.isCreateEmployeeTooltipOpen} target="create-employee" toggle={this.handleCreateEmployeeTooltip}>Create Employee</Tooltip>
+								<button type="button" title="Upload Employees" id="upload-employees" className="btn btn-nav btn-primary border-0 pl-3 pr-3" onClick={this.handleUploadEmployees}>Upload Employees</button>
+								<Tooltip placement="bottom" isOpen={this.state.isUploadEmployeesTooltipOpen} target="upload-employees" toggle={this.handleUploadEmployeesTooltip}>Upload Employees</Tooltip>
+							</Fragment>
+						) : null}
 					</ButtonGroup>
-					<ButtonGroup className="d-none d-md-inline-block d-lg-none p-0 m-0">
-						<button type="button" title="Create Employee" id="create-employee" className="d-inline-block d-lg-none btn btn-nav btn-primary border-0 pl-3 pr-3" onClick={this.handleCreateEmployee}><i className="fa fa-user-plus d-sm-none d-md-inline-block" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Create Employee</span></button>
-					</ButtonGroup>
-					<Tooltip placement="bottom" isOpen={this.state.isCreateEmployeeTooltipOpen} target="create-employee" toggle={this.handleCreateEmployeeTooltip}>Create Employee</Tooltip>
 				</Col>
 			</Row>
 			<Modal title="Create Rota" className="modal-dialog" show={this.state.isCreateRotaModalOpen} onClose={this.handleCreateRota}>
@@ -734,6 +766,9 @@ class Toolbar extends Component {
 			</Modal>
 			<Modal title="Create Employee" className="modal-dialog" show={this.state.isCreateEmployeeModalOpen} onClose={this.handleCreateEmployee}>
 				<EmployeeForm editMode={false} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateEmployee} />
+			</Modal>
+			<Modal title="Upload Employees" className="modal-dialog" show={this.state.isUploadEmployeesModalOpen} onClose={this.handleUploadEmployees}>
+				<UploadEmployeesForm handleInfoNotification={this.handleInfoNotification} handleClose={this.handleUploadEmployees} />
 			</Modal>
 			{(this.state.error.data) ? (
 				<Modal title={this.state.error.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isErrorModalOpen} onClose={this.handleModal}>
