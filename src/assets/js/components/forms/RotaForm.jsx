@@ -236,6 +236,7 @@ class RotaForm extends Component {
 		return actions.getRotas(payload).catch(error => Promise.reject(error));
 	};
 
+	/* FIXME - Need to refactor to just delete rota and not nuke everything like shifts, rotas and placements */
 	handleDelete = (event) => {
 		const rotaType = this.props.rotaTypes.filter(data => data.rotaTypeId === this.state.rotaTypeId).shift();
 
@@ -542,7 +543,7 @@ class RotaForm extends Component {
 				{(this.props.editMode) ? (
 					<Fragment>
 						<Button type="submit" color="primary" className="mt-4" id="submitUpdateRota" title={routes.ROTAS.UPDATE.TITLE} tabIndex="4" block>{routes.ROTAS.UPDATE.TITLE}</Button>
-						<Button type="button" id="submitDeleteRota" className="mt-4 text-danger btn btn-outline-danger" title={routes.ROTAS.DELETE.TITLE} tabIndex="5" block onClick={this.handleDelete}>{routes.ROTAS.DELETE.TITLE}</Button>
+						<Button type="button" id="submitDeleteRota" className="d-none mt-4 text-danger btn btn-outline-danger" title={routes.ROTAS.DELETE.TITLE} tabIndex="5" block onClick={this.handleDelete}>{routes.ROTAS.DELETE.TITLE}</Button>
 					</Fragment>
 				) : (
 					<Button type="submit" color="primary" className="mt-4" id="submitCreateRota" title={routes.ROTAS.CREATE.TITLE} tabIndex="4" block>{routes.ROTAS.CREATE.TITLE}</Button>
