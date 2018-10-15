@@ -23,6 +23,8 @@ import { updateSettings } from '../../actions/settingActions';
 
 import { getShifts, copyShifts } from '../../actions/shiftActions';
 
+import { getRotaEmployees } from '../../actions/rotaEmployeeActions';
+
 import { getRotas, createRota, switchRota } from '../../actions/rotaActions';
 
 import { getUnavailabilityOccurrences } from '../../actions/unavailabilityOccurrenceActions';
@@ -76,6 +78,8 @@ class WeekPicker extends Component {
 		this.handleCreateRota = this.handleCreateRota.bind(this);
 
 		this.handleSwitchRota = this.handleSwitchRota.bind(this);
+
+		this.handleGetRotaEmployees = this.handleGetRotaEmployees.bind(this);
 
 		this.handleSwitchOrCreateRota = this.handleSwitchOrCreateRota.bind(this);
 
@@ -258,6 +262,14 @@ class WeekPicker extends Component {
 		return actions.getUnavailabilityOccurrences(payload).catch(error => Promise.reject(error));
 	};
 
+	handleGetRotaEmployees = () => {
+		const { rota, actions } = this.props;
+
+		logMessage('info', 'Called WeekPicker handleGetRotaEmployees getRotaEmployees');
+
+		return actions.getRotaEmployees(rota).catch(error => Promise.reject(error));
+	};
+
 	handleGetRotas = (rotaTypeId) => {
 		const { actions } = this.props;
 
@@ -298,7 +310,6 @@ class WeekPicker extends Component {
 		actions.createRota(payload)
 			.then(rota => this.handleSwitchRota(rota))
 			.then(() => this.handleGetRotas(rotaTypeId))
-			.then(() => this.handleGetUnavailabilityOccurrences())
 			.catch((error) => {
 				error.data.title = 'Create Rota';
 
@@ -327,6 +338,7 @@ class WeekPicker extends Component {
 
 				actions.getShifts(payload)
 					.then(() => this.handleGetUnavailabilityOccurrences())
+					.then(() => this.handleGetRotaEmployees())
 					.catch((error) => {
 						error.data.title = 'Get Shifts';
 
@@ -532,6 +544,7 @@ const mapDispatchToProps = dispatch => ({
 		switchRota,
 		switchWeek,
 		updateSettings,
+		getRotaEmployees,
 		getUnavailabilityOccurrences,
 	}, dispatch),
 });

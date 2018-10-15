@@ -38,6 +38,8 @@ import UploadEmployeesForm from '../forms/UploadEmployeesForm';
 
 import { confirm, complexConfirm } from '../../helpers/confirm';
 
+import { getRotaEmployees } from '../../actions/rotaEmployeeActions';
+
 import { getRotaTypes, switchRotaType } from '../../actions/rotaTypeActions';
 
 import { getShifts, copyShifts, downloadShifts } from '../../actions/shiftActions';
@@ -230,13 +232,25 @@ class Toolbar extends Component {
 				/* Any time we switch rotas, we need to get a fresh list of shifts for that rota */
 				logMessage('info', 'Called Toolbar handleSwitchRota getShifts');
 
-				actions.getShifts(payload).catch((error) => {
-					error.data.title = 'Get Shifts';
+				actions.getShifts(payload)
+					.then(() => {
+						logMessage('info', 'Called Toolbar handleSwitchRota getShifts');
 
-					this.setState({ error });
+						actions.getRotaEmployees(rota).catch((error) => {
+							error.data.title = 'Get Rota Employees';
 
-					this.handleModal();
-				});
+							this.setState({ error });
+
+							this.handleModal();
+						});
+					})
+					.catch((error) => {
+						error.data.title = 'Get Shifts';
+
+						this.setState({ error });
+
+						this.handleModal();
+					});
 			});
 	};
 
@@ -397,6 +411,16 @@ class Toolbar extends Component {
 													dow: firstDayOfWeek,
 													doy: moment.localeData('en').firstDayOfYear(),
 												},
+											});
+
+											logMessage('info', 'Called Toolbar handleSwitchRotaType getRotaEmployees');
+
+											actions.getRotaEmployees(rota).catch((error) => {
+												error.data.title = 'Get Rota Employees';
+
+												this.setState({ error });
+
+												this.handleModal();
 											});
 										})
 										.catch((error) => {
@@ -808,6 +832,7 @@ const mapDispatchToProps = dispatch => ({
 		downloadShifts,
 		updateSettings,
 		switchRotaType,
+		getRotaEmployees,
 	}, dispatch),
 });
 
