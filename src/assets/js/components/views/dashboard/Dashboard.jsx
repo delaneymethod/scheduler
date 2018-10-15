@@ -252,7 +252,7 @@ class Dashboard extends Component {
 																						logMessage('info', 'Called Dashboard handleFetchData getRotaEmployees');
 
 																						actions.getRotaEmployees(rota)
-																							.then(() => history.push(routes.DASHBOARD.EMPLOYEES.URI))
+																							.then(() => history.push(routes.DASHBOARD.ROTAS.URI))
 																							.catch((error) => {
 																								error.data.title = 'Get Rota Employees';
 
@@ -346,7 +346,7 @@ class Dashboard extends Component {
 																						logMessage('info', 'Called Dashboard handleFetchData getRotaEmployees');
 
 																						actions.getRotaEmployees(rota)
-																							.then(() => history.push(routes.DASHBOARD.EMPLOYEES.URI))
+																							.then(() => history.push(routes.DASHBOARD.ROTAS.URI))
 																							.catch((error) => {
 																								error.data.title = 'Get Rota Employees';
 
@@ -487,7 +487,7 @@ class Dashboard extends Component {
 						logMessage('info', 'Called Dashboard handleSwitchRota getRotaEmployees');
 
 						actions.getRotaEmployees(rota).catch((error) => {
-							error.data.title = 'Get Shifts';
+							error.data.title = 'Get Rota Employees';
 
 							this.setState({ error });
 
