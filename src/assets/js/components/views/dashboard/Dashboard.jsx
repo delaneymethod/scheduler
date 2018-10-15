@@ -252,14 +252,14 @@ class Dashboard extends Component {
 																						logMessage('info', 'Called Dashboard handleFetchData getRotaEmployees');
 
 																						actions.getRotaEmployees(rota)
-																							 .then(() => history.push(routes.DASHBOARD.EMPLOYEES.URI))
+																							.then(() => history.push(routes.DASHBOARD.EMPLOYEES.URI))
 																							.catch((error) => {
 																								error.data.title = 'Get Rota Employees';
 
 																								this.setState({ error });
 
 																								this.handleModal();
-																							});																				
+																							});
 																					})
 																					.catch((error) => {
 																						error.data.title = 'Get Unavailability Occurrences';
@@ -346,7 +346,7 @@ class Dashboard extends Component {
 																						logMessage('info', 'Called Dashboard handleFetchData getRotaEmployees');
 
 																						actions.getRotaEmployees(rota)
-																							 .then(() => history.push(routes.DASHBOARD.EMPLOYEES.URI))
+																							.then(() => history.push(routes.DASHBOARD.EMPLOYEES.URI))
 																							.catch((error) => {
 																								error.data.title = 'Get Rota Employees';
 
