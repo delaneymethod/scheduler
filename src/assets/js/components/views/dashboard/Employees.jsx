@@ -592,9 +592,9 @@ class Employees extends Component {
 											<td className="p-2 align-middle text-center wrap-words column numeric">&pound;{(accountEmployee.salary).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
 											<td className="p-2 align-middle text-center wrap-words column numeric">{(accountEmployee.weeklyContractHours).toFixed(2)}</td>
 											<td className="p-2 align-middle text-center column last">
-												<button type="button" className="btn border-0 btn-secondary text-white btn-icon ml-1" id={`editEmployee${accountEmployee.employee.employeeId}`} title="Edit Employee" onClick={event => this.handleEditEmployee(event, accountEmployee.employee.employeeId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i></button>
-												<button type="button" className="btn border-0 btn-secondary text-white btn-icon ml-1" id={`createUnavailability${accountEmployee.employee.employeeId}`} title="Add Time Off" onClick={event => this.handleCreateUnavailability(event, accountEmployee.employee.employeeId)}><i className="fa fa-fw fa-clock-o" aria-hidden="true"></i></button>
-												<button type="button" className="btn border-0 btn-danger text-white btn-icon ml-1" id={`deleteEmployee${accountEmployee.employee.employeeId}`} title="Delete Employee" aria-label="Delete Employee" onClick={event => this.handleDeleteEmployee(event, accountEmployee.employee.employeeId)}><i className="fa fa-fw fa-times" aria-hidden="true"></i></button>
+												<button type="button" className="btn border-0 btn-secondary text-white btn-icon ml-1" id={`editEmployee${accountEmployee.accountEmployeeId}`} title="Edit Employee" onClick={event => this.handleEditEmployee(event, accountEmployee.employee.employeeId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i></button>
+												<button type="button" className="btn border-0 btn-secondary text-white btn-icon ml-1" id={`createUnavailability${accountEmployee.accountEmployeeId}`} title="Add Time Off" onClick={event => this.handleCreateUnavailability(event, accountEmployee.employee.employeeId)}><i className="fa fa-fw fa-clock-o" aria-hidden="true"></i></button>
+												<button type="button" className="btn border-0 btn-danger text-white btn-icon ml-1" id={`deleteEmployee${accountEmployee.accountEmployeeId}`} title="Delete Employee" aria-label="Delete Employee" onClick={event => this.handleDeleteEmployee(event, accountEmployee.employee.employeeId)}><i className="fa fa-fw fa-times" aria-hidden="true"></i></button>
 											</td>
 										</tr>
 									))}
