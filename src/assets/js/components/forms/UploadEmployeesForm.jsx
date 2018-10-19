@@ -208,6 +208,7 @@ const mapDispatchToProps = dispatch => ({
 		getEmployees,
 		orderEmployees,
 		uploadEmployees,
+		getRotaEmployees,
 	}, dispatch),
 });
 
