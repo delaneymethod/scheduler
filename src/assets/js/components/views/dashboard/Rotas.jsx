@@ -51,6 +51,8 @@ import AssignShiftForm from '../../forms/AssignShiftForm';
 
 import AssignShiftButton from '../../common/AssignShiftButton';
 
+import { getEmployees } from '../../../actions/employeeActions';
+
 import { addClass, removeClass } from '../../../helpers/classes';
 
 import { switchRotaCost } from '../../../actions/rotaCostActions';
@@ -67,19 +69,17 @@ import ExistingEmployeesForm from '../../forms/ExistingEmployeesForm';
 
 import { getShifts, updateShift } from '../../../actions/shiftActions';
 
-import { getRotaEmployees } from '../../../actions/rotaEmployeeActions';
-
 import UnassignedShiftsOverview from '../../common/UnassignedShiftsOverview';
 
 import ShiftUnavailabilityButton from '../../common/ShiftUnavailabilityButton';
-
-import { getEmployees, orderEmployees } from '../../../actions/employeeActions';
 
 import { showEditHandler, hideEditHandler } from '../../../helpers/toggleClasses';
 
 import { deleteRotaTypeEmployee } from '../../../actions/rotaTypeEmployeeActions';
 
 import { createPlacement, updatePlacement } from '../../../actions/placementActions';
+
+import { getRotaEmployees, updateRotaEmployeesOrder } from '../../../actions/rotaEmployeeActions';
 
 const routes = config.APP.ROUTES;
 
@@ -201,8 +201,6 @@ class Rotas extends Component {
 		this.handleSortDirection = this.handleSortDirection.bind(this);
 
 		this.handleCreateEmployee = this.handleCreateEmployee.bind(this);
-
-		this.handleOrderEmployees = this.handleOrderEmployees.bind(this);
 
 		this.handleFilterEmployees = this.handleFilterEmployees.bind(this);
 
@@ -424,7 +422,7 @@ class Rotas extends Component {
 	handleFetchData = () => {
 		logMessage('info', 'Called Rotas handleFetchData');
 
-		const rotaEmployees = this.handleOrderEmployees();
+		const { rotaEmployees } = this.props;
 
 		const weekDates = [];
 
@@ -777,26 +775,6 @@ class Rotas extends Component {
 		return className;
 	};
 
-	handleOrderEmployees = () => {
-		/**
-		 * Rota employees may have a different sort positions for different rota types,
-		 * so we loop over each rota employee and get its sort position for the current rota type.
-		 */
-		let orderableRotaEmployees = this.props.rotaEmployees.filter(accountEmployee => accountEmployee.rotaTypeAccountEmployees && accountEmployee.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId));
-
-		orderableRotaEmployees = orderableRotaEmployees.sort((a, b) => a.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId).sortPosition - b.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId).sortPosition);
-
-		/* Grab all rota employees without sort positions setup for rota types */
-		const nonOrderableRotaEmployees = this.props.rotaEmployees.filter(accountEmployee => !accountEmployee.rotaTypeAccountEmployees || !accountEmployee.rotaTypeAccountEmployees.find(({ rotaTypeId }) => this.props.rotaType.rotaTypeId === rotaTypeId));
-
-		const orderedRotaEmployees = concat(orderableRotaEmployees, nonOrderableRotaEmployees);
-
-		/* Now that rota employees with sort positions have been ordered, add back in the non sort position rota employees */
-		saveState('rotaEmployees:ordered', orderedRotaEmployees);
-
-		return orderedRotaEmployees;
-	};
-
 	handleOrderable = () => {
 		if (document.getElementById('tableBody')) {
 			Orderable.create(document.getElementById('tableBody'), {
@@ -809,11 +787,7 @@ class Rotas extends Component {
 				dragClass: 'draggable-row-drag',
 				ghostClass: 'draggable-row-ghost',
 				store: {
-					get: () => {
-						const rotaEmployees = getState('rotaEmployees:ordered');
-
-						return rotaEmployees.map(accountEmployee => accountEmployee.accountEmployeeId);
-					},
+					get: () => this.props.rotaEmployees.map(accountEmployee => accountEmployee.accountEmployeeId),
 					set: sortable => this.handleUpdateEmployeeOrder(sortable.toArray()),
 				},
 			});
@@ -837,24 +811,22 @@ class Rotas extends Component {
 	};
 
 	handleUpdateEmployeeOrder = (ids) => {
-		const { actions } = this.props;
-
-		/* Get the rota type id based on current rota type */
-		const { rotaTypeId } = this.props.rotaType;
+		const { actions, rota: { rotaId } } = this.props;
 
 		const order = ids.map(data => data);
 
 		const payload = {
 			order,
-			rotaTypeId,
+			rotaId,
 		};
 
 		logMessage('info', 'Called Rotas handleUpdateEmployeeOrder orderEmployees');
 
-		actions.orderEmployees(payload)
+		actions.updateRotaEmployeesOrder(payload)
 			.then(() => this.handleGetEmployees())
+			.then(() => this.handleGetRotaEmployees())
 			.catch((error) => {
-				error.data.title = 'Order Employees';
+				error.data.title = 'Order Rota Employees';
 
 				this.setState({ error });
 
@@ -1670,11 +1642,11 @@ const mapDispatchToProps = dispatch => ({
 		updateShift,
 		getEmployees,
 		switchRotaCost,
-		orderEmployees,
 		createPlacement,
 		updatePlacement,
 		getRotaEmployees,
 		deleteRotaTypeEmployee,
+		updateRotaEmployeesOrder,
 	}, dispatch),
 });
 
