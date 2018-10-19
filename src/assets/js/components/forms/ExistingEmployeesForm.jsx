@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import differenceBy from 'lodash/differenceBy';
 import React, { Fragment, Component } from 'react';
 import { Row, Col, Label, Button, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
@@ -61,14 +62,14 @@ class ExistingEmployeesForm extends Component {
 	getInitialState = () => ({
 		error: {},
 		selectAll: false,
-		accountEmployeeIds: this.props.employees.reduce((state, accountEmployee) => ({
+		accountEmployeeIds: differenceBy(this.props.employees, this.props.rotaEmployees, 'accountEmployeeId').reduce((state, accountEmployee) => ({
 			...state,
-			[`account_employee_id_${accountEmployee.accountEmployeeId}`]: (this.props.rotaEmployees.find(data => data.accountEmployeeId === accountEmployee.accountEmployeeId)),
+			[`account_employee_id_${accountEmployee.accountEmployeeId}`]: false,
 		}), []),
 	});
 
 	handleSelectAll = () => this.setState({ selectAll: !this.state.selectAll }, () => this.setState({
-		accountEmployeeIds: this.props.employees.reduce((state, accountEmployee) => ({
+		accountEmployeeIds: differenceBy(this.props.employees, this.props.rotaEmployees, 'accountEmployeeId').reduce((state, accountEmployee) => ({
 			...state,
 			[`account_employee_id_${accountEmployee.accountEmployeeId}`]: this.state.selectAll,
 		}), []),
@@ -192,7 +193,7 @@ class ExistingEmployeesForm extends Component {
 					</Col>
 				</Row>
 				<Row>
-					{this.props.employees.map((accountEmployee, accountEmployeeIndex) => (
+					{differenceBy(this.props.employees, this.props.rotaEmployees, 'accountEmployeeId').map((accountEmployee, accountEmployeeIndex) => (
 						<Col key={accountEmployeeIndex} xs="12" sm="12" md="12" lg="12" xl="12">
 							<Row className="d-flex justify-content-center">
 								<Col className="align-self-center text-left" xs="12" sm="12" md="6" lg="6" xl="6">
