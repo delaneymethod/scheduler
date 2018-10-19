@@ -349,7 +349,16 @@ class Rotas extends Component {
 		/* Find the edit handler for employee row and show it */
 		showEditHandler(accountEmployeeId);
 
-		const { actions, rotaEmployees, rotaType: { rotaTypeId } } = this.props;
+		const {
+			actions,
+			rotaEmployees,
+			rota: {
+				rotaId,
+			},
+			rotaType: {
+				rotaTypeId,
+			},
+		} = this.props;
 
 		const accountEmployee = rotaEmployees.filter(data => data.accountEmployeeId === accountEmployeeId).shift();
 
@@ -390,7 +399,7 @@ class Rotas extends Component {
 					.then(() => this.handleGetEmployees())
 					.then(() => this.handleGetRotaEmployees())
 					/* Updating a shift or placement will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
-					.then(() => this.handleGetShifts())
+					.then(() => this.handleGetShifts(rotaId))
 					.then(() => {
 						/* FIXME - Make messages constants in config */
 						message = '<p>Employee was removed from Rota!</p>';
