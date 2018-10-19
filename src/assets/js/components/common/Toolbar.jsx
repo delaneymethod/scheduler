@@ -38,6 +38,8 @@ import UploadEmployeesForm from '../forms/UploadEmployeesForm';
 
 import { confirm, complexConfirm } from '../../helpers/confirm';
 
+import ExistingEmployeesForm from '../forms/ExistingEmployeesForm';
+
 import { getRotaEmployees } from '../../actions/rotaEmployeeActions';
 
 import { getRotaTypes, switchRotaType } from '../../actions/rotaTypeActions';
@@ -122,6 +124,8 @@ class Toolbar extends Component {
 
 		this.handleDownloadRotaMenu = this.handleDownloadRotaMenu.bind(this);
 
+		this.handleExistingEmployees = this.handleExistingEmployees.bind(this);
+
 		this.handleRotaBudgetTooltip = this.handleRotaBudgetTooltip.bind(this);
 
 		this.handleCreateShiftTooltip = this.handleCreateShiftTooltip.bind(this);
@@ -168,7 +172,9 @@ class Toolbar extends Component {
 		isUploadEmployeesModalOpen: false,
 		isCreateEmployeeTooltipOpen: false,
 		isUploadEmployeesTooltipOpen: false,
+		isExistingEmployeesModelOpen: false,
 		isDownloadRotaMenuPopoverOpen: false,
+		isExistingEmployeesTooltipOpen: false,
 		isCopyLastWeeksRotaShiftsTooltipOpen: false,
 	});
 
@@ -571,6 +577,8 @@ class Toolbar extends Component {
 
 	handleUploadEmployeesTooltip = () => this.setState({ isUploadEmployeesTooltipOpen: !this.state.isUploadEmployeesTooltipOpen });
 
+	handleExistingEmployees = () => this.setState({ isExistingEmployeesModalOpen: !this.state.isExistingEmployeesModalOpen });
+
 	handleDownloadRotaMenu = () => this.setState({ isDownloadRotaTooltipOpen: false, isDownloadRotaMenuPopoverOpen: !this.state.isDownloadRotaMenuPopoverOpen });
 
 	handleCopyLastWeeksRotaShifts = () => {
@@ -684,7 +692,7 @@ class Toolbar extends Component {
 							<div className="d-block d-sm-none">
 								<button type="button" id="download-rota" className="btn btn-rotas-popover text-dark border-0 mt-3 mt-sm-auto pl-3 pr-3 col-12 col-sm-auto mb-3" onClick={this.handleDownloadRotaMenu}><i className="fa fa-fw fa-cloud-download" aria-hidden="true"></i> Download Rota</button>
 								<button type="button" id="edit-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-3" onClick={event => this.handleEditRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i> Edit Rota</button>
-								<button type="button" id="rota-budget" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto" style={{ cursor: 'default' }}>Rota Budget: &pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
+								<button type="button" id="rota-budget" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-3" style={{ cursor: 'default' }}>Rota Budget: &pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
 								{(this.props.shifts.length === 0) ? (
 									<button type="button" id="copy-last-weeks-rota-shifts" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-0" onClick={this.handleCopyLastWeeksRotaShifts}><i className="fa fa-fw fa-files-o" aria-hidden="true"></i> Copy last weeks Rota shifts</button>
 								) : null}
@@ -722,6 +730,8 @@ class Toolbar extends Component {
 								{(this.state.rotaStatus === STATUSES.EDITED) ? (
 									<button type="button" title="Publish Rota Changes" id="publish-rota-changes" className="btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish&nbsp;<span className="d-sm-inline-block d-md-none d-lg-inline-block">Rota&nbsp;</span>Changes</button>
 								) : null}
+								<button type="button" title="Add Existing Employees" id="add-existing-employees" className="d-inline-block d-md-none btn btn-nav btn-secondary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" onClick={this.handleExistingEmployees}>Add Existing Employees</button>
+								<button type="button" title="Create Employee" id="create-employee" className="d-inline-block d-md-none btn btn-nav btn-secondary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" onClick={this.handleCreateEmployee}>Create Employee</button>
 							</Fragment>
 						) : null}
 						{(this.state.employeesIsActive) ? (
@@ -763,6 +773,10 @@ class Toolbar extends Component {
 										<Tooltip placement="bottom" isOpen={this.state.isPublishRotaTooltipOpen} target="publish-rota" toggle={this.handlePublishRotaTooltip}>Publish Rota Changes</Tooltip>
 									</Fragment>
 								) : null}
+								<button type="button" title="Add Existing Employees" id="add-existing-employees" className="btn btn-nav btn-secondary border-0 pl-3 pr-3" onClick={this.handleExistingEmployees}><i className="fa fa-fw fa-users d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i></button>
+								<Tooltip placement="bottom" isOpen={this.state.isExistingEmployeesTooltipOpen} target="add-existing-employees" toggle={this.handleExistingEmployeeTooltip}>Add Existing Employees</Tooltip>
+								<button type="button" title="Create Employee" id="create-employee" className="btn btn-nav btn-secondary border-0 pl-3 pr-3" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-user-plus d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i></button>
+								<Tooltip placement="bottom" isOpen={this.state.isCreateEmployeeTooltipOpen} target="create-employee" toggle={this.handleCreateEmployeeTooltip}>Create Employee</Tooltip>
 							</Fragment>
 						) : null}
 						{(this.state.employeesIsActive) ? (
@@ -790,6 +804,9 @@ class Toolbar extends Component {
 			</Modal>
 			<Modal title="Create Employee" className="modal-dialog" show={this.state.isCreateEmployeeModalOpen} onClose={this.handleCreateEmployee}>
 				<EmployeeForm editMode={false} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateEmployee} />
+			</Modal>
+			<Modal title="Add Existing Employees" className="modal-dialog" show={this.state.isExistingEmployeesModalOpen} onClose={this.handleExistingEmployees}>
+				<ExistingEmployeesForm editMode={false} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleExistingEmployees} />
 			</Modal>
 			<Modal title="Upload Employees" className="modal-dialog" show={this.state.isUploadEmployeesModalOpen} onClose={this.handleUploadEmployees}>
 				<UploadEmployeesForm handleInfoNotification={this.handleInfoNotification} handleClose={this.handleUploadEmployees} />

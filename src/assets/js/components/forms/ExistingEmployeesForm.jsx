@@ -164,10 +164,10 @@ class ExistingEmployeesForm extends Component {
 				<Row>
 					<Col xs="12" sm="12" md="12" lg="12" xl="12">
 						<Row className="d-flex justify-content-center">
-							<Col className="align-self-center text-left" xs="12" sm="12" md="6" lg="6" xl="6">
+							<Col className="align-self-center text-left" xs="8" sm="8" md="6" lg="6" xl="6">
 								<Label check className="mt-2 mb-2">Select All</Label>
 							</Col>
-							<Col className="align-self-center text-right" xs="12" sm="12" md="6" lg="6" xl="6">
+							<Col className="align-self-center text-right" xs="4" sm="4" md="6" lg="6" xl="6">
 								<Label check className="switch mt-2 mb-2">
 									<input type="checkbox" name="toggle_all_switches" onChange={this.handleSelectAll} checked={this.state.selectAll} />
 									<span className="slider round"></span>
@@ -180,10 +180,10 @@ class ExistingEmployeesForm extends Component {
 					{differenceBy(this.props.employees, this.props.rotaEmployees, 'accountEmployeeId').map((accountEmployee, accountEmployeeIndex) => (
 						<Col key={accountEmployeeIndex} xs="12" sm="12" md="12" lg="12" xl="12">
 							<Row className="d-flex justify-content-center">
-								<Col className="align-self-center text-left" xs="12" sm="12" md="6" lg="6" xl="6">
+								<Col className="align-self-center text-left" xs="8" sm="8" md="6" lg="6" xl="6">
 									<Label check className="mt-2 mb-2">{accountEmployee.employee.firstName} {accountEmployee.employee.lastName}</Label>
 								</Col>
-								<Col className="align-self-center text-right" xs="12" sm="12" md="6" lg="6" xl="6">
+								<Col className="align-self-center text-right" xs="4" sm="4" md="6" lg="6" xl="6">
 									<Label check className="switch mt-2 mb-2">
 										<input type="checkbox" name={`account_employee_id_${accountEmployee.accountEmployeeId}`} onChange={this.handleChangeToggleSwitch} checked={(this.state.accountEmployeeIds[`account_employee_id_${accountEmployee.accountEmployeeId}`])} />
 										<span className="slider round"></span>
