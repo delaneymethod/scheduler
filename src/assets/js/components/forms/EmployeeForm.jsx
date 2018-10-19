@@ -101,7 +101,7 @@ class EmployeeForm extends Component {
 		weeklyContractHours: '',
 		rotaTypeIds: this.props.rotaTypes.reduce((state, rotaType) => ({
 			...state,
-			[`rota_type_id_${rotaType.rotaTypeId}`]: (rotaType.rotaTypeId === this.props.rotaType.rotaTypeId),
+			[`rota_type_id_${rotaType.rotaTypeId}`]: (this.props.editMode ? false : (rotaType.rotaTypeId === this.props.rotaType.rotaTypeId)),
 		}), []),
 	});
 
