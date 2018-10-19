@@ -1606,7 +1606,7 @@ class Rotas extends Component {
 					<EmployeeForm editMode={false} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateEmployee} />
 				</Modal>
 				<Modal title="Add Existing Employees" className="modal-dialog" show={this.state.isExistingEmployeesModalOpen} onClose={this.handleExistingEmployees}>
-					<ExistingEmployeesForm handleInfoNotification={this.handleInfoNotification} handleClose={this.handleExistingEmployees} />
+					<ExistingEmployeesForm handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleExistingEmployees} />
 				</Modal>
 				{(this.state.error.data) ? (
 					<Modal title={this.state.error.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isErrorModalOpen} onClose={this.handleModal}>

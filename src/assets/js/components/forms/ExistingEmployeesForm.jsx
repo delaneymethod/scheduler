@@ -28,7 +28,7 @@ const propTypes = {
 	employees: PropTypes.array.isRequired,
 	handleClose: PropTypes.func.isRequired,
 	rotaEmployees: PropTypes.array.isRequired,
-	handleInfoNoification: PropTypes.func.isRequired,
+	handleSuccessNotification: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -37,7 +37,7 @@ const defaultProps = {
 	employees: [],
 	rotaEmployees: [],
 	handleClose: () => {},
-	handleInfoNoification: () => {},
+	handleSuccessNotification: () => {},
 };
 
 class ExistingEmployeesForm extends Component {
@@ -137,25 +137,6 @@ class ExistingEmployeesForm extends Component {
 			logMessage('info', 'Called ExistingEmployeesForm handleSubmit createRotaTypeEmployees');
 
 			actions.createRotaTypeEmployees(payload)
-				.then((response) => {
-					if (response.loadedEmployees.length > 0) {
-						message += `<p>${response.loadedEmployees.length} employee${(response.loadedEmployees.length === 1) ? ' was' : 's were'} added successfully!</p>`;
-					}
-
-					if (response.failedEmployees.length > 0) {
-						message += `<p>${response.failedEmployees.length} employee${(response.failedEmployees.length === 1) ? ' was' : 's were'} not added!</p>`;
-						message += `<p>See reason${(response.failedEmployees.length === 1) ? '' : 's'} below:</p>`;
-						message += '<ul class="list-unstyled">';
-
-						response.failedEmployees.forEach((failedEmployee) => {
-							message += `<li><i class="fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i> ${failedEmployee.data[0]} ${failedEmployee.data[1]} - <i>${failedEmployee.reason}</i></li>`;
-						});
-
-						message += '</ul>';
-					}
-
-					return true;
-				})
 				/* I guess the API could return the ordered list of employees so we dont need to make this extra call */
 				.then(() => this.handleGetEmployees())
 				.then(() => this.handleGetRotaEmployees())
@@ -164,8 +145,11 @@ class ExistingEmployeesForm extends Component {
 					/* Close the modal */
 					this.props.handleClose();
 
+					/* FIXME - Make messages constants in config */
+					message = '<p>Rota was updated!</p>';
+
 					/* Pass a message back up the rabbit hole to the parent component */
-					this.props.handleInfoNotification(message);
+					this.props.handleSuccessNotification(message);
 				})
 				.catch(error => this.setState({ error }));
 		}
