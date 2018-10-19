@@ -111,7 +111,7 @@ class Header extends Component {
 												)}
 											</NavItem>
 											<NavItem className={`pr-3 ml-0 ${(this.state.employeesIsActive) ? 'active' : ''}`}>
-												   {(!isEmpty(this.props.employees)) ? (
+												{(!isEmpty(this.props.employees)) ? (
 													<a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a>
 												) : (
 													<a href="" title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0 disabled" aria-disabled="true"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a>
