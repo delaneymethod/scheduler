@@ -22,11 +22,13 @@ const dashboard = routes.DASHBOARD;
 const propTypes = {
 	user: PropTypes.object.isRequired,
 	rota: PropTypes.object.isRequired,
+	employees: PropTypes.array.isRequired,
 };
 
 const defaultProps = {
 	user: {},
 	rota: {},
+	employees: [],
 };
 
 class Header extends Component {
@@ -108,7 +110,13 @@ class Header extends Component {
 													<a href="" title={dashboard.ROTAS.TITLE} className="btn btn-action btn-nav border-0 disabled" aria-disabled="true"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.ROTAS.TITLE}</a>
 												)}
 											</NavItem>
-											<NavItem className={`pr-3 ml-0 ${(this.state.employeesIsActive) ? 'active' : ''}`}><a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a></NavItem>
+											<NavItem className={`pr-3 ml-0 ${(this.state.employeesIsActive) ? 'active' : ''}`}>
+												   {(!isEmpty(this.props.employees)) ? (
+													<a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a>
+												) : (
+													<a href="" title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0 disabled" aria-disabled="true"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a>
+												)}
+											</NavItem>
 										</ul>
 									</div>
 									<ul className="mt-3 mt-md-0 actions profile-toggle col-12 col-sm-12 col-md-10 col-lg-6 col-xl-6">
@@ -144,6 +152,7 @@ Header.defaultProps = defaultProps;
 const mapStateToProps = (state, props) => ({
 	user: state.user,
 	rota: state.rota,
+	employees: state.employees,
 });
 
 const mapDispatchToProps = dispatch => ({
