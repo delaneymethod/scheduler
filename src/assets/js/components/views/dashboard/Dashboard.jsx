@@ -39,6 +39,8 @@ import { getEmployees } from '../../../actions/employeeActions';
 
 import { updateSettings } from '../../../actions/settingActions';
 
+import { getRotaEmployees } from '../../../actions/rotaEmployeeActions';
+
 import { createRota, getRotas, switchRota } from '../../../actions/rotaActions';
 
 import { getRotaTypes, switchRotaType } from '../../../actions/rotaTypeActions';
@@ -63,6 +65,7 @@ const propTypes = {
 	rotaTypes: PropTypes.array.isRequired,
 	employees: PropTypes.array.isRequired,
 	authenticated: PropTypes.bool.isRequired,
+	rotaEmployees: PropTypes.array.isRequired,
 	unavailabilityTypes: PropTypes.array.isRequired,
 	unavailabilityOccurrences: PropTypes.array.isRequired,
 };
@@ -76,6 +79,7 @@ const defaultProps = {
 	settings: {},
 	rotaTypes: [],
 	employees: [],
+	rotaEmployees: [],
 	authenticated: false,
 	unavailabilityTypes: [],
 	unavailabilityOccurrences: [],
@@ -244,7 +248,19 @@ class Dashboard extends Component {
 																				};
 
 																				actions.getUnavailabilityOccurrences(payload)
-																					.then(() => history.push(routes.DASHBOARD.EMPLOYEES.URI))
+																					.then(() => {
+																						logMessage('info', 'Called Dashboard handleFetchData getRotaEmployees');
+
+																						actions.getRotaEmployees(rota)
+																							.then(() => history.push(routes.DASHBOARD.ROTAS.URI))
+																							.catch((error) => {
+																								error.data.title = 'Get Rota Employees';
+
+																								this.setState({ error });
+
+																								this.handleModal();
+																							});
+																					})
 																					.catch((error) => {
 																						error.data.title = 'Get Unavailability Occurrences';
 
@@ -327,7 +343,17 @@ class Dashboard extends Component {
 																							},
 																						});
 
-																						history.push(routes.DASHBOARD.EMPLOYEES.URI);
+																						logMessage('info', 'Called Dashboard handleFetchData getRotaEmployees');
+
+																						actions.getRotaEmployees(rota)
+																							.then(() => history.push(routes.DASHBOARD.ROTAS.URI))
+																							.catch((error) => {
+																								error.data.title = 'Get Rota Employees';
+
+																								this.setState({ error });
+
+																								this.handleModal();
+																							});
 																					})
 																					.catch((error) => {
 																						error.data.title = 'Get Unavailability Occurrences';
@@ -400,9 +426,21 @@ class Dashboard extends Component {
 
 									actions.switchRotaType({});
 
-									logMessage('info', 'Called Dashboard handleCreateRota');
+									logMessage('info', 'Called Dashboard handleFetchData getUnavailabilityTypes');
 
-									this.handleCreateRota();
+									actions.getUnavailabilityTypes()
+										.then(() => {
+											logMessage('info', 'Called Dashboard handleCreateRota');
+
+											this.handleCreateRota();
+										})
+										.catch((error) => {
+											error.data.title = 'Get Unavailability Types';
+
+											this.setState({ error });
+
+											this.handleModal();
+										});
 								}
 							}).catch((error) => {
 								error.data.title = 'Get Rota Types';
@@ -444,13 +482,25 @@ class Dashboard extends Component {
 				/* Any time we switch rotas, we need to get a fresh list of shifts for that rota */
 				logMessage('info', 'Called Dashboard handleSwitchRota getShifts');
 
-				actions.getShifts(payload).catch((error) => {
-					error.data.title = 'Get Shifts';
+				actions.getShifts(payload)
+					.then(() => {
+						logMessage('info', 'Called Dashboard handleSwitchRota getRotaEmployees');
 
-					this.setState({ error });
+						actions.getRotaEmployees(rota).catch((error) => {
+							error.data.title = 'Get Rota Employees';
 
-					this.handleModal();
-				});
+							this.setState({ error });
+
+							this.handleModal();
+						});
+					})
+					.catch((error) => {
+						error.data.title = 'Get Shifts';
+
+						this.setState({ error });
+
+						this.handleModal();
+					});
 			});
 	};
 
@@ -484,7 +534,7 @@ class Dashboard extends Component {
 			});
 		}
 
-		this.props.history.push(routes.DASHBOARD.EMPLOYEES.URI);
+		this.props.history.push(routes.DASHBOARD.ROTAS.URI);
 	};
 
 	render = () => (
@@ -521,6 +571,7 @@ const mapStateToProps = (state, props) => ({
 	settings: state.settings,
 	rotaTypes: state.rotaTypes,
 	employees: state.employees,
+	rotaEmployees: state.rotaEmployees,
 	authenticated: state.authenticated,
 	unavailabilityTypes: state.unavailabilityTypes,
 	unavailabilityOccurrences: state.unavailabilityOccurrences,
@@ -538,6 +589,7 @@ const mapDispatchToProps = dispatch => ({
 		getEmployees,
 		updateSettings,
 		switchRotaType,
+		getRotaEmployees,
 		getUnavailabilityTypes,
 		getUnavailabilityOccurrences,
 	}, dispatch),

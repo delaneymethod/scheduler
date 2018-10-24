@@ -1,9 +1,9 @@
 import concat from 'lodash/concat';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Button } from 'reactstrap';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
-import { Row, Col, Label, Input, Button, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 
 import Alert from '../common/Alert';
@@ -15,6 +15,8 @@ import FileField from '../fields/FileField';
 import logMessage from '../../helpers/logging';
 
 import { getShifts } from '../../actions/shiftActions';
+
+import { getRotaEmployees } from '../../actions/rotaEmployeeActions';
 
 import { getEmployees, orderEmployees, uploadEmployees } from '../../actions/employeeActions';
 
@@ -49,6 +51,8 @@ class UploadEmployeesForm extends Component {
 		this.handleGetShifts = this.handleGetShifts.bind(this);
 
 		this.handleGetEmployees = this.handleGetEmployees.bind(this);
+
+		this.handleGetRotaEmployees = this.handleGetRotaEmployees.bind(this);
 
 		this.handleUpdateEmployeeOrder = this.handleUpdateEmployeeOrder.bind(this);
 	}
@@ -89,6 +93,14 @@ class UploadEmployeesForm extends Component {
 		logMessage('info', 'Called UploadEmployeesForm handleUpdateEmployeeOrder orderEmployees');
 
 		return actions.orderEmployees(payload).catch(error => Promise.reject(error));
+	};
+
+	handleGetRotaEmployees = () => {
+		const { rota, actions } = this.props;
+
+		logMessage('info', 'Called UploadEmployeesForm handleGetRotaEmployees getRotaEmployees');
+
+		return actions.getRotaEmployees(rota).catch(error => Promise.reject(error));
 	};
 
 	handleGetEmployees = () => {
@@ -154,6 +166,7 @@ class UploadEmployeesForm extends Component {
 				// .then(() => this.handleUpdateEmployeeOrder())
 				/* I guess the API could return the ordered list of employees so we dont need to make this extra call */
 				.then(() => this.handleGetEmployees())
+				.then(() => this.handleGetRotaEmployees())
 				.then(() => this.handleGetShifts())
 				.then(() => {
 					/* Close the modal */
@@ -195,6 +208,7 @@ const mapDispatchToProps = dispatch => ({
 		getEmployees,
 		orderEmployees,
 		uploadEmployees,
+		getRotaEmployees,
 	}, dispatch),
 });
 

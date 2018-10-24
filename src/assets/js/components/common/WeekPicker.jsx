@@ -23,6 +23,8 @@ import { updateSettings } from '../../actions/settingActions';
 
 import { getShifts, copyShifts } from '../../actions/shiftActions';
 
+import { getRotaEmployees } from '../../actions/rotaEmployeeActions';
+
 import { getRotas, createRota, switchRota } from '../../actions/rotaActions';
 
 import { getUnavailabilityOccurrences } from '../../actions/unavailabilityOccurrenceActions';
@@ -77,6 +79,8 @@ class WeekPicker extends Component {
 
 		this.handleSwitchRota = this.handleSwitchRota.bind(this);
 
+		this.handleGetRotaEmployees = this.handleGetRotaEmployees.bind(this);
+
 		this.handleSwitchOrCreateRota = this.handleSwitchOrCreateRota.bind(this);
 
 		this.handleGetUnavailabilityOccurrences = this.handleGetUnavailabilityOccurrences.bind(this);
@@ -89,6 +93,7 @@ class WeekPicker extends Component {
 		highlightedDates: [],
 		isCalenderOpen: false,
 		copyRotaShifts: false,
+		employeesIsActive: false,
 		earliestRotaStartDate: null,
 	});
 
@@ -104,6 +109,8 @@ class WeekPicker extends Component {
 		const { actions, settings } = this.props;
 
 		let { firstDayOfWeek } = settings;
+
+		const { pathname } = this.props.history.location;
 
 		/* Fall back when no settings for first day of week are found */
 		if (!has(settings, 'firstDayOfWeek')) {
@@ -155,7 +162,10 @@ class WeekPicker extends Component {
 
 			actions.switchWeek(payload).then(() => {
 				/* We are setting moment objects in the component state compared to moment strings in the session storage */
-				this.setState({ week });
+				this.setState({
+					week,
+					employeesIsActive: (pathname === dashboard.EMPLOYEES.URI),
+				});
 
 				this.handleHighlight(week);
 			});
@@ -258,6 +268,14 @@ class WeekPicker extends Component {
 		return actions.getUnavailabilityOccurrences(payload).catch(error => Promise.reject(error));
 	};
 
+	handleGetRotaEmployees = () => {
+		const { rota, actions } = this.props;
+
+		logMessage('info', 'Called WeekPicker handleGetRotaEmployees getRotaEmployees');
+
+		return actions.getRotaEmployees(rota).catch(error => Promise.reject(error));
+	};
+
 	handleGetRotas = (rotaTypeId) => {
 		const { actions } = this.props;
 
@@ -298,7 +316,6 @@ class WeekPicker extends Component {
 		actions.createRota(payload)
 			.then(rota => this.handleSwitchRota(rota))
 			.then(() => this.handleGetRotas(rotaTypeId))
-			.then(() => this.handleGetUnavailabilityOccurrences())
 			.catch((error) => {
 				error.data.title = 'Create Rota';
 
@@ -327,6 +344,7 @@ class WeekPicker extends Component {
 
 				actions.getShifts(payload)
 					.then(() => this.handleGetUnavailabilityOccurrences())
+					.then(() => this.handleGetRotaEmployees())
 					.catch((error) => {
 						error.data.title = 'Get Shifts';
 
@@ -489,7 +507,7 @@ class WeekPicker extends Component {
 		}
 
 		return (
-			<div className="row week-toggle text-dark p-0 m-0">
+			<div className={`row week-toggle text-dark p-0 m-0 ${(this.state.employeesIsActive) ? 'd-none' : ''}`}>
 				<button type="button" name="previous-week" id="previous-week" className="col-2 col-sm-2 col-md-2 btn btn-toggle p-0 border-0 font-weight-normal text-dark" disabled={(pathname === dashboard.HOME.URI) ? 'disabled' : null} onClick={this.handlePrevious}><i className="fa fa-fw fa-caret-left" aria-hidden="true"></i></button>
 				<button type="button" name="current-week" id="current-week" className="col-8 col-sm-8 col-md-8 btn btn-toggle p-0 btn-week-picker text-dark font-weight-normal rounded-0 border-0" disabled={(pathname === dashboard.HOME.URI) ? 'disabled' : null} onClick={this.handleToggle}><strong>{moment(this.state.week.startDate).format('ddd')}</strong>, {moment(this.state.week.startDate).format('MMM')} {moment(this.state.week.startDate).format('D')} - <strong>{moment(this.state.week.endDate).format('ddd')}</strong>, {moment(this.state.week.endDate).format('MMM')} {moment(this.state.week.endDate).format('D')}</button>
 				<button type="button" name="next-week" id="next-week" className="col-2 col-sm-2 col-md-2 btn btn-toggle p-0 border-0 font-weight-normal text-dark" disabled={(pathname === dashboard.HOME.URI) ? 'disabled' : null} onClick={this.handleNext}><i className="fa fa-fw fa-caret-right" aria-hidden="true"></i></button>
@@ -532,6 +550,7 @@ const mapDispatchToProps = dispatch => ({
 		switchRota,
 		switchWeek,
 		updateSettings,
+		getRotaEmployees,
 		getUnavailabilityOccurrences,
 	}, dispatch),
 });

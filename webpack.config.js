@@ -21,7 +21,6 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MinifyPlugin = require('babel-minify-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const HtmlCriticalPlugin = require('html-critical-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 /* eslint-disable prefer-destructuring */
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -301,19 +300,6 @@ module.exports = (env, options) => ({
 				from: 'src/browserconfig.xml',
 			},
 		]),
-		new HtmlCriticalPlugin({
-			base: path.join(path.resolve(__dirname), 'public/'),
-			src: 'index.html',
-			dest: 'index.html',
-			inline: (options.mode === 'production'),
-			minify: (options.mode === 'production'),
-			extract: (options.mode === 'production'),
-			width: 1200,
-			height: 950,
-			penthouse: {
-				blockJSRequests: (options.mode !== 'production'),
-			},
-		}),
 		/*
 		new BundleAnalyzerPlugin(),
 		*/

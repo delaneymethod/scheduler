@@ -1,5 +1,8 @@
 import * as api from '../api';
+
 import * as types from './actionTypes';
+
+import { saveState } from '../store/persistedState';
 
 export const ajaxLoading = status => ({
 	type: types.AJAX_LOADING,
@@ -9,6 +12,21 @@ export const ajaxLoading = status => ({
 export const authenticated = status => ({
 	type: types.AUTHENTICATED,
 	status,
+});
+
+export const getUnavailabilityTypesSuccess = unavailabilityTypes => ({
+	type: types.GET_UNAVAILABILITY_TYPES,
+	unavailabilityTypes,
+});
+
+export const getRotaEmployeesSuccess = rotaEmployees => ({
+	type: types.GET_ROTA_EMPLOYEES,
+	rotaEmployees,
+});
+
+export const getEmployeesSuccess = employees => ({
+	type: types.GET_EMPLOYEES,
+	employees,
 });
 
 export const updateUserSuccess = user => ({
@@ -87,11 +105,19 @@ export const logout = () => (dispatch) => {
 
 	dispatch(switchRotaSuccess({}));
 
+	dispatch(getEmployeesSuccess([]));
+
 	dispatch(getRotaTypesSuccess([]));
 
 	dispatch(getPlacementsSuccess([]));
 
+	saveState('employees:ordered', []);
+
 	dispatch(switchRotaTypeSuccess({}));
+
+	dispatch(getRotaEmployeesSuccess([]));
+
+	dispatch(getUnavailabilityTypesSuccess([]));
 
 	return Promise.resolve(true);
 };

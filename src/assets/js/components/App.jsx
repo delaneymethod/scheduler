@@ -20,9 +20,8 @@ import UpdateYourPassword from './views/UpdateYourPassword';
 import ForgottenYourPassword from './views/ForgottenYourPassword';
 import EndUserLicenseAgreement from './views/EndUserLicenseAgreement';
 
-import Roles from './views/dashboard/Roles';
+import Rotas from './views/dashboard/Rotas';
 import Settings from './views/dashboard/Settings';
-import Overview from './views/dashboard/Overview';
 import Dashboard from './views/dashboard/Dashboard';
 import Employees from './views/dashboard/Employees';
 
@@ -41,9 +40,8 @@ const App = () => (
 			<Route exact path={`${routes.UPDATE_YOUR_PASSWORD.URI}/:token`} component={UpdateYourPassword} />
 			<Route exact path={routes.FORGOTTEN_YOUR_PASSWORD.URI} component={ForgottenYourPassword} />
 			<Route exact path={routes.DASHBOARD.HOME.URI} component={Dashboard} />
+			<Route exact path={routes.DASHBOARD.ROTAS.URI} component={Rotas} />
 			<Route exact path={routes.DASHBOARD.EMPLOYEES.URI} component={Employees} />
-			<Route exact path={routes.DASHBOARD.ROLES.URI} component={Roles} />
-			<Route exact path={routes.DASHBOARD.OVERVIEW.URI} component={Overview} />
 			<Route exact path={routes.DASHBOARD.SETTINGS.URI} component={Settings} />
 			<Route path="*" component={NotFoundPage} />
 		</Switch>

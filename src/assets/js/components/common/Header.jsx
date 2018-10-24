@@ -22,11 +22,13 @@ const dashboard = routes.DASHBOARD;
 const propTypes = {
 	user: PropTypes.object.isRequired,
 	rota: PropTypes.object.isRequired,
+	employees: PropTypes.array.isRequired,
 };
 
 const defaultProps = {
 	user: {},
 	rota: {},
+	employees: [],
 };
 
 class Header extends Component {
@@ -43,8 +45,7 @@ class Header extends Component {
 	}
 
 	getInitialState = () => ({
-		rolesIsActive: false,
-		overviewIsActive: false,
+		rotasIsActive: false,
 		employeesIsActive: false,
 		isProfileMenuPopoverOpen: false,
 		isNavigationMenuPopoverOpen: false,
@@ -54,8 +55,7 @@ class Header extends Component {
 		const { pathname } = this.props.history.location;
 
 		this.setState({
-			rolesIsActive: (pathname === dashboard.ROLES.URI),
-			overviewIsActive: (pathname === dashboard.OVERVIEW.URI),
+			rotasIsActive: (pathname === dashboard.ROTAS.URI),
 			employeesIsActive: (pathname === dashboard.EMPLOYEES.URI),
 		});
 	};
@@ -95,24 +95,28 @@ class Header extends Component {
 										<PopoverBody>
 											<ul className="actions popover-menu">
 												{(!isEmpty(this.props.rota)) ? (
-													<NavItem className={`pr-3 ml-0 ${(this.state.employeesIsActive) ? 'active' : ''}`}><a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a></NavItem>
+													<NavItem className={`pr-3 ml-0 ${(this.state.rotasIsActive) ? 'active' : ''}`}><a href={dashboard.ROTAS.URI} title={dashboard.ROTAS.TITLE} id="rotas-page" className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-table" aria-hidden="true"></i>{dashboard.ROTAS.TITLE}</a></NavItem>
 												) : null}
-												<NavItem className={`d-none pr-3 ml-0 ${(this.state.rolesIsActive) ? 'active' : ''}`}><a href={dashboard.ROLES.URI} title={dashboard.ROLES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-th" aria-hidden="true"></i>{dashboard.ROLES.TITLE}</a></NavItem>
-												<NavItem className={`d-none pr-3 ml-0 ${(this.state.overviewIsActive) ? 'active' : ''}`}><a href={dashboard.OVERVIEW.URI} title={dashboard.OVERVIEW.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-bar-chart" aria-hidden="true"></i>{dashboard.OVERVIEW.TITLE}</a></NavItem>
+												<NavItem className={`pr-3 ml-0 ${(this.state.employeesIsActive) ? 'active' : ''}`}><a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} id="employees-page" className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a></NavItem>
 											</ul>
 										</PopoverBody>
 									</Popover>
 									<div className="collapse navbar-collapse m-0 p-0 col-lg-6 col-xl-6">
 										<ul className="actions popover-menu">
-											<NavItem className={`pr-3 ml-0 ${(this.state.employeesIsActive) ? 'active' : ''}`}>
+											<NavItem className={`pr-3 ml-0 ${(this.state.rotasIsActive) ? 'active' : ''}`}>
 												{(!isEmpty(this.props.rota)) ? (
-													<a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a>
+													<a href={dashboard.ROTAS.URI} title={dashboard.ROTAS.TITLE} id="rotas-page" className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-table" aria-hidden="true"></i>{dashboard.ROTAS.TITLE}</a>
 												) : (
-													<a href="" title={dashboard.EMPLOYEES.TITLE} className="btn btn-action btn-nav border-0 disabled" aria-disabled="true"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a>
+													<a href="" title={dashboard.ROTAS.TITLE} id="rotas-page" className="btn btn-action btn-nav border-0 disabled" aria-disabled="true"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.ROTAS.TITLE}</a>
 												)}
 											</NavItem>
-											<NavItem className={`d-none pr-3 ml-0 ${(this.state.rolesIsActive) ? 'active' : ''}`}><a href={dashboard.ROLES.URI} title={dashboard.ROLES.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-th" aria-hidden="true"></i>{dashboard.ROLES.TITLE}</a></NavItem>
-											<NavItem className={`d-none pr-3 ml-0 ${(this.state.overviewIsActive) ? 'active' : ''}`}><a href={dashboard.OVERVIEW.URI} title={dashboard.OVERVIEW.TITLE} className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-bar-chart" aria-hidden="true"></i>{dashboard.OVERVIEW.TITLE}</a></NavItem>
+											<NavItem className={`pr-3 ml-0 ${(this.state.employeesIsActive) ? 'active' : ''}`}>
+												{(!isEmpty(this.props.employees)) ? (
+													<a href={dashboard.EMPLOYEES.URI} title={dashboard.EMPLOYEES.TITLE} id="employees-page" className="btn btn-action btn-nav border-0"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a>
+												) : (
+													<a href="" title={dashboard.EMPLOYEES.TITLE} id="employees-page" className="btn btn-action btn-nav border-0 disabled" aria-disabled="true"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a>
+												)}
+											</NavItem>
 										</ul>
 									</div>
 									<ul className="mt-3 mt-md-0 actions profile-toggle col-12 col-sm-12 col-md-10 col-lg-6 col-xl-6">
@@ -148,6 +152,7 @@ Header.defaultProps = defaultProps;
 const mapStateToProps = (state, props) => ({
 	user: state.user,
 	rota: state.rota,
+	employees: state.employees,
 });
 
 const mapDispatchToProps = dispatch => ({

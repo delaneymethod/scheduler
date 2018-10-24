@@ -495,6 +495,34 @@ describe('API', () => {
 		return api.deleteRotaType(payload).then(data => expect(data.deleted).toBe(true));
 	});
 
+	it('should create rota type employees', () => {
+		mock.onPost('/rota-types/4/employees').reply(201, {
+			employees: [{
+				accountEmployeeId: 1,
+			}],
+		});
+
+		const payload = {
+			rotaTypeId: 4,
+			employees: ['1', '2', '3'],
+		};
+
+		return api.createRotaTypeEmployees(payload).then(data => expect(data.employees[0].accountEmployeeId).toEqual(1));
+	});
+
+	it('should delete rota type employee', () => {
+		mock.onDelete('/rota-types/1/employees/2').reply(204, {
+			deleted: true,
+		});
+
+		const payload = {
+			rotaTypeId: 1,
+			accountEmployeeId: 2,
+		};
+
+		return api.deleteRotaTypeEmployee(payload).then(data => expect(data.deleted).toBe(true));
+	});
+
 	it('should get rotas', () => {
 		mock.onGet('/rotas?rotaTypeId=3').reply(200, {
 			rotas: [],
@@ -520,6 +548,20 @@ describe('API', () => {
 		};
 
 		return api.getRota(payload).then(data => expect(data.rotas[0].rotaId).toEqual(4));
+	});
+
+	it('should get rota employees', () => {
+		mock.onGet('/rotas/4/employees').reply(200, {
+			employees: [{
+				accountEmployeeId: 4,
+			}],
+		});
+
+		const payload = {
+			rotaId: 4,
+		};
+
+		return api.getRotaEmployees(payload).then(data => expect(data.employees[0].accountEmployeeId).toEqual(4));
 	});
 
 	it('should create rota', () => {
@@ -581,6 +623,19 @@ describe('API', () => {
 		};
 
 		return api.publishRota(payload).then(data => expect(data.rotas[0].rotaTypeId).toEqual(1));
+	});
+
+	it('should update rota employees order', () => {
+		mock.onPut('/rotas/2/employees/order').reply(200, {
+			employees: [],
+		});
+
+		const payload = {
+			rotaId: 2,
+			objectIdList: ['3', '1', '2'],
+		};
+
+		return api.updateRotaEmployeesOrder(payload).then(data => expect(data.employees).toEqual([]));
 	});
 
 	it('should get shifts', () => {

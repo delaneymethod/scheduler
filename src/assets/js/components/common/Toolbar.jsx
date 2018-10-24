@@ -34,7 +34,13 @@ import { switchWeek } from '../../actions/weekActions';
 
 import { updateSettings } from '../../actions/settingActions';
 
+import UploadEmployeesForm from '../forms/UploadEmployeesForm';
+
 import { confirm, complexConfirm } from '../../helpers/confirm';
+
+import ExistingEmployeesForm from '../forms/ExistingEmployeesForm';
+
+import { getRotaEmployees } from '../../actions/rotaEmployeeActions';
 
 import { getRotaTypes, switchRotaType } from '../../actions/rotaTypeActions';
 
@@ -112,7 +118,13 @@ class Toolbar extends Component {
 
 		this.handleEditRotaTooltip = this.handleEditRotaTooltip.bind(this);
 
+		this.handleUploadEmployees = this.handleUploadEmployees.bind(this);
+
+		this.handleInfoNotification = this.handleInfoNotification.bind(this);
+
 		this.handleDownloadRotaMenu = this.handleDownloadRotaMenu.bind(this);
+
+		this.handleExistingEmployees = this.handleExistingEmployees.bind(this);
 
 		this.handleRotaBudgetTooltip = this.handleRotaBudgetTooltip.bind(this);
 
@@ -125,6 +137,8 @@ class Toolbar extends Component {
 		this.handleSuccessNotification = this.handleSuccessNotification.bind(this);
 
 		this.handleCreateEmployeeTooltip = this.handleCreateEmployeeTooltip.bind(this);
+
+		this.handleUploadEmployeesTooltip = this.handleUploadEmployeesTooltip.bind(this);
 
 		this.handleCopyLastWeeksRotaShifts = this.handleCopyLastWeeksRotaShifts.bind(this);
 
@@ -139,9 +153,8 @@ class Toolbar extends Component {
 		startDate: '',
 		rotaBudget: 0,
 		rotaStatus: 'DRAFT',
-		rolesIsActive: false,
+		rotasIsActive: false,
 		isErrorModalOpen: false,
-		overviewIsActive: false,
 		employeesIsActive: false,
 		enableShiftButton: false,
 		isEditRotaModalOpen: false,
@@ -156,8 +169,12 @@ class Toolbar extends Component {
 		isDownloadRotaTooltipOpen: false,
 		isRotaTypeMenuPopoverOpen: false,
 		isCreateEmployeeModalOpen: false,
+		isUploadEmployeesModalOpen: false,
 		isCreateEmployeeTooltipOpen: false,
+		isUploadEmployeesTooltipOpen: false,
+		isExistingEmployeesModelOpen: false,
 		isDownloadRotaMenuPopoverOpen: false,
+		isExistingEmployeesTooltipOpen: false,
 		isCopyLastWeeksRotaShiftsTooltipOpen: false,
 	});
 
@@ -221,13 +238,25 @@ class Toolbar extends Component {
 				/* Any time we switch rotas, we need to get a fresh list of shifts for that rota */
 				logMessage('info', 'Called Toolbar handleSwitchRota getShifts');
 
-				actions.getShifts(payload).catch((error) => {
-					error.data.title = 'Get Shifts';
+				actions.getShifts(payload)
+					.then(() => {
+						logMessage('info', 'Called Toolbar handleSwitchRota getShifts');
 
-					this.setState({ error });
+						actions.getRotaEmployees(rota).catch((error) => {
+							error.data.title = 'Get Rota Employees';
 
-					this.handleModal();
-				});
+							this.setState({ error });
+
+							this.handleModal();
+						});
+					})
+					.catch((error) => {
+						error.data.title = 'Get Shifts';
+
+						this.setState({ error });
+
+						this.handleModal();
+					});
 			});
 	};
 
@@ -316,8 +345,7 @@ class Toolbar extends Component {
 			rotaBudget: budget,
 			rotaStatus: status,
 			hasUnassignedShifts,
-			rolesIsActive: (pathname === dashboard.ROLES.URI),
-			overviewIsActive: (pathname === dashboard.OVERVIEW.URI),
+			rotasIsActive: (pathname === dashboard.ROTAS.URI),
 			employeesIsActive: (pathname === dashboard.EMPLOYEES.URI),
 		});
 	};
@@ -389,6 +417,16 @@ class Toolbar extends Component {
 													dow: firstDayOfWeek,
 													doy: moment.localeData('en').firstDayOfYear(),
 												},
+											});
+
+											logMessage('info', 'Called Toolbar handleSwitchRotaType getRotaEmployees');
+
+											actions.getRotaEmployees(rota).catch((error) => {
+												error.data.title = 'Get Rota Employees';
+
+												this.setState({ error });
+
+												this.handleModal();
 											});
 										})
 										.catch((error) => {
@@ -531,9 +569,15 @@ class Toolbar extends Component {
 
 	handleEditRota = (event, rotaId) => this.setState({ rotaId, isEditRotaModalOpen: !this.state.isEditRotaModalOpen });
 
+	handleUploadEmployees = () => this.setState({ isUploadEmployeesModalOpen: !this.state.isUploadEmployeesModalOpen });
+
 	handleDownloadRotaTooltip = () => this.setState({ isDownloadRotaTooltipOpen: !this.state.isDownloadRotaTooltipOpen });
 
 	handleCreateEmployeeTooltip = () => this.setState({ isCreateEmployeeTooltipOpen: !this.state.isCreateEmployeeTooltipOpen });
+
+	handleUploadEmployeesTooltip = () => this.setState({ isUploadEmployeesTooltipOpen: !this.state.isUploadEmployeesTooltipOpen });
+
+	handleExistingEmployees = () => this.setState({ isExistingEmployeesModalOpen: !this.state.isExistingEmployeesModalOpen });
 
 	handleDownloadRotaMenu = () => this.setState({ isDownloadRotaTooltipOpen: false, isDownloadRotaMenuPopoverOpen: !this.state.isDownloadRotaMenuPopoverOpen });
 
@@ -589,6 +633,15 @@ class Toolbar extends Component {
 
 	handleSwitchFromAssignShiftToCreateShift = () => this.setState({ isCreateShiftModalOpen: true, isAssignShiftModalOpen: false });
 
+	handleInfoNotification = (message) => {
+		if (!toast.isActive(this.toastId)) {
+			this.toastId = toast.info(<Notification icon="fa-info-circle" title="Information" message={message} />, {
+				autoClose: false,
+				closeButton: <CloseButton />,
+			});
+		}
+	};
+
 	handleSuccessNotification = (message) => {
 		if (!toast.isActive(this.toastId)) {
 			this.toastId = toast.success(<Notification icon="fa-check-circle" title="Success" message={message} />, {
@@ -619,68 +672,77 @@ class Toolbar extends Component {
 			</Row>
 			<Row>
 				<Col className="pt-3 pb-3 pt-sm-3 pb-ms-3 text-center text-md-left" xs="12" sm="12" md="7" lg="7" xl="6">
-					<button type="button" className="btn btn-rotas-popover text-dark border-0 col-12 col-sm-auto" id="rotaTypeMenu" title="Toggle Rotas" aria-label="Toggle Rotas" onClick={this.handleRotaTypeMenu}>{this.props.rotaType.rotaTypeName}<i className="pl-2 fa fa-fw fa-chevron-down" aria-hidden="true"></i></button>
-					<ButtonGroup className="d-none d-sm-inline-block p-0 pl-sm-3 pl-md-3 pl-lg-3 pl-xl-3 m-0">
-						<button type="button" id="download-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3" onClick={this.handleDownloadRotaMenu}><i className="fa fa-fw fa-cloud-download" aria-hidden="true"></i></button>
-						<button type="button" id="edit-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3" onClick={event => this.handleEditRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i></button>
-						<button type="button" id="rota-budget" className={`btn btn-rotas-popover text-dark border-0 pl-3 pr-3 ${(this.props.shifts.length === 0) ? '' : 'rounded-right'}`} style={{ cursor: 'default' }}>&pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
-						<button type="button" id="copy-last-weeks-rota-shifts" className={`btn btn-rotas-popover text-dark border-0 pl-3 pr-3 ${(this.props.shifts.length === 0) ? 'd-inline-block' : 'd-none'}`} onClick={this.handleCopyLastWeeksRotaShifts}><i className="fa fa-fw fa-files-o" aria-hidden="true"></i></button>
-					</ButtonGroup>
-					<div className="d-block d-sm-none">
-						<button type="button" id="download-rota" className="btn btn-rotas-popover text-dark border-0 mt-3 mt-sm-auto pl-3 pr-3 col-12 col-sm-auto mb-3" onClick={this.handleDownloadRotaMenu}><i className="fa fa-fw fa-cloud-download" aria-hidden="true"></i> Download Rota</button>
-						<button type="button" id="edit-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-3" onClick={event => this.handleEditRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i> Edit Rota</button>
-						<button type="button" id="rota-budget" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-3" style={{ cursor: 'default' }}>Rota Budget: &pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
-						{(this.props.shifts.length === 0) ? (
-							<button type="button" id="copy-last-weeks-rota-shifts" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-0" onClick={this.handleCopyLastWeeksRotaShifts}><i className="fa fa-fw fa-files-o" aria-hidden="true"></i> Copy last weeks Rota shifts</button>
-						) : null}
-					</div>
-					<Tooltip placement="bottom" isOpen={this.state.isDownloadRotaTooltipOpen} target="download-rota" toggle={this.handleDownloadRotaTooltip}>Download Rota</Tooltip>
-					<Tooltip placement="bottom" isOpen={this.state.isEditRotaTooltipOpen} target="edit-rota" toggle={this.handleEditRotaTooltip}>Edit Rota</Tooltip>
-					<Tooltip placement="bottom" isOpen={this.state.isRotaBudgetTooltipOpen} target="rota-budget" toggle={this.handleRotaBudgetTooltip}>Rota Budget</Tooltip>
-					<Tooltip placement="bottom" isOpen={this.state.isCopyLastWeeksRotaShiftsTooltipOpen} target="copy-last-weeks-rota-shifts" toggle={this.handleCopyLastWeeksRotaShiftsTooltip}>Copy last weeks Rota shifts</Tooltip>
-					<Popover placement="bottom" isOpen={this.state.isRotaTypeMenuPopoverOpen} target="rotaTypeMenu" toggle={this.handleRotaTypeMenu}>
-						<PopoverBody>
-							<ul className="popover-menu">
-								{(this.props.rotaTypes.length > 0) ? orderBy(this.props.rotaTypes, 'rotaTypeName').map((rotaType, index) => (<li key={index}><button type="button" title={rotaType.rotaTypeName} className="btn btn-action btn-nav border-0 text-truncate" id={rotaType.rotaTypeId} onClick={this.handleSwitchRotaType}>{rotaType.rotaTypeName}</button></li>)) : null}
-								<li><button type="button" title="Add New Rota" id="add-new-rota" className="btn btn-primary btn-nav border-0" onClick={this.handleCreateRota}>Add New Rota</button></li>
-							</ul>
-						</PopoverBody>
-					</Popover>
-					<Popover placement="bottom" isOpen={this.state.isDownloadRotaMenuPopoverOpen} target="download-rota" toggle={this.handleDownloadRotaMenu}>
-						<PopoverBody>
-							<ul className="popover-menu">
-								<li><button type="button" title="Download Rota (PDF)" id="pdf-rota" className="btn btn-action btn-nav border-0 text-truncate" onClick={event => this.handleDownloadRota(event, 'pdf')}>Download Rota (PDF)</button></li>
-								<li><button type="button" title="Download Rota (Excel)" id="excel-rota" className="btn btn-action btn-nav border-0 text-truncate" onClick={event => this.handleDownloadRota(event, 'excel')}>Download Rota (Excel)</button></li>
-							</ul>
-						</PopoverBody>
-					</Popover>
+					{(this.state.rotasIsActive) ? (
+						<Fragment>
+							<button type="button" className="btn btn-rotas-popover text-dark border-0 col-12 col-sm-auto" id="rotaTypeMenu" title="Toggle Rotas" aria-label="Toggle Rotas" onClick={this.handleRotaTypeMenu}>{this.props.rotaType.rotaTypeName}<i className="pl-2 fa fa-fw fa-chevron-down" aria-hidden="true"></i></button>
+							<Popover placement="bottom" isOpen={this.state.isRotaTypeMenuPopoverOpen} target="rotaTypeMenu" toggle={this.handleRotaTypeMenu}>
+								<PopoverBody>
+									<ul className="popover-menu">
+										{(this.props.rotaTypes.length > 0) ? orderBy(this.props.rotaTypes, 'rotaTypeName').map((rotaType, index) => (<li key={index}><button type="button" title={rotaType.rotaTypeName} className="btn btn-action btn-nav border-0 text-truncate" id={rotaType.rotaTypeId} onClick={this.handleSwitchRotaType}>{rotaType.rotaTypeName}</button></li>)) : null}
+										<li><button type="button" title="Add New Rota" id="add-new-rota" className="btn btn-primary btn-nav border-0" onClick={this.handleCreateRota}>Add New Rota</button></li>
+									</ul>
+								</PopoverBody>
+							</Popover>
+							<ButtonGroup className="d-none d-sm-inline-block p-0 pl-sm-3 pl-md-3 pl-lg-3 pl-xl-3 m-0">
+								<button type="button" id="download-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3" onClick={this.handleDownloadRotaMenu}><i className="fa fa-fw fa-cloud-download" aria-hidden="true"></i></button>
+								<button type="button" id="edit-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3" onClick={event => this.handleEditRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i></button>
+								<button type="button" id="rota-budget" className={`btn btn-rotas-popover text-dark border-0 pl-3 pr-3 ${(this.props.shifts.length === 0) ? '' : 'rounded-right'}`} style={{ cursor: 'default' }}>&pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
+								<button type="button" id="copy-last-weeks-rota-shifts" className={`btn btn-rotas-popover text-dark border-0 pl-3 pr-3 ${(this.props.shifts.length === 0) ? 'd-inline-block' : 'd-none'}`} onClick={this.handleCopyLastWeeksRotaShifts}><i className="fa fa-fw fa-files-o" aria-hidden="true"></i></button>
+							</ButtonGroup>
+							<div className="d-block d-sm-none">
+								<button type="button" id="download-rota" className="btn btn-rotas-popover text-dark border-0 mt-3 mt-sm-auto pl-3 pr-3 col-12 col-sm-auto mb-3" onClick={this.handleDownloadRotaMenu}><i className="fa fa-fw fa-cloud-download" aria-hidden="true"></i> Download Rota</button>
+								<button type="button" id="edit-rota" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-3" onClick={event => this.handleEditRota(event, this.props.rota.rotaId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i> Edit Rota</button>
+								<button type="button" id="rota-budget" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-3" style={{ cursor: 'default' }}>Rota Budget: &pound;{this.state.rotaBudget.toLocaleString(undefined, { minimumFractionDigits: 2 })}</button>
+								{(this.props.shifts.length === 0) ? (
+									<button type="button" id="copy-last-weeks-rota-shifts" className="btn btn-rotas-popover text-dark border-0 pl-3 pr-3 col-12 col-sm-auto mb-0" onClick={this.handleCopyLastWeeksRotaShifts}><i className="fa fa-fw fa-files-o" aria-hidden="true"></i> Copy last weeks Rota shifts</button>
+								) : null}
+							</div>
+							<Tooltip placement="bottom" isOpen={this.state.isDownloadRotaTooltipOpen} target="download-rota" toggle={this.handleDownloadRotaTooltip}>Download Rota</Tooltip>
+							<Tooltip placement="bottom" isOpen={this.state.isEditRotaTooltipOpen} target="edit-rota" toggle={this.handleEditRotaTooltip}>Edit Rota</Tooltip>
+							<Tooltip placement="bottom" isOpen={this.state.isRotaBudgetTooltipOpen} target="rota-budget" toggle={this.handleRotaBudgetTooltip}>Rota Budget</Tooltip>
+							<Tooltip placement="bottom" isOpen={this.state.isCopyLastWeeksRotaShiftsTooltipOpen} target="copy-last-weeks-rota-shifts" toggle={this.handleCopyLastWeeksRotaShiftsTooltip}>Copy last weeks Rota shifts</Tooltip>
+							<Popover placement="bottom" isOpen={this.state.isDownloadRotaMenuPopoverOpen} target="download-rota" toggle={this.handleDownloadRotaMenu}>
+								<PopoverBody>
+									<ul className="popover-menu">
+										<li><button type="button" title="Download Rota (PDF)" id="pdf-rota" className="btn btn-action btn-nav border-0 text-truncate" onClick={event => this.handleDownloadRota(event, 'pdf')}>Download Rota (PDF)</button></li>
+										<li><button type="button" title="Download Rota (Excel)" id="excel-rota" className="btn btn-action btn-nav border-0 text-truncate" onClick={event => this.handleDownloadRota(event, 'excel')}>Download Rota (Excel)</button></li>
+									</ul>
+								</PopoverBody>
+							</Popover>
+						</Fragment>
+					) : null}
 				</Col>
 				<Col className="pt-0 pb-0 pt-sm-0 pt-md-3 pb-sm-3 text-center text-md-right" xs="12" sm="12" md="5" lg="5" xl="6">
 					<div className="d-block d-sm-inline-block d-md-none d-lg-inline-block">
-						{(this.state.employeesIsActive || this.state.overviewIsActive) ? (
+						{(this.state.rotasIsActive) ? (
 							<Fragment>
 								{(this.state.hasUnassignedShifts) ? (
 									<button type="button" title="Assign Shift" id="assign-shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 mb-md-0 pl-3 pr-3 border-0" disabled={!this.state.enableShiftButton} onClick={this.handleAssignShift}><i className="fa fa-fw fa-plus d-none d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Assign</span> Shift</button>
 								) : (
 									<button type="button" title="Create Shift" id="create-shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 mb-md-0 pl-3 pr-3 border-0" disabled={!this.state.enableShiftButton} onClick={this.handleCreateShift}><i className="fa fa-fw fa-plus d-none d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Create</span> Shift</button>
 								)}
+								{(this.state.rotaStatus === STATUSES.DRAFT) ? (
+									<button type="button" title="Publish Rota" id="publish-rota" className="btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish<span className="d-sm-inline-block d-md-none d-lg-inline-block">&nbsp;Rota</span></button>
+								) : null}
+								{(this.state.rotaStatus === STATUSES.PUBLISHED) ? (
+									<button type="button" title="Rota Published" id="rota-published" className="btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled>Publish<span className="d-sm-inline-block d-md-none d-lg-inline-block">&nbsp;Rota</span></button>
+								) : null}
+								{(this.state.rotaStatus === STATUSES.EDITED) ? (
+									<button type="button" title="Publish Rota Changes" id="publish-rota-changes" className="btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish&nbsp;<span className="d-sm-inline-block d-md-none d-lg-inline-block">Rota&nbsp;</span>Changes</button>
+								) : null}
+								<button type="button" title="Add Existing Employees" id="add-existing-employees" className="d-inline-block d-md-none btn btn-nav btn-secondary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" onClick={this.handleExistingEmployees}>Add Existing Employees</button>
+								<button type="button" title="Create Employee" id="create-employee" className="d-inline-block d-md-none btn btn-nav btn-secondary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" onClick={this.handleCreateEmployee}>Create Employee</button>
 							</Fragment>
-						) : (
-							<button type="button" title="Create Shift" id="create-shift" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 mb-md-0 pl-3 pr-3 border-0" disabled={!this.state.enableShiftButton} onClick={this.handleCreateShift}><i className="fa fa-fw fa-plus d-none d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Create</span> Shift</button>
-						)}
-						{(this.state.rotaStatus === STATUSES.DRAFT) ? (
-							<button type="button" title="Publish Rota" id="publish-rota" className="btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish<span className="d-sm-inline-block d-md-none d-lg-inline-block">&nbsp;Rota</span></button>
 						) : null}
-						{(this.state.rotaStatus === STATUSES.PUBLISHED) ? (
-							<button type="button" title="Rota Published" id="rota-published" className="btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled>Publish<span className="d-sm-inline-block d-md-none d-lg-inline-block">&nbsp;Rota</span></button>
+						{(this.state.employeesIsActive) ? (
+							<Fragment>
+								<button title="Create Employee" id="create-employee" className="btn btn-nav btn-secondary col-12 col-sm-auto mb-3 mb-sm-0 mb-md-0 pl-3 pr-3 border-0" onClick={this.handleCreateEmployee}>Create Employee</button>
+								<button title="Upload Employees" id="upload-employees" className="btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" onClick={this.handleUploadEmployees}>Upload Employees</button>
+							</Fragment>
 						) : null}
-						{(this.state.rotaStatus === STATUSES.EDITED) ? (
-							<button type="button" title="Publish Rota Changes" id="publish-rota-changes" className="btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish&nbsp;<span className="d-sm-inline-block d-md-none d-lg-inline-block">Rota&nbsp;</span>Changes</button>
-						) : null}
-						<button type="button" title="Create Employee" id="create-employee" className="d-inline-block d-lg-none btn btn-nav btn-primary col-12 col-sm-auto pl-3 pr-3 ml-sm-3 mb-3 mb-sm-0 mb-md-0 border-0" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-plus d-none d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Create</span> Employee</button>
 					</div>
-					<ButtonGroup className="d-none d-md-inline-block d-lg-none p-0 m-0 mr-3">
-						{(this.state.employeesIsActive || this.state.overviewIsActive) ? (
+					<ButtonGroup className="d-none d-md-inline-block d-lg-none p-0 m-0">
+						{(this.state.rotasIsActive) ? (
 							<Fragment>
 								{(this.state.hasUnassignedShifts) ? (
 									<Fragment>
@@ -693,36 +755,39 @@ class Toolbar extends Component {
 										<Tooltip placement="bottom" isOpen={this.state.isCreateShiftTooltipOpen} target="create-shift" toggle={this.handleCreateShiftTooltip}>Create Shift</Tooltip>
 									</Fragment>
 								)}
-							</Fragment>
-						) : (
-							<Fragment>
-								<button type="button" title="Create Shift" id="create-shift" className="btn btn-nav btn-secondary border-0 pl-3 pr-3" disabled={!this.state.enableShiftButton} onClick={this.handleCreateShift}><i className="fa fa-fw fa-plus d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Create</span> Shift</button>
-								<Tooltip placement="bottom" isOpen={this.state.isCreateShiftTooltipOpen} target="create-shift" toggle={this.handleCreateShiftTooltip}>Create Shift</Tooltip>
-							</Fragment>
-						)}
-						{(this.state.rotaStatus === STATUSES.DRAFT) ? (
-							<Fragment>
-								<button type="button" title="Publish Rota" id="publish-rota" className="btn btn-nav btn-primary border-0 pl-3 pr-3" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish<span className="d-sm-inline-block d-md-none d-lg-inline-block">&nbsp;Rota</span></button>
-								<Tooltip placement="bottom" isOpen={this.state.isPublishRotaTooltipOpen} target="publish-rota" toggle={this.handlePublishRotaTooltip}>Publish Rota</Tooltip>
+								{(this.state.rotaStatus === STATUSES.DRAFT) ? (
+									<Fragment>
+										<button type="button" title="Publish Rota" id="publish-rota" className="btn btn-nav btn-primary border-0 pl-3 pr-3" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish<span className="d-sm-inline-block d-md-none d-lg-inline-block">&nbsp;Rota</span></button>
+										<Tooltip placement="bottom" isOpen={this.state.isPublishRotaTooltipOpen} target="publish-rota" toggle={this.handlePublishRotaTooltip}>Publish Rota</Tooltip>
+									</Fragment>
+								) : null}
+								{(this.state.rotaStatus === STATUSES.PUBLISHED) ? (
+									<Fragment>
+										<button type="button" title="Rota Published" id="publish-rota" className="btn btn-nav btn-primary border-0 pl-3 pr-3" disabled>Publish<span className="d-sm-inline-block d-md-none d-lg-inline-block">&nbsp;Rota</span></button>
+										<Tooltip placement="bottom" isOpen={this.state.isPublishRotaTooltipOpen} target="publish-rota" toggle={this.handlePublishRotaTooltip}>Rota Published</Tooltip>
+									</Fragment>
+								) : null}
+								{(this.state.rotaStatus === STATUSES.EDITED) ? (
+									<Fragment>
+										<button type="button" title="Publish Rota Changes" id="publish-rota" className="btn btn-nav btn-primary border-0 pl-3 pr-3" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish</button>
+										<Tooltip placement="bottom" isOpen={this.state.isPublishRotaTooltipOpen} target="publish-rota" toggle={this.handlePublishRotaTooltip}>Publish Rota Changes</Tooltip>
+									</Fragment>
+								) : null}
+								<button type="button" title="Add Existing Employees" id="add-existing-employees" className="btn btn-nav btn-secondary border-0 pl-3 pr-3" onClick={this.handleExistingEmployees}><i className="fa fa-fw fa-users d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i></button>
+								<Tooltip placement="bottom" isOpen={this.state.isExistingEmployeesTooltipOpen} target="add-existing-employees" toggle={this.handleExistingEmployeeTooltip}>Add Existing Employees</Tooltip>
+								<button type="button" title="Create Employee" id="create-employee" className="btn btn-nav btn-secondary border-0 pl-3 pr-3" onClick={this.handleCreateEmployee}><i className="fa fa-fw fa-user-plus d-sm-none d-md-inline-block d-lg-none" aria-hidden="true"></i></button>
+								<Tooltip placement="bottom" isOpen={this.state.isCreateEmployeeTooltipOpen} target="create-employee" toggle={this.handleCreateEmployeeTooltip}>Create Employee</Tooltip>
 							</Fragment>
 						) : null}
-						{(this.state.rotaStatus === STATUSES.PUBLISHED) ? (
+						{(this.state.employeesIsActive) ? (
 							<Fragment>
-								<button type="button" title="Rota Published" id="publish-rota" className="btn btn-nav btn-primary border-0 pl-3 pr-3" disabled>Publish<span className="d-sm-inline-block d-md-none d-lg-inline-block">&nbsp;Rota</span></button>
-								<Tooltip placement="bottom" isOpen={this.state.isPublishRotaTooltipOpen} target="publish-rota" toggle={this.handlePublishRotaTooltip}>Rota Published</Tooltip>
-							</Fragment>
-						) : null}
-						{(this.state.rotaStatus === STATUSES.EDITED) ? (
-							<Fragment>
-								<button type="button" title="Publish Rota Changes" id="publish-rota" className="btn btn-nav btn-primary border-0 pl-3 pr-3" disabled={!this.state.enableShiftButton} onClick={this.handlePublishRota}>Publish</button>
-								<Tooltip placement="bottom" isOpen={this.state.isPublishRotaTooltipOpen} target="publish-rota" toggle={this.handlePublishRotaTooltip}>Publish Rota Changes</Tooltip>
+								<button type="button" title="Create Employee" id="create-employee" className="btn btn-nav btn-secondary border-0 pl-3 pr-3" onClick={this.handleCreateEmployee}>Create Employee</button>
+								<Tooltip placement="bottom" isOpen={this.state.isCreateEmployeeTooltipOpen} target="create-employee" toggle={this.handleCreateEmployeeTooltip}>Create Employee</Tooltip>
+								<button type="button" title="Upload Employees" id="upload-employees" className="btn btn-nav btn-primary border-0 pl-3 pr-3" onClick={this.handleUploadEmployees}>Upload Employees</button>
+								<Tooltip placement="bottom" isOpen={this.state.isUploadEmployeesTooltipOpen} target="upload-employees" toggle={this.handleUploadEmployeesTooltip}>Upload Employees</Tooltip>
 							</Fragment>
 						) : null}
 					</ButtonGroup>
-					<ButtonGroup className="d-none d-md-inline-block d-lg-none p-0 m-0">
-						<button type="button" title="Create Employee" id="create-employee" className="d-inline-block d-lg-none btn btn-nav btn-primary border-0 pl-3 pr-3" onClick={this.handleCreateEmployee}><i className="fa fa-user-plus d-sm-none d-md-inline-block" aria-hidden="true"></i><span className="d-sm-inline-block d-md-none d-lg-inline-block">Create Employee</span></button>
-					</ButtonGroup>
-					<Tooltip placement="bottom" isOpen={this.state.isCreateEmployeeTooltipOpen} target="create-employee" toggle={this.handleCreateEmployeeTooltip}>Create Employee</Tooltip>
 				</Col>
 			</Row>
 			<Modal title="Create Rota" className="modal-dialog" show={this.state.isCreateRotaModalOpen} onClose={this.handleCreateRota}>
@@ -739,6 +804,12 @@ class Toolbar extends Component {
 			</Modal>
 			<Modal title="Create Employee" className="modal-dialog" show={this.state.isCreateEmployeeModalOpen} onClose={this.handleCreateEmployee}>
 				<EmployeeForm editMode={false} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleCreateEmployee} />
+			</Modal>
+			<Modal title="Add Existing Employees" className="modal-dialog" show={this.state.isExistingEmployeesModalOpen} onClose={this.handleExistingEmployees}>
+				<ExistingEmployeesForm editMode={false} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleExistingEmployees} />
+			</Modal>
+			<Modal title="Upload Employees" className="modal-dialog" show={this.state.isUploadEmployeesModalOpen} onClose={this.handleUploadEmployees}>
+				<UploadEmployeesForm handleInfoNotification={this.handleInfoNotification} handleClose={this.handleUploadEmployees} />
 			</Modal>
 			{(this.state.error.data) ? (
 				<Modal title={this.state.error.data.title} className="modal-dialog-error" buttonLabel="Close" show={this.state.isErrorModalOpen} onClose={this.handleModal}>
@@ -778,6 +849,7 @@ const mapDispatchToProps = dispatch => ({
 		downloadShifts,
 		updateSettings,
 		switchRotaType,
+		getRotaEmployees,
 	}, dispatch),
 });
 

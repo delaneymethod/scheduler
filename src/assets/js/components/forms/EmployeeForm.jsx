@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import debounce from 'lodash/debounce';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
-import { Row, Col, Button, FormGroup } from 'reactstrap';
+import { Row, Col, Label, Button, FormGroup } from 'reactstrap';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
 
 import Alert from '../common/Alert';
@@ -24,6 +24,8 @@ import NumberField from '../fields/NumberField';
 
 import { getShifts } from '../../actions/shiftActions';
 
+import { getRotaEmployees } from '../../actions/rotaEmployeeActions';
+
 import { createEmployee, updateEmployee, getEmployees, deleteEmployee, orderEmployees } from '../../actions/employeeActions';
 
 const routes = config.APP.ROUTES;
@@ -32,18 +34,22 @@ const propTypes = {
 	editMode: PropTypes.bool,
 	employeeId: PropTypes.string,
 	rota: PropTypes.object.isRequired,
+	rotaTypes: PropTypes.array.isRequired,
 	rotaType: PropTypes.object.isRequired,
 	employees: PropTypes.array.isRequired,
 	handleClose: PropTypes.func.isRequired,
+	rotaEmployees: PropTypes.array.isRequired,
 	handleSuccessNotification: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
 	rota: {},
 	rotaType: {},
+	rotaTypes: [],
 	employees: [],
 	editMode: false,
 	employeeId: null,
+	rotaEmployees: [],
 	handleClose: () => {},
 	handleSuccessNotification: () => {},
 };
@@ -72,7 +78,11 @@ class EmployeeForm extends Component {
 
 		this.handleChangeSalary = this.handleChangeSalary.bind(this);
 
+		this.handleGetRotaEmployees = this.handleGetRotaEmployees.bind(this);
+
 		this.handleChangeHourlyRate = this.handleChangeHourlyRate.bind(this);
+
+		this.handleChangeToggleSwitch = this.handleChangeToggleSwitch.bind(this);
 
 		this.handleUpdateEmployeeOrder = this.handleUpdateEmployeeOrder.bind(this);
 
@@ -89,6 +99,10 @@ class EmployeeForm extends Component {
 		hourlyRate: '',
 		employeeId: '',
 		weeklyContractHours: '',
+		rotaTypeIds: this.props.rotaTypes.reduce((state, rotaType) => ({
+			...state,
+			[`rota_type_id_${rotaType.rotaTypeId}`]: (this.props.editMode ? false : (rotaType.rotaTypeId === this.props.rotaType.rotaTypeId)),
+		}), []),
 	});
 
 	componentDidMount = () => {
@@ -114,6 +128,7 @@ class EmployeeForm extends Component {
 			} = accountEmployee;
 
 			const {
+				rotaTypes,
 				employee: {
 					email,
 					mobile,
@@ -127,6 +142,16 @@ class EmployeeForm extends Component {
 			hourlyRate = (hourlyRate !== 0) ? hourlyRate : null;
 
 			weeklyContractHours = (weeklyContractHours !== 0) ? weeklyContractHours : null;
+
+			if (rotaTypes && rotaTypes.length > 0) {
+				rotaTypes.forEach(rotaType => this.setState(prevState => ({
+					...prevState,
+					rotaTypeIds: {
+						...prevState.rotaTypeIds,
+						[`rota_type_id_${rotaType.rotaTypeId}`]: true,
+					},
+				})));
+			}
 
 			/* Update the state with all the edit shift details */
 			this.setState({
@@ -147,6 +172,18 @@ class EmployeeForm extends Component {
 		this.setState({
 			[target.name]: target.value,
 		});
+	};
+
+	handleChangeToggleSwitch = (event) => {
+		const { name, checked } = event.currentTarget;
+
+		this.setState(prevState => ({
+			...prevState,
+			rotaTypeIds: {
+				...prevState.rotaTypeIds,
+				[name]: checked,
+			},
+		}));
 	};
 
 	handleChangeMobile = (event, values) => this.setState({ mobile: values.value });
@@ -198,6 +235,14 @@ class EmployeeForm extends Component {
 		return this.props.actions.getEmployees().catch(error => Promise.reject(error));
 	};
 
+	handleGetRotaEmployees = () => {
+		const { rota, actions } = this.props;
+
+		logMessage('info', 'Called EmployeeForm handleGetRotaEmployees getRotaEmployees');
+
+		return actions.getRotaEmployees(rota).catch(error => Promise.reject(error));
+	};
+
 	handleGetShifts = () => {
 		const { actions, rota: { rotaId } } = this.props;
 
@@ -216,7 +261,7 @@ class EmployeeForm extends Component {
 		const accountEmployee = employees.filter(data => data.employee.employeeId === this.state.employeeId).shift();
 
 		/* Check if the user wants to delete the employee */
-		let message = `<div class="text-center"><p>Please confirm that you wish to delete the Employee?</p><ul class="list-unstyled font-weight-bold"><li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li></ul><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
+		let message = `<div class="text-center"><ul class="list-unstyled font-weight-bold text-uppercase"><li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li></ul><p>Please confirm that you wish to delete this employee?</p><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
 
 		const options = {
 			message,
@@ -233,7 +278,7 @@ class EmployeeForm extends Component {
 			},
 			enableEscape: false,
 			title: 'Delete Employee',
-			className: 'modal-dialog-warning',
+			className: 'modal-dialog-danger',
 		};
 
 		/* If the user has clicked the proceed button, we delete the employee */
@@ -251,6 +296,7 @@ class EmployeeForm extends Component {
 				actions.deleteEmployee(payload)
 					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
 					.then(() => this.handleGetEmployees())
+					.then(() => this.handleGetRotaEmployees())
 					// .then(() => this.handleUpdateEmployeeOrder())
 					/* I guess the API could return the ordered list of employees so we dont need to make this extra call */
 					// .then(() => this.handleGetEmployees())
@@ -290,8 +336,13 @@ class EmployeeForm extends Component {
 				firstName,
 				hourlyRate,
 				employeeId,
+				rotaTypeIds,
 				weeklyContractHours,
 			} = this.state;
+
+			const rotaTypes = Object.keys(rotaTypeIds)
+				.filter(rotaType => rotaTypeIds[rotaType])
+				.map(rotaTypeId => rotaTypeId.replace('rota_type_id_', ''));
 
 			const payload = {
 				email,
@@ -299,6 +350,7 @@ class EmployeeForm extends Component {
 				mobile,
 				lastName,
 				firstName,
+				rotaTypes,
 				hourlyRate,
 				employeeId,
 				weeklyContractHours,
@@ -310,9 +362,7 @@ class EmployeeForm extends Component {
 				actions.updateEmployee(payload)
 					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
 					.then(() => this.handleGetEmployees())
-					// .then(() => this.handleUpdateEmployeeOrder())
-					/* I guess the API could return the ordered list of employees so we dont need to make this extra call */
-					// .then(() => this.handleGetEmployees())
+					.then(() => this.handleGetRotaEmployees())
 					/* Updating a shift or placement will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 					.then(() => this.handleGetShifts())
 					.then(() => {
@@ -332,9 +382,7 @@ class EmployeeForm extends Component {
 				actions.createEmployee(payload)
 					/* Updating the employee will update the store with only the updated employee (as thats what the reducer passes back) so we need to do another call to get all the employees back into the store again */
 					.then(() => this.handleGetEmployees())
-					// .then(() => this.handleUpdateEmployeeOrder())
-					/* I guess the API could return the ordered list of employees so we dont need to make this extra call */
-					// .then(() => this.handleGetEmployees())
+					.then(() => this.handleGetRotaEmployees())
 					/* Updating a shift or placement will update the store with only the shift (as thats what the reducer passes back) so we need to do another call to get all the shifts back into the store again */
 					.then(() => this.handleGetShifts())
 					.then(() => {
@@ -361,28 +409,68 @@ class EmployeeForm extends Component {
 			{this.errorMessage()}
 			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
 				<Row>
-					<Col xs="12" sm="12" md="12" lg="6" xl="6">
+					<Col xs="12" sm="12" md="12" lg="12" xl="12">
+						<h5 className="text-uppercase mb-3">Personal Details</h5>
+					</Col>
+				</Row>
+				<Row>
+					<Col xs="12" sm="12" md="6" lg="6" xl="6">
 						<TextField fieldName="firstName" fieldLabel="First Name" fieldValue={this.state.firstName} fieldPlaceholder="e.g. Jane" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid first name." fieldTabIndex={1} fieldAutoComplete={'on'} fieldRequired={true} />
 					</Col>
-					<Col xs="12" sm="12" md="12" lg="6" xl="6">
+					<Col xs="12" sm="12" md="6" lg="6" xl="6">
 						<TextField fieldName="lastName" fieldLabel="Last Name" fieldValue={this.state.lastName} fieldPlaceholder="e.g. Smith" handleChange={this.handleChange} handleBlur={this.handleBlur} valueMissing="Please provide a valid last name." fieldTabIndex={2} fieldAutoComplete={'on'} fieldRequired={true} />
 					</Col>
 				</Row>
-				<EmailField fieldValue={this.state.email} handleChange={this.handleChange} fieldTabIndex={3} fieldAutoComplete={'on'} fieldRequired={true} />
 				<Row>
-					<Col xs="12" sm="12" md="12" lg="6" xl="6">
-						<NumberField fieldName="mobile" fieldLabel="Mobile" fieldValue={this.state.mobile} fieldPlaceholder="e.g. +44 (0) 777-777-7777 (optional)" handleChange={this.handleChangeMobile} handleBlur={this.handleBlur} valueMissing="Please provide a valid mobile number." fieldTabIndex={4} fieldAutoComplete={'on'} fieldRequired={false} />
+					<Col xs="12" sm="12" md="6" lg="6" xl="6">
+						<EmailField fieldValue={this.state.email} handleChange={this.handleChange} fieldTabIndex={3} fieldAutoComplete={'on'} fieldRequired={true} />
 					</Col>
-					<Col xs="12" sm="12" md="12" lg="6" xl="6">
-						<NumberField fieldName="hourlyRate" fieldLabel="Hourly Rate" fieldValue={this.state.hourlyRate} fieldPlaceholder="e.g. £7.50 (optional)" handleChange={this.handleChangeHourlyRate} handleBlur={this.handleBlur} valueMissing="Please provide a valid hourly rate." fieldTabIndex={5} fieldRequired={false} />
+					<Col xs="12" sm="12" md="6" lg="6" xl="6">
+						<NumberField fieldName="mobile" fieldLabel="Mobile" fieldValue={this.state.mobile} fieldPlaceholder="e.g. +44 (0) 777-777-7777 (optional)" handleChange={this.handleChangeMobile} handleBlur={this.handleBlur} valueMissing="Please provide a valid mobile number." fieldTabIndex={4} fieldAutoComplete={'on'} fieldRequired={false} />
 					</Col>
 				</Row>
 				<Row>
-					<Col xs="12" sm="12" md="12" lg="6" xl="6">
+					<Col xs="12" sm="12" md="12" lg="12" xl="12">
+						<h5 className="text-uppercase mt-4 mb-3">Remuneration Details</h5>
+					</Col>
+				</Row>
+				<Row>
+					<Col xs="12" sm="12" md="6" lg="6" xl="6">
+						<NumberField fieldName="hourlyRate" fieldLabel="Hourly Rate" fieldValue={this.state.hourlyRate} fieldPlaceholder="e.g. £7.50 (optional)" handleChange={this.handleChangeHourlyRate} handleBlur={this.handleBlur} valueMissing="Please provide a valid hourly rate." fieldTabIndex={5} fieldRequired={false} />
+					</Col>
+					<Col xs="12" sm="12" md="6" lg="6" xl="6">
 						<NumberField fieldName="salary" fieldLabel="Salary" fieldValue={this.state.salary} fieldPlaceholder="e.g. £20,000.00 (optional)" handleChange={this.handleChangeSalary} handleBlur={this.handleBlur} valueMissing="Please provide a valid salary." fieldTabIndex={6} fieldRequired={false} />
 					</Col>
-					<Col xs="12" sm="12" md="12" lg="6" xl="6">
+				</Row>
+				<Row>
+					<Col xs="12" sm="12" md="6" lg="6" xl="6">
 						<NumberField fieldName="weeklyContractHours" fieldLabel="Weekly Contract Hours" fieldValue={this.state.weeklyContractHours} fieldPlaceholder="e.g. 37.5 (optional)" handleChange={this.handleChangeWeeklyContractHours} handleBlur={this.handleBlur} valueMissing="Please provide a valid weekly contract hours." fieldTabIndex={7} fieldRequired={false} />
+					</Col>
+				</Row>
+				<Row>
+					<Col xs="12" sm="12" md="12" lg="12" xl="12">
+						<h5 className="text-uppercase mt-4 mb-3">Select Rotas</h5>
+					</Col>
+				</Row>
+				<Row>
+					<Col xs="12" sm="12" md="6" lg="6" xl="6">
+						<Row>
+							{this.props.rotaTypes.map((rotaType, rotaTypeIndex) => (
+								<Col key={rotaTypeIndex} xs="12" sm="12" md="12" lg="12" xl="12">
+									<Row className="d-flex justify-content-center">
+										<Col className="align-self-center text-left" xs="9" sm="9" md="6" lg="6" xl="6">
+											<Label check className="mt-2 mb-2">{rotaType.rotaTypeName}</Label>
+										</Col>
+										<Col className="align-self-center text-right" xs="3" sm="3" md="6" lg="6" xl="6">
+											<Label check className="switch mt-2 mb-2">
+												<input type="checkbox" name={`rota_type_id_${rotaType.rotaTypeId}`} onChange={this.handleChangeToggleSwitch} checked={(this.state.rotaTypeIds[`rota_type_id_${rotaType.rotaTypeId}`])} />
+												<span className="slider round"></span>
+											</Label>
+										</Col>
+									</Row>
+								</Col>
+							))}
+						</Row>
 					</Col>
 				</Row>
 				{(this.props.editMode) ? (
@@ -406,8 +494,10 @@ const mapStateToProps = (state, props) => ({
 	rota: state.rota,
 	rotaType: state.rotaType,
 	editMode: props.editMode,
+	rotaTypes: state.rotaTypes,
 	employees: state.employees,
 	employeeId: props.employeeId,
+	rotaEmployees: state.rotaEmployees,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -418,6 +508,7 @@ const mapDispatchToProps = dispatch => ({
 		updateEmployee,
 		deleteEmployee,
 		orderEmployees,
+		getRotaEmployees,
 	}, dispatch),
 });
 

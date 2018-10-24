@@ -110,6 +110,9 @@ export default {
 				UPLOAD: {
 					TITLE: 'Upload Employees',
 				},
+				EXISTING: {
+					TITLE: 'Update Rota Employees',
+				},
 			},
 			ROLES: {
 				DELETE: {
@@ -217,17 +220,9 @@ export default {
 						KEYWORDS: '',
 					},
 				},
-				OVERVIEW: {
-					TITLE: 'Overview',
-					URI: '/dashboard/overview',
-					META: {
-						DESCRIPTION: '',
-						KEYWORDS: '',
-					},
-				},
-				ROLES: {
-					TITLE: 'Roles',
-					URI: '/dashboard/roles',
+				ROTAS: {
+					TITLE: 'Rotas',
+					URI: '/dashboard/rotas',
 					META: {
 						DESCRIPTION: '',
 						KEYWORDS: '',

@@ -26,6 +26,8 @@ import { switchWeek } from '../../actions/weekActions';
 
 import { updateSettings } from '../../actions/settingActions';
 
+import { getRotaEmployees } from '../../actions/rotaEmployeeActions';
+
 import { getRotas, createRota, updateRota, switchRota } from '../../actions/rotaActions';
 
 import { getRotaTypes, createRotaType, updateRotaType, deleteRotaType, switchRotaType } from '../../actions/rotaTypeActions';
@@ -38,6 +40,7 @@ const propTypes = {
 	title: PropTypes.string,
 	rotaId: PropTypes.string,
 	message: PropTypes.string,
+	rota: PropTypes.object.isRequired,
 	user: PropTypes.object.isRequired,
 	week: PropTypes.object.isRequired,
 	rotas: PropTypes.array.isRequired,
@@ -51,6 +54,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+	rota: {},
 	user: {},
 	week: {},
 	title: '',
@@ -87,6 +91,8 @@ class RotaForm extends Component {
 		this.handleChangeBudget = this.handleChangeBudget.bind(this);
 
 		this.handleGetRotaTypes = this.handleGetRotaTypes.bind(this);
+
+		this.handleGetRotaEmployees = this.handleGetRotaEmployees.bind(this);
 	}
 
 	getInitialState = () => ({
@@ -236,12 +242,20 @@ class RotaForm extends Component {
 		return actions.getRotas(payload).catch(error => Promise.reject(error));
 	};
 
+	handleGetRotaEmployees = () => {
+		const { rota, actions } = this.props;
+
+		logMessage('info', 'Called RotaForm handleGetRotaEmployees getRotaEmployees');
+
+		return actions.getRotaEmployees(rota).catch(error => Promise.reject(error));
+	};
+
 	/* FIXME - Need to refactor to just delete rota and not nuke everything like shifts, rotas and placements */
 	handleDelete = (event) => {
 		const rotaType = this.props.rotaTypes.filter(data => data.rotaTypeId === this.state.rotaTypeId).shift();
 
 		/* Check if the user wants to delete the shift */
-		let message = '<div class="text-center"><p>Please confirm that you wish to delete the Rota?</p><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>This will permanently delete all shifts, past and present for the rota!</p><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>';
+		let message = `<div class="text-center"><ul class="list-unstyled font-weight-bold text-uppercase"><li>Rota: ${rotaType.rotaTypeName}</li></ul><p>Please confirm that you wish to delete this rota?</p><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>This will permanently delete all shifts, past and present for the rota!</p><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
 
 		const options = {
 			message,
@@ -254,11 +268,11 @@ class RotaForm extends Component {
 				proceed: true,
 			},
 			colors: {
-				proceed: 'danger',
+				proceed: 'danger text-white',
 			},
 			enableEscape: false,
 			title: 'Delete Rota',
-			className: 'modal-dialog-warning',
+			className: 'modal-dialog-danger',
 		};
 
 		/* If the user has clicked the proceed button, we delete the rota type */
@@ -278,6 +292,7 @@ class RotaForm extends Component {
 				actions.deleteRotaType(payload)
 					.then(() => this.handleGetRotaTypes())
 					.then(() => this.handleGetRotas())
+					.then(() => this.handleGetRotaEmployees())
 					.then(() => {
 						/* Close the modal */
 						this.props.handleClose();
@@ -390,14 +405,20 @@ class RotaForm extends Component {
 																			},
 																		});
 
-																		/* Close the modal */
-																		this.props.handleClose();
+																		logMessage('info', 'Called RotaForm handleSubmit getRotaEmployees');
 
-																		/* FIXME - Make messages constants in config */
-																		const message = '<p>Rota was updated!</p>';
+																		actions.getRotaEmployees(updatedRota)
+																			.then(() => {
+																				/* Close the modal */
+																				this.props.handleClose();
 
-																		/* Pass a message back up the rabbit hole to the parent component */
-																		this.props.handleSuccessNotification(message);
+																				/* FIXME - Make messages constants in config */
+																				const message = '<p>Rota was updated!</p>';
+
+																				/* Pass a message back up the rabbit hole to the parent component */
+																				this.props.handleSuccessNotification(message);
+																			})
+																			.catch(error => this.setState({ error }));
 																	});
 																});
 															})
@@ -485,14 +506,20 @@ class RotaForm extends Component {
 																	},
 																});
 
-																/* Close the modal */
-																this.props.handleClose();
+																logMessage('info', 'Called RotaForm handleSubmit getRotaEmployees');
 
-																/* FIXME - Make messages constants in config */
-																const message = '<p>Rota was updated!</p>';
+																actions.getRotaEmployees(rota)
+																	.then(() => {
+																		/* Close the modal */
+																		this.props.handleClose();
 
-																/* Pass a message back up the rabbit hole to the parent component */
-																this.props.handleSuccessNotification(message);
+																		/* FIXME - Make messages constants in config */
+																		const message = '<p>Rota was created!</p>';
+
+																		/* Pass a message back up the rabbit hole to the parent component */
+																		this.props.handleSuccessNotification(message);
+																	})
+																	.catch(error => this.setState({ error }));
 															});
 														});
 													})
@@ -560,6 +587,7 @@ RotaForm.defaultProps = defaultProps;
 const mapStateToProps = (state, props) => ({
 	user: state.user,
 	week: state.week,
+	rota: state.rota,
 	rotas: state.rotas,
 	rotaId: props.rotaId,
 	shifts: state.shifts,
@@ -583,6 +611,7 @@ const mapDispatchToProps = dispatch => ({
 		deleteRotaType,
 		switchRotaType,
 		updateSettings,
+		getRotaEmployees,
 	}, dispatch),
 });
 

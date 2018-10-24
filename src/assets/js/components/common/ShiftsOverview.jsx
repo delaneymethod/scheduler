@@ -1,5 +1,4 @@
 import moment from 'moment';
-import Avatar from 'react-avatar';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 import isEmpty from 'lodash/isEmpty';
@@ -113,7 +112,9 @@ class ShiftsOverview extends Component {
 									<button type="button" className="btn btn-action border-0 p-0 font-weight-normal" id={`unassigned-shift-${unassignedShiftIndex}`} style={{ lineHeight: 'normal', fontSize: '0.7rem' }} onClick={event => this.handleAssignShift(event, unassignedShift.shiftId)}>
 										<div className="d-flex align-items-start pt-1 pl-2 pr-2 pb-1 m-0">
 											<div className="d-inline-block p-0 mr-2 mb-0">
-												<Avatar name="" textSizeRatio={3} color="#1CA3AE" fgColor="#ffffff" round={true} size="27" />
+												<div className="avatar-circle text-center bg-secondary">
+													<span className="avatar-initials avatar-initials-sm position-relative text-white"></span>
+												</div>
 											</div>
 											<div className="d-inline-block w-100 p-0 m-0">
 												<div className="wrap-words text-right"><span className="pull-left text-left w-50 p-0 ml-0 mt-0 mb-0 mr-1">Unassigned</span> {moment(unassignedShift.startTime).format('HH:mm')} - {(unassignedShift.isClosingShift) ? 'Closing' : moment(unassignedShift.endTime).format('HH:mm')}</div>
@@ -129,7 +130,9 @@ class ShiftsOverview extends Component {
 									<button type="button" className="btn btn-action border-0 p-0 font-weight-normal" id={`assigned-shift-${assignedShiftIndex}-${placementIndex}`} style={{ lineHeight: 'normal', fontSize: '0.7rem' }} onClick={event => this.handleEditShift(event, assignedShift.shiftId, placement.employee.employeeId, placement.placementId, moment(this.props.weekDate).format('YYYY-MM-DD'))}>
 										<div className="d-flex align-items-start pt-1 pl-2 pr-2 pb-1 m-0">
 											<div className="d-inline-block p-0 mr-2 mb-0">
-												<Avatar textSizeRatio={3} color="#1CA3AE" fgColor="#ffffff" name={`${placement.employee.firstName} ${placement.employee.lastName}`} round={true} size="27" />
+												<div className="avatar-circle avatar-circle-sm text-center bg-secondary">
+													<span className="avatar-initials avatar-initials-sm position-relative text-white">{(`${placement.employee.firstName} ${placement.employee.lastName}`).split(' ').map(n => n[0]).join('')}</span>
+												</div>
 											</div>
 											<div className="d-inline-block w-100 p-0 m-0">
 												<div className="wrap-words text-right"><span className="pull-left text-left w-50 p-0 ml-0 mt-0 mb-0 mr-1">{placement.employee.firstName} {placement.employee.lastName}</span> {moment(assignedShift.startTime).format('HH:mm')} - {(assignedShift.isClosingShift) ? 'Closing' : moment(assignedShift.endTime).format('HH:mm')}</div>

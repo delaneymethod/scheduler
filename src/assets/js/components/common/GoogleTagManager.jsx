@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import gtmParts from 'react-google-tag-manager';
-import CookieConsent, { Cookies } from 'react-cookie-consent';
+import CookieConsent, { Cookies } from 'react-cookie-bar';
 
 import config from '../../helpers/config';
 

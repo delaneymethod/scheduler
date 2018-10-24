@@ -52,8 +52,8 @@ const propTypes = {
 	shifts: PropTypes.array.isRequired,
 	editMode: PropTypes.bool.isRequired,
 	rotaType: PropTypes.object.isRequired,
-	employees: PropTypes.array.isRequired,
 	handleClose: PropTypes.func.isRequired,
+	rotaEmployees: PropTypes.array.isRequired,
 	handleSuccessNotification: PropTypes.func.isRequired,
 };
 
@@ -64,12 +64,12 @@ const defaultProps = {
 	shifts: [],
 	rotaType: {},
 	shiftId: null,
-	employees: [],
 	roleName: null,
 	editMode: false,
 	startDate: null,
 	employeeId: null,
 	placementId: null,
+	rotaEmployees: [],
 	handleClose: () => {},
 	handleSuccessNotification: () => {},
 };
@@ -587,10 +587,10 @@ class ShiftForm extends Component {
 	handleDelete = () => {
 		const shift = this.props.shifts.filter(data => data.shiftId === this.state.shiftId).shift();
 
-		const accountEmployee = this.props.employees.filter(data => data.employee.employeeId === this.state.employeeId).shift();
+		const accountEmployee = this.props.rotaEmployees.filter(data => data.employee.employeeId === this.state.employeeId).shift();
 
 		/* Check if the user wants to delete the shift */
-		let message = '<div class="text-center"><p>Please confirm that you wish to delete the Shift?</p><ul class="list-unstyled font-weight-bold">';
+		let message = '<div class="text-center"><ul class="list-unstyled font-weight-bold text-uppercase">';
 
 		if (!isEmpty(accountEmployee)) {
 			message += `<li>Employee: ${accountEmployee.employee.firstName} ${accountEmployee.employee.lastName}</li>`;
@@ -600,7 +600,7 @@ class ShiftForm extends Component {
 			message += `<li>Role: ${shift.role.roleName}</li>`;
 		}
 
-		message += `<li>Date: ${moment(shift.startTime).format('YYYY-MM-DD')}</li><li>Time: ${moment(shift.startTime).format('HH:mma')} - ${(shift.isClosingShift) ? 'Closing' : moment(shift.endTime).format('HH:mma')}</li></ul><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
+		message += `<li>Date: ${moment(shift.startTime).format('YYYY-MM-DD')}</li><li>Time: ${moment(shift.startTime).format('HH:mma')} - ${(shift.isClosingShift) ? 'Closing' : moment(shift.endTime).format('HH:mma')}</li></ul><p>Please confirm that you wish to delete this shift?</p><p class="text-uppercase"><i class="pr-3 fa fa-fw fa-exclamation-triangle text-warning" aria-hidden="true"></i>Caution: This action cannot be undone.</p></div>`;
 
 		const options = {
 			message,
@@ -613,11 +613,11 @@ class ShiftForm extends Component {
 				proceed: true,
 			},
 			colors: {
-				proceed: 'danger',
+				proceed: 'danger text-white',
 			},
 			enableEscape: false,
 			title: 'Delete Shift',
-			className: 'modal-dialog-warning',
+			className: 'modal-dialog-danger',
 		};
 
 		/* If the user has clicked the proceed button, we delete the shift */
@@ -816,8 +816,8 @@ class ShiftForm extends Component {
 										};
 
 										/**
-										 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
-										 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
+										 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same rota employees row
+										 * If the employee id is different, then we can assume the user has dragged and shift into a different rota employees row
 										 */
 										logMessage('info', 'Called ShiftForm handleSubmit updatePlacement');
 
@@ -902,8 +902,8 @@ class ShiftForm extends Component {
 								};
 
 								/**
-								 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same employees row
-								 * If the employee id is different, then we can assume the user has dragged and shift into a different employees row
+								 * If the employee id is the same as the shifts employee id, we can assume the user has just dragged the shift into a different day in the same rota employees row
+								 * If the employee id is different, then we can assume the user has dragged and shift into a different rota employees row
 								 */
 								logMessage('info', 'Called ShiftForm handleSubmit updatePlacement');
 
@@ -1058,12 +1058,12 @@ class ShiftForm extends Component {
 						</FormGroup>
 					</Col>
 				</Row>
-				{(this.props.employees.length > 0) ? (
+				{(this.props.rotaEmployees.length > 0) ? (
 					<FormGroup>
 						<Label for="employeeId">Assign Employee</Label>
 						<Input type="select" name="employeeId" id="employeeId" className="custom-select custom-select-xl" value={this.state.employeeId} onChange={this.handleChange} onBlur={this.handleBlur} tabIndex="7">
 							<option value="" label="Select Employee">Select Employee</option>
-							{this.props.employees.map(({ employee }, index) => <option key={index} value={employee.employeeId} label={`${employee.firstName} ${employee.lastName}`}>{employee.firstName} {employee.lastName}</option>)}
+							{this.props.rotaEmployees.map(({ employee }, index) => <option key={index} value={employee.employeeId} label={`${employee.firstName} ${employee.lastName}`}>{employee.firstName} {employee.lastName}</option>)}
 						</Input>
 						<FieldFeedbacks for="employeeId" show="all">
 							<FieldFeedback when="*">- Please select an employee.</FieldFeedback>
@@ -1100,9 +1100,9 @@ const mapStateToProps = (state, props) => ({
 	editMode: props.editMode,
 	roleName: props.roleName,
 	startDate: props.startDate,
-	employees: state.employees,
 	employeeId: props.employeeId,
 	placementId: props.placementId,
+	rotaEmployees: state.rotaEmployees,
 });
 
 const mapDispatchToProps = dispatch => ({

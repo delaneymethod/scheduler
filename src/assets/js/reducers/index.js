@@ -15,7 +15,9 @@ import rotaTypes from './rotaTypesReducer';
 import placements from './placementsReducer';
 import ajaxLoading from './ajaxLoadingReducer';
 import authenticated from './authenticatedReducer';
+import rotaEmployees from './rotaEmployeesReducer';
 import unavailabilities from './unavailabilitiesReducer';
+import rotaTypeEmployees from './rotaTypeEmployeesReducer';
 import subscriptionLevels from './subscriptionLevelsReducer';
 import unavailabilityTypes from './unavailabilityTypesReducer';
 import unavailabilityOccurrences from './unavailabilityOccurrencesReducer';
@@ -36,7 +38,9 @@ const reducers = combineReducers({
 	placements,
 	ajaxLoading,
 	authenticated,
+	rotaEmployees,
 	unavailabilities,
+	rotaTypeEmployees,
 	subscriptionLevels,
 	unavailabilityTypes,
 	unavailabilityOccurrences,

@@ -126,6 +126,9 @@ describe('Authentication Actions', () => {
 			rota: {},
 			type: 'SWITCH_ROTA',
 		}, {
+			employees: [],
+			type: 'GET_EMPLOYEES',
+		}, {
 			rotaTypes: [],
 			type: 'GET_ROTA_TYPES',
 		}, {
@@ -134,6 +137,12 @@ describe('Authentication Actions', () => {
 		}, {
 			rotaType: {},
 			type: 'SWITCH_ROTA_TYPE',
+		}, {
+			rotaEmployees: [],
+			type: 'GET_ROTA_EMPLOYEES',
+		}, {
+			unavailabilityTypes: [],
+			type: 'GET_UNAVAILABILITY_TYPES',
 		}];
 
 		return store.dispatch(actions.logout()).then(() => expect(store.getActions()).toEqual(expectedActions));
