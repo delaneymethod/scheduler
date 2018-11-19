@@ -35,8 +35,9 @@ export const CREATE_SHIFT = 'CREATE_SHIFT';
 export const UPDATE_SHIFT = 'UPDATE_SHIFT';
 export const DELETE_SHIFT = 'DELETE_SHIFT';
 
-export const GET_ROTAS = 'GET_ROTAS';
+export const COPY_SHIFT_TO_CLIPBOARD = 'COPY_SHIFT_TO_CLIPBOARD';
 
+export const GET_ROTAS = 'GET_ROTAS';
 export const GET_ROTA = 'GET_ROTA';
 export const CREATE_ROTA = 'CREATE_ROTA';
 export const UPDATE_ROTA = 'UPDATE_ROTA';

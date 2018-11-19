@@ -1,16 +1,13 @@
 import 'element-closest';
 import Moment from 'moment';
 import has from 'lodash/has';
-import delay from 'lodash/delay';
 import omitBy from 'lodash/omitBy';
 import jwtDecode from 'jwt-decode';
 import Orderable from 'sortablejs';
 import PropTypes from 'prop-types';
-import concat from 'lodash/concat';
 import sortBy from 'lodash/sortBy';
 import isEmpty from 'lodash/isEmpty';
 import { connect } from 'react-redux';
-import isString from 'lodash/isString';
 import includes from 'lodash/includes';
 import debounce from 'lodash/debounce';
 import { toast } from 'react-toastify';
@@ -67,7 +64,7 @@ import UnavailabilityButton from '../../common/UnavailabilityButton';
 
 import ExistingEmployeesForm from '../../forms/ExistingEmployeesForm';
 
-import { getShifts, updateShift } from '../../../actions/shiftActions';
+import { getShifts, updateShift, createShift } from '../../../actions/shiftActions';
 
 import UnassignedShiftsOverview from '../../common/UnassignedShiftsOverview';
 
@@ -80,6 +77,8 @@ import { deleteRotaTypeEmployee } from '../../../actions/rotaTypeEmployeeActions
 import { createPlacement, updatePlacement } from '../../../actions/placementActions';
 
 import { getRotaEmployees, updateRotaEmployeesOrder } from '../../../actions/rotaEmployeeActions';
+
+import { copyShiftToClipBoard } from '../../../actions/clipboardActions';
 
 const routes = config.APP.ROUTES;
 
@@ -319,21 +318,24 @@ class Rotas extends Component {
 	handleShiftConflictModal = () => this.setState({ isShiftConflictModalOpen: !this.state.isShiftConflictModalOpen });
 
 	handleInfoNotification = (message) => {
-		if (!toast.isActive(this.toastId)) {
-			this.toastId = toast.info(<Notification icon="fa-info-circle" title="Information" message={message} />, {
-				autoClose: false,
-				closeButton: <CloseButton />,
-			});
-		}
+		toast.info(<Notification icon="fa-info-circle" title="Information" message={message} />, {
+			autoClose: false,
+			closeButton: <CloseButton />,
+		});
 	};
 
 	handleSuccessNotification = (message) => {
-		if (!toast.isActive(this.toastId)) {
-			this.toastId = toast.success(<Notification icon="fa-check-circle" title="Success" message={message} />, {
-				closeButton: false,
-				autoClose: notifications.TIMEOUT,
-			});
-		}
+		toast.success(<Notification icon="fa-check-circle" title="Success" message={message} />, {
+			closeButton: false,
+			autoClose: notifications.TIMEOUT,
+		});
+	};
+
+	handleErrorNotification = (message) => {
+		toast.error(<Notification icon="fa-times-circle" title="Error" message={message} />, {
+			closeButton: false,
+			autoClose: notifications.TIMEOUT,
+		});
 	};
 
 	handleSetShiftHours = (shift) => {
@@ -1367,6 +1369,9 @@ class Rotas extends Component {
 	};
 
 	handleShiftsAndUnavailabilities = (rowIndex, column, columnIndex, unavailabilities, past) => {
+		const weekDate = moment(column.weekDate).format('YYYY-MM-DD');
+		const empId = column.accountEmployee.employee.employeeId;
+
 		if (unavailabilities.length > 0 && column.shiftsPlacements.length > 0) {
 			/* We need to loop over both datasets and merge into one workable array ordered by start date */
 			let blocks = [];
@@ -1399,16 +1404,39 @@ class Rotas extends Component {
 
 			/* eslint-disable no-nested-ternary */
 			return (blocks.map((block, blockIndex) => ((block.type === 'shift') ? (
-				<ShiftButton key={`shift_${blockIndex}_${rowIndex}_${columnIndex}`} unassigned={false} past={past} shiftPlacement={block.shift} id={`shift_${rowIndex}_${columnIndex}_${blockIndex}`} />
+				<ShiftButton key={`shift_${blockIndex}_${rowIndex}_${columnIndex}`}
+					unassigned={false} past={past} shiftPlacement={block.shift}
+					copyShift={this.handleCopyShift}
+					pasteShift={() => this.handlePasteShift(weekDate, empId)}
+					id={`shift_${rowIndex}_${columnIndex}_${blockIndex}`} />
 			) : (
-				<UnavailabilityButton key={`unavailability_${blockIndex}_${rowIndex}_${columnIndex}`} id={`unavailability_cell_${rowIndex}_${columnIndex}`} weekDate={moment(column.weekDate).format('YYYY-MM-DD')} unavailability={block.unavailability} unavailabilities={[]} employeeId={column.accountEmployee.employee.employeeId} />
+				<UnavailabilityButton key={`unavailability_${blockIndex}_${rowIndex}_${columnIndex}`}
+					id={`unavailability_cell_${rowIndex}_${columnIndex}`}
+					weekDate={moment(column.weekDate).format('YYYY-MM-DD')}
+					unavailability={block.unavailability}
+					unavailabilities={[]}
+					pasteShift={() => this.handlePasteShift(weekDate, empId)}
+					employeeId={column.accountEmployee.employee.employeeId} />
 			))));
 			/* eslint-enable no-nested-ternary */
 		} else if (unavailabilities.length > 0 && column.shiftsPlacements.length === 0) {
-			return (<UnavailabilityButton id={`unavailability_cell_${rowIndex}_${columnIndex}`} weekDate={moment(column.weekDate).format('YYYY-MM-DD')} unavailability={{}} unavailabilities={unavailabilities} employeeId={column.accountEmployee.employee.employeeId} />);
+			return (<UnavailabilityButton
+				id={`unavailability_cell_${rowIndex}_${columnIndex}`}
+				weekDate={moment(column.weekDate).format('YYYY-MM-DD')}
+				unavailability={{}}
+				unavailabilities={unavailabilities}
+				pasteShift={() => this.handlePasteShift(weekDate, empId)}
+				employeeId={column.accountEmployee.employee.employeeId} />);
 		} else if (unavailabilities.length === 0 && column.shiftsPlacements.length > 0) {
 			return (column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
-				<ShiftButton key={shiftPlacementIndex} unassigned={false} past={past} shiftPlacement={shiftPlacement} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} />
+				<ShiftButton key={shiftPlacementIndex}
+					id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`}
+					unassigned={false} past={past}
+					shiftPlacement={shiftPlacement}
+					employeeId={column.accountEmployee.employee.employeeId}
+					weekDate={weekDate}
+					pasteShift={() => this.handlePasteShift(weekDate, empId)}
+					copyShift={() => this.handleCopyShift(shiftPlacement)} />
 			)));
 		}
 
@@ -1422,7 +1450,11 @@ class Rotas extends Component {
 			 *	)}
 			 * </Fragment>
 			 */
-			return (<ShiftUnavailabilityButton weekDate={moment(column.weekDate).format('YYYY-MM-DD')} id={`shift_unavailability_${rowIndex}_${columnIndex}`} employeeId={column.accountEmployee.employee.employeeId} handleSuccessNotification={this.handleSuccessNotification} />);
+			return (<ShiftUnavailabilityButton
+				id={`shift_unavailability_${rowIndex}_${columnIndex}`}
+				weekDate={weekDate}
+				pasteShift={() => this.handlePasteShift(weekDate, empId)}
+				employeeId={column.accountEmployee.employee.employeeId} />);
 		}
 
 		return '';
@@ -1437,6 +1469,51 @@ class Rotas extends Component {
 			{this.handleShiftsAndUnavailabilities(rowIndex, column, columnIndex, unavailabilities, true)}
 		</td>
 	));
+
+	handlePasteShift = (weekDate, empId) => {
+		const startTime = moment(`${weekDate} ${this.props.copiedShift.startTime}`, 'YYYY-MM-DD HH:mm:ss');
+		const endTime = moment(`${weekDate} ${this.props.copiedShift.endTime}`, 'YYYY-MM-DD HH:mm:ss');
+
+		// if the startTime is after endTime, the copied shift falls over multiple days,
+		// so add 1 day to the endTime/weekDate we are pasting to
+		if (startTime.isAfter(endTime)) {
+			endTime.add(1, 'days');
+		}
+
+		const payload = {
+			startTime: `${startTime.format('YYYY-MM-DD HH:mm:ss')}`,
+			endTime: `${endTime.format('YYYY-MM-DD HH:mm:ss')}`,
+			roleName: this.props.copiedShift.roleName,
+			isClosingShift: this.props.copiedShift.isClosingShift,
+			numberOfPositions: 1,
+			rotaId: this.props.rotaId,
+			placements: [
+				{
+					employeeId: empId,
+				},
+			],
+		};
+
+		this.props.actions.createShift(payload).then(() => {
+			const message = 'Shift created';
+			this.handleSuccessNotification(message);
+		}).catch((error) => {
+			this.handleErrorNotification(error.data.message);
+		});
+	}
+
+	handleCopyShift = (shiftPlacement) => {
+		/* Get the startTime & endTime of the copied shift, ignoring the date element */
+		const startTime = moment(shiftPlacement.startTime).format('HH:mm:ss');
+		const endTime = moment(shiftPlacement.endTime).format('HH:mm:ss');
+
+		const copiedShift = { ...shiftPlacement, startTime, endTime };
+
+		this.props.actions.copyShiftToClipBoard(copiedShift);
+
+		const message = 'Shift copied to clipboard';
+		this.handleSuccessNotification(message);
+	}
 
 	render = () => {
 		if (isEmpty(this.props.rota)) {
@@ -1633,6 +1710,8 @@ const mapStateToProps = (state, props) => ({
 	week: state.week,
 	rota: state.rota,
 	rotas: state.rotas,
+	rotaId: state.rota.rotaId,
+	copiedShift: state.clipboard.copiedShift,
 	shifts: state.shifts,
 	rotaCost: state.rotaCost,
 	rotaType: state.rotaType,
@@ -1652,10 +1731,12 @@ const mapDispatchToProps = dispatch => ({
 		getEmployees,
 		switchRotaCost,
 		createPlacement,
+		createShift,
 		updatePlacement,
 		getRotaEmployees,
 		deleteRotaTypeEmployee,
 		updateRotaEmployeesOrder,
+		copyShiftToClipBoard,
 	}, dispatch),
 });
 

@@ -21,6 +21,7 @@ import rotaTypeEmployees from './rotaTypeEmployeesReducer';
 import subscriptionLevels from './subscriptionLevelsReducer';
 import unavailabilityTypes from './unavailabilityTypesReducer';
 import unavailabilityOccurrences from './unavailabilityOccurrencesReducer';
+import clipboard from './clipboardReducer';
 
 const reducers = combineReducers({
 	week,
@@ -34,6 +35,7 @@ const reducers = combineReducers({
 	rotaType,
 	settings,
 	employees,
+	clipboard,
 	rotaTypes,
 	placements,
 	ajaxLoading,

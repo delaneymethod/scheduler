@@ -8,6 +8,7 @@ export default {
 	rotaCost: 0,
 	accounts: [],
 	settings: {},
+	clipboard: {},
 	rotaType: {},
 	employees: [],
 	rotaTypes: [],

@@ -9,6 +9,8 @@ import Modal from './Modal';
 
 import ShiftForm from '../forms/ShiftForm';
 
+import PopoverButton from './PopoverButton';
+
 const propTypes = {
 	id: PropTypes.string.isRequired,
 	weekDate: PropTypes.string.isRequired,
@@ -23,8 +25,8 @@ const defaultProps = {
 	weekDate: '',
 	employeeId: '',
 	unavailability: {},
-	handleEditUnavailability: () => {},
-	handleSuccessNotification: () => {},
+	handleEditUnavailability: () => { },
+	handleSuccessNotification: () => { },
 };
 
 class UnavailabilityDetails extends Component {
@@ -48,6 +50,7 @@ class UnavailabilityDetails extends Component {
 		isCreateShiftModalOpen: false,
 		isUnavailabilityPopoverOpen: false,
 		isUnavailabilityTooltipOpen: false,
+		isPasteShiftTooltipOpen: false,
 	});
 
 	handleCreateShift = () => this.setState({ isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen });
@@ -55,6 +58,8 @@ class UnavailabilityDetails extends Component {
 	handleUnavailabilityMenu = () => this.setState({ isUnavailabilityPopoverOpen: !this.state.isUnavailabilityPopoverOpen });
 
 	handleUnavailabilityTooltip = () => this.setState({ isUnavailabilityTooltipOpen: !this.state.isUnavailabilityTooltipOpen });
+
+	handlePasteShiftTooltip = () => this.setState({ isPasteShiftTooltipOpen: !this.state.isPasteShiftTooltipOpen });
 
 	handleUnavailabilityStartEndTime = () => {
 		let endTime = '';
@@ -121,11 +126,16 @@ class UnavailabilityDetails extends Component {
 			<Tooltip placement="auto" isOpen={this.state.isUnavailabilityTooltipOpen} target={`unavailability_${this.props.id}_${this.props.unavailability.unavailabilityId}_information`} toggle={this.handleUnavailabilityTooltip}>
 				<div className="p-0 m-0" dangerouslySetInnerHTML={{ __html: this.handleTooltipDetails() }} />
 			</Tooltip>
-			<Popover placement="auto" isOpen={this.state.isUnavailabilityPopoverOpen} target={`unavailability_${this.props.unavailability.unavailabilityId}_${this.props.id}`} toggle={this.handleUnavailabilityMenu}>
+			<Popover id="popover" placement="left" isOpen={this.state.isUnavailabilityPopoverOpen} target={`unavailability_${this.props.unavailability.unavailabilityId}_${this.props.id}`} toggle={this.handleUnavailabilityMenu}>
 				<PopoverBody>
 					<div className="cell-popover">
 						<button type="button" title="Edit Time Off" id="editUnavailability" className="d-block border-0 m-0 text-uppercase" onClick={event => this.props.handleEditUnavailability(event, this.props.unavailability.unavailabilityId)}>Edit Time Off</button>
 						<button type="button" title="Create Shift" id="createShift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleCreateShift}>Create Shift</button>
+						{(this.props.copiedShift) ? (
+							<PopoverButton id="pasteShift" title="Paste Shift" text="Paste Shift" isEnabled={true} onClick={() => { this.props.pasteShift(); this.handleUnavailabilityMenu(); }} />
+						) : (
+							<PopoverButton id="pasteShift" title="Paste Shift" text="Paste Shift" isEnabled={false} />
+						)}
 					</div>
 				</PopoverBody>
 			</Popover>
@@ -145,6 +155,7 @@ const mapStateToProps = (state, props) => ({
 	weekDate: props.weekDate,
 	employeeId: props.employeeId,
 	unavailability: props.unavailability,
+	copiedShift: state.clipboard.copiedShift,
 	handleEditUnavailability: props.handleEditUnavailability,
 });
 

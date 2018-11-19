@@ -1,32 +1,30 @@
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import isEmpty from 'lodash/isEmpty';
-import { toast } from 'react-toastify';
 import React, { Fragment, Component } from 'react';
-import { Popover, PopoverBody, PopoverHeader } from 'reactstrap';
+import { Popover, PopoverBody, Tooltip } from 'reactstrap';
+import { connect } from 'react-redux';
 
 import Modal from './Modal';
 
-import config from '../../helpers/config';
-
 import ShiftForm from '../forms/ShiftForm';
-
-import Notification from '../common/Notification';
 
 import AssignShiftForm from '../forms/AssignShiftForm';
 
-const notifications = config.APP.NOTIFICATIONS;
+import PopoverButton from './PopoverButton';
 
 const propTypes = {
 	id: PropTypes.string.isRequired,
 	past: PropTypes.bool.isRequired,
 	unassigned: PropTypes.bool.isRequired,
+	weekDate: PropTypes.string.isRequired,
 	shiftPlacement: PropTypes.object.isRequired,
+	pasteShift: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
 	id: '',
 	past: false,
+	weekDate: '',
 	unassigned: false,
 	shiftPlacement: {},
 };
@@ -34,8 +32,6 @@ const defaultProps = {
 class ShiftButton extends Component {
 	constructor(props) {
 		super(props);
-
-		this.toastId = null;
 
 		this.state = this.getInitialState();
 
@@ -47,8 +43,6 @@ class ShiftButton extends Component {
 
 		this.handleAssignShift = this.handleAssignShift.bind(this);
 
-		this.handleSuccessNotification = this.handleSuccessNotification.bind(this);
-
 		this.handleSwitchFromAssignShiftToCreateShift = this.handleSwitchFromAssignShiftToCreateShift.bind(this);
 	}
 
@@ -58,6 +52,7 @@ class ShiftButton extends Component {
 		isEditShiftModalOpen: false,
 		isCreateShiftModalOpen: false,
 		isAssignShiftModalOpen: false,
+		isPasteShiftTooltipOpen: false,
 	});
 
 	handleShiftMenu = () => this.setState({ isShiftPopoverOpen: !this.state.isShiftPopoverOpen });
@@ -66,18 +61,11 @@ class ShiftButton extends Component {
 
 	handleCreateShift = () => this.setState({ isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen });
 
+	handlePasteShiftTooltip = () => this.setState({ isPasteShiftTooltipOpen: !this.state.isPasteShiftTooltipOpen });
+
 	handleAssignShift = () => this.setState({ isAssignShiftModalOpen: !this.state.isAssignShiftModalOpen });
 
 	handleSwitchFromAssignShiftToCreateShift = () => this.setState({ isCreateShiftModalOpen: true, isAssignShiftModalOpen: false });
-
-	handleSuccessNotification = (message) => {
-		if (!toast.isActive(this.toastId)) {
-			this.toastId = toast.success(<Notification icon="fa-check-circle" title="Success" message={message} />, {
-				closeButton: false,
-				autoClose: notifications.TIMEOUT,
-			});
-		}
-	};
 
 	render = () => (
 		<Fragment>
@@ -96,15 +84,22 @@ class ShiftButton extends Component {
 							</Fragment>
 						)}
 					</div>
-					<Popover placement="auto" isOpen={this.state.isShiftPopoverOpen} target={this.props.id} toggle={this.handleShiftMenu}>
+					<Popover placement="left" id="shiftPopover" isOpen={this.state.isShiftPopoverOpen} target={this.props.id} toggle={this.handleShiftMenu}>
 						<PopoverBody>
 							<div className="cell-popover">
 								{(this.props.unassigned) ? (
 									<button type="button" title="Assign Shift" id="assignShift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleAssignShift}>Assign Shift</button>
 								) : (
 									<Fragment>
-										<button type="button" title="Edit Shift" id="editShift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleEditShift}>Edit Shift</button>
-										<button type="button" title="Create Shift" id="createShift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleCreateShift}>Create Shift</button>
+										<PopoverButton id="editShift" title="Edit Shift" text="Edit Shift" isEnabled={true} onClick={this.handleEditShift}/>
+										<PopoverButton id="createShift" title="Create Shift" text="Create Shift" isEnabled={true} onClick={this.handleCreateShift}/>
+										<PopoverButton id="copyShift" title="Copy Shift" text="Copy Shift" isEnabled={true} onClick={() => { this.props.copyShift(); this.handleShiftMenu(); }}/>
+										{(this.props.copiedShift) ? (
+											<PopoverButton id="pasteShift" title="Paste Shift" text="Paste Shift" isEnabled={true} onClick={() => { this.props.pasteShift(); this.handleShiftMenu(); }}/>
+										) : (
+											<PopoverButton id="pasteShift" title="Paste Shift" text="Paste Shift" isEnabled={false} />
+										)}
+
 									</Fragment>
 								)}
 							</div>
@@ -136,4 +131,12 @@ ShiftButton.propTypes = propTypes;
 
 ShiftButton.defaultProps = defaultProps;
 
-export default ShiftButton;
+const mapStateToProps = (state, props) => ({
+	copiedShift: state.clipboard.copiedShift,
+});
+
+const mapDispatchToProps = dispatch => ({
+
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ShiftButton);
