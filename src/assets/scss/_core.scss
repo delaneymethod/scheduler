@@ -69,6 +69,10 @@ html {
 	box-shadow: none !important;
 }
 
+.non-clickable {
+    cursor: not-allowed;
+}
+
 .wrap-words {
 	white-space: normal;
 	white-space: pre-wrap;

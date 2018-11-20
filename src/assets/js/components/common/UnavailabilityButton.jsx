@@ -19,10 +19,10 @@ const notifications = config.APP.NOTIFICATIONS;
 const propTypes = {
 	id: PropTypes.string.isRequired,
 	weekDate: PropTypes.string.isRequired,
+	pasteShift: PropTypes.func.isRequired,
 	employeeId: PropTypes.string.isRequired,
 	unavailability: PropTypes.object.isRequired,
 	unavailabilities: PropTypes.array.isRequired,
-	pasteShift: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -31,6 +31,7 @@ const defaultProps = {
 	employeeId: '',
 	unavailability: {},
 	unavailabilities: [],
+	pasteShift: () => {},
 };
 
 class UnavailabilityButton extends Component {
@@ -65,22 +66,9 @@ class UnavailabilityButton extends Component {
 	render = () => (
 		<Fragment>
 			{(this.props.unavailabilities.length > 0) ? (this.props.unavailabilities.map((unavailability, unavailabilityIndex) => (
-				<UnavailabilityDetails key={`${this.props.id}_${unavailabilityIndex}`}
-					id={this.props.id} weekDate={this.props.weekDate}
-					unavailability={unavailability}
-					employeeId={this.props.employeeId}
-					pasteShift={this.props.pasteShift}
-					handleEditUnavailability={this.handleEditUnavailability}
-					handleSuccessNotification={this.handleSuccessNotification} />
+				<UnavailabilityDetails key={`${this.props.id}_${unavailabilityIndex}`} id={this.props.id} weekDate={this.props.weekDate} unavailability={unavailability} employeeId={this.props.employeeId} pasteShift={this.props.pasteShift} handleEditUnavailability={this.handleEditUnavailability} handleSuccessNotification={this.handleSuccessNotification} />
 			))) : (
-				<UnavailabilityDetails key={`${this.props.id}_${this.props.unavailability.unavailabilityId}`}
-					id={this.props.id}
-					weekDate={this.props.weekDate}
-					unavailability={this.props.unavailability}
-					employeeId={this.props.employeeId}
-					pasteShift={this.props.pasteShift}
-					handleEditUnavailability={this.handleEditUnavailability}
-					handleSuccessNotification={this.handleSuccessNotification} />
+				<UnavailabilityDetails key={`${this.props.id}_${this.props.unavailability.unavailabilityId}`} id={this.props.id} weekDate={this.props.weekDate} unavailability={this.props.unavailability} employeeId={this.props.employeeId} pasteShift={this.props.pasteShift} handleEditUnavailability={this.handleEditUnavailability} handleSuccessNotification={this.handleSuccessNotification} />
 			)}
 			<Modal title="Edit Time Off" className="modal-dialog" show={this.state.isEditUnavailabilityModalOpen} onClose={this.handleEditUnavailability}>
 				<UnavailabilityForm editMode={true} unavailabilityId={this.state.unavailabilityId} weekDate={this.props.weekDate} employeeId={this.props.employeeId} handleSuccessNotification={this.handleSuccessNotification} handleClose={this.handleEditUnavailability} />

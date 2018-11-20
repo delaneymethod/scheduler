@@ -6,6 +6,4 @@ export const copyShiftToClipBoardSuccess = shift => ({
 	shift,
 });
 
-export const copyShiftToClipBoard = shift => (dispatch) => {
-	dispatch(copyShiftToClipBoardSuccess(shift));
-};
+export const copyShiftToClipBoard = shift => dispatch => dispatch(copyShiftToClipBoardSuccess(shift));

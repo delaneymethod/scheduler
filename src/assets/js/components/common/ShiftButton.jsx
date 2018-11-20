@@ -1,24 +1,24 @@
 import moment from 'moment';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import React, { Fragment, Component } from 'react';
 import { Popover, PopoverBody, Tooltip } from 'reactstrap';
-import { connect } from 'react-redux';
 
 import Modal from './Modal';
 
 import ShiftForm from '../forms/ShiftForm';
 
-import AssignShiftForm from '../forms/AssignShiftForm';
-
 import PopoverButton from './PopoverButton';
+
+import AssignShiftForm from '../forms/AssignShiftForm';
 
 const propTypes = {
 	id: PropTypes.string.isRequired,
 	past: PropTypes.bool.isRequired,
 	unassigned: PropTypes.bool.isRequired,
 	weekDate: PropTypes.string.isRequired,
-	shiftPlacement: PropTypes.object.isRequired,
 	pasteShift: PropTypes.func.isRequired,
+	shiftPlacement: PropTypes.object.isRequired,
 };
 
 const defaultProps = {
@@ -27,6 +27,7 @@ const defaultProps = {
 	weekDate: '',
 	unassigned: false,
 	shiftPlacement: {},
+	pasteShift: () => {},
 };
 
 class ShiftButton extends Component {
@@ -61,9 +62,9 @@ class ShiftButton extends Component {
 
 	handleCreateShift = () => this.setState({ isCreateShiftModalOpen: !this.state.isCreateShiftModalOpen });
 
-	handlePasteShiftTooltip = () => this.setState({ isPasteShiftTooltipOpen: !this.state.isPasteShiftTooltipOpen });
-
 	handleAssignShift = () => this.setState({ isAssignShiftModalOpen: !this.state.isAssignShiftModalOpen });
+
+	handlePasteShiftTooltip = () => this.setState({ isPasteShiftTooltipOpen: !this.state.isPasteShiftTooltipOpen });
 
 	handleSwitchFromAssignShiftToCreateShift = () => this.setState({ isCreateShiftModalOpen: true, isAssignShiftModalOpen: false });
 
@@ -84,18 +85,18 @@ class ShiftButton extends Component {
 							</Fragment>
 						)}
 					</div>
-					<Popover placement="left" id="shiftPopover" isOpen={this.state.isShiftPopoverOpen} target={this.props.id} toggle={this.handleShiftMenu}>
+					<Popover placement="auto" id="shiftPopover" isOpen={this.state.isShiftPopoverOpen} target={this.props.id} toggle={this.handleShiftMenu}>
 						<PopoverBody>
 							<div className="cell-popover">
 								{(this.props.unassigned) ? (
 									<button type="button" title="Assign Shift" id="assignShift" className="d-block border-0 m-0 text-uppercase" onClick={this.handleAssignShift}>Assign Shift</button>
 								) : (
 									<Fragment>
-										<PopoverButton id="editShift" title="Edit Shift" text="Edit Shift" isEnabled={true} onClick={this.handleEditShift}/>
-										<PopoverButton id="createShift" title="Create Shift" text="Create Shift" isEnabled={true} onClick={this.handleCreateShift}/>
-										<PopoverButton id="copyShift" title="Copy Shift" text="Copy Shift" isEnabled={true} onClick={() => { this.props.copyShift(); this.handleShiftMenu(); }}/>
+										<PopoverButton id="editShift" title="Edit Shift" text="Edit Shift" isEnabled={true} onClick={this.handleEditShift} />
+										<PopoverButton id="createShift" title="Create Shift" text="Create Shift" isEnabled={true} onClick={this.handleCreateShift} />
+										<PopoverButton id="copyShift" title="Copy Shift" text="Copy Shift" isEnabled={true} onClick={() => { this.props.copyShift(); this.handleShiftMenu(); }} />
 										{(this.props.copiedShift) ? (
-											<PopoverButton id="pasteShift" title="Paste Shift" text="Paste Shift" isEnabled={true} onClick={() => { this.props.pasteShift(); this.handleShiftMenu(); }}/>
+											<PopoverButton id="pasteShift" title="Paste Shift" text="Paste Shift" isEnabled={true} onClick={() => { this.props.pasteShift(); this.handleShiftMenu(); }} />
 										) : (
 											<PopoverButton id="pasteShift" title="Paste Shift" text="Paste Shift" isEnabled={false} />
 										)}
@@ -135,8 +136,6 @@ const mapStateToProps = (state, props) => ({
 	copiedShift: state.clipboard.copiedShift,
 });
 
-const mapDispatchToProps = dispatch => ({
-
-});
+const mapDispatchToProps = dispatch => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShiftButton);

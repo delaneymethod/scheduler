@@ -1,6 +1,6 @@
 import thunk from 'redux-thunk';
-// import { logger } from 'redux-logger';
-import { createStore, applyMiddleware, compose } from 'redux';
+/* import { logger } from 'redux-logger'; */
+import { compose, createStore, applyMiddleware } from 'redux';
 
 import reducers from '../reducers';
 
@@ -26,6 +26,7 @@ const combinedState = Object.assign(initialState, persistedState);
 
 /* eslint-disable no-underscore-dangle */
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+/* eslint-enable no-underscore-dangle */
 
 const configureStore = () => createStore(reducers, combinedState, composeEnhancers(applyMiddleware(...middlewares)));
 

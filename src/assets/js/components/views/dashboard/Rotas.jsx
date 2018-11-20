@@ -64,7 +64,7 @@ import UnavailabilityButton from '../../common/UnavailabilityButton';
 
 import ExistingEmployeesForm from '../../forms/ExistingEmployeesForm';
 
-import { getShifts, updateShift, createShift } from '../../../actions/shiftActions';
+import { copyShiftToClipBoard } from '../../../actions/clipboardActions';
 
 import UnassignedShiftsOverview from '../../common/UnassignedShiftsOverview';
 
@@ -76,9 +76,9 @@ import { deleteRotaTypeEmployee } from '../../../actions/rotaTypeEmployeeActions
 
 import { createPlacement, updatePlacement } from '../../../actions/placementActions';
 
-import { getRotaEmployees, updateRotaEmployeesOrder } from '../../../actions/rotaEmployeeActions';
+import { getShifts, updateShift, createShift } from '../../../actions/shiftActions';
 
-import { copyShiftToClipBoard } from '../../../actions/clipboardActions';
+import { getRotaEmployees, updateRotaEmployeesOrder } from '../../../actions/rotaEmployeeActions';
 
 const routes = config.APP.ROUTES;
 
@@ -1370,7 +1370,8 @@ class Rotas extends Component {
 
 	handleShiftsAndUnavailabilities = (rowIndex, column, columnIndex, unavailabilities, past) => {
 		const weekDate = moment(column.weekDate).format('YYYY-MM-DD');
-		const empId = column.accountEmployee.employee.employeeId;
+
+		const { employeeId } = column.accountEmployee.employee;
 
 		if (unavailabilities.length > 0 && column.shiftsPlacements.length > 0) {
 			/* We need to loop over both datasets and merge into one workable array ordered by start date */
@@ -1404,39 +1405,16 @@ class Rotas extends Component {
 
 			/* eslint-disable no-nested-ternary */
 			return (blocks.map((block, blockIndex) => ((block.type === 'shift') ? (
-				<ShiftButton key={`shift_${blockIndex}_${rowIndex}_${columnIndex}`}
-					unassigned={false} past={past} shiftPlacement={block.shift}
-					copyShift={this.handleCopyShift}
-					pasteShift={() => this.handlePasteShift(weekDate, empId)}
-					id={`shift_${rowIndex}_${columnIndex}_${blockIndex}`} />
+				<ShiftButton key={`shift_${blockIndex}_${rowIndex}_${columnIndex}`} unassigned={false} past={past} shiftPlacement={block.shift} copyShift={this.handleCopyShift} pasteShift={() => this.handlePasteShift(weekDate, employeeId)} id={`shift_${rowIndex}_${columnIndex}_${blockIndex}`} />
 			) : (
-				<UnavailabilityButton key={`unavailability_${blockIndex}_${rowIndex}_${columnIndex}`}
-					id={`unavailability_cell_${rowIndex}_${columnIndex}`}
-					weekDate={moment(column.weekDate).format('YYYY-MM-DD')}
-					unavailability={block.unavailability}
-					unavailabilities={[]}
-					pasteShift={() => this.handlePasteShift(weekDate, empId)}
-					employeeId={column.accountEmployee.employee.employeeId} />
+				<UnavailabilityButton key={`unavailability_${blockIndex}_${rowIndex}_${columnIndex}`} id={`unavailability_cell_${rowIndex}_${columnIndex}`} weekDate={moment(column.weekDate).format('YYYY-MM-DD')} unavailability={block.unavailability} unavailabilities={[]} pasteShift={() => this.handlePasteShift(weekDate, employeeId)} employeeId={employeeId} />
 			))));
 			/* eslint-enable no-nested-ternary */
 		} else if (unavailabilities.length > 0 && column.shiftsPlacements.length === 0) {
-			return (<UnavailabilityButton
-				id={`unavailability_cell_${rowIndex}_${columnIndex}`}
-				weekDate={moment(column.weekDate).format('YYYY-MM-DD')}
-				unavailability={{}}
-				unavailabilities={unavailabilities}
-				pasteShift={() => this.handlePasteShift(weekDate, empId)}
-				employeeId={column.accountEmployee.employee.employeeId} />);
+			return (<UnavailabilityButton id={`unavailability_cell_${rowIndex}_${columnIndex}`} weekDate={moment(column.weekDate).format('YYYY-MM-DD')} unavailability={{}} unavailabilities={unavailabilities} pasteShift={() => this.handlePasteShift(weekDate, employeeId)} employeeId={employeeId} />);
 		} else if (unavailabilities.length === 0 && column.shiftsPlacements.length > 0) {
 			return (column.shiftsPlacements.map((shiftPlacement, shiftPlacementIndex) => (
-				<ShiftButton key={shiftPlacementIndex}
-					id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`}
-					unassigned={false} past={past}
-					shiftPlacement={shiftPlacement}
-					employeeId={column.accountEmployee.employee.employeeId}
-					weekDate={weekDate}
-					pasteShift={() => this.handlePasteShift(weekDate, empId)}
-					copyShift={() => this.handleCopyShift(shiftPlacement)} />
+				<ShiftButton key={shiftPlacementIndex} id={`shift_${rowIndex}_${columnIndex}_${shiftPlacementIndex}`} unassigned={false} past={past} shiftPlacement={shiftPlacement} employeeId={employeeId} weekDate={weekDate} pasteShift={() => this.handlePasteShift(weekDate, employeeId)} copyShift={() => this.handleCopyShift(shiftPlacement)} />
 			)));
 		}
 
@@ -1450,11 +1428,7 @@ class Rotas extends Component {
 			 *	)}
 			 * </Fragment>
 			 */
-			return (<ShiftUnavailabilityButton
-				id={`shift_unavailability_${rowIndex}_${columnIndex}`}
-				weekDate={weekDate}
-				pasteShift={() => this.handlePasteShift(weekDate, empId)}
-				employeeId={column.accountEmployee.employee.employeeId} />);
+			return (<ShiftUnavailabilityButton id={`shift_unavailability_${rowIndex}_${columnIndex}`} weekDate={weekDate} pasteShift={() => this.handlePasteShift(weekDate, employeeId)} employeeId={employeeId} />);
 		}
 
 		return '';
@@ -1470,49 +1444,48 @@ class Rotas extends Component {
 		</td>
 	));
 
-	handlePasteShift = (weekDate, empId) => {
-		const startTime = moment(`${weekDate} ${this.props.copiedShift.startTime}`, 'YYYY-MM-DD HH:mm:ss');
+	handlePasteShift = (weekDate, employeeId) => {
+		const { rotaId } = this.props.rota;
+
+		const { roleName, isClosingShift } = this.props.copiedShift;
+
 		const endTime = moment(`${weekDate} ${this.props.copiedShift.endTime}`, 'YYYY-MM-DD HH:mm:ss');
 
-		// if the startTime is after endTime, the copied shift falls over multiple days,
-		// so add 1 day to the endTime/weekDate we are pasting to
+		const startTime = moment(`${weekDate} ${this.props.copiedShift.startTime}`, 'YYYY-MM-DD HH:mm:ss');
+
+		/* if the startTime is after endTime, the copied shift falls over multiple days, so add 1 day to the endTime/weekDate we are pasting to */
 		if (startTime.isAfter(endTime)) {
 			endTime.add(1, 'days');
 		}
 
 		const payload = {
-			startTime: `${startTime.format('YYYY-MM-DD HH:mm:ss')}`,
-			endTime: `${endTime.format('YYYY-MM-DD HH:mm:ss')}`,
-			roleName: this.props.copiedShift.roleName,
-			isClosingShift: this.props.copiedShift.isClosingShift,
+			rotaId,
+			roleName,
+			isClosingShift,
 			numberOfPositions: 1,
-			rotaId: this.props.rotaId,
-			placements: [
-				{
-					employeeId: empId,
-				},
-			],
+			placements: [{
+				employeeId,
+			}],
+			endTime: `${endTime.format('YYYY-MM-DD HH:mm:ss')}`,
+			startTime: `${startTime.format('YYYY-MM-DD HH:mm:ss')}`,
 		};
 
-		this.props.actions.createShift(payload).then(() => {
-			const message = 'Shift created';
-			this.handleSuccessNotification(message);
-		}).catch((error) => {
-			this.handleErrorNotification(error.data.message);
-		});
+		this.props.actions.createShift(payload)
+			.then(() => this.handleSuccessNotification('Shift created'))
+			.catch(error => this.handleErrorNotification(error.data.message));
 	}
 
 	handleCopyShift = (shiftPlacement) => {
 		/* Get the startTime & endTime of the copied shift, ignoring the date element */
-		const startTime = moment(shiftPlacement.startTime).format('HH:mm:ss');
 		const endTime = moment(shiftPlacement.endTime).format('HH:mm:ss');
 
-		const copiedShift = { ...shiftPlacement, startTime, endTime };
+		const startTime = moment(shiftPlacement.startTime).format('HH:mm:ss');
 
-		this.props.actions.copyShiftToClipBoard(copiedShift);
+		const copiedShift = { endTime, startTime, ...shiftPlacement };
 
-		const message = 'Shift copied to clipboard';
-		this.handleSuccessNotification(message);
+		this.props.actions.copyShiftToClipBoard(copiedShift)
+			.then(() => this.handleSuccessNotification('Shift copied to clipboard'))
+			.catch(error => this.handleErrorNotification(error.data.message));
 	}
 
 	render = () => {
@@ -1710,8 +1683,6 @@ const mapStateToProps = (state, props) => ({
 	week: state.week,
 	rota: state.rota,
 	rotas: state.rotas,
-	rotaId: state.rota.rotaId,
-	copiedShift: state.clipboard.copiedShift,
 	shifts: state.shifts,
 	rotaCost: state.rotaCost,
 	rotaType: state.rotaType,
@@ -1719,6 +1690,7 @@ const mapStateToProps = (state, props) => ({
 	employees: state.employees,
 	rotaEmployees: state.rotaEmployees,
 	authenticated: state.authenticated,
+	copiedShift: state.clipboard.copiedShift,
 	unavailabilityOccurrences: state.unavailabilityOccurrences,
 });
 
@@ -1728,15 +1700,15 @@ const mapDispatchToProps = dispatch => ({
 		getShifts,
 		switchRota,
 		updateShift,
+		createShift,
 		getEmployees,
 		switchRotaCost,
 		createPlacement,
-		createShift,
 		updatePlacement,
 		getRotaEmployees,
+		copyShiftToClipBoard,
 		deleteRotaTypeEmployee,
 		updateRotaEmployeesOrder,
-		copyShiftToClipBoard,
 	}, dispatch),
 });
 
