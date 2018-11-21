@@ -1481,7 +1481,7 @@ class Rotas extends Component {
 
 		const startTime = moment(shiftPlacement.startTime).format('HH:mm:ss');
 
-		const copiedShift = { endTime, startTime, ...shiftPlacement };
+		const copiedShift = { ...shiftPlacement, startTime, endTime };
 
 		this.props.actions.copyShiftToClipBoard(copiedShift)
 			.then(() => this.handleSuccessNotification('Shift copied to clipboard'))
