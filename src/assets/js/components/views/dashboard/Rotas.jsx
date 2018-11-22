@@ -54,9 +54,7 @@ import { addClass, removeClass } from '../../../helpers/classes';
 
 import { switchRotaCost } from '../../../actions/rotaCostActions';
 
-import { getRotas, switchRota } from '../../../actions/rotaActions';
-
-import { getState, saveState } from '../../../store/persistedState';
+import { getRotas, switchRota, updateRotaStatus } from '../../../actions/rotaActions';
 
 import UpdateEmployeeButton from '../../common/UpdateEmployeeButton';
 
@@ -81,6 +79,8 @@ import { getShifts, updateShift, createShift } from '../../../actions/shiftActio
 import { getRotaEmployees, updateRotaEmployeesOrder } from '../../../actions/rotaEmployeeActions';
 
 const routes = config.APP.ROUTES;
+
+const { STATUSES } = routes.ROTAS;
 
 const moment = extendMoment(Moment);
 
@@ -308,6 +308,12 @@ class Rotas extends Component {
 
 		this.props.actions.switchRotaCost(cost);
 	};
+
+	updateRotaStatus = () => {
+		if (this.props.rota.status === STATUSES.PUBLISHED) {
+			this.props.actions.updateRotaStatus(STATUSES.EDITED).catch(error => Promise.reject(error));
+		}
+	}
 
 	handleModal = () => this.setState({ isErrorModalOpen: !this.state.isErrorModalOpen }, () => ((!this.state.isErrorModalOpen) ? this.props.history.push(routes.DASHBOARD.HOME.URI) : null));
 
@@ -1471,7 +1477,10 @@ class Rotas extends Component {
 		};
 
 		this.props.actions.createShift(payload)
-			.then(() => this.handleSuccessNotification('Shift created'))
+			.then(() => {
+				this.updateRotaStatus();
+				this.handleSuccessNotification('Shift created');
+			})
 			.catch(error => this.handleErrorNotification(error.data.message));
 	}
 
@@ -1707,6 +1716,7 @@ const mapDispatchToProps = dispatch => ({
 		updatePlacement,
 		getRotaEmployees,
 		copyShiftToClipBoard,
+		updateRotaStatus,
 		deleteRotaTypeEmployee,
 		updateRotaEmployeesOrder,
 	}, dispatch),

@@ -11,6 +11,13 @@ const rotaReducer = (state = combinedState.rota, action) => {
 		case types.SWITCH_ROTA:
 			return action.rota;
 
+		case types.UPDATE_ROTA_STATUS:
+			console.log('state', state);
+			console.log('action', action);
+			console.log('result', { ...state, status: action.status });
+
+			return { ...state, status: action.status };
+
 		default:
 			return state;
 	}
