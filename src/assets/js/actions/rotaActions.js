@@ -162,7 +162,7 @@ export const switchRota = payload => (dispatch) => {
 	return Promise.resolve(true);
 };
 
-/* SWITCH BETWEEN ROTAS */
+/* UPDATE ROTA STATUS */
 export const updateRotaStatusSuccess = status => ({
 	type: types.UPDATE_ROTA_STATUS,
 	status,
