@@ -170,74 +170,73 @@ class TermsOfService extends Component {
 									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">3.1.3</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">in accordance with clause 10 (termination) of this Agreement,</Col>
 								</Row>
+								<Row className="no-gutters mb-4">
+									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">being the &quot;<strong>Subscription Term</strong>&quot;.</Col>
+								</Row>
 							</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
 							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0 font-weight-bold">4</Col>
-							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">being the &quot;<strong>Subscription Term</strong>&quot;.</Col>
-						</Row>
-						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0 font-weight-bold">5</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0 font-weight-bold">USER SUBSCRIPTIONS</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.1</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.1</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">The Supplier hereby grants to the Customer a non-exclusive, non-transferable right, without the right to grant sub-licences, to permit the Authorised Users to use the Services during the Subscription Term solely for the Customer&#39;s internal business operations.</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.2</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.2</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">In relation to the Authorised Users, the Customer undertakes that:</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
 							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">&nbsp;</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.2.1</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.2.1</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">the maximum number of Authorised Users that it authorises to access and use the Services shall not exceed the number of User Subscriptions it has been granted from time to time;</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.2.2</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.2.2</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">it will not allow or suffer any User Subscription to be used by more than one individual Authorised User unless it has been reassigned in its entirety to another individual Authorised User, in which case the prior Authorised User shall no longer have any right to access or use the Services and/or Documentation;</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.2.3</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.2.3</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">each Authorised User shall keep a secure password for his use of the Services that each Authorised User shall keep his password confidential;</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.2.4</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.2.4</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">it shall ensure that use of the Employee Services is at all times in accordance with the Employee Terms of Use.</Col>
 								</Row>
 							</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.3</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.3</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">The Customer shall not access, store, distribute or transmit any Viruses, or any material during the course of its use of the Services that:</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
 							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">&nbsp;</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.3.1</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.3.1</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">is unlawful, harmful, threatening, defamatory, obscene, infringing, harassing or racially or ethnically offensive;</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.3.2</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.3.2</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">facilitates illegal activity;</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.3.3</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.3.3</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">depicts sexually explicit images;</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.3.4</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.3.4</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">promotes unlawful violence;</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.3.5</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.3.5</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">is discriminatory based on race, gender, colour, religious belief, sexual orientation, disability; or</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.3.6</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.3.6</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">is otherwise illegal or causes damage or injury to any person or property;</Col>
 								</Row>
 							</Col>
@@ -247,14 +246,14 @@ class TermsOfService extends Component {
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">and the Supplier reserves the right, without liability or prejudice to its other rights to the Customer, to disable the Customer&#39;s access to any material that breaches the provisions of this clause.</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.4</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.4</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">The Customer shall not:</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
 							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">&nbsp;</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.4.1</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.4.1</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">except as may be allowed by any applicable law which is incapable of exclusion by agreement between the parties and except to the extent expressly permitted under this Agreement:</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
@@ -271,89 +270,89 @@ class TermsOfService extends Component {
 									</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.4.2</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.4.2</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">access all or any part of the Services and Documentation in order to build a product or service which competes with the Services and/or the Documentation; or</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.4.3</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.4.3</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">use the Services and/or Documentation to provide services to third parties; or</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.4.4</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.4.4</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">subject to clause 13.10, license, sell, rent, lease, transfer, assign, distribute, display, disclose, or otherwise commercially exploit, or otherwise make the Services and/or Documentation available to any third party except the Authorised Users, or</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.4.5</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.4.5</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">attempt to obtain, or assist third parties in obtaining, access to the Services and/or Documentation, other than as provided under this clause 4.</Col>
 								</Row>
 							</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.5</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.5</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">The Customer shall use all reasonable endeavours to prevent any unauthorised access to, or use of, the Services and/or the Documentation and, in the event of any such unauthorised access or use, promptly notify the Supplier.</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.6</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">4.6</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">The rights provided under this clause 4 are granted to the Customer only, and shall not be considered granted to any subsidiary or holding company of the Customer.</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0 font-weight-bold">6</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0 font-weight-bold">5</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0 font-weight-bold">FEEDBACK AND REPORTING</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">6.1</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">5.1</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">The Supplier may from time to time request or the Customer may from time to time voluntarily supply feedback about the Services consisting of, without limitation, the Customer&#39;s suggestions, comments or any other feedback  (&quot;<strong>Feedback</strong>&quot;). If the Customer provides the Supplier with any Feedback, as part of the testing and evaluation of the Services, the Customer agrees that: (a) the Supplier may freely use, disclose, reproduce, license, distribute and otherwise utilise the Feedback in any Supplier product, specification or other documentation; and (b) the Customer will not give the Supplier any Feedback (i) that the Customer has reason to believe is subject to any Intellectual Property Right of any third party; or (ii) that is subject to licence terms that seek to require any Supplier product incorporating or derived from any Feedback, or other Supplier Intellectual Property Right, to be licensed to or otherwise shared with any third party.</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0 font-weight-bold">7</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0 font-weight-bold">6</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0 font-weight-bold">CUSTOMER DATA</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.1</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">6.1</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">The Customer shall own all right, title and interest in and to all of the Customer Data that is not personal data and shall have sole responsibility for the legality, reliability, integrity, accuracy and quality of all such Customer Data.</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.2</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">6.2</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">Both parties will comply with all applicable requirements of the Data Protection Legislation. This clause 6 is in addition to, and does not relieve, remove or replace, a party&#39;s obligations under the Data Protection Legislation.</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.3</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">6.3</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">The parties acknowledge that:</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
 							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">&nbsp;</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.3.1</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">6.3.1</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">if the Supplier processes any personal data on the Customer&#39;s behalf when performing its obligations under this Agreement, the Customer is the data controller and the Supplier is the data processor for the purposes of the Data Protection Legislation (where <strong>Data Controller</strong> and <strong>Data Processor</strong> have the meanings as defined in the Data Protection Legislation).</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.3.2</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">6.3.2</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">Schedule 2 sets out the scope, nature and purpose of processing by the Supplier, the duration of the processing and the types of personal data (as defined in the Data Protection Legislation, <strong>Personal Data</strong>) and categories of Data Subject.</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.3.3</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">6.3.3</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">the personal data may be transferred or stored outside the EEA or the country where the Customer and the Authorised Users are located in order to carry out the Services and the Supplier&#39;s other obligations under this Agreement.</Col>
 								</Row>
 							</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.4</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">6.4</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">Without prejudice to the generality of clause 6.2, the Customer will ensure that it has all necessary appropriate consents and notices in place to enable lawful transfer of the Personal Data to the Supplier for the duration and purposes of this Agreement so that the Supplier may lawfully use, process and transfer the Personal Data in accordance with this Agreement on the Customer&#39;s behalf.</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.5</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">6.5</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">Without prejudice to the generality of clause 6.2, the Supplier shall, in relation to any Personal Data processed in connection with the performance by the Supplier of its obligations under this Agreement:</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
 							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">&nbsp;</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.5.1</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">6.5.1</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">process that Personal Data only on the written instructions of the Customer unless the Supplier is required by the laws of any member of the European Union or by the laws of the European Union applicable to the Supplier to process Personal Data (<strong>Applicable Laws</strong>). Where the Supplier is relying on laws of a member of the European Union or European Union law as the basis for processing Personal Data, the Supplier shall promptly notify the Customer of this before performing the processing required by the Applicable Laws unless those Applicable Laws prohibit the Supplier from so notifying the Customer;</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.5.2</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">6.5.2</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">not transfer any Personal Data outside of the European Economic Area and the United Kingdom unless the following conditions are fulfilled:</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
@@ -378,93 +377,93 @@ class TermsOfService extends Component {
 									</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.5.3</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">6.5.3</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">assist the Customer, at the Customer&#39;s cost, in responding to any request from a Data Subject and in ensuring compliance with its obligations under the Data Protection Legislation with respect to security, breach notifications, impact assessments and consultations with supervisory authorities or regulators;</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.5.4</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">6.5.4</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">notify the Customer without undue delay on becoming aware of a Personal Data breach;</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.5.5</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">6.5.5</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">at the written direction of the Customer, delete or return Personal Data and copies thereof to the Customer on termination of the agreement unless required by Applicable Law to store the Personal Data; and</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.5.6</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">6.5.6</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">maintain complete and accurate records and information to demonstrate its compliance with this clause 6.</Col>
 								</Row>
 							</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.6</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">6.6</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">Each party shall ensure that it has in place appropriate technical and organisational measures to protect against unauthorised or unlawful processing of Personal Data and against accidental loss or destruction of, or damage to, Personal Data, appropriate to the harm that might result from the unauthorised or unlawful processing or accidental loss, destruction or damage and the nature of the data to be protected, having regard to the state of technological development and the cost of implementing any measures (those measures may include, where appropriate, pseudonymising and encrypting Personal Data, ensuring confidentiality, integrity, availability and resilience of its systems and services, ensuring that availability of and access to Personal Data can be restored in a timely manner after an incident, and regularly assessing and evaluating the effectiveness of the technical and organisational measures adopted by it).</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.7</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">6.7</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">The Customer consents to the Supplier appointing Amazon Web Services, Twilio Inc. and any other required third party supplier to enable the Supplier to provide the Services in accordance with this Agreement, as third-party processors of Personal Data under this Agreement. The Supplier confirms that it has entered or (as the case may be) will enter with the third-party processor into a written agreement incorporating terms which are substantially similar to those set out in this clause 6. As between the Customer and the Supplier, the Supplier shall remain fully liable for all acts or omissions of any third-party processor appointed by it pursuant to this clause 6.</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0 font-weight-bold">8</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0 font-weight-bold">7</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0 font-weight-bold">DISCLAIMER OF WARRANTIES</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">8.1</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.1</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">THE SERVICES ARE PROVIDED TO THE CUSTOMER &quot;AS IS&quot; WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY OF MERCHANTABILITY, NON-INFRINGEMENT OR FITNESS FOR A PARTICULAR PURPOSE.</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">8.2</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.2</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">THE CUSTOMER ACKNOWLEDGES AND AGREES THAT THE SERVICES ARE NOT A FINISHED PRODUCT AND ARE STILL BEING DEVELOPED, TESTED AND EVALUATED AND SHALL NOT BE AVAILABLE 24 HOURS A DAY, SEVEN DAYS A WEEK.</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">8.3</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.3</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">THE CUSTOMER ACKNOWLEDGES AND AGREES THAT THE SUPPLIER:</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
 							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">&nbsp;</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">8.3.1</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.3.1</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">EXPRESSLY REPRESENTS THAT THE SERVICES ARE NOT A FINAL PRODUCT AND, AS SUCH, MAY CONTAIN VARIOUS ERRORS, DEFECTS AND MAY BE UNSTABLE;</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">8.3.2</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.3.2</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">SHALL FROM TIME TO TIME UPDATE THE SERVICES OR PERFORM PLANNED OR UNSCHEDULED MAINTENANCE AT NO COST TO THE CUSTOMER;</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">8.3.3</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.3.3</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">SHALL NOT PROVIDE ANY TECHNICAL SUPPORT SERVICES IN RELATION TO THE SOFTWARE AND SERVICES. THE CUSTOMER MAY SUBMIT GENERAL ENQUIRIES TO THE SUPPLIER AND THE SUPPLIER SHALL TAKE REASONABLE STEPS TO ANSWER SUCH ENQUIRIES AND MAY, AT ITS SOLE DISCRETION, PROVIDE SUPPORT IN RELATION TO SUCH ENQUIRIES;</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">8.3.4</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.3.4</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">GIVES NO REPRESENTATIONS THAT THE SOFTWARE WILL MEET THE CUSTOMER&#39;S REQUIREMENTS, BE COMPATIBLE WITH THE CUSTOMER&#39;S SYSTEMS OR BE FIT FOR ANY PARTICULAR PURPOSE;</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">8.3.5</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.3.5</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">DOES NOT WARRANT THAT THE CUSTOMER&#39;S USE OF THE SERVICES WILL BE UNINTERRUPTED OR ERROR-FREE; OR THAT THE SERVICES, DOCUMENTATION AND/OR THE INFORMATION OBTAINED BY THE CUSTOMER THROUGH THE SERVICES WILL MEET THE CUSTOMER&#39;S REQUIREMENTS; AND</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">8.3.6</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.3.6</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">IS NOT RESPONSIBLE FOR ANY DELAYS, DELIVERY FAILURES, OR ANY OTHER LOSS OR DAMAGE RESULTING FROM THE TRANSFER OF DATA OVER COMMUNICATIONS NETWORKS AND FACILITIES, INCLUDING THE INTERNET, AND THE CUSTOMER ACKNOWLEDGES THAT THE SERVICES AND DOCUMENTATION MAY BE SUBJECT TO LIMITATIONS, DELAYS AND PROBLEMS INHERENT IN THE USE OF SUCH COMMUNICATIONS FACILITIES.</Col>
 								</Row>
 							</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">8.4</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">7.4</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">This Agreement shall not prevent the Supplier from entering into similar agreements with third parties, or from independently developing, using, selling or licensing documentation, products and/or services which are similar to those provided under this Agreement.</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0 font-weight-bold">9</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0 font-weight-bold">8</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0 font-weight-bold">CUSTOMER&#39;S OBLIGATIONS</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">9.1</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">8.1</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">The Customer shall:</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
 							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">&nbsp;</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">9.1.1</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">8.1.1</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">provide the Supplier with:</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
@@ -481,37 +480,37 @@ class TermsOfService extends Component {
 									</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">9.1.2</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">8.1.2</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">without affecting its other obligations under this Agreement, comply with all applicable laws and regulations with respect to its activities under this Agreement;</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">9.1.3</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">8.1.3</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">carry out all other Customer responsibilities set out in this Agreement in a timely and efficient manner. In the event of any delays in the Customer&#39;s provision of such assistance as agreed by the parties, the Supplier may adjust any agreed timetable or delivery schedule as reasonably necessary;</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">9.1.4</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">8.1.4</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">ensure that the Authorised Users use the Services and the Documentation in accordance with the terms and conditions of this Agreement and shall be responsible for any Authorised User&#39;s breach of this Agreement;</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">9.1.5</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">8.1.5</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">obtain and shall maintain all necessary licences, consents, and permissions necessary for the Supplier, its contractors and agents to perform their obligations under this Agreement, including without limitation the Services; and</Col>
 								</Row>
 								<Row className="no-gutters mb-4">
-									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">9.1.6</Col>
+									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">8.1.6</Col>
 									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">be, to the extent permitted by law and except as otherwise expressly provided in this Agreement, solely responsible for procuring, maintaining and securing its network connections and telecommunications links from its systems to the Supplier&#39;s data centres, and all problems, conditions, delays, delivery failures and all other loss or damage arising from or relating to the Customer&#39;s network connections or telecommunications links or caused by the internet.</Col>
 								</Row>
 							</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">9.2</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0 font-weight-bold">9</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0 font-weight-bold">INTELLECTUAL PROPERTY RIGHTS</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">9.3</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">9.1</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">The Customer acknowledges and agrees that the Supplier and/or its licensors own all Intellectual Property Rights in the Services and the Documentation. Except as expressly stated herein, this Agreement does not grant the Customer any rights to, under or in, any Intellectual Property Rights in respect of the Services or the Documentation.</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
-							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">9.4</Col>
+							<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">9.2</Col>
 							<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">All Intellectual Property Rights in relation to any Improvement shall belong to the Supplier.</Col>
 						</Row>
 						<Row className="no-gutters mb-4">
@@ -641,7 +640,7 @@ class TermsOfService extends Component {
 								</Row>
 								<Row className="no-gutters mb-4">
 									<Col xs="1" sm="1" md="1" lg="1" xl="1" className="p-0 m-0">12.4.3</Col>
-									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">SUBJECT TO CLAUSES 12.4.1 AND 12.4.2, THE SUPPLIER&#39;S TOTAL FINANCIAL LIABILITY IN CONTRACT, TORT (INCLUDING NEGLIGENCE OR BREACH OF STATUTORY DUTY), MISREPRESENTATION, RESTITUTION OR OTHERWISE, ARISING IN CONNECTION WITH THE PERFORMANCE OR CONTEMPLATED PERFORMANCE OF THIS AGREEMENT SHALL BE LIMITED TO NIL.</Col>
+									<Col xs="11" sm="11" md="11" lg="11" xl="11" className="p-0 m-0">SUBJECT TO CLAUSES 12.4.1 AND 12.4.2, THE SUPPLIER&#39;S TOTAL FINANCIAL LIABILITY IN CONTRACT, TORT (INCLUDING NEGLIGENCE OR BREACH OF STATUTORY DUTY), MISREPRESENTATION, RESTITUTION OR OTHERWISE, ARISING IN CONNECTION WITH THE PERFORMANCE OR CONTEMPLATED PERFORMANCE OF THIS AGREEMENT SHALL BE LIMITED TO THE TOTAL AMOUNT PAID BY THE CUSTOMER FOR THE SERVICES WITHIN THE 12 MONTHS&#39; IMMEDIATELY PRECEDING THE EVENT WHICH GAVE RISE TO THE SUPPLIER&#39;S LIABILITY.</Col>
 								</Row>
 							</Col>
 						</Row>

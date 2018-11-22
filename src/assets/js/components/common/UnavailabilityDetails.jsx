@@ -111,7 +111,7 @@ class UnavailabilityDetails extends Component {
 		}
 
 		if (moment(this.props.unavailability.startDate, 'YYYY-MM-DD').isSame(moment(this.props.unavailability.endDate, 'YYYY-MM-DD'))) {
-			return (`${this.props.unavailability.unavailabilityType.unavailabilityTypeName} on<br />${moment(this.props.unavailability.startDate).format('ddd Do HH:mm')} to ${moment(this.props.unavailability.startDate).format('HH:mm')} ${((!isEmpty(this.props.unavailability.reason)) ? '<br />'.concat(this.props.unavailability.reason) : '')}`);
+			return (`${this.props.unavailability.unavailabilityType.unavailabilityTypeName} on<br />${moment(this.props.unavailability.startDate).format('ddd Do HH:mm')} to ${moment(this.props.unavailability.endDate).format('HH:mm')} ${((!isEmpty(this.props.unavailability.reason)) ? '<br />'.concat(this.props.unavailability.reason) : '')}`);
 		}
 
 		return (`${this.props.unavailability.unavailabilityType.unavailabilityTypeName} from<br />${moment(this.props.unavailability.startDate).format('ddd Do HH:mm')} to ${moment(this.props.unavailability.endDate).format('HH:mm ddd Do')} ${((!isEmpty(this.props.unavailability.reason)) ? '<br />'.concat(this.props.unavailability.reason) : '')}`);

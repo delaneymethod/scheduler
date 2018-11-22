@@ -249,7 +249,7 @@ export default {
 				TITLE: 'Terms of Service',
 				URI: '/terms',
 				CONTENT: {
-					WELCOME: 'Version: August 2018',
+					WELCOME: 'Last Updated: 22 November 2018',
 				},
 				META: {
 					DESCRIPTION: '',
