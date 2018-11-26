@@ -34,6 +34,7 @@ const App = () => (
 			<Route exact path={routes.HOME.URI} component={Home} />
 			<Route exact path={routes.LOGIN.URI} component={Login} />
 			<Route exact path={routes.REGISTER.URI} component={Register} />
+			<Route exact path={routes.USER_SIGN_UP.URI} component={Register} />
 			<Route exact path={routes.COOKIES_POLICY.URI} component={CookiesPolicy} />
 			<Route exact path={routes.TERMS_OF_SERVICE.URI} component={TermsOfService} />
 			<Route exact path={routes.END_USER_LICENSE_AGREEMENT.URI} component={EndUserLicenseAgreement} />

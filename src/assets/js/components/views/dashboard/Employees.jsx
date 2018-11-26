@@ -34,11 +34,11 @@ import { getShifts } from '../../../actions/shiftActions';
 
 import UnavailabilityForm from '../../forms/UnavailabilityForm';
 
-import { addClass, removeClass } from '../../../helpers/classes';
-
-import { getState, saveState } from '../../../store/persistedState';
+import ManageAccountAccessButton from '../../common/ManageAccountAccessButton';
 
 import { getRotaEmployees } from '../../../actions/rotaEmployeeActions';
+
+import { getApplicationUserRoles } from '../../../actions/applicationUserRolesActions';
 
 import { getEmployees, updateEmployee, deleteEmployee } from '../../../actions/employeeActions';
 
@@ -110,8 +110,6 @@ class Employees extends Component {
 
 		this.handleEditEmployee = this.handleEditEmployee.bind(this);
 
-		this.handleSortEmployees = this.handleSortEmployees.bind(this);
-
 		this.handleSortDirection = this.handleSortDirection.bind(this);
 
 		this.handleDeleteEmployee = this.handleDeleteEmployee.bind(this);
@@ -181,6 +179,21 @@ class Employees extends Component {
 		}
 	};
 
+	handleFetchData = () => {
+		logMessage('info', 'Called Employees handleFetchData');
+
+		let { employees } = this.props;
+
+		this.props.actions.getApplicationUserRoles().catch((error) => {
+			this.handleErrorNotification('Unable to load Application User Roles');
+		});
+
+		employees = sortBy(employees, ['employee.firstName', 'employee.lastName', 'employee.email']);
+
+		/* Stick everything into the state */
+		this.setState({ employees });
+	};
+
 	handleEditEmployee = (event, employeeId) => this.setState({ employeeId, isEditEmployeeModalOpen: !this.state.isEditEmployeeModalOpen });
 
 	handleCreateUnavailability = (event, employeeId) => this.setState({ employeeId, isCreateUnavailabilityModalOpen: !this.state.isCreateUnavailabilityModalOpen });
@@ -220,6 +233,15 @@ class Employees extends Component {
 		}
 	};
 
+	handleErrorNotification = (message) => {
+		if (!toast.isActive(this.toastId)) {
+			this.toastId = toast.error(<Notification icon="fa-info-circle" title="Error" message={message} />, {
+				closeButton: false,
+				autoClose: notifications.TIMEOUT,
+			});
+		}
+	};
+
 	handleSuccessNotification = (message) => {
 		if (!toast.isActive(this.toastId)) {
 			this.toastId = toast.success(<Notification icon="fa-check-circle" title="Success" message={message} />, {
@@ -229,16 +251,6 @@ class Employees extends Component {
 		}
 	};
 
-	handleFetchData = () => {
-		logMessage('info', 'Called Employees handleFetchData');
-
-		let { employees } = this.props;
-
-		employees = sortBy(employees, 'employee.firstName');
-
-		/* Stick everything into the state */
-		this.setState({ employees });
-	};
 
 	handleDeleteEmployee = (event, employeeId) => {
 		const { actions, employees } = this.props;
@@ -423,6 +435,41 @@ class Employees extends Component {
 		return actions.getRotaEmployees(rota).catch(error => Promise.reject(error));
 	};
 
+	renderAccountAccessText = (accountEmployee) => {
+		const role = accountEmployee.accountAccess.applicationUserRoles[0];
+
+		if (role) {
+			return role.roleName;
+		}
+
+		const invite = accountEmployee.accountAccess.applicationUserRoleInvites[0];
+
+		if (invite) {
+			if (invite.status === 'SENT') {
+				return `${invite.roleName} (INVITED)`;
+			}
+		}
+
+		return 'NONE';
+	};
+
+	/* Don't render if the account employee is the owner OR the current logged in user -
+	to prevent removing their own access */
+	renderManageAccountAccessButton = (accountEmployee) => {
+		const role = accountEmployee.accountAccess.applicationUserRoles[0];
+
+		if (role) {
+			if (role.roleName === 'OWNER') {
+				return false;
+			}
+		}
+
+		if (this.props.user.email === accountEmployee.employee.email) {
+			return false;
+		}
+		return true;
+	}
+
 	render = () => (
 		<Fragment>
 			<Header history={this.props.history} />
@@ -480,11 +527,12 @@ class Employees extends Component {
 												</Fragment>
 											) : null}
 										</th>
+										<th className="p-2 m-0 text-center column numeric">Account Access</th>
 										<th className="p-2 m-0 text-center column">Email</th>
-										<th className="p-2 m-0 text-center column numeric">Mobile</th>
-										<th className="p-2 m-0 text-center column numeric">Hourly Rate</th>
-										<th className="p-2 m-0 text-center column numeric">Salary</th>
-										<th className="p-2 m-0 text-center column numeric">Hours</th>
+										<th className="p-2 m-0 text-center column">Mobile</th>
+										<th className="p-2 m-0 text-center column">Hourly Rate</th>
+										<th className="p-2 m-0 text-center column">Salary</th>
+										<th className="p-2 m-0 text-center column">Hours</th>
 										<th className="p-2 m-0 text-center column last">&nbsp;</th>
 									</tr>
 								</thead>
@@ -503,11 +551,21 @@ class Employees extends Component {
 													</div>
 												</div>
 											</td>
+											<td className="p-2 align-middle text-center wrap-words column account-access">
+												<div className="d-flex align-items-center p-0 m-0">
+													<div className="d-inline-block p-0 mr-auto">{this.renderAccountAccessText(accountEmployee)}</div>
+													<div className="m-2">
+														{this.renderManageAccountAccessButton(accountEmployee) ? (
+															<ManageAccountAccessButton accountEmployee={accountEmployee} rowIndex={accountEmployeeIndex} roleIds={this.state.roleIds} handleSuccessNotification={this.handleSuccessNotification} handleErrorNotification={this.handleErrorNotification} />
+														) : null}
+													</div>
+												</div>
+											</td>
 											<td className="p-2 align-middle text-center wrap-words column">{accountEmployee.employee.email}</td>
-											<td className="p-2 align-middle text-center wrap-words column numeric">{accountEmployee.employee.mobile}</td>
-											<td className="p-2 align-middle text-center wrap-words column numeric">&pound;{(accountEmployee.hourlyRate).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
-											<td className="p-2 align-middle text-center wrap-words column numeric">&pound;{(accountEmployee.salary).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
-											<td className="p-2 align-middle text-center wrap-words column numeric">{(accountEmployee.weeklyContractHours).toFixed(2)}</td>
+											<td className="p-2 align-middle text-center wrap-words column">{accountEmployee.employee.mobile}</td>
+											<td className="p-2 align-middle text-center wrap-words column">&pound;{(accountEmployee.hourlyRate).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+											<td className="p-2 align-middle text-center wrap-words column">&pound;{(accountEmployee.salary).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+											<td className="p-2 align-middle text-center wrap-words column">{(accountEmployee.weeklyContractHours).toFixed(2)}</td>
 											<td className="p-2 align-middle text-center column last">
 												<button type="button" className="btn border-0 btn-secondary text-white btn-icon ml-1" id={`editEmployee${accountEmployee.accountEmployeeId}`} title="Edit Employee" onClick={event => this.handleEditEmployee(event, accountEmployee.employee.employeeId)}><i className="fa fa-fw fa-pencil" aria-hidden="true"></i></button>
 												<button type="button" className="btn border-0 btn-secondary text-white btn-icon ml-1" id={`createUnavailability${accountEmployee.accountEmployeeId}`} title="Add Time Off" onClick={event => this.handleCreateUnavailability(event, accountEmployee.employee.employeeId)}>Add Time Off</button>
@@ -541,6 +599,7 @@ const mapStateToProps = (state, props) => ({
 	week: state.week,
 	rota: state.rota,
 	rotas: state.rotas,
+	roles: state.roles,
 	rotaType: state.rotaType,
 	settings: state.settings,
 	employees: state.employees,
@@ -554,6 +613,7 @@ const mapDispatchToProps = dispatch => ({
 		updateEmployee,
 		deleteEmployee,
 		getRotaEmployees,
+		getApplicationUserRoles,
 	}, dispatch),
 });
 

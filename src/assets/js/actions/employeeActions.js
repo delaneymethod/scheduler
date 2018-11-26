@@ -180,3 +180,74 @@ export const deleteEmployee = payload => (dispatch) => {
 			return Promise.reject(error);
 		});
 };
+
+/* GIVE EMPLOYEE ACCOUNT ACCESS */
+
+export const sendAdminAccessInvite = payload => (dispatch) => {
+	dispatch(ajaxLoading(true));
+
+	return api.sendAdminAccessInvite(payload)
+		.then((employee) => {
+			dispatch(ajaxLoading(false));
+
+			dispatch(updateEmployeeSuccess(employee));
+		})
+		.catch((error) => {
+			dispatch(ajaxLoading(false));
+
+			/* Bubble the error back up the rabbit hole */
+			return Promise.reject(error);
+		});
+};
+
+
+export const revokeAdminAccessInvite = payload => (dispatch) => {
+	dispatch(ajaxLoading(true));
+
+	return api.revokeAdminAccessInvite(payload)
+		.then((employee) => {
+			dispatch(ajaxLoading(false));
+
+			dispatch(updateEmployeeSuccess(employee));
+		})
+		.catch((error) => {
+			dispatch(ajaxLoading(false));
+
+			/* Bubble the error back up the rabbit hole */
+			return Promise.reject(error);
+		});
+};
+
+export const resendAdminAccessInvite = payload => (dispatch) => {
+	dispatch(ajaxLoading(true));
+
+	return api.resendAdminAccessInvite(payload)
+		.then((employee) => {
+			dispatch(ajaxLoading(false));
+
+			dispatch(updateEmployeeSuccess(employee));
+		})
+		.catch((error) => {
+			dispatch(ajaxLoading(false));
+
+			/* Bubble the error back up the rabbit hole */
+			return Promise.reject(error);
+		});
+};
+
+export const removeAdminAccess = payload => (dispatch) => {
+	dispatch(ajaxLoading(true));
+
+	return api.revokeAdminAccess(payload)
+		.then((employee) => {
+			dispatch(ajaxLoading(false));
+
+			dispatch(updateEmployeeSuccess(employee));
+		})
+		.catch((error) => {
+			dispatch(ajaxLoading(false));
+
+			/* Bubble the error back up the rabbit hole */
+			return Promise.reject(error);
+		});
+};

@@ -179,6 +179,18 @@ export default {
 					KEYWORDS: '',
 				},
 			},
+			USER_SIGN_UP: {
+				TITLE: 'User Sign Up ',
+				URI: '/user-sign-up',
+				CONTENT: {
+					WELCOME: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta velit in lectus efficitur hendrerit. Quisque cursus arcu sollicitudin rhoncus molestie. Donec at rhoncus enim, ut rhoncus lacus. Sed eget felis est.',
+					TERMS_OF_USE_AGREED: 'By clicking this box we have read, understood and accept to at all times be bound by the Gig Grafter Beta Release Terms and Conditions as contained within',
+				},
+				META: {
+					DESCRIPTION: '',
+					KEYWORDS: '',
+				},
+			},
 			FORGOTTEN_YOUR_PASSWORD: {
 				TITLE: 'Forgotten your Password',
 				URI: '/passwords/forgot',

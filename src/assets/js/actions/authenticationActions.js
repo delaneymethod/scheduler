@@ -137,6 +137,19 @@ export const register = payload => (dispatch) => {
 		});
 };
 
+export const userSignUp = payload => (dispatch) => {
+	dispatch(ajaxLoading(true));
+
+	return api.userSignUp(payload)
+		.then(() => dispatch(ajaxLoading(false)))
+		.catch((error) => {
+			dispatch(ajaxLoading(false));
+
+			/* Bubble the error back up the rabbit hole */
+			return Promise.reject(error);
+		});
+};
+
 export const forgottenYourPassword = payload => (dispatch) => {
 	dispatch(ajaxLoading(true));
 

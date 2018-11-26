@@ -2,12 +2,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Col, Row } from 'reactstrap';
 import React, { Fragment, Component } from 'react';
-
+import queryString from 'query-string';
 import Footer from '../common/Footer';
 
 import config from '../../helpers/config';
 
 import RegisterForm from '../forms/RegisterForm';
+import UserSignUpForm from '../forms/UserSignUpForm';
 
 const routes = config.APP.ROUTES;
 
@@ -51,6 +52,16 @@ class Register extends Component {
 		}
 	};
 
+	/* Render form based on if user has been invited to sign up is a new business user wanting to register */
+	renderForm = () => {
+		const queryParams = queryString.parse(this.props.location.search);
+
+		if (this.props.location.pathname === routes.USER_SIGN_UP.URI) {
+			return <UserSignUpForm history={this.props.history} code={queryParams.code} email={queryParams.email}/>;
+		}
+		return <RegisterForm history={this.props.history} />;
+	}
+
 	render = () => {
 		if (this.props.authenticated) {
 			return null;
@@ -70,7 +81,7 @@ class Register extends Component {
 							<a href={routes.LOGIN.URI} title={routes.LOGIN.TITLE} id="login" className="panel-page__link float-right">Already a member? {routes.LOGIN.TITLE}</a>
 							<div className="card panel-page__content">
 								<h2 className="h5--title-card">{routes.REGISTER.TITLE}</h2>
-								<RegisterForm history={this.props.history} />
+								{this.renderForm()}
 							</div>
 						</div>
 					</Col>

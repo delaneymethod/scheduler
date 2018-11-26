@@ -18,7 +18,7 @@ const employeesReducer = (state = combinedState.employees, action) => {
 		case types.GET_EMPLOYEE:
 		case types.UPDATE_EMPLOYEE:
 			return [
-				...state.filter(employee => employee.id !== action.employee.id),
+				...state.filter(employee => employee.accountEmployeeId !== action.employee.accountEmployeeId),
 				Object.assign({}, action.employee),
 			];
 
@@ -29,6 +29,11 @@ const employeesReducer = (state = combinedState.employees, action) => {
 			];
 
 		case types.DELETE_EMPLOYEE:
+			return [
+				...state.filter(employee => employee.id !== action.employee.id),
+			];
+
+		case types.SEND_USER_ADMIN_ACCESS_INVITE:
 			return [
 				...state.filter(employee => employee.id !== action.employee.id),
 			];

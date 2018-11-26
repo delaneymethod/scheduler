@@ -7,6 +7,7 @@ export default {
 	shifts: [],
 	rotaCost: 0,
 	accounts: [],
+	applicationUserRoles: [],
 	settings: {},
 	rotaType: {},
 	clipboard: {},

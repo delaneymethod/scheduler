@@ -135,6 +135,10 @@ export const updateAccount = account => request('PUT', `/accounts/${account.acco
 
 export const deleteAccount = account => request('DELETE', `/accounts/${account.accountId}`, 204);
 
+/* APPLICATION-ROLES */
+export const getApplicationUserRoles = () => request('GET', '/application-user-roles');
+
+
 /* SHIFTS */
 export const getShifts = rota => request('GET', `/shifts?rotaId=${rota.rotaId}`);
 
@@ -220,3 +224,14 @@ export const getUnavailabilityOccurrences = payload => request('GET', `/unavaila
 
 /* UNAVAILABILITY TYPES */
 export const getUnavailabilityTypes = () => request('GET', '/unavailability-types');
+
+/* MANAGE USERS */
+export const userSignUp = payload => request('POST', `/users/sign-up?code=${payload.code}&email=${payload.email}`, 200, payload);
+
+export const revokeAdminAccess = payload => request('DELETE', `/employees/${payload.accountEmployee.accountEmployeeId}/roles/${payload.applicationUserRoleId}`, 200);
+
+export const sendAdminAccessInvite = payload => request('POST', `/employee-invites/${payload.accountEmployee.accountEmployeeId}/invite?applicationUserRoleId=${payload.applicationUserRoleId}`, 200);
+
+export const revokeAdminAccessInvite = payload => request('DELETE', `/employee-invites/${payload.accountEmployee.accountEmployeeId}`, 200);
+
+export const resendAdminAccessInvite = payload => request('POST', `/employee-invites/${payload.accountEmployee.accountEmployeeId}/resend`, 200);

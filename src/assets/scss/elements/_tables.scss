@@ -47,7 +47,7 @@
 .employees,
 .rota-employees {
 	width: 100%;
-	table-layout: fixed;
+	table-layout: auto;
 	border-collapse: collapse;
 
 	thead {
@@ -410,9 +410,11 @@
 		width: 120px !important;
 		max-width: 120px !important;
 	}
-
+	.column.account-access {
+		width: 120px !important;
+	}
 	.column.last {
-		width: 170px !important;
-		max-width: 170px !important;
+		width: 190px !important;
+		max-width: 190px !important;
 	}
 }
