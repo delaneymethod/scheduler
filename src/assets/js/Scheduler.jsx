@@ -38,11 +38,7 @@ window.intercomSettings = {
 	app_id: APP_ID,
 };
 
-window.isRunningLocalhost = false;
-
-if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '') {
-	window.isRunningLocalhost = true;
-}
+window.isRunningLocalhost = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '');
 
 /* Listen for state changes, saving a maximum once per second. */
 store.subscribe(throttle(() => {

@@ -138,6 +138,10 @@ export const logout = () => (dispatch) => {
 	if (!window.isRunningLocalhost && window.Intercom) {
 		window.Intercom('shutdown');
 
+		/* Reset any logged in user conversations */
+		delete window.intercomSettings.email;
+		delete window.intercomSettings.user_hash;
+
 		logMessage('info', 'Called Intercom Shutdown');
 	}
 
