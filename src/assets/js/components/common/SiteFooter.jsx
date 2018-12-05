@@ -2,6 +2,8 @@ import moment from 'moment';
 import { Col, Row } from 'reactstrap';
 import React, { Fragment } from 'react';
 
+import Intercom from './Intercom';
+
 import config from '../../helpers/config';
 
 import CookieBanner from './CookieBanner';
@@ -24,6 +26,7 @@ const SiteFooter = () => (
 		</Row>
 		<CookieBanner />
 		<GoogleTagManager />
+		<Intercom />
 	</Fragment>
 );
 

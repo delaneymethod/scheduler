@@ -1,21 +1,30 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Col, Row } from 'reactstrap';
+import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
 
 import Footer from '../common/Footer';
 
 import config from '../../helpers/config';
 
+import { switchRoute } from '../../actions/routeActions';
+
+import { updateCookieConsent } from '../../actions/cookieConsentActions';
+
 import ForgottenYourPasswordForm from '../forms/ForgottenYourPasswordForm';
 
 const routes = config.APP.ROUTES;
 
 const propTypes = {
+	route: PropTypes.string.isRequired,
 	authenticated: PropTypes.bool.isRequired,
+	cookieConsent: PropTypes.bool.isRequired,
 };
 
 const defaultProps = {
+	route: '',
+	cookieConsent: false,
 	authenticated: false,
 };
 
@@ -46,6 +55,21 @@ class ForgottenYourPassword extends Component {
 
 			document.querySelector('link[rel="home"]').setAttribute('href', `${window.location.protocol}//${window.location.host}`);
 			document.querySelector('link[rel="canonical"]').setAttribute('href', `${window.location.protocol}//${window.location.host}${window.location.pathname}`);
+		}
+
+		/* Tracks the current route/page of the user */
+		this.props.actions.switchRoute(routes.FORGOTTEN_YOUR_PASSWORD.URI);
+	};
+
+	componentDidUpdate = (prevProps, prevState) => {
+		if (this.props.route !== prevProps.route) {
+			/**
+			 * If there is no cookie consent already given and the user has navigated the site without closing the cookie banner,
+			 * we are dropping cookies as per https://trello.com/c/xGejf1Uf/199-update-cookie-consent-process
+			 */
+			if (!this.props.cookieConsent) {
+				this.props.actions.updateCookieConsent(true);
+			}
 		}
 	};
 
@@ -85,9 +109,16 @@ ForgottenYourPassword.propTypes = propTypes;
 ForgottenYourPassword.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
+	route: state.route,
+	cookieConsent: state.cookieConsent,
 	authenticated: state.authenticated,
 });
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+	actions: bindActionCreators({
+		switchRoute,
+		updateCookieConsent,
+	}, dispatch),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(ForgottenYourPassword);

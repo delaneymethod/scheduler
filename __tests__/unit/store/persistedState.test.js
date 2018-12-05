@@ -35,18 +35,16 @@ describe('Persisted State', () => {
 		expect(state).toEqual(false);
 	});
 
-	it('should return false if no sessionStorage available on delete', () => {
-		window.sessionStorage = {};
+	it('should return undefined on get if key is null', () => {
+		const state = getState('doesnt-exist');
 
-		const state = deleteState('name');
-
-		expect(state).toEqual(false);
+		expect(state).toEqual(undefined);
 	});
 
-	it('should return false if no sessionStorage available on save', () => {
-		window.sessionStorage = {};
+	it('should return false if no sessionStorage available on delete', () => {
+		window.localStorage = {};
 
-		const state = saveState('name', 'Gig Grafter');
+		const state = deleteState('name');
 
 		expect(state).toEqual(false);
 	});

@@ -46,6 +46,8 @@ import ShiftsOverview from '../../common/ShiftsOverview';
 
 import AssignShiftForm from '../../forms/AssignShiftForm';
 
+import { switchRoute } from '../../../actions/routeActions';
+
 import AssignShiftButton from '../../common/AssignShiftButton';
 
 import { getEmployees } from '../../../actions/employeeActions';
@@ -53,8 +55,6 @@ import { getEmployees } from '../../../actions/employeeActions';
 import { addClass, removeClass } from '../../../helpers/classes';
 
 import { switchRotaCost } from '../../../actions/rotaCostActions';
-
-import { getRotas, switchRota, updateRotaStatus } from '../../../actions/rotaActions';
 
 import UpdateEmployeeButton from '../../common/UpdateEmployeeButton';
 
@@ -64,6 +64,8 @@ import ExistingEmployeesForm from '../../forms/ExistingEmployeesForm';
 
 import { copyShiftToClipBoard } from '../../../actions/clipboardActions';
 
+import { updateCookieConsent } from '../../../actions/cookieConsentActions';
+
 import UnassignedShiftsOverview from '../../common/UnassignedShiftsOverview';
 
 import ShiftUnavailabilityButton from '../../common/ShiftUnavailabilityButton';
@@ -72,9 +74,11 @@ import { showEditHandler, hideEditHandler } from '../../../helpers/toggleClasses
 
 import { deleteRotaTypeEmployee } from '../../../actions/rotaTypeEmployeeActions';
 
+import { getShifts, updateShift, createShift } from '../../../actions/shiftActions';
+
 import { createPlacement, updatePlacement } from '../../../actions/placementActions';
 
-import { getShifts, updateShift, createShift } from '../../../actions/shiftActions';
+import { getRotas, switchRota, updateRotaStatus } from '../../../actions/rotaActions';
 
 import { getRotaEmployees, updateRotaEmployeesOrder } from '../../../actions/rotaEmployeeActions';
 
@@ -92,12 +96,14 @@ const propTypes = {
 	rotas: PropTypes.array.isRequired,
 	user: PropTypes.object.isRequired,
 	shifts: PropTypes.array.isRequired,
+	route: PropTypes.string.isRequired,
 	rotaCost: PropTypes.number.isRequired,
 	rotaType: PropTypes.object.isRequired,
 	employees: PropTypes.array.isRequired,
 	settings: PropTypes.object.isRequired,
 	authenticated: PropTypes.bool.isRequired,
 	rotaEmployees: PropTypes.array.isRequired,
+	cookieConsent: PropTypes.bool.isRequired,
 	unavailabilityOccurrences: PropTypes.array.isRequired,
 };
 
@@ -105,6 +111,7 @@ const defaultProps = {
 	user: {},
 	week: {},
 	rota: {},
+	route: '',
 	rotas: [],
 	shifts: [],
 	rotaCost: 0,
@@ -112,6 +119,7 @@ const defaultProps = {
 	settings: {},
 	employees: [],
 	rotaEmployees: [],
+	cookieConsent: false,
 	authenticated: false,
 	unavailabilityOccurrences: [],
 };
@@ -275,6 +283,9 @@ class Rotas extends Component {
 			document.querySelector('link[rel="canonical"]').setAttribute('href', `${window.location.protocol}//${window.location.host}${window.location.pathname}`);
 		}
 
+		/* Tracks the current route/page of the user */
+		this.props.actions.switchRoute(routes.DASHBOARD.ROTAS.URI);
+
 		window.addEventListener('touchmove', () => {}, { passive: false });
 
 		polyfill({
@@ -298,6 +309,16 @@ class Rotas extends Component {
 		/* If the current week, current rota, current rota type, current week unavailabilities, rota employees, settings or shifts had any changes, re/load the table */
 		if (prevProps.unavailabilityOccurrences !== this.props.unavailabilityOccurrences || prevProps.rotaEmployees !== this.props.rotaEmployees || prevProps.week !== this.props.week || prevProps.rota !== this.props.rota || prevProps.rotaType !== this.props.rotaType || prevProps.shifts !== this.props.shifts || prevProps.settings !== this.props.settings) {
 			this.setState({ totalRotaEmployees: this.props.rotaEmployees.length }, () => this.handleFetchData());
+		}
+
+		if (this.props.route !== prevProps.route) {
+			/**
+			 * If there is no cookie consent already given and the user has navigated the site without closing the cookie banner,
+			 * we are dropping cookies as per https://trello.com/c/xGejf1Uf/199-update-cookie-consent-process
+			 */
+			if (!this.props.cookieConsent) {
+				this.props.actions.updateCookieConsent(true);
+			}
 		}
 	};
 
@@ -1691,6 +1712,7 @@ const mapStateToProps = (state, props) => ({
 	user: state.user,
 	week: state.week,
 	rota: state.rota,
+	route: state.route,
 	rotas: state.rotas,
 	shifts: state.shifts,
 	rotaCost: state.rotaCost,
@@ -1698,6 +1720,7 @@ const mapStateToProps = (state, props) => ({
 	settings: state.settings,
 	employees: state.employees,
 	rotaEmployees: state.rotaEmployees,
+	cookieConsent: state.cookieConsent,
 	authenticated: state.authenticated,
 	copiedShift: state.clipboard.copiedShift,
 	unavailabilityOccurrences: state.unavailabilityOccurrences,
@@ -1708,6 +1731,7 @@ const mapDispatchToProps = dispatch => ({
 		getRotas,
 		getShifts,
 		switchRota,
+		switchRoute,
 		updateShift,
 		createShift,
 		getEmployees,
@@ -1715,8 +1739,9 @@ const mapDispatchToProps = dispatch => ({
 		createPlacement,
 		updatePlacement,
 		getRotaEmployees,
-		copyShiftToClipBoard,
 		updateRotaStatus,
+		updateCookieConsent,
+		copyShiftToClipBoard,
 		deleteRotaTypeEmployee,
 		updateRotaEmployeesOrder,
 	}, dispatch),

@@ -6,8 +6,8 @@ import packageJson from '../../../../package.json';
 const prefix = packageJson.name;
 
 export const getState = (key) => {
-	if (sessionStorage.getItem) {
-		const serializedData = sessionStorage.getItem(`${prefix}:${key}`);
+	if (window.localStorage.getItem) {
+		const serializedData = window.localStorage.getItem(`${prefix}:${key}`);
 
 		return (serializedData === null) ? undefined : JSON.parse(serializedData);
 	}
@@ -16,7 +16,7 @@ export const getState = (key) => {
 };
 
 export const getStates = () => {
-	const allStates = Object.keys(sessionStorage).reduce((states, key) => {
+	const allStates = Object.keys(window.localStorage).reduce((states, key) => {
 		key = key.replace(`${prefix}:`, '');
 
 		states[key] = getState(key);
@@ -34,10 +34,10 @@ export const getStates = () => {
 };
 
 export const saveState = (key, data) => {
-	if (sessionStorage.setItem) {
+	if (window.localStorage.setItem) {
 		const serializedData = JSON.stringify(data);
 
-		sessionStorage.setItem(`${prefix}:${key}`, serializedData);
+		window.localStorage.setItem(`${prefix}:${key}`, serializedData);
 
 		return true;
 	}
@@ -50,7 +50,7 @@ export const deleteState = (key) => {
 		return false;
 	}
 
-	sessionStorage.removeItem(`${prefix}:${key}`);
+	window.localStorage.removeItem(`${prefix}:${key}`);
 
 	return true;
 };

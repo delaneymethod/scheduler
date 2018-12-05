@@ -14,6 +14,11 @@ export const authenticated = status => ({
 	status,
 });
 
+export const getApplicationUserRolesSuccess = applicationUserRoles => ({
+	type: types.GET_APPLICATION_USER_ROLES,
+	applicationUserRoles,
+});
+
 export const getUnavailabilityTypesSuccess = unavailabilityTypes => ({
 	type: types.GET_UNAVAILABILITY_TYPES,
 	unavailabilityTypes,
@@ -32,6 +37,11 @@ export const getEmployeesSuccess = employees => ({
 export const updateUserSuccess = user => ({
 	type: types.UPDATE_USER,
 	user,
+});
+
+export const switchRouteSuccess = route => ({
+	type: types.SWITCH_ROUTE,
+	route,
 });
 
 export const switchWeekSuccess = week => ({
@@ -101,6 +111,8 @@ export const logout = () => (dispatch) => {
 
 	dispatch(updateUserSuccess({}));
 
+	dispatch(switchRouteSuccess(''));
+
 	dispatch(switchWeekSuccess({}));
 
 	dispatch(switchRotaSuccess({}));
@@ -118,6 +130,8 @@ export const logout = () => (dispatch) => {
 	dispatch(getRotaEmployeesSuccess([]));
 
 	dispatch(getUnavailabilityTypesSuccess([]));
+
+	dispatch(getApplicationUserRolesSuccess([]));
 
 	return Promise.resolve(true);
 };
@@ -144,6 +158,8 @@ export const userSignUp = payload => (dispatch) => {
 		.then(() => dispatch(ajaxLoading(false)))
 		.catch((error) => {
 			dispatch(ajaxLoading(false));
+
+			dispatch(authenticated(false));
 
 			/* Bubble the error back up the rabbit hole */
 			return Promise.reject(error);

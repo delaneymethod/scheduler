@@ -100,11 +100,13 @@ describe('Authentication Actions', () => {
 			rota: {},
 			week: {},
 			user: {},
+			route: '',
 			rotas: [],
 			shifts: [],
 			rotaType: {},
 			rotaTypes: [],
 			placements: [],
+			applicationUserRoles: [],
 		});
 
 		const expectedActions = [{
@@ -119,6 +121,9 @@ describe('Authentication Actions', () => {
 		}, {
 			type: 'UPDATE_USER',
 			user: {},
+		}, {
+			type: 'SWITCH_ROUTE',
+			route: '',
 		}, {
 			type: 'SWITCH_WEEK',
 			week: {},
@@ -143,6 +148,9 @@ describe('Authentication Actions', () => {
 		}, {
 			unavailabilityTypes: [],
 			type: 'GET_UNAVAILABILITY_TYPES',
+		}, {
+			applicationUserRoles: [],
+			type: 'GET_APPLICATION_USER_ROLES',
 		}];
 
 		return store.dispatch(actions.logout()).then(() => expect(store.getActions()).toEqual(expectedActions));

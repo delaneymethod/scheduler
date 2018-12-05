@@ -6,17 +6,14 @@ const persistedState = getStates();
 
 const combinedState = Object.assign(initialState, persistedState);
 
-const clipboardReducer = (state = combinedState.clipboard, action) => {
+const cookieConsentReducer = (state = combinedState.cookieConsent, action) => {
 	switch (action.type) {
-		case types.COPY_SHIFT_TO_CLIPBOARD:
-			return {
-				...state,
-				copiedShift: action.shift,
-			};
+		case types.UPDATE_COOKIE_CONSENT:
+			return action.cookieConsent;
 
 		default:
 			return state;
 	}
 };
 
-export default clipboardReducer;
+export default cookieConsentReducer;

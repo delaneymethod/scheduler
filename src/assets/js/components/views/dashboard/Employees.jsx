@@ -32,11 +32,15 @@ import Notification from '../../common/Notification';
 
 import { getShifts } from '../../../actions/shiftActions';
 
+import { switchRoute } from '../../../actions/routeActions';
+
 import UnavailabilityForm from '../../forms/UnavailabilityForm';
 
-import ManageAccountAccessButton from '../../common/ManageAccountAccessButton';
-
 import { getRotaEmployees } from '../../../actions/rotaEmployeeActions';
+
+import { updateCookieConsent } from '../../../actions/cookieConsentActions';
+
+import ManageAccountAccessButton from '../../common/ManageAccountAccessButton';
 
 import { getApplicationUserRoles } from '../../../actions/applicationUserRolesActions';
 
@@ -51,20 +55,24 @@ const propTypes = {
 	rota: PropTypes.object.isRequired,
 	rotas: PropTypes.array.isRequired,
 	user: PropTypes.object.isRequired,
+	route: PropTypes.string.isRequired,
 	rotaType: PropTypes.object.isRequired,
 	employees: PropTypes.array.isRequired,
 	settings: PropTypes.object.isRequired,
 	authenticated: PropTypes.bool.isRequired,
+	cookieConsent: PropTypes.bool.isRequired,
 };
 
 const defaultProps = {
 	user: {},
 	week: {},
 	rota: {},
+	route: '',
 	rotas: [],
 	rotaType: {},
 	settings: {},
 	employees: [],
+	cookieConsent: false,
 	authenticated: false,
 };
 
@@ -164,6 +172,9 @@ class Employees extends Component {
 			document.querySelector('link[rel="canonical"]').setAttribute('href', `${window.location.protocol}//${window.location.host}${window.location.pathname}`);
 		}
 
+		/* Tracks the current route/page of the user */
+		this.props.actions.switchRoute(routes.DASHBOARD.EMPLOYEES.URI);
+
 		/* We debounce this call to wait 500ms (we do not want the leading (or "immediate") flag passed because we want to wait until all the componentDidUpdate calls have finished before loading the table data again */
 		this.handleFetchData = debounce(this.handleFetchData.bind(this), 500);
 	};
@@ -176,6 +187,16 @@ class Employees extends Component {
 		/* If the employees had any changes, re/load the table */
 		if (prevProps.employees !== this.props.employees || prevProps.week !== this.props.week || prevProps.rota !== this.props.rota || prevProps.rotaType !== this.props.rotaType || prevProps.settings !== this.props.settings) {
 			this.setState({ totalEmployees: this.props.employees.length }, () => this.handleFetchData());
+		}
+
+		if (this.props.route !== prevProps.route) {
+			/**
+			 * If there is no cookie consent already given and the user has navigated the site without closing the cookie banner,
+			 * we are dropping cookies as per https://trello.com/c/xGejf1Uf/199-update-cookie-consent-process
+			 */
+			if (!this.props.cookieConsent) {
+				this.props.actions.updateCookieConsent(true);
+			}
 		}
 	};
 
@@ -598,21 +619,25 @@ const mapStateToProps = (state, props) => ({
 	user: state.user,
 	week: state.week,
 	rota: state.rota,
+	route: state.route,
 	rotas: state.rotas,
 	roles: state.roles,
 	rotaType: state.rotaType,
 	settings: state.settings,
 	employees: state.employees,
+	cookieConsent: state.cookieConsent,
 	authenticated: state.authenticated,
 });
 
 const mapDispatchToProps = dispatch => ({
 	actions: bindActionCreators({
 		getShifts,
+		switchRoute,
 		getEmployees,
 		updateEmployee,
 		deleteEmployee,
 		getRotaEmployees,
+		updateCookieConsent,
 		getApplicationUserRoles,
 	}, dispatch),
 });

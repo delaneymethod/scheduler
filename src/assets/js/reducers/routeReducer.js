@@ -6,17 +6,14 @@ const persistedState = getStates();
 
 const combinedState = Object.assign(initialState, persistedState);
 
-const clipboardReducer = (state = combinedState.clipboard, action) => {
+const routeReducer = (state = combinedState.route, action) => {
 	switch (action.type) {
-		case types.COPY_SHIFT_TO_CLIPBOARD:
-			return {
-				...state,
-				copiedShift: action.shift,
-			};
+		case types.SWITCH_ROUTE:
+			return action.route;
 
 		default:
 			return state;
 	}
 };
 
-export default clipboardReducer;
+export default routeReducer;

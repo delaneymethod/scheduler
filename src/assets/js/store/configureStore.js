@@ -12,6 +12,10 @@ import { getStates } from './persistedState';
 
 const middlewares = [];
 
+const persistedState = getStates();
+
+const combinedState = Object.assign(initialState, persistedState);
+
 middlewares.push(thunk);
 
 /*
@@ -19,10 +23,6 @@ if (process.env.NODE_ENV === 'development') {
 	middlewares.push(reduxLogger);
 }
 */
-
-const persistedState = getStates();
-
-const combinedState = Object.assign(initialState, persistedState);
 
 /* eslint-disable no-underscore-dangle */
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

@@ -1,27 +1,28 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import React, { Fragment, Component } from 'react';
-import { Popover, PopoverBody } from 'reactstrap';
 import { bindActionCreators } from 'redux';
+import { Popover, PopoverBody } from 'reactstrap';
+import React, { Fragment, Component } from 'react';
 import { sendAdminAccessInvite, revokeAdminAccessInvite, resendAdminAccessInvite, removeAdminAccess } from '../../actions/employeeActions';
 
 const propTypes = {
 	rowIndex: PropTypes.number.isRequired,
 	accountEmployee: PropTypes.object.isRequired,
-	handleSuccessNotification: PropTypes.func.isRequired,
 	handleErrorNotification: PropTypes.func.isRequired,
+	handleSuccessNotification: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
 	rowIndex: 0,
 	accountEmployee: '',
-	handleSuccessNotification: () => { },
-	handleErrorNotification: () => { },
+	handleErrorNotification: () => {},
+	handleSuccessNotification: () => {},
 };
 
 class ManageAccountAccessButton extends Component {
 	constructor(props) {
 		super(props);
+
 		this.state = this.getInitialState();
 	}
 
@@ -29,85 +30,103 @@ class ManageAccountAccessButton extends Component {
 		isAccountAccessPopoverOpen: false,
 	});
 
-	handleAccountAccessClick = () => {
-		this.setState({ isAccountAccessPopoverOpen: !this.state.isAccountAccessPopoverOpen });
-	};
+	handleAccountAccessClick = () => this.setState({ isAccountAccessPopoverOpen: !this.state.isAccountAccessPopoverOpen });
 
 	handleMakeAdminClick = () => {
+		const { accountEmployee } = this.props;
+
+		const applicationUserRoleId = this.props.applicationUserRoles.find(data => data.roleName === 'ADMINISTRATOR').userRoleId;
+
 		const payload = {
-			accountEmployee: this.props.accountEmployee,
-			applicationUserRoleId: this.props.applicationUserRoles.find(obj => obj.roleName === 'ADMINISTRATOR').userRoleId,
+			accountEmployee,
+			applicationUserRoleId,
 		};
 
-		this.props.actions.sendAdminAccessInvite(payload).then(() => {
-			const message = 'User has been sent an invitation to become an administrator';
-			this.props.handleSuccessNotification(message);
+		this.props.actions.sendAdminAccessInvite(payload)
+			.then(() => {
+				this.handleAccountAccessClick();
 
-			this.handleAccountAccessClick();
-		}).catch((error) => {
-			this.handleRequestError(error);
-		});
-	}
+				/* FIXME - Make messages constants in config */
+				const message = '<p>User has been sent an invitation to become an administrator</p>';
+
+				this.props.handleSuccessNotification();
+			}).catch(error => this.handleRequestError(error));
+	};
 
 	handleRevokeAdminAccessClick = () => {
+		const { accountEmployee } = this.props;
+
+		const applicationUserRoleId = this.props.applicationUserRoles.find(data => data.roleName === 'ADMINISTRATOR').userRoleId;
+
 		const payload = {
-			accountEmployee: this.props.accountEmployee,
-			applicationUserRoleId: this.props.applicationUserRoles.find(obj => obj.roleName === 'ADMINISTRATOR').userRoleId,
+			accountEmployee,
+			applicationUserRoleId,
 		};
 
-		this.props.actions.removeAdminAccess(payload).then(() => {
-			const message = 'Administrator access has been removed successfully';
-			this.props.handleSuccessNotification(message);
+		this.props.actions.removeAdminAccess(payload)
+			.then(() => {
+				this.handleAccountAccessClick();
 
-			this.handleAccountAccessClick();
-		}).catch((error) => {
-			this.handleRequestError(error);
-		});
-	}
+				/* FIXME - Make messages constants in config */
+				const message = '<p>Administrator access has been removed successfully</p>';
+
+				this.props.handleSuccessNotification(message);
+			}).catch(error => this.handleRequestError(error));
+	};
 
 	handleResendInviteClick = () => {
+		const { accountEmployee } = this.props;
+
 		const payload = {
-			accountEmployee: this.props.accountEmployee,
+			accountEmployee,
 		};
 
-		this.props.actions.resendAdminAccessInvite(payload).then(() => {
-			const message = 'User has been re-sent an invitation to become an administrator';
-			this.props.handleSuccessNotification(message);
+		this.props.actions.resendAdminAccessInvite(payload)
+			.then(() => {
+				this.handleAccountAccessClick();
 
-			this.handleAccountAccessClick();
-		}).catch((error) => {
-			this.handleRequestError(error);
-		});
-	}
+				/* FIXME - Make messages constants in config */
+				const message = '<p>User has been re-sent an invitation to become an administrator</p>';
+
+				this.props.handleSuccessNotification(message);
+			})
+			.catch(error => this.handleRequestError(error));
+	};
 
 	handleRevokeAdminInviteClick = () => {
+		const { accountEmployee } = this.props;
+
 		const payload = {
-			accountEmployee: this.props.accountEmployee,
+			accountEmployee,
 		};
 
-		this.props.actions.revokeAdminAccessInvite(payload).then(() => {
-			const message = 'Administrator access has been removed successfully';
-			this.props.handleSuccessNotification(message);
+		this.props.actions.revokeAdminAccessInvite(payload)
+			.then(() => {
+				this.handleAccountAccessClick();
 
-			this.handleAccountAccessClick();
-		}).catch((error) => {
-			this.handleRequestError(error);
-		});
-	}
+				/* FIXME - Make messages constants in config */
+				const message = '<p>Administrator access has been removed successfully</p>';
+
+				this.props.handleSuccessNotification(message);
+			})
+			.catch(error => this.handleRequestError(error));
+	};
 
 	handleRequestError = (error) => {
-		this.props.handleErrorNotification(error.data.message);
 		this.handleAccountAccessClick();
-		Promise.reject(error);
-	}
+
+		this.props.handleErrorNotification(error.data.message);
+
+		return Promise.reject(error);
+	};
 
 	renderPopoverOptions = (accountEmployee) => {
 		const role = accountEmployee.accountAccess.applicationUserRoles[0];
 
-		// check roles to determine which options to display
+		/* Check roles to determine which options to display */
 		if (role) {
 			if (role.roleName === 'ADMINISTRATOR') {
-				return <li><button type="button" title="Remove Admin Access" id="removeAdminAccessButton" className="btn btn-danger btn-nav border-0" onClick={this.handleRevokeAdminAccessClick}>Remove Administrator Access</button></li>;
+				return (<li><button type="button" title="Remove Admin Access" id="removeAdminAccessButton" className="btn btn-danger btn-nav border-0" onClick={this.handleRevokeAdminAccessClick}>Remove Administrator Access</button></li>);
 			}
 		}
 
@@ -116,12 +135,15 @@ class ManageAccountAccessButton extends Component {
 
 		if (invite) {
 			if (invite.status === 'SENT') {
-				return [<li key="resendInvite"><button type="button" title="Resend Invite" id="resendInviteButton" className="btn btn-action btn-nav border-0" onClick={this.handleResendInviteClick}>Resend Invite</button></li>,
-					<li key="revokeInvite"><button type="button" title="Revoke Invite" id="revokeInviteButton" className="btn btn-danger btn-nav border-0" onClick={this.handleRevokeAdminInviteClick}>Revoke Invite</button></li>];
+				return (
+					<li key="resendInvite"><button type="button" title="Resend Invite" id="resendInviteButton" className="btn btn-action btn-nav border-0" onClick={this.handleResendInviteClick}>Resend Invite</button></li>,
+					<li key="revokeInvite"><button type="button" title="Revoke Invite" id="revokeInviteButton" className="btn btn-danger btn-nav border-0" onClick={this.handleRevokeAdminInviteClick}>Revoke Invite</button></li>
+				);
 			}
 		}
-		return <li><button type="button" title="Make Administator" id="makeAdministratorButton" className="btn btn-action btn-nav border-0" onClick={this.handleMakeAdminClick}>Make Administrator</button></li>;
-	}
+
+		return (<li><button type="button" title="Make Administrator" id="makeAdministratorButton" className="btn btn-action btn-nav border-0" onClick={this.handleMakeAdminClick}>Make Administrator</button></li>);
+	};
 
 	render = () => (
 		<Fragment>
@@ -150,10 +172,10 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = dispatch => ({
 	actions: bindActionCreators({
+		removeAdminAccess,
 		sendAdminAccessInvite,
 		revokeAdminAccessInvite,
 		resendAdminAccessInvite,
-		removeAdminAccess,
 	}, dispatch),
 });
 

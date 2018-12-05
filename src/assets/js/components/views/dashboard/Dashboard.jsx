@@ -35,11 +35,15 @@ import { saveState } from '../../../store/persistedState';
 
 import { switchWeek } from '../../../actions/weekActions';
 
+import { switchRoute } from '../../../actions/routeActions';
+
 import { getEmployees } from '../../../actions/employeeActions';
 
 import { updateSettings } from '../../../actions/settingActions';
 
 import { getRotaEmployees } from '../../../actions/rotaEmployeeActions';
+
+import { updateCookieConsent } from '../../../actions/cookieConsentActions';
 
 import { createRota, getRotas, switchRota } from '../../../actions/rotaActions';
 
@@ -61,10 +65,12 @@ const propTypes = {
 	roles: PropTypes.array.isRequired,
 	user: PropTypes.object.isRequired,
 	shifts: PropTypes.array.isRequired,
+	route: PropTypes.string.isRequired,
 	settings: PropTypes.object.isRequired,
 	rotaTypes: PropTypes.array.isRequired,
 	employees: PropTypes.array.isRequired,
 	authenticated: PropTypes.bool.isRequired,
+	cookieConsent: PropTypes.bool.isRequired,
 	rotaEmployees: PropTypes.array.isRequired,
 	unavailabilityTypes: PropTypes.array.isRequired,
 	unavailabilityOccurrences: PropTypes.array.isRequired,
@@ -73,6 +79,7 @@ const propTypes = {
 const defaultProps = {
 	week: {},
 	user: {},
+	route: '',
 	rotas: [],
 	roles: [],
 	shifts: [],
@@ -80,6 +87,7 @@ const defaultProps = {
 	rotaTypes: [],
 	employees: [],
 	rotaEmployees: [],
+	cookieConsent: false,
 	authenticated: false,
 	unavailabilityTypes: [],
 	unavailabilityOccurrences: [],
@@ -145,12 +153,27 @@ class Dashboard extends Component {
 			document.querySelector('link[rel="canonical"]').setAttribute('href', `${window.location.protocol}//${window.location.host}${window.location.pathname}`);
 		}
 
+		/* Tracks the current route/page of the user */
+		this.props.actions.switchRoute(routes.DASHBOARD.HOME.URI);
+
 		/* Wait 1.3 seconds before fetching data - prevents any race conditions */
 		delay(() => this.handleFetchData(), 1300);
 	};
 
+	componentDidUpdate = (prevProps, prevState) => {
+		if (this.props.route !== prevProps.route) {
+			/**
+			 * If there is no cookie consent already given and the user has navigated the site without closing the cookie banner,
+			 * we are dropping cookies as per https://trello.com/c/xGejf1Uf/199-update-cookie-consent-process
+			 */
+			if (!this.props.cookieConsent) {
+				this.props.actions.updateCookieConsent(true);
+			}
+		}
+	};
+
 	handleFetchData = () => {
-		const { history, actions } = this.props;
+		const { history, actions, authenticated } = this.props;
 
 		let payload = {};
 
@@ -565,6 +588,7 @@ Dashboard.defaultProps = defaultProps;
 const mapStateToProps = (state, props) => ({
 	week: state.week,
 	user: state.user,
+	route: state.route,
 	rotas: state.rotas,
 	roles: state.roles,
 	shifts: state.shifts,
@@ -572,6 +596,7 @@ const mapStateToProps = (state, props) => ({
 	rotaTypes: state.rotaTypes,
 	employees: state.employees,
 	rotaEmployees: state.rotaEmployees,
+	cookieConsent: state.cookieConsent,
 	authenticated: state.authenticated,
 	unavailabilityTypes: state.unavailabilityTypes,
 	unavailabilityOccurrences: state.unavailabilityOccurrences,
@@ -585,11 +610,13 @@ const mapDispatchToProps = dispatch => ({
 		createRota,
 		switchWeek,
 		switchRota,
+		switchRoute,
 		getRotaTypes,
 		getEmployees,
 		updateSettings,
 		switchRotaType,
 		getRotaEmployees,
+		updateCookieConsent,
 		getUnavailabilityTypes,
 		getUnavailabilityOccurrences,
 	}, dispatch),

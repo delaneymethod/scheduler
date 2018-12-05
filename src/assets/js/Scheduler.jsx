@@ -16,6 +16,8 @@ import '../scss/global';
 
 import App from './components/App';
 
+import config from './helpers/config';
+
 import { removeClass } from './helpers/classes';
 
 import packageJson from '../../../package.json';
@@ -26,9 +28,15 @@ import configureStore from './store/configureStore';
 
 import registerServiceWorker from './helpers/registerServiceWorker';
 
-console.log(packageJson.author.name, ' version:', packageJson.version);
+console.log(`%c${packageJson.author.name} version: ${packageJson.version}`, 'background-color: #343E48; color: #90BC47; padding: 5px 10px');
 
 const store = configureStore();
+
+const APP_ID = (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') ? config.APP.TRACKING.INTERCOM.DEV : config.APP.TRACKING.INTERCOM.PROD;
+
+window.intercomSettings = {
+	app_id: APP_ID,
+};
 
 /* Listen for state changes, saving a maximum once per second. */
 store.subscribe(throttle(() => {
@@ -38,16 +46,19 @@ store.subscribe(throttle(() => {
 		rota,
 		rotas,
 		roles,
+		route,
 		shifts,
 		rotaCost,
 		settings,
 		rotaType,
 		rotaTypes,
 		employees,
+		cookieConsent,
 		authenticated,
 		rotaEmployees,
 		unavailabilities,
 		unavailabilityTypes,
+		applicationUserRoles,
 		unavailabilityOccurrences,
 	} = store.getState();
 
@@ -55,11 +66,15 @@ store.subscribe(throttle(() => {
 
 	saveState('week', week);
 
+	saveState('route', route);
+
 	saveState('roles', roles);
 
 	saveState('settings', settings);
 
 	saveState('employees', employees);
+
+	saveState('cookieConsent', cookieConsent);
 
 	saveState('authenticated', authenticated);
 
@@ -67,15 +82,17 @@ store.subscribe(throttle(() => {
 
 	saveState('unavailabilityTypes', unavailabilityTypes);
 
+	saveState('applicationUserRoles', applicationUserRoles);
+
 	saveState('rotas', (rotaTypes.length === 0) ? [] : rotas);
+
+	saveState('unavailabilityOccurrences', unavailabilityOccurrences);
 
 	saveState('rotaCost', (rotaTypes.length === 0) ? 0 : rotaCost);
 
 	saveState('rotaType', (rotaTypes.length === 0) ? {} : rotaType);
 
 	saveState('rotaTypes', (rotaTypes.length === 0) ? [] : rotaTypes);
-
-	saveState('unavailabilityOccurrences', unavailabilityOccurrences);
 
 	saveState('rotaEmployees', (rotaTypes.length === 0) ? [] : rotaEmployees);
 

@@ -82,7 +82,7 @@ export default {
 				TITLE: 'Login',
 				URI: '/login',
 				CONTENT: {
-					WELCOME: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta velit in lectus efficitur hendrerit. Quisque cursus arcu sollicitudin rhoncus molestie. Donec at rhoncus enim, ut rhoncus lacus. Sed eget felis est.',
+					WELCOME: '',
 				},
 				META: {
 					DESCRIPTION: '',
@@ -171,7 +171,7 @@ export default {
 				TITLE: 'Register',
 				URI: '/register',
 				CONTENT: {
-					WELCOME: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta velit in lectus efficitur hendrerit. Quisque cursus arcu sollicitudin rhoncus molestie. Donec at rhoncus enim, ut rhoncus lacus. Sed eget felis est.',
+					WELCOME: '',
 					TERMS_OF_USE_AGREED: 'By clicking this box we have read, understood and accept to at all times be bound by the Gig Grafter Beta Release Terms and Conditions as contained within',
 				},
 				META: {
@@ -195,7 +195,7 @@ export default {
 				TITLE: 'Forgotten your Password',
 				URI: '/passwords/forgot',
 				CONTENT: {
-					WELCOME: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta velit in lectus efficitur hendrerit. Quisque cursus arcu sollicitudin rhoncus molestie. Donec at rhoncus enim, ut rhoncus lacus. Sed eget felis est.',
+					WELCOME: '',
 				},
 				META: {
 					DESCRIPTION: '',
@@ -206,7 +206,7 @@ export default {
 				TITLE: 'Update your Password',
 				URI: '/passwords/update',
 				CONTENT: {
-					WELCOME: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porta velit in lectus efficitur hendrerit. Quisque cursus arcu sollicitudin rhoncus molestie. Donec at rhoncus enim, ut rhoncus lacus. Sed eget felis est.',
+					WELCOME: '',
 				},
 				META: {
 					DESCRIPTION: '',
@@ -273,7 +273,7 @@ export default {
 				URI: '/cookies-policy',
 				CONTENT: {
 					WELCOME: '',
-					CONSENT: 'Our website uses cookies to distinguish you from other users of our website. This helps us to provide you with a good experience when you browse our website and also allows us to improve our site.',
+					CONSENT: 'Our website uses cookies to distinguish you from other users of our website. This helps us to provide you with a good experience when you browse our website and also allows us to improve our site. By continuing to browse our site, you agree to the use of these cookies.',
 				},
 				META: {
 					DESCRIPTION: '',
@@ -319,6 +319,10 @@ export default {
 		},
 		TRACKING: {
 			GOOGLE: 'GTM-N8KDBWL',
+			INTERCOM: {
+				DEV: 'dcg5oqr4',
+				PROD: 'zg6c3c0t',
+			},
 		},
 	},
 	API: {

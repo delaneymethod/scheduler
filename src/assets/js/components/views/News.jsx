@@ -1,5 +1,8 @@
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Col, Row } from 'reactstrap';
 import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
 
 import config from '../../helpers/config';
 
@@ -7,11 +10,25 @@ import SiteNavBar from '../common/SiteNavBar';
 
 import SiteFooter from '../common/SiteFooter';
 
+import { switchRoute } from '../../actions/routeActions';
+
 import ServiceUpdatesForm from '../forms/ServiceUpdatesForm';
+
+import { updateCookieConsent } from '../../actions/cookieConsentActions';
 
 const routes = config.APP.ROUTES;
 
 const articles = routes.NEWS.CONTENT.ARTICLES;
+
+const propTypes = {
+	route: PropTypes.string.isRequired,
+	cookieConsent: PropTypes.bool.isRequired,
+};
+
+const defaultProps = {
+	route: '',
+	cookieConsent: false,
+};
 
 class News extends Component {
 	componentDidMount = () => {
@@ -26,6 +43,21 @@ class News extends Component {
 
 			document.querySelector('link[rel="home"]').setAttribute('href', `${window.location.protocol}//${window.location.host}`);
 			document.querySelector('link[rel="canonical"]').setAttribute('href', `${window.location.protocol}//${window.location.host}${window.location.pathname}`);
+		}
+
+		/* Tracks the current route/page of the user */
+		this.props.actions.switchRoute(routes.NEWS.URI);
+	};
+
+	componentDidUpdate = (prevProps, prevState) => {
+		if (this.props.route !== prevProps.route) {
+			/**
+			 * If there is no cookie consent already given and the user has navigated the site without closing the cookie banner,
+			 * we are dropping cookies as per https://trello.com/c/xGejf1Uf/199-update-cookie-consent-process
+			 */
+			if (!this.props.cookieConsent) {
+				this.props.actions.updateCookieConsent(true);
+			}
 		}
 	};
 
@@ -61,4 +93,20 @@ class News extends Component {
 	);
 }
 
-export default News;
+News.propTypes = propTypes;
+
+News.defaultProps = defaultProps;
+
+const mapStateToProps = (state, props) => ({
+	route: state.route,
+	cookieConsent: state.cookieConsent,
+});
+
+const mapDispatchToProps = dispatch => ({
+	actions: bindActionCreators({
+		switchRoute,
+		updateCookieConsent,
+	}, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(News);

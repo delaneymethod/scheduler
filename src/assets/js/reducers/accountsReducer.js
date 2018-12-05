@@ -28,6 +28,7 @@ const accountsReducer = (state = combinedState.accounts, action) => {
 			return [
 				...state.filter(account => account.id !== action.account.id),
 			];
+
 		case types.SWITCH_ACCOUNT:
 			return action.account;
 

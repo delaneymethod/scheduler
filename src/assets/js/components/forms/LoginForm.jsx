@@ -1,7 +1,6 @@
 import jwtDecode from 'jwt-decode';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
-import isEmpty from 'lodash/isEmpty';
 import { connect } from 'react-redux';
 import debounce from 'lodash/debounce';
 import { bindActionCreators } from 'redux';
@@ -26,11 +25,13 @@ const routes = config.APP.ROUTES;
 
 const propTypes = {
 	user: PropTypes.object.isRequired,
+	employees: PropTypes.array.isRequired,
 	authenticated: PropTypes.bool.isRequired,
 };
 
 const defaultProps = {
 	user: {},
+	employees: [],
 	authenticated: false,
 };
 
@@ -137,6 +138,7 @@ LoginForm.defaultProps = defaultProps;
 
 const mapStateToProps = (state, props) => ({
 	user: state.user,
+	employees: state.employees,
 	authenticated: state.authenticated,
 });
 

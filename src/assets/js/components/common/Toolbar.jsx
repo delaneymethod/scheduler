@@ -64,6 +64,7 @@ const propTypes = {
 	rotaCost: PropTypes.number.isRequired,
 	rotaType: PropTypes.object.isRequired,
 	rotaTypes: PropTypes.array.isRequired,
+	authenticated: PropTypes.bool.isRequired,
 };
 
 const defaultProps = {
@@ -74,6 +75,7 @@ const defaultProps = {
 	rotaCost: 0,
 	rotaType: {},
 	rotaTypes: [],
+	authenticated: false,
 };
 
 class Toolbar extends Component {
@@ -184,7 +186,7 @@ class Toolbar extends Component {
 	};
 
 	componentDidUpdate = (prevProps, prevState) => {
-		if (isEmpty(this.props.week)) {
+		if (!this.props.authenticated) {
 			return;
 		}
 
@@ -832,6 +834,7 @@ const mapStateToProps = (state, props) => ({
 	rotaCost: state.rotaCost,
 	rotaType: state.rotaType,
 	rotaTypes: state.rotaTypes,
+	authenticated: state.authenticated,
 });
 
 const mapDispatchToProps = dispatch => ({

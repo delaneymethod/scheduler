@@ -1,11 +1,28 @@
+import PropTypes from 'prop-types';
 import { Col, Row } from 'reactstrap';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
 
 import Footer from '../common/Footer';
 
 import config from '../../helpers/config';
 
+import { switchRoute } from '../../actions/routeActions';
+
+import { updateCookieConsent } from '../../actions/cookieConsentActions';
+
 const routes = config.APP.ROUTES;
+
+const propTypes = {
+	route: PropTypes.string.isRequired,
+	cookieConsent: PropTypes.bool.isRequired,
+};
+
+const defaultProps = {
+	route: '',
+	cookieConsent: false,
+};
 
 class NotFoundPage extends Component {
 	componentDidMount = () => {
@@ -20,6 +37,21 @@ class NotFoundPage extends Component {
 
 			document.querySelector('link[rel="home"]').setAttribute('href', `${window.location.protocol}//${window.location.host}`);
 			document.querySelector('link[rel="canonical"]').setAttribute('href', `${window.location.protocol}//${window.location.host}${window.location.pathname}`);
+		}
+
+		/* Tracks the current route/page of the user */
+		this.props.actions.switchRoute(routes.PAGE_NOT_FOUND.URI);
+	};
+
+	componentDidUpdate = (prevProps, prevState) => {
+		if (this.props.route !== prevProps.route) {
+			/**
+			 * If there is no cookie consent already given and the user has navigated the site without closing the cookie banner,
+			 * we are dropping cookies as per https://trello.com/c/xGejf1Uf/199-update-cookie-consent-process
+			 */
+			if (!this.props.cookieConsent) {
+				this.props.actions.updateCookieConsent(true);
+			}
 		}
 	};
 
@@ -47,4 +79,20 @@ class NotFoundPage extends Component {
 	);
 }
 
-export default NotFoundPage;
+NotFoundPage.propTypes = propTypes;
+
+NotFoundPage.defaultProps = defaultProps;
+
+const mapStateToProps = (state, props) => ({
+	route: state.route,
+	cookieConsent: state.cookieConsent,
+});
+
+const mapDispatchToProps = dispatch => ({
+	actions: bindActionCreators({
+		switchRoute,
+		updateCookieConsent,
+	}, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(NotFoundPage);
