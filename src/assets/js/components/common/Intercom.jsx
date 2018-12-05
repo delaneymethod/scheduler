@@ -43,13 +43,17 @@ class Intercom extends Component {
 	};
 
 	handleLoadScript = () => {
-		logMessage('info', 'Called Intercom handleLoadScript');
+		if (window.isRunningLocalhost) {
+			logMessage('info', 'Called Intercom handleLoadScript - Ignored in Localhost');
+		} else {
+			logMessage('info', 'Called Intercom handleLoadScript');
 
-		/* eslint-disable no-eval */
-		eval(`(function() {var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/${window.intercomSettings.app_id}';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}l();}})()`);
-		/* eslint-enable no-eval */
+			/* eslint-disable no-eval */
+			eval(`(function() {var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/${window.intercomSettings.app_id}';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}l();}})()`);
+			/* eslint-enable no-eval */
 
-		this.handlePing();
+			this.handlePing();
+		}
 	};
 
 	handlePing = () => {

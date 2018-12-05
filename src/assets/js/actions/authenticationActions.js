@@ -2,6 +2,8 @@ import * as api from '../api';
 
 import * as types from './actionTypes';
 
+import logMessage from '../helpers/logging';
+
 import { saveState } from '../store/persistedState';
 
 export const ajaxLoading = status => ({
@@ -132,6 +134,12 @@ export const logout = () => (dispatch) => {
 	dispatch(getUnavailabilityTypesSuccess([]));
 
 	dispatch(getApplicationUserRolesSuccess([]));
+
+	if (!window.isRunningLocalhost && window.Intercom) {
+		window.Intercom('shutdown');
+
+		logMessage('info', 'Called Intercom Shutdown');
+	}
 
 	return Promise.resolve(true);
 };
