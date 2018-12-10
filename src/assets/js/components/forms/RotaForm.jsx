@@ -26,6 +26,8 @@ import { switchWeek } from '../../actions/weekActions';
 
 import { updateSettings } from '../../actions/settingActions';
 
+import { getEmployees } from '../../actions/employeeActions';
+
 import { getRotaEmployees } from '../../actions/rotaEmployeeActions';
 
 import { getRotas, createRota, updateRota, switchRota } from '../../actions/rotaActions';
@@ -506,8 +508,11 @@ class RotaForm extends Component {
 																	},
 																});
 
-																logMessage('info', 'Called RotaForm handleSubmit getRotaEmployees');
+																logMessage('info', 'Called RotaForm handleSubmit getEmployees:');
+																actions.getEmployees().then(() => {
+																}).catch(error => this.setState({ error }));
 
+																logMessage('info', 'Called RotaForm handleSubmit getRotaEmployees');
 																actions.getRotaEmployees(rota)
 																	.then(() => {
 																		/* Close the modal */
@@ -611,6 +616,7 @@ const mapDispatchToProps = dispatch => ({
 		deleteRotaType,
 		switchRotaType,
 		updateSettings,
+		getEmployees,
 		getRotaEmployees,
 	}, dispatch),
 });
