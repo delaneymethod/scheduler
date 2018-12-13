@@ -1631,7 +1631,7 @@ class Rotas extends Component {
 														</div>
 														<div className="position-absolute p-0 m-0 edit-handler">
 															<UpdateEmployeeButton employeeId={row.accountEmployee.employee.employeeId} accountEmployeeId={row.accountEmployee.accountEmployeeId} rowIndex={rowIndex} handleSuccessNotification={this.handleSuccessNotification} />
-															<button type="button" className={`btn border-0 btn-warning text-white btn-icon ml-1 ${(moment(this.props.week.endDate).isBefore(moment())) ? 'd-none' : ''}`} id={`removeEmployeeFromRota${row.accountEmployee.accountEmployeeId}`} title="Remove Employee from Rota" aria-label="Remove Employee from Rota" onClick={event => this.handleRemoveEmployeeFromRota(event, row.accountEmployee.accountEmployeeId)}><i className="fa fa-fw fa-trash" aria-hidden="true"></i></button>
+															<button type="button" className={`btn border-0 btn-warning text-white btn-icon ml-1 ${(moment(this.props.week.endDate).isBefore(moment().startOf('day'))) ? 'd-none' : ''}`} id={`removeEmployeeFromRota${row.accountEmployee.accountEmployeeId}`} title="Remove Employee from Rota" aria-label="Remove Employee from Rota" onClick={event => this.handleRemoveEmployeeFromRota(event, row.accountEmployee.accountEmployeeId)}><i className="fa fa-fw fa-trash" aria-hidden="true"></i></button>
 														</div>
 													</div>
 												</td>
@@ -1665,7 +1665,7 @@ class Rotas extends Component {
 															<div className="p-2 m-0 flex-row">{column.hours}</div>
 															<div className="p-2 m-0 flex-row">{column.shifts}</div>
 														</div>
-														<div title={`${column.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}`} id={`column${columnIndex}TotalCost`} className="flex-column p-2 m-0 text-danger text-truncate">&pound;{column.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
+														<div title={`${column.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}`} id={`column${columnIndex}TotalCost`} className="flex-column p-2 m-0 text-danger text-left text-truncate">&pound;{column.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
 													</div>
 												</th>
 											))}

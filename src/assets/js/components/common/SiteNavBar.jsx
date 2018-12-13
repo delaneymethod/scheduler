@@ -56,6 +56,7 @@ class SiteNavBar extends Component {
 							<li className="nav-item p-0 m-0"><a href="#beta" title="Beta" id="betaNavLink" className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-dark border-0" onClick={this.handleAnchorClick}>Beta</a></li>
 							<li className="nav-item p-0 m-0"><a href="#pricing" title="Pricing" id="pricingNavLink" className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-dark border-0" onClick={this.handleAnchorClick}>Pricing</a></li>
 							<li className="nav-item p-0 m-0"><a href={routes.NEWS.URI} id="newsNavLink" title={routes.NEWS.TITLE} className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-dark border-0">{routes.NEWS.TITLE}</a></li>
+							<li className="nav-item p-0 m-0"><a href="https://help.giggrafter.com" title="Support" id="supportNavLink" className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-dark border-0" onClick={this.handleAnchorClick} target="_blank"><i className="pr-2 fa fa-external-link" ></i>Support</a></li>
 							<li className="d-none d-lg-block nav-item p-0 m-0"><a href={routes.LOGIN.URI} id="loginNavLink" title={routes.LOGIN.TITLE} className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-secondary border-0">{routes.LOGIN.TITLE}</a></li>
 							<li className="d-none d-lg-block nav-item p-0 m-0"><a href={routes.REGISTER.URI} id="registerNavLink" title={routes.REGISTER.TITLE} className="nav-link pt-0 pb-0 pl-3 pr-3 m-0 ml-md-2 btn btn-primary border-0">{routes.REGISTER.TITLE}</a></li>
 						</ul>

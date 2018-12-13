@@ -235,3 +235,6 @@ export const sendAdminAccessInvite = payload => request('POST', `/employee-invit
 export const revokeAdminAccessInvite = payload => request('DELETE', `/employee-invites/${payload.accountEmployee.accountEmployeeId}`, 200);
 
 export const resendAdminAccessInvite = payload => request('POST', `/employee-invites/${payload.accountEmployee.accountEmployeeId}/resend`, 200);
+
+/* DOWNLOADS */
+export const downloadEmployeeUploadTemplate = () => request('GET', '/downloads/employee-upload-template?format=excel');

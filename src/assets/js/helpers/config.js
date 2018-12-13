@@ -256,6 +256,14 @@ export default {
 						KEYWORDS: '',
 					},
 				},
+				SUPPORT: {
+					TITLE: 'Support',
+					URI: 'https://help.giggrafter.com',
+					META: {
+						DESCRIPTION: '',
+						KEYWORDS: '',
+					},
+				},
 			},
 			TERMS_OF_SERVICE: {
 				TITLE: 'Terms of Service',
@@ -290,6 +298,9 @@ export default {
 					DESCRIPTION: '',
 					KEYWORDS: '',
 				},
+			},
+			HELP: {
+				URL: 'https://help.giggrafter.com/getting-started-with-gig-grafter/uploading-your-staff',
 			},
 			NEWS: {
 				TITLE: 'News',

@@ -1,16 +1,18 @@
 import concat from 'lodash/concat';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button } from 'reactstrap';
+import { Button, Container, Row, Col } from 'reactstrap';
 import { bindActionCreators } from 'redux';
 import React, { Fragment, Component } from 'react';
 import { FieldFeedback, FieldFeedbacks, FormWithConstraints } from 'react-form-with-constraints';
-
+import { saveAs } from 'file-saver/FileSaver';
 import Alert from '../common/Alert';
 
 import config from '../../helpers/config';
 
 import FileField from '../fields/FileField';
+
+import InstructionStep from './components/InstructionStep';
 
 import logMessage from '../../helpers/logging';
 
@@ -19,6 +21,8 @@ import { getShifts } from '../../actions/shiftActions';
 import { getRotaEmployees } from '../../actions/rotaEmployeeActions';
 
 import { getEmployees, orderEmployees, uploadEmployees } from '../../actions/employeeActions';
+
+import { downloadEmployeeUploadTemplate } from '../../actions/downloadActions';
 
 const routes = config.APP.ROUTES;
 
@@ -34,8 +38,8 @@ const defaultProps = {
 	rota: {},
 	rotaType: {},
 	employees: [],
-	handleClose: () => {},
-	handleInfoNoification: () => {},
+	handleClose: () => { },
+	handleInfoNoification: () => { },
 };
 
 class UploadEmployeesForm extends Component {
@@ -181,13 +185,34 @@ class UploadEmployeesForm extends Component {
 
 	errorMessage = () => (this.state.error.data ? <Alert color="danger" message={this.state.error.data.message} className="mb-5" /> : null);
 
+	handleDownloadUploadTemplate = () => {
+		this.props.actions.downloadEmployeeUploadTemplate()
+			.then((response) => {
+				saveAs(response, 'employee_upload_template.xlsx');
+			})
+			.catch((error) => {
+				this.setState({ error });
+			});
+	};
+
 	render = () => (
 		<Fragment>
 			{this.errorMessage()}
-			<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
-				<FileField fieldName="file" fieldLabel="File" handleChange={this.handleChange} valueMissing="Please provide a valid CSV file." tabIndex="1" fieldAccept=".csv, text/csv, application/vnd.ms-excel" fieldRequired={true} />
-				<Button type="submit" color="primary" className="mt-5" id="submitUploadEmployees" title={routes.EMPLOYEES.UPLOAD.TITLE} tabIndex="2" block>{routes.EMPLOYEES.UPLOAD.TITLE}</Button>
-			</FormWithConstraints>
+			<Container>
+				<Row>
+					<InstructionStep text="Click here to download the employee upload template" stepNumber="1" icon="fa-download" onClick={this.handleDownloadUploadTemplate} />
+					<InstructionStep text="Enter your staff data into the template and save the file as CSV. Click here for instructions" stepNumber="2" icon="fa-file" onClick={() => window.open(config.APP.ROUTES.HELP.URL, '_blank')}/>
+					<InstructionStep text="Upload your CSV file below to add your employees" stepNumber="3" icon="fa-upload"/>
+				</Row>
+				<Row className="mt-4">
+					<Col>
+						<FormWithConstraints ref={(el) => { this.form = el; }} onSubmit={this.handleSubmit} noValidate>
+							<FileField fieldName="file" fieldLabel="File" handleChange={this.handleChange} valueMissing="Please provide a valid CSV file." tabIndex="1" fieldAccept=".csv, text/csv, application/vnd.ms-excel" fieldRequired={true} />
+							<Button type="submit" color="primary" className="mt-5" id="submitUploadEmployees" title={routes.EMPLOYEES.UPLOAD.TITLE} tabIndex="2" block>{routes.EMPLOYEES.UPLOAD.TITLE}</Button>
+						</FormWithConstraints>
+					</Col>
+				</Row>
+			</Container>
 		</Fragment>
 	);
 }
@@ -209,6 +234,7 @@ const mapDispatchToProps = dispatch => ({
 		orderEmployees,
 		uploadEmployees,
 		getRotaEmployees,
+		downloadEmployeeUploadTemplate,
 	}, dispatch),
 });
 

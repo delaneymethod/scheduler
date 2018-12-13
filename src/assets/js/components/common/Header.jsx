@@ -117,8 +117,12 @@ class Header extends Component {
 													<a href="" title={dashboard.EMPLOYEES.TITLE} id="employees-page" className="btn btn-action btn-nav border-0 disabled" aria-disabled="true"><i className="pr-2 fa fa-fw fa-users" aria-hidden="true"></i>{dashboard.EMPLOYEES.TITLE}</a>
 												)}
 											</NavItem>
+											<NavItem className="pr-3 ml-0">
+												<a href={dashboard.SUPPORT.URI} title={dashboard.SUPPORT.TITLE} id="support-link" className="btn btn-action btn-nav border-0" target="_blank"><i className="pr-2 fa fa-external-link" ></i>{dashboard.SUPPORT.TITLE}</a>
+											</NavItem>
 										</ul>
 									</div>
+
 									<ul className="mt-3 mt-md-0 actions profile-toggle col-12 col-sm-12 col-md-10 col-lg-6 col-xl-6">
 										<li className="col-12 col-sm-6 col-md-auto mr-sm-3 pl-0 pr-0 pl-sm-3 p-md-0 mb-3 mb-sm-0">
 											<SwitchAccount inline history={this.props.history} />
