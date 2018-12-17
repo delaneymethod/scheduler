@@ -24,9 +24,9 @@ import { getShifts } from '../../actions/shiftActions';
 
 import { switchWeek } from '../../actions/weekActions';
 
-import { updateSettings } from '../../actions/settingActions';
-
 import { getEmployees } from '../../actions/employeeActions';
+
+import { updateSettings } from '../../actions/settingActions';
 
 import { getRotaEmployees } from '../../actions/rotaEmployeeActions';
 
@@ -130,15 +130,13 @@ class RotaForm extends Component {
 
 		message = message.replace('<FIRST_NAME>', firstName);
 
-		this.setState({ message });
-
 		let startDates = [];
 
 		/* Get the start date of the week... */
 		let startDate = moment().startOf('week');
 
 		/* Update the state with a default start date */
-		this.setState({ startDate: startDate.format('YYYY-MM-DD') });
+		this.setState({ message, startDate: startDate.format('YYYY-MM-DD') });
 
 		/* Add the start of the week to the list of start dates */
 		startDates.push(startDate.toDate());
@@ -509,20 +507,23 @@ class RotaForm extends Component {
 																});
 
 																logMessage('info', 'Called RotaForm handleSubmit getEmployees:');
-																actions.getEmployees().then(() => {
-																}).catch(error => this.setState({ error }));
 
-																logMessage('info', 'Called RotaForm handleSubmit getRotaEmployees');
-																actions.getRotaEmployees(rota)
+																actions.getEmployees()
 																	.then(() => {
-																		/* Close the modal */
-																		this.props.handleClose();
+																		logMessage('info', 'Called RotaForm handleSubmit getRotaEmployees');
 
-																		/* FIXME - Make messages constants in config */
-																		const message = '<p>Rota was created!</p>';
+																		actions.getRotaEmployees(rota)
+																			.then(() => {
+																				/* Close the modal */
+																				this.props.handleClose();
 
-																		/* Pass a message back up the rabbit hole to the parent component */
-																		this.props.handleSuccessNotification(message);
+																				/* FIXME - Make messages constants in config */
+																				const message = '<p>Rota was created!</p>';
+
+																				/* Pass a message back up the rabbit hole to the parent component */
+																				this.props.handleSuccessNotification(message);
+																			})
+																			.catch(error => this.setState({ error }));
 																	})
 																	.catch(error => this.setState({ error }));
 															});
@@ -611,12 +612,12 @@ const mapDispatchToProps = dispatch => ({
 		updateRota,
 		switchRota,
 		getRotaTypes,
+		getEmployees,
 		createRotaType,
 		updateRotaType,
 		deleteRotaType,
 		switchRotaType,
 		updateSettings,
-		getEmployees,
 		getRotaEmployees,
 	}, dispatch),
 });

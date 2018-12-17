@@ -136,10 +136,10 @@ class ManageAccountAccessButton extends Component {
 		if (invite) {
 			if (invite.status === 'SENT') {
 				return (
-					<div>
+					<Fragment>
 						<li key="resendInvite"><button type="button" title="Resend Invite" id="resendInviteButton" className="btn btn-action btn-nav border-0" onClick={this.handleResendInviteClick}>Resend Invite</button></li>
 						<li key="revokeInvite"><button type="button" title="Revoke Invite" id="revokeInviteButton" className="btn btn-danger btn-nav border-0" onClick={this.handleRevokeAdminInviteClick}>Revoke Invite</button></li>
-					</div>
+					</Fragment>
 				);
 			}
 		}

@@ -2,6 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'reactstrap';
 
+const propTypes = {
+	onClick: PropTypes.func,
+	iconSize: PropTypes.string,
+	text: PropTypes.string.isRequired,
+	icon: PropTypes.string.isRequired,
+	stepNumberFontSize: PropTypes.string,
+	stepNumber: PropTypes.string.isRequired,
+};
+
+const defaultProps = {
+	iconSize: '3x',
+	stepNumberFontSize: '26px',
+};
+
 const InstructionStep = props => (
 	<Col className={`col-sm ${props.onClick ? 'modal-item-clickable' : ''}`} onClick={() => props.onClick()}>
 		<Row>
@@ -11,29 +25,18 @@ const InstructionStep = props => (
 			<Col className="text-center">
 				<i className={`fa fa-${props.iconSize} ${props.icon}`}></i>
 			</Col>
-			<Col>
-			</Col>
+			<Col></Col>
 		</Row>
 		<Row className="mt-2">
 			<Col>
 				{props.text}
 			</Col>
 		</Row>
-	</Col>);
+	</Col>
+);
 
-InstructionStep.propTypes = {
-	text: PropTypes.string.isRequired,
-	stepNumber: PropTypes.string.isRequired,
-	icon: PropTypes.string.isRequired,
-	onClick: PropTypes.func,
-	stepNumberFontSize: PropTypes.string,
-	iconSize: PropTypes.string,
-};
+InstructionStep.propTypes = propTypes;
 
-InstructionStep.defaultProps = {
-	stepNumberFontSize: '26px',
-	iconSize: '3x',
-
-};
+InstructionStep.defaultProps = defaultProps;
 
 export default InstructionStep;
