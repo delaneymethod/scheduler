@@ -488,6 +488,7 @@ class Employees extends Component {
 		if (this.props.user.email === accountEmployee.employee.email) {
 			return false;
 		}
+
 		return true;
 	}
 
@@ -550,10 +551,10 @@ class Employees extends Component {
 										</th>
 										<th className="p-2 m-0 text-center column numeric">Account Access</th>
 										<th className="p-2 m-0 text-center column">Email</th>
-										<th className="p-2 m-0 text-center column">Mobile</th>
-										<th className="p-2 m-0 text-center column">Hourly Rate</th>
-										<th className="p-2 m-0 text-center column">Salary</th>
-										<th className="p-2 m-0 text-center column">Hours</th>
+										<th className="p-2 m-0 text-center column numeric">Mobile</th>
+										<th className="p-2 m-0 text-center column numeric">Hourly Rate</th>
+										<th className="p-2 m-0 text-center column numeric">Salary</th>
+										<th className="p-2 m-0 text-center column numeric">Hours</th>
 										<th className="p-2 m-0 text-center column last">&nbsp;</th>
 									</tr>
 								</thead>

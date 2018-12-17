@@ -1500,6 +1500,7 @@ class Rotas extends Component {
 		this.props.actions.createShift(payload)
 			.then(() => {
 				this.updateRotaStatus();
+
 				this.handleSuccessNotification('Shift created');
 			})
 			.catch(error => this.handleErrorNotification(error.data.message));
@@ -1665,7 +1666,7 @@ class Rotas extends Component {
 															<div className="p-2 m-0 flex-row">{column.hours}</div>
 															<div className="p-2 m-0 flex-row">{column.shifts}</div>
 														</div>
-														<div title={`${column.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}`} id={`column${columnIndex}TotalCost`} className="flex-column p-2 m-0 text-danger text-left text-truncate">&pound;{column.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
+														<div title={`${column.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}`} id={`column${columnIndex}TotalCost`} className="flex-column p-2 m-0 text-danger text-truncate">&pound;{column.cost.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
 													</div>
 												</th>
 											))}

@@ -16,7 +16,7 @@
 	width: 100%;
 	overflow-y: hidden;
 	white-space: nowrap;
-	overflow-x: inherit;  
+	overflow-x: inherit;
 	background-color: $white;
 	border-radius: calculateRem(5px);
 	border: calculateRem(5px) solid $white;
@@ -29,15 +29,15 @@
 		overflow-y: visible;
 		border-left: 0 !important;
     }
-    
+
     @include media-breakpoint-down(lg) {
 		width: 859px;
 	}
-	
+
 	@include media-breakpoint-down(md) {
 		width: 659px;
 	}
-	
+
 	@include media-breakpoint-down(sm) {
 		width: 436px;
 	}
@@ -47,20 +47,20 @@
 .employees,
 .rota-employees {
 	width: 100%;
-	table-layout: auto;
+	table-layout: fixed;
 	border-collapse: collapse;
 
 	thead {
 		position: relative;
 	}
-	
+
 	tr {
 		th {
 			background-color: $gray-700;
 			background-clip: padding-box;
 			font-weight: $font-weight-semi;
 			border: calculateRem(5px) solid $white !important;
-			
+
 			.sort-direction {
 				width: 0;
 				height: 0;
@@ -68,117 +68,117 @@
 				margin: 0 0 calculateRem(2px) calculateRem(5px);
 				border-left: calculateRem(5px) solid transparent;
 				border-right: calculateRem(5px) solid transparent;
-			
+
 				&.asc {
 					border-bottom: calculateRem(5px) solid #000000;
 				}
-			
+
 				&.desc {
 					border-top: calculateRem(5px) solid #000000;
 				}
 			}
-			
+
 			.placements-status {
 				* {
 					display: inline-block;
 					vertical-align: middle;
 				}
-			
+
 				.indicator {
 					margin-top: -2px;
 					width: calculateRem(10px);
 					height: calculateRem(10px);
 					border-radius: calculateRem(5px);
-			
+
 					&.todo {
 						color: $danger;
 						background-color: $danger;
 					}
-			
+
 					&.doing {
 						color: $info;
 						background-color: $info;
 					}
-			
+
 					&.done {
 						color: $success;
 						background-color: $success;
 					}
 				}
-			
+
 				.count {
 					color: $dark;
 					background-color: transparent;
 					font-weight: $font-weight-normal;
 				}
 			}
-			
+
 			.flex-column {
 				width: 30%;
 				background-color: transparent;
-				
+
 				.flex-row {
 					&:first-child {
 						background-color: $gray-100;
 					}
-	
+
 					&:last-child {
 						background-color: $gray-200;
 					}
 				}
-				
+
 				&:last-child {
-					width: 70%;	
+					width: 70%;
 				}
 			}
 		}
-		
+
 		.column {
 			width: auto;
 			min-width: 140px;
-			
+
 			@include media-breakpoint-down(md) {
 				width: 120px;
 			}
 		}
-		
+
 		.column.first {
 			width: 255px;
 			max-width: 300px;
-			
+
 			.flex-column {
 				width: 50%;
-	
+
 				&:last-child {
 					width: 50%;
 				}
 			}
-			
+
 			@include media-breakpoint-down(md) {
 				width: 185px;
 			}
-			
+
 			@include media-breakpoint-down(sm) {
 				width: 165px;
 			}
 		}
-		
+
 		.column.last {
 			width: auto;
 			max-width: 100px;
-			
+
 			@include media-breakpoint-down(md) {
 				width: 100px;
 			}
 		}
-	
+
 		td {
 			cursor: default;
 			white-space: nowrap;
 			background-color: $gray-400;
 			background-clip: padding-box;
 			border: calculateRem(5px) solid $white;
-			
+
 			.complete {
 				color: $primary;
 			}
@@ -192,20 +192,20 @@
 				position: relative;
 				color: $body-color-light;
 				background-color: $secondary;
-				
+
 				&:hover {
 					cursor: pointer;
 				}
-				
+
 				&:not(:only-child, :last-child) {
 					border-bottom: calculateRem(3px) solid darken($secondary, 10%);
 				}
-				
+
 				@include media-breakpoint-down(md) {
 					min-height: 37px;
 				}
 			}
-			
+
 			.unavailability {
     			border: 0;
 				z-index: 1;
@@ -215,7 +215,7 @@
 				min-height: 47px;
 				position: relative;
 				background-color: #fd8b25;
-		
+
 				&:hover {
 					cursor: pointer !important;
 				}
@@ -228,23 +228,23 @@
 					min-height: 37px;
 				}
 			}
-			
+
 			.red {
 				background-color: rgba(0, 255, 255, 0.5);
 			}
-			
+
 			.green {
 				background-color: rgba(0, 128, 0, 0.5);
 			}
-			
+
 			.shift-selected {
 				background-color: $secondary !important;
 			}
-			
+
 			.shift-invisible {
 				display: none !important;
 			}
-	
+
 			.add-shift {
 				border: 0;
 				opacity: 0;
@@ -254,29 +254,29 @@
 				position: relative;
 				cursor: pointer !important;
 				background-color: transparent;
-				
+
 				&:hover {
 					cursor: pointer !important;
 					border: 1px dashed $gray-900 !important;
 					box-sizing: border-box !important;
 				}
-				
+
 				@include media-breakpoint-down(md) {
 					min-height: 45px;
 				}
 			}
 		}
-		
+
 		th.non-draggable-cell {
 			color: $dark;
 			background-color: $gray-700;
 		}
-		
+
 		td.unavailability-cell {
 			color: $dark;
 			background-color: $gray-500;
 		}
-		
+
 		td.non-draggable-cell {
 			z-index: 1;
 			cursor: no-drop;
@@ -284,13 +284,13 @@
 			background-color: $white;
 			background-image: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(235, 235, 235, 0.5) 3px, rgba(235, 235, 235, 0.9) 6px);
 		}
-	
+
 		.draggable-cell {
 			z-index: 1;
-				
+
 			&:hover {
 				z-index: 2;
-				
+
 				.add-shift {
 					opacity: 1;
 				}
@@ -300,29 +300,29 @@
 				}
 			}
         }
-		
+
 		.cell-highlighted {
 			opacity: 0.5;
 			background-color: $success !important;
 		}
-		
+
 		.drag-handler {
 			cursor: move !important;
-			
+
 			&:active,
 			&:hover {
 				cursor: move !important;
 			}
 		}
-		
+
 		.edit-employee {
 			.edit-handler {
 				display: none;
 			}
-		
+
 			&:hover {
 				background-color: darken($gray-400, 5%);
-			
+
 				.edit-handler {
 					top: 0;
 					right: 0;
@@ -331,7 +331,7 @@
 			}
 		}
 	}
-	
+
 	tr.open-shifts {
 		td {
 			cursor: default;
@@ -339,20 +339,20 @@
 			background-color: #FFFFFF;
 			background-color: $gray-700;
 			background-clip: padding-box;
-			
+
 			.shift {
 				background-color: $dark;
-				
+
 				&:not(:only-child, :last-child) {
 					border-bottom: calculateRem(3px) solid darken($dark, 20%);
 				}
 			}
-			
+
 			.past {
 				cursor: not-allowed;
 			}
 		}
-		
+
 		th.non-draggable-cell {
 			color: $dark;
 			cursor: no-drop;
@@ -360,7 +360,7 @@
 			background-color: $gray-700;
 			background-image: none;
 		}
-		
+
 		td.non-draggable-cell {
 			z-index: 1;
 			cursor: no-drop;
@@ -369,52 +369,50 @@
 			background-color: $gray-700;
 			background-image: none;
 		}
-	
+
 		.draggable-cell {
 			z-index: 1;
-				
+
 			&:hover {
 				z-index: 2;
-				
+
 				.add-shift {
 					opacity: 1;
 				}
 			}
 		}
 	}
-	
+
 	.draggable-row,
 	.draggable-row-drag td {
 		cursor: move !important;
-		
+
 		&:active,
 		&:hover {
 			cursor: move !important;
 		}
 	}
-	
+
 	.draggable-row-ghost {
 		td {
 			border: 5px solid $white;
 			background-color: rgba(144, 189, 72, 0.3);
 		}
 	}
-	
+
 	tfoot tr th {
 		background-color: $white;
 	}
 }
 
-.employees {    
-    .column.numeric {
+.employees {
+	.column.numeric {
 		width: 120px !important;
 		max-width: 120px !important;
 	}
-	.column.account-access {
-		width: 120px !important;
-	}
+
 	.column.last {
-		width: 190px !important;
-		max-width: 190px !important;
+		width: 170px !important;
+		max-width: 170px !important;
 	}
 }
