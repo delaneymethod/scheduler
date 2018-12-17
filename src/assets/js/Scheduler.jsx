@@ -64,7 +64,7 @@ store.subscribe(throttle(() => {
 		unavailabilityOccurrences,
 	} = store.getState();
 
-	saveState('user', user);
+	saveState('user', user, 'session');
 
 	saveState('week', week);
 
@@ -78,7 +78,7 @@ store.subscribe(throttle(() => {
 
 	saveState('cookieConsent', cookieConsent);
 
-	saveState('authenticated', authenticated);
+	saveState('authenticated', authenticated, 'session');
 
 	saveState('unavailabilities', unavailabilities);
 

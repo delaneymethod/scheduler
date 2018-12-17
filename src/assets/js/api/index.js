@@ -55,7 +55,7 @@ const request = (method, url, expectedStatus = 200, payload = null) => {
 		responseType: (url.includes('pdf') || url.includes('excel')) ? 'blob' : null,
 	};
 
-	const user = getState('user');
+	const user = getState('user', 'session');
 
 	if (user) {
 		const { token, account } = user;
