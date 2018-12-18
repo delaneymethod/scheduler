@@ -23,15 +23,11 @@ import config from '../../../helpers/config';
 
 import logMessage from '../../../helpers/logging';
 
-import CloseButton from '../../common/CloseButton';
-
 import Notification from '../../common/Notification';
 
 import { getRoles } from '../../../actions/roleActions';
 
 import { getShifts } from '../../../actions/shiftActions';
-
-import { saveState } from '../../../store/persistedState';
 
 import { switchWeek } from '../../../actions/weekActions';
 
@@ -45,9 +41,9 @@ import { getRotaEmployees } from '../../../actions/rotaEmployeeActions';
 
 import { updateCookieConsent } from '../../../actions/cookieConsentActions';
 
-import { createRota, getRotas, switchRota } from '../../../actions/rotaActions';
-
 import { getRotaTypes, switchRotaType } from '../../../actions/rotaTypeActions';
+
+import { createRota, getRotas, switchRota } from '../../../actions/rotaActions';
 
 import { getUnavailabilityTypes } from '../../../actions/unavailabilityTypeActions';
 

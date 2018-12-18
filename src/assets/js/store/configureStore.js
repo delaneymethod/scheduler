@@ -4,17 +4,15 @@ import { compose, createStore, applyMiddleware } from 'redux';
 
 import reducers from '../reducers';
 
-import config from '../helpers/config';
-
 import initialState from './initialState';
 
-import { getStates } from './persistedState';
+import { getStates as getLocalStorageStates } from './persistedLocalStorageState';
+
+import { getStates as getSessionStorageStates } from './persistedSessionStorageState';
 
 const middlewares = [];
 
-const persistedState = getStates();
-
-const combinedState = Object.assign(initialState, persistedState);
+const combinedStates = Object.assign(initialState, getLocalStorageStates(), getSessionStorageStates());
 
 middlewares.push(thunk);
 
@@ -28,6 +26,6 @@ if (process.env.NODE_ENV === 'development') {
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 /* eslint-enable no-underscore-dangle */
 
-const configureStore = () => createStore(reducers, combinedState, composeEnhancers(applyMiddleware(...middlewares)));
+const configureStore = () => createStore(reducers, combinedStates, composeEnhancers(applyMiddleware(...middlewares)));
 
 export default configureStore;

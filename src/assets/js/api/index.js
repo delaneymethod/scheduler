@@ -5,7 +5,7 @@ import formatError from '../helpers/errors';
 
 import config from '../helpers/config';
 
-import { getState } from '../store/persistedState';
+import { getState } from '../store/persistedSessionStorageState';
 
 /*
 const axiosCall = null;

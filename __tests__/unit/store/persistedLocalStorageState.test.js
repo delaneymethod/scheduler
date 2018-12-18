@@ -1,6 +1,6 @@
-import { getState, getStates, saveState, deleteState } from '../../../src/assets/js/store/persistedState';
+import { getState, getStates, saveState, deleteState, clearState } from '../../../src/assets/js/store/persistedLocalStorageState';
 
-describe('Persisted State', () => {
+describe('Persisted Local Storage State', () => {
 	it('should return true on save', () => {
 		const state = saveState('name', 'Gig Grafter');
 
@@ -47,5 +47,13 @@ describe('Persisted State', () => {
 		const state = deleteState('name');
 
 		expect(state).toEqual(false);
+	});
+
+	it('should return undefined after clear', () => {
+		clearState();
+
+		const state = getState('doesnt-exist');
+
+		expect(state).toEqual(undefined);
 	});
 });

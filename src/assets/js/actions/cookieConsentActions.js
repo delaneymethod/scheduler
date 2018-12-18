@@ -4,6 +4,8 @@ import logMessage from '../helpers/logging';
 
 import isIncognitoMode from '../helpers/isIncognitoMode';
 
+import { clearState } from '../store/persistedLocalStorageState';
+
 /* UPDATE COOKIE CONSENT */
 export const updateCookieConsentSuccess = cookieConsent => ({
 	type: types.UPDATE_COOKIE_CONSENT,
@@ -24,6 +26,8 @@ export const deleteCookies = () => () => {
 	}
 
 	logMessage('info', 'Cookies deleted');
+
+	clearState();
 
 	return Promise.resolve(true);
 };

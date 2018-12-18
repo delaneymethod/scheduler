@@ -6,8 +6,8 @@ import packageJson from '../../../../package.json';
 const prefix = packageJson.name;
 
 export const getState = (key) => {
-	if (window.localStorage.getItem) {
-		const serializedData = window.localStorage.getItem(`${prefix}:${key}`);
+	if (window.sessionStorage.getItem) {
+		const serializedData = window.sessionStorage.getItem(`${prefix}:${key}`);
 
 		return (serializedData === null) ? undefined : JSON.parse(serializedData);
 	}
@@ -16,7 +16,7 @@ export const getState = (key) => {
 };
 
 export const getStates = () => {
-	const allStates = Object.keys(window.localStorage).reduce((states, key) => {
+	const allStates = Object.keys(window.sessionStorage).reduce((states, key) => {
 		key = key.replace(`${prefix}:`, '');
 
 		states[key] = getState(key);
@@ -34,10 +34,10 @@ export const getStates = () => {
 };
 
 export const saveState = (key, data) => {
-	if (window.localStorage.setItem) {
+	if (window.sessionStorage.setItem) {
 		const serializedData = JSON.stringify(data);
 
-		window.localStorage.setItem(`${prefix}:${key}`, serializedData);
+		window.sessionStorage.setItem(`${prefix}:${key}`, serializedData);
 
 		return true;
 	}
@@ -50,8 +50,10 @@ export const deleteState = (key) => {
 		return false;
 	}
 
-	window.localStorage.removeItem(`${prefix}:${key}`);
+	window.sessionStorage.removeItem(`${prefix}:${key}`);
 
 	return true;
 };
+
+export const clearState = () => window.sessionStorage.clear();
 /* eslint-enable no-param-reassign */

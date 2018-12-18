@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 import initialState from '../store/initialState';
-import { getStates } from '../store/persistedState';
+import { getStates } from '../store/persistedLocalStorageState';
 
 const persistedState = getStates();
 

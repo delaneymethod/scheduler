@@ -22,11 +22,13 @@ import { removeClass } from './helpers/classes';
 
 import packageJson from '../../../package.json';
 
-import { saveState } from './store/persistedState';
-
 import configureStore from './store/configureStore';
 
 import registerServiceWorker from './helpers/registerServiceWorker';
+
+import { saveState as saveLocalStorageState } from './store/persistedLocalStorageState';
+
+import { saveState as saveSessionStorageState } from './store/persistedSessionStorageState';
 
 console.log(`%c${packageJson.author.name} version: ${packageJson.version}`, 'background-color: #343E48; color: #90BC47; padding: 5px 10px');
 
@@ -64,43 +66,44 @@ store.subscribe(throttle(() => {
 		unavailabilityOccurrences,
 	} = store.getState();
 
-	saveState('user', user);
+	saveSessionStorageState('week', week);
 
-	saveState('week', week);
+	saveSessionStorageState('user', user);
 
-	saveState('route', route);
+	saveSessionStorageState('route', route);
 
-	saveState('roles', roles);
+	saveSessionStorageState('roles', roles);
 
-	saveState('settings', settings);
+	saveSessionStorageState('settings', settings);
 
-	saveState('employees', employees);
+	saveSessionStorageState('employees', employees);
 
-	saveState('cookieConsent', cookieConsent);
+	/* Keep cookie consent in local storage so the cookie banner state stays consistent across multiple tabs/windows */
+	saveLocalStorageState('cookieConsent', cookieConsent);
 
-	saveState('authenticated', authenticated);
+	saveSessionStorageState('authenticated', authenticated);
 
-	saveState('unavailabilities', unavailabilities);
+	saveSessionStorageState('unavailabilities', unavailabilities);
 
-	saveState('unavailabilityTypes', unavailabilityTypes);
+	saveSessionStorageState('unavailabilityTypes', unavailabilityTypes);
 
-	saveState('applicationUserRoles', applicationUserRoles);
+	saveSessionStorageState('applicationUserRoles', applicationUserRoles);
 
-	saveState('rotas', (rotaTypes.length === 0) ? [] : rotas);
+	saveSessionStorageState('rotas', (rotaTypes.length === 0) ? [] : rotas);
 
-	saveState('unavailabilityOccurrences', unavailabilityOccurrences);
+	saveSessionStorageState('unavailabilityOccurrences', unavailabilityOccurrences);
 
-	saveState('rotaCost', (rotaTypes.length === 0) ? 0 : rotaCost);
+	saveSessionStorageState('rotaCost', (rotaTypes.length === 0) ? 0 : rotaCost);
 
-	saveState('rotaType', (rotaTypes.length === 0) ? {} : rotaType);
+	saveSessionStorageState('rotaType', (rotaTypes.length === 0) ? {} : rotaType);
 
-	saveState('rotaTypes', (rotaTypes.length === 0) ? [] : rotaTypes);
+	saveSessionStorageState('rotaTypes', (rotaTypes.length === 0) ? [] : rotaTypes);
 
-	saveState('rotaEmployees', (rotaTypes.length === 0) ? [] : rotaEmployees);
+	saveSessionStorageState('rotaEmployees', (rotaTypes.length === 0) ? [] : rotaEmployees);
 
-	saveState('rota', (rotaTypes.length === 0 || rotas.length === 0) ? {} : rota);
+	saveSessionStorageState('rota', (rotaTypes.length === 0 || rotas.length === 0) ? {} : rota);
 
-	saveState('shifts', (rotaTypes.length === 0 || rotas.length === 0) ? [] : shifts);
+	saveSessionStorageState('shifts', (rotaTypes.length === 0 || rotas.length === 0) ? [] : shifts);
 }, 1000));
 
 ReactDOM.render(

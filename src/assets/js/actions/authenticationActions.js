@@ -4,7 +4,9 @@ import * as types from './actionTypes';
 
 import logMessage from '../helpers/logging';
 
-import { saveState } from '../store/persistedState';
+import { clearState as clearLocalStorageState } from '../store/persistedLocalStorageState';
+
+import { saveState as saveSessionStorageState } from '../store/persistedSessionStorageState';
 
 export const ajaxLoading = status => ({
 	type: types.AJAX_LOADING,
@@ -125,7 +127,9 @@ export const logout = () => (dispatch) => {
 
 	dispatch(getPlacementsSuccess([]));
 
-	saveState('employees:ordered', []);
+	saveSessionStorageState('employees:ordered', []);
+
+	clearLocalStorageState();
 
 	dispatch(switchRotaTypeSuccess({}));
 
